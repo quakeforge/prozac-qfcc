@@ -1819,7 +1819,7 @@ void(entity p) TeamFortress_SetSkin =
 		}
 
 		if ( p.skin == PC_CIVILIAN )
-			st = "base\n"; // Need a civilian skin
+			st = "base"; // Need a civilian skin
 	}
 	stuffcmd(p, "skin ");
 	stuffcmd(p, st);
