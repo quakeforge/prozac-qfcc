@@ -42,6 +42,9 @@ void(entity field) Field_Built;
 
 //=========================================================================
 // Laserbolt think function
+// Previously on crack
+// No longer used
+#if 0
 void() LaserBolt_Think =
 {
 	if (time > self.heat) {
@@ -51,34 +54,13 @@ void() LaserBolt_Think =
 		return;
 	}	
 
-	self.velocity = self.oldorigin;
+	self.velocity = self.mangle;
+	setorigin (self, self.oldorigin + normalize (self.mangle));
 
-
-	if (!self.demon_one) {
-		newmis = spawn();
-		setorigin(newmis, self.origin);
-		setsize(newmis, '0 0 0', '0 0 0');
-		setmodel(newmis, "");
-		newmis.solid = SOLID_TRIGGER;
-		newmis.movetype = MOVETYPE_FLYMISSILE;
-		newmis.touch = LaserBolt_Touch;
-		newmis.blocked = LaserBolt_Touch;
-		newmis.real_owner = self.owner;
-		newmis.owner = self;
-		newmis.heat = self.heat;
-		self.demon_one = newmis;
-	}
-
- 	setorigin(self.demon_one, self.origin);
-	self.demon_one.velocity = self.velocity;
-
-	
-	self.movetype = MOVETYPE_NOCLIP;
-
-	self.nextthink = time + 0.1;
-	self.think = LaserBolt_Think;
+	self.nextthink = self.heat;
+	self.think = SUB_Remove;
 };
-
+#endif
 //=========================================================================
 // Laserbolt touch function. Just moves through the player and comes out
 // the other side.
@@ -87,20 +69,23 @@ void() LaserBolt_Touch =
 	local vector org;
 	
 	if (time > self.heat) {
-		dremove(self.owner);
 		dremove(self);	
 		return;
 	}
 
 	if (pointcontents(self.origin)==CONTENTS_SKY) {
-		dremove(self.owner);
 		dremove(self);
 		return;
 	}
 
+	if (other == self.owner || other == self.real_owner)
+		return;
+
+	self.owner = other; // I understand this now
+
 	if (other.classname == "force_field") { // ff can block rails, but not easily, loses cells
-		other.demon_one.ammo_cells -= 15;
-		other.demon_two.ammo_cells -= 15;
+		other.demon_one.ammo_cells -= 5;
+		other.demon_two.ammo_cells -= 5;
 		
 		if (other.demon_one.ammo_cells < 0)
 			other.demon_one.ammo_cells = 0;
@@ -109,20 +94,9 @@ void() LaserBolt_Touch =
 
 		FieldExplosion(other, self.origin, self);
 		PutFieldWork(other);
-		dremove(self.owner);
 		dremove(self);
 		return;
 	}
-			
-
-	setorigin(self, self.owner.origin);
-	self.velocity = self.owner.velocity;
-
-	if (other == self.real_owner || other == self.enemy)
-		return;		// don't explode on same person twice
-
-
-	self.enemy = other;
 
 	//WK Sweep mines at point of impact
 	GuerillaMineSweep(self.origin);
@@ -135,6 +109,17 @@ void() LaserBolt_Touch =
 		deathmsg = DMSG_LASERBOLT;
 		TF_T_Damage (other, self, self.real_owner, 25, 0, TF_TD_NAIL); // was electricity... WTF?
 		setmodel(self.owner, "progs/e_spike2.mdl");
+	}
+	else if (!other || other.solid == SOLID_BSP) // Oh well, this never worked right, and it was stupid anyway
+	{
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
+		WriteCoord (MSG_MULTICAST, self.origin_x);
+		WriteCoord (MSG_MULTICAST, self.origin_y);
+		WriteCoord (MSG_MULTICAST, self.origin_z);
+		multicast (self.origin, MULTICAST_PHS);
+
+		dremove (self);
 	}
 };
 
@@ -153,8 +138,8 @@ void() W_FireLaser =
 		
 	newmis = spawn();
 	newmis.owner = self;
-	newmis.enemy = NIL;	// The real owner GR uh no
-	newmis.movetype = MOVETYPE_NOCLIP; //was noclip. Oh well.
+	newmis.real_owner = self;
+	newmis.movetype = MOVETYPE_FLYMISSILE;
 	newmis.solid = SOLID_TRIGGER;
 
 	setmodel (newmis, "progs/e_spike1.mdl");
@@ -162,13 +147,15 @@ void() W_FireLaser =
 
 	setorigin (newmis, org + '0 0 16');
 
-	newmis.velocity = '0 0 0';
-	newmis.oldorigin = vec*1500;
-	newmis.angles = vectoangles(newmis.oldorigin);
+	newmis.mangle = vec*1500;
+	newmis.velocity = newmis.mangle;
+	newmis.angles = vectoangles(newmis.velocity);
 
 	newmis.heat = time + 5;
-	newmis.nextthink = time + 0.1;
-	newmis.think = LaserBolt_Think;
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
+
+	newmis.touch = LaserBolt_Touch;
 };
 
 //=========================================================================
