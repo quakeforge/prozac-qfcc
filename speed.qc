@@ -1,3 +1,4 @@
+#include "defs.qh"
 //some of this by Cyto 3-27-00
 //other by CH
 
@@ -12,10 +13,10 @@ void() Kick_My_Owner =
 	local string ip;
       local string oldname,nospeed;
 	local float banned,off;
-	banned = #FALSE;
+	banned = FALSE;
 
 	//Don't kick if cheats are off
-	off = #FALSE;
+	off = FALSE;
 	nospeed = infokey(world,"nospeed");
 	if (nospeed != string_null) {
 		off = stof(nospeed);
@@ -24,7 +25,7 @@ void() Kick_My_Owner =
 
 
 	oldname = self.owner.netname;
-	sprint(self.owner, #PRINT_HIGH,"\nYou have been кицкед for цхеатинг.\nIf you were not cheating, I apologize.\nHave a nice day.\n");
+	sprint(self.owner, PRINT_HIGH,"\nYou have been кицкед for цхеатинг.\nIf you were not cheating, I apologize.\nHave a nice day.\n");
 
 	ip = infokey(self.owner,"ip");
 	if (infokey(world,"infip") == ip) { // second infraction. ban.
@@ -32,7 +33,7 @@ void() Kick_My_Owner =
 		localcmd(ip);
 		localcmd("\n");
 		localcmd("localinfo infip \"\"");
-		banned = #TRUE;
+		banned = TRUE;
 	} else {
 		localcmd("localinfo infip ");
 		localcmd(ip);
@@ -40,11 +41,11 @@ void() Kick_My_Owner =
 	}
 
 	stuffcmd(self.owner,"disconnect\n");
-	bprint(#PRINT_HIGH, oldname);
+	bprint(PRINT_HIGH, oldname);
 	if (banned)
-		bprint(#PRINT_HIGH, " was BANNED for cheating!\n");
+		bprint(PRINT_HIGH, " was BANNED for cheating!\n");
 	else
-		bprint(#PRINT_HIGH, " was kicked for cheating.\n");
+		bprint(PRINT_HIGH, " was kicked for cheating.\n");
 
 	self.think = SUB_Null;
 	dremove(self);
@@ -67,7 +68,7 @@ void () TeamFortress_CheckForSpeed =
 	local string nospeed;
 	local float off;
 
-	off = #FALSE;
+	off = FALSE;
 	nospeed = infokey(world,"nospeed");
 	if (nospeed != string_null) {
 		off = stof(nospeed);
@@ -75,30 +76,30 @@ void () TeamFortress_CheckForSpeed =
 	if (off) return;
 
 max = self.owner.maxspeed;
-if ((self.owner.job & #JOB_RUNNER) && (self.owner.job & #JOB_ACTIVE))
+if ((self.owner.job & JOB_RUNNER) && (self.owner.job & JOB_ACTIVE))
 	max = max + 200;	
 //make sure ok to check
 if (self.owner.immune_to_chec > time)
-	immune = immune | #IMMUNE; //its ok since #IMMUNE becomes 1
+	immune = immune | IMMUNE; //its ok since IMMUNE becomes 1
 if (self.owner.hook_out)
-	immune = immune | #GRAPPLE;
+	immune = immune | GRAPPLE;
 //WK We should boot if they have no set speed and are moving
 //if (self.owner.maxspeed == 0) // no set speed
-if (!(self.owner.flags & #FL_ONGROUND)) //WK People in air immune
-	immune = immune | #FLYING;
-if (self.owner.playerclass == #PC_UNDEFINED)
-	immune = immune | #NOCLASS;
-if (self.owner.done_custom & #CUSTOM_BUILDING)
-	immune = immune | #BUILDING;
+if (!(self.owner.flags & FL_ONGROUND)) //WK People in air immune
+	immune = immune | FLYING;
+if (self.owner.playerclass == PC_UNDEFINED)
+	immune = immune | NOCLASS;
+if (self.owner.done_custom & CUSTOM_BUILDING)
+	immune = immune | BUILDING;
 if (self.owner.health <= 0)
-	immune = immune | #DEAD;
+	immune = immune | DEAD;
 if (self.owner.has_disconnected)
 	dremove(self);
 
 if (immune)
-	check = #FALSE;
+	check = FALSE;
 else
-	check = #TRUE;
+	check = TRUE;
 
 	//WK Lowered percent chance of restuffing because stuffcmds() cause overflows
 	if (!self.lip || !(self.has_camera) || (random() <= 0.1)){ //periodically reset ping and gotwalls.
@@ -106,7 +107,7 @@ else
 		self.has_camera = stof(infokey(self.owner,"ping")) / 20;
 #ifdef ENABLE_CHEAT_CMDS
 		if (!self.lip || (random() <= 0.1)){
-			stuffcmd(self.owner,"alias aa_enabled \"impulse #I_CHEAT_ONE;wait;impulse #I_CHEAT_TWO;wait;impulse #I_CHEAT_THREE\"\n");
+			stuffcmd(self.owner,"alias aa_enabled \"impulse I_CHEAT_ONE;wait;impulse I_CHEAT_TWO;wait;impulse I_CHEAT_THREE\"\n");
 			stuffcmd(self.owner,"alias +aa \"aa_enabled\"\n");
 			stuffcmd(self.owner,"alias -aa \"aa_enabled\"\n");
 			stuffcmd(self.owner,"alias aa_teamlock \"aa_enabled\"\n");
@@ -131,15 +132,15 @@ else
 	if (check && (max == 0) && (dist > 100)) { //Definitely cheating...
 		self.owner.cheat_level = self.owner.cheat_level + 700;
 	}
-	if (check && (dist > (max * (1 + (#MAXPERCENT / 100))))) // Maybe cheating.
+	if (check && (dist > (max * (1 + (MAXPERCENT / 100))))) // Maybe cheating.
 		self.owner.cheat_level = self.owner.cheat_level + 200;
 	if (self.owner.cheat_level >= 900 && self.has_sentry == 0 && dist > max) {
-		bprint(#PRINT_HIGH, self.owner.netname);
-		bprint(#PRINT_HIGH, " may be cheating. (Current:");
-		bprint(#PRINT_HIGH, ftos(dist));
-		bprint(#PRINT_HIGH, "/Max:");
-            bprint(#PRINT_HIGH, ftos(max));
-		bprint(#PRINT_HIGH, ")\n");
+		bprint(PRINT_HIGH, self.owner.netname);
+		bprint(PRINT_HIGH, " may be cheating. (Current:");
+		bprint(PRINT_HIGH, ftos(dist));
+		bprint(PRINT_HIGH, "/Max:");
+            bprint(PRINT_HIGH, ftos(max));
+		bprint(PRINT_HIGH, ")\n");
 		self.has_sentry = 10;
 	} else {
 		self.has_sentry = self.has_sentry - 1;
@@ -154,21 +155,21 @@ else
 #ifdef SHOW_CHEAT_LEVELS
 	local string st;
 	st = ftos(max);
-	bprint(#PRINT_HIGH, "Max: ");
-	bprint(#PRINT_HIGH, st);
-	bprint(#PRINT_HIGH, " Imm: ");
+	bprint(PRINT_HIGH, "Max: ");
+	bprint(PRINT_HIGH, st);
+	bprint(PRINT_HIGH, " Imm: ");
 	st = ftos(immune);
-	bprint(#PRINT_HIGH, st);
-	bprint(#PRINT_HIGH, " Cht: ");
+	bprint(PRINT_HIGH, st);
+	bprint(PRINT_HIGH, " Cht: ");
 	st = ftos(self.owner.cheat_level);
-	bprint(#PRINT_HIGH, st);
-	bprint(#PRINT_HIGH, " Speed: (");
+	bprint(PRINT_HIGH, st);
+	bprint(PRINT_HIGH, " Speed: (");
 	st = ftos(dist);
-	bprint(#PRINT_HIGH, st);
-	bprint(#PRINT_HIGH, "/");
-	st = ftos(max * (1 + (#MAXPERCENT / 100))); 
-	bprint(#PRINT_HIGH, st);
-	bprint(#PRINT_HIGH, ")\n");
+	bprint(PRINT_HIGH, st);
+	bprint(PRINT_HIGH, "/");
+	st = ftos(max * (1 + (MAXPERCENT / 100))); 
+	bprint(PRINT_HIGH, st);
+	bprint(PRINT_HIGH, ")\n");
 #endif
 	self.oldorigin = self.owner.origin;
 	self.nextthink = time + 1;
@@ -177,13 +178,13 @@ else
 //One, must be called before two, and two before three
 void() I_DID_CHEAT_ONE =
 {
-//	bprint(#PRINT_HIGH, "I did the cheat 1 cmd!\n");
+//	bprint(PRINT_HIGH, "I did the cheat 1 cmd!\n");
 	if (self.has_cheated == 0)
 		self.has_cheated = 1;
 };
 void() I_DID_CHEAT_TWO =
 {
-//	bprint(#PRINT_HIGH, "I did the cheat 2 cmd!\n");
+//	bprint(PRINT_HIGH, "I did the cheat 2 cmd!\n");
 	if (self.has_cheated >= 1) {
 		self.has_cheated = 2;
 
@@ -193,9 +194,9 @@ void() I_DID_CHEAT_TWO =
 };
 void() I_DID_CHEAT_THREE =
 {
-//	bprint(#PRINT_HIGH, "I did the cheat 3 cmd!\n");
+//	bprint(PRINT_HIGH, "I did the cheat 3 cmd!\n");
 	if (self.has_cheated == 2) {
-		//bprint(#PRINT_HIGH, "Making kick entity!\n");
+		//bprint(PRINT_HIGH, "Making kick entity!\n");
 		local entity te;
 
 		te = spawn(); //CH

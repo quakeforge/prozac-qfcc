@@ -8,6 +8,8 @@
 TF status bar functions
 =======================================================*/
 
+#include "defs.qh"
+
 float(float tno) TeamFortress_TeamGetScore;
 
 ////////////////////////////////////////////////////
@@ -108,7 +110,7 @@ void(entity pl) RefreshStatusBar =
 	}
 
 	pl.StatusRefreshTime = time + 1.0;
-	if (pl.playerclass == #PC_UNDEFINED)
+	if (pl.playerclass == PC_UNDEFINED)
 		return;
 
 	s1 = GetStatusSize(pl);
@@ -153,8 +155,8 @@ void(entity pl) RefreshStatusBar =
 	else if (self.scaned != self)
 		self.StatusBarScreen = 5;
 	else if (self.is_undercover != 0)
-		self.StatusBarScreen = 2;  // (self.job & #JOB_WARLOCK && self.job & #JOB_DEMON_OUT)
-	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & #JOB_HACKER))
+		self.StatusBarScreen = 2;  // (self.job & JOB_WARLOCK && self.job & JOB_DEMON_OUT)
+	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & JOB_HACKER))
 		self.StatusBarScreen = 3;
 	else
 		self.StatusBarScreen = 0;
@@ -176,7 +178,7 @@ void(entity pl) RefreshStatusBar1 =
 	}
 
 	pl.StatusRefreshTime = time + 1.0;
-	if (pl.playerclass == #PC_UNDEFINED)
+	if (pl.playerclass == PC_UNDEFINED)
 		return;
 
 	s1 = GetStatusSize(pl);
@@ -220,8 +222,8 @@ void(entity pl) RefreshStatusBar1 =
 	else if (self.scaned != self)
 		self.StatusBarScreen = 5;
 	else if (self.is_undercover != 0)
-		self.StatusBarScreen = 2; //(self.job & #JOB_WARLOCK && self.job & #JOB_DEMON_OUT)
-	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & #JOB_HACKER))
+		self.StatusBarScreen = 2; //(self.job & JOB_WARLOCK && self.job & JOB_DEMON_OUT)
+	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & JOB_HACKER))
 		self.StatusBarScreen = 3;
 	else
 		self.StatusBarScreen = 0;
@@ -243,7 +245,7 @@ void(entity pl) RefreshStatusBar4 =
 	}
 
 	pl.StatusRefreshTime = time + 1.0;
-	if (pl.playerclass == #PC_UNDEFINED)
+	if (pl.playerclass == PC_UNDEFINED)
 		return;
 
 	s1 = GetStatusSize(pl);
@@ -287,8 +289,8 @@ void(entity pl) RefreshStatusBar4 =
 	if (self.scaned != self)
 		self.StatusBarScreen = 5;
 	else if (self.is_undercover != 0)
-		self.StatusBarScreen = 2; //(self.job & #JOB_WARLOCK && self.job & #JOB_DEMON_OUT)
-	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & #JOB_HACKER))
+		self.StatusBarScreen = 2; //(self.job & JOB_WARLOCK && self.job & JOB_DEMON_OUT)
+	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & JOB_HACKER))
 		self.StatusBarScreen = 3;
 	else
 		self.StatusBarScreen = 0;
@@ -309,17 +311,17 @@ void(entity pl) RefreshStatusBar5 =
 	}
 
 	pl.StatusRefreshTime = time + 1.0;
-	if (pl.playerclass == #PC_UNDEFINED)
+	if (pl.playerclass == PC_UNDEFINED)
 		return;
 
 	s1 = GetStatusSize(pl);
 	s6 = ftos(ceil(vlen(self.scaned.origin - self.origin)));
 	s7 = ClipSizeToString100(pl);
-	if (self.scaned.classname == "player" && self.scaned.playerclass != #PC_UNDEFINED)
+	if (self.scaned.classname == "player" && self.scaned.playerclass != PC_UNDEFINED)
 	{
 		s2 = GetTrueTeamName(self.scaned.team_no);
 		s3 = ": ";
-		if (self.enemy.playerclass != #PC_CUSTOM)
+		if (self.enemy.playerclass != PC_CUSTOM)
 			s4 = TeamFortress_GetClassName(self.scaned.playerclass);
 		else 
 			s4 = TeamFortress_GetJobName(self.scaned.job);
@@ -372,8 +374,8 @@ void(entity pl) RefreshStatusBar5 =
 
 //CH determines which screen to show next (its at the end of all RefreshStatusBars)
 	if (self.is_undercover != 0)
-		self.StatusBarScreen = 2; //(self.job & #JOB_WARLOCK && self.job & #JOB_DEMON_OUT)
-	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & #JOB_HACKER))
+		self.StatusBarScreen = 2; //(self.job & JOB_WARLOCK && self.job & JOB_DEMON_OUT)
+	else if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & JOB_HACKER))
 		self.StatusBarScreen = 3;
 	else
 		self.StatusBarScreen = 0;
@@ -392,7 +394,7 @@ void(entity pl) RefreshStatusBar2 =
 	}
 
 	pl.StatusRefreshTime = time + 1.0;
-	if (pl.playerclass == #PC_UNDEFINED)
+	if (pl.playerclass == PC_UNDEFINED)
 		return;
 
 	s1 = GetStatusSize(pl);
@@ -439,8 +441,8 @@ void(entity pl) RefreshStatusBar2 =
 	centerprint(pl, s1, s2, s3, s4, s5);
 
 //CH determines which screen to show next (its at the end of all RefreshStatusBars)
-                            //(self.job & #JOB_WARLOCK && self.job & #JOB_DEMON_OUT)||(self.job & #JOB_ARMY && self.job & #JOB_DEMON_OUT)
-	if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & #JOB_HACKER))
+                            //(self.job & JOB_WARLOCK && self.job & JOB_DEMON_OUT)||(self.job & JOB_ARMY && self.job & JOB_DEMON_OUT)
+	if (self.is_detpacking || HasMonster(self) || (self.is_haxxxoring && self.job & JOB_HACKER))
 		self.StatusBarScreen = 3;
 	else
 		self.StatusBarScreen = 0;
@@ -461,7 +463,7 @@ void(entity pl) RefreshStatusBar3 =
 	}
 
 	pl.StatusRefreshTime = time + 1.0;
-	if (pl.playerclass == #PC_UNDEFINED)
+	if (pl.playerclass == PC_UNDEFINED)
 		return;
 
     s4 = "";
@@ -469,8 +471,8 @@ void(entity pl) RefreshStatusBar3 =
 
     s1 = GetStatusSize(pl);
 
-       //(self.job & #JOB_WARLOCK && self.job & #JOB_DEMON_OUT)||(self.job & #JOB_ARMY && self.job & #JOB_DEMON_OUT)
-	if (self.is_haxxxoring && self.job & #JOB_HACKER)
+       //(self.job & JOB_WARLOCK && self.job & JOB_DEMON_OUT)||(self.job & JOB_ARMY && self.job & JOB_DEMON_OUT)
+	if (self.is_haxxxoring && self.job & JOB_HACKER)
     {
     	if (self.demon_two.has_camera == -2) // we r aborting hack...
         {
@@ -581,23 +583,23 @@ void(float res) StatusRes =
 	self.StatusBarRes = res;
 
 	if (res > 7) // 768 
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 1024x768.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 1024x768.\n");
 	else if (res == 7) // 600 
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 800x600.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 800x600.\n");
 	else if (res == 6) // 480 
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 640x480.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 640x480.\n");
 	else if (res == 5) // 400
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 640x400.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 640x400.\n");
 	else if (res == 4) // 384 
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 512x384.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 512x384.\n");
 	else if (res == 3) // 350 
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 320x350.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 320x350.\n");
 	else if (res == 2) // 300 
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 400x300.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 400x300.\n");
 	else if (res == 1) // 240 
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 320x240.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 320x240.\n");
 	else
-		sprint(self, #PRINT_HIGH, "Status Bar Res set to 320x200.\n");
+		sprint(self, PRINT_HIGH, "Status Bar Res set to 320x200.\n");
 };
 
 string(entity pl) ClipSizeToString100 =
@@ -605,41 +607,41 @@ string(entity pl) ClipSizeToString100 =
 {
 	local float num;
 
-	if (pl.current_weapon == #WEAP_SHOTGUN)
+	if (pl.current_weapon == WEAP_SHOTGUN)
 	{
-		if (#RE_SHOTGUN - pl.reload_shotgun > pl.ammo_shells)
-			pl.reload_shotgun = #RE_SHOTGUN - pl.ammo_shells;
-		num = #RE_SHOTGUN - pl.reload_shotgun;
+		if (RE_SHOTGUN - pl.reload_shotgun > pl.ammo_shells)
+			pl.reload_shotgun = RE_SHOTGUN - pl.ammo_shells;
+		num = RE_SHOTGUN - pl.reload_shotgun;
 	}
-	else if (pl.current_weapon == #WEAP_SUPER_SHOTGUN)
+	else if (pl.current_weapon == WEAP_SUPER_SHOTGUN)
 	{
-		if (#RE_SUPER_SHOTGUN - pl.reload_super_shotgun > pl.ammo_shells)
-			pl.reload_super_shotgun = #RE_SUPER_SHOTGUN - pl.ammo_shells;
-		num = #RE_SUPER_SHOTGUN - pl.reload_super_shotgun;
+		if (RE_SUPER_SHOTGUN - pl.reload_super_shotgun > pl.ammo_shells)
+			pl.reload_super_shotgun = RE_SUPER_SHOTGUN - pl.ammo_shells;
+		num = RE_SUPER_SHOTGUN - pl.reload_super_shotgun;
 	}
-	else if (pl.current_weapon == #WEAP_GRENADE_LAUNCHER)
+	else if (pl.current_weapon == WEAP_GRENADE_LAUNCHER)
 	{
-		if (#RE_GRENADE_LAUNCHER - pl.reload_grenade_launcher > pl.ammo_rockets)
-			pl.reload_grenade_launcher = #RE_GRENADE_LAUNCHER - pl.ammo_rockets;
-		num = #RE_GRENADE_LAUNCHER - pl.reload_grenade_launcher;
+		if (RE_GRENADE_LAUNCHER - pl.reload_grenade_launcher > pl.ammo_rockets)
+			pl.reload_grenade_launcher = RE_GRENADE_LAUNCHER - pl.ammo_rockets;
+		num = RE_GRENADE_LAUNCHER - pl.reload_grenade_launcher;
 	}
-	else if (pl.current_weapon == #WEAP_ROCKET_LAUNCHER)
+	else if (pl.current_weapon == WEAP_ROCKET_LAUNCHER)
 	{
-		if (#RE_ROCKET_LAUNCHER - pl.reload_rocket_launcher > pl.ammo_rockets)
-			pl.reload_rocket_launcher = #RE_ROCKET_LAUNCHER - pl.ammo_rockets;
-		num = #RE_ROCKET_LAUNCHER - pl.reload_rocket_launcher;
+		if (RE_ROCKET_LAUNCHER - pl.reload_rocket_launcher > pl.ammo_rockets)
+			pl.reload_rocket_launcher = RE_ROCKET_LAUNCHER - pl.ammo_rockets;
+		num = RE_ROCKET_LAUNCHER - pl.reload_rocket_launcher;
 	}
-	else if (pl.current_weapon == #WEAP_LIGHT_ASSAULT)
+	else if (pl.current_weapon == WEAP_LIGHT_ASSAULT)
 	{
-		if (#RE_LIGHT_ASSAULT - pl.reload_light_assault > pl.ammo_nails)
-			pl.reload_light_assault = #RE_LIGHT_ASSAULT - pl.ammo_nails;
-		num = #RE_LIGHT_ASSAULT - pl.reload_light_assault;
+		if (RE_LIGHT_ASSAULT - pl.reload_light_assault > pl.ammo_nails)
+			pl.reload_light_assault = RE_LIGHT_ASSAULT - pl.ammo_nails;
+		num = RE_LIGHT_ASSAULT - pl.reload_light_assault;
 	}
-    else if (pl.current_weapon == #WEAP_LASERCANNON)
+    else if (pl.current_weapon == WEAP_LASERCANNON)
 	{
-		if (#RE_LASER_CANNON - pl.reload_laser_cannon > pl.ammo_cells)
-			pl.reload_laser_cannon = #RE_LASER_CANNON - pl.ammo_cells;
-		num = #RE_LASER_CANNON - pl.reload_laser_cannon;
+		if (RE_LASER_CANNON - pl.reload_laser_cannon > pl.ammo_cells)
+			pl.reload_laser_cannon = RE_LASER_CANNON - pl.ammo_cells;
+		num = RE_LASER_CANNON - pl.reload_laser_cannon;
 	}
 	else
 	{

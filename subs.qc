@@ -1,4 +1,4 @@
-
+#include "defs.qh"
 
 void(entity Goal, entity AP) DoGoalWork;
 void(entity Goal, entity AP) DoGroupWork;
@@ -37,9 +37,9 @@ void() InitTrigger =
 // to mean no restrictions, so use a yaw of 360 instead.
 	if (self.angles != '0 0 0')
 		SetMovedir ();
-	self.solid = #SOLID_TRIGGER;
+	self.solid = SOLID_TRIGGER;
 	setmodel (self, self.model);	// set size and link into world
-	self.movetype = #MOVETYPE_NONE;
+	self.movetype = MOVETYPE_NONE;
 	self.modelindex = 0;
 	self.model = "";
 };
@@ -223,7 +223,7 @@ void() SUB_UseTargets =
 	// so get out of here.
 	if (self.dont_do_triggerwork)
 	{
-		self.dont_do_triggerwork = #FALSE;
+		self.dont_do_triggerwork = FALSE;
 		return;
 	}
 
@@ -247,7 +247,7 @@ void() SUB_UseTargets =
 	{
 		CenterPrint (activator, self.message);
 		if (!self.noise)
-			sound (activator, #CHAN_VOICE, "misc/talk.wav", 1, #ATTN_NORM);
+			sound (activator, CHAN_VOICE, "misc/talk.wav", 1, ATTN_NORM);
 	}
 
 	// TeamFortress Goal Checking

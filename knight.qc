@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*
 ==============================================================================
 
@@ -63,7 +64,7 @@ void() knight_melee =
 	ldmg = (120 + 120*random());
 	T_Damage (self.enemy, self, self, ldmg);
 
-    sound (self, #CHAN_WEAPON, "demon/dhit2.wav", 1, #ATTN_NORM);
+    sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
     makevectors (self.angles);
     SpawnMeatSpray (self.origin + v_forward*16, (50 - random()*100) * v_right);
 };
@@ -80,7 +81,7 @@ void()	knight_stand9	=[	$stand9,	knight_stand1	] {ai_stand();};
 
 void()	knight_walk1	=[	$walk1,		knight_walk2	] {
 if (random() < 0.2)
-	sound (self, #CHAN_VOICE, "knight/idle.wav", 1,  #ATTN_IDLE);
+	sound (self, CHAN_VOICE, "knight/idle.wav", 1,  ATTN_IDLE);
 ai_walk(3);};
 void()	knight_walk2	=[	$walk2,		knight_walk3	] {ai_walk(2);};
 void()	knight_walk3	=[	$walk3,		knight_walk4	] {ai_walk(3);};
@@ -99,7 +100,7 @@ void()	knight_walk14	=[	$walk14,	knight_walk1	] {ai_walk(3);};
 
 void()	knight_run1	=[	$runb1,		knight_run2	] {
 if (random() < 0.2)
-	sound (self, #CHAN_VOICE, "knight/idle.wav", 1,  #ATTN_IDLE);
+	sound (self, CHAN_VOICE, "knight/idle.wav", 1,  ATTN_IDLE);
 ai_run(16*1.8);};
 void()	knight_run2	=[	$runb2,		knight_run3	] {ai_run(20*1.8);};
 void()	knight_run3	=[	$runb3,		knight_run4	] {ai_run(13*1.8);};
@@ -113,9 +114,9 @@ void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(6*1.8);};
 void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
 {
 if (random() > 0.5)
-	sound (self, #CHAN_WEAPON, "knight/sword2.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
 else
-	sound (self, #CHAN_WEAPON, "knight/sword1.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 ai_charge(20);
 };
 void()	knight_runatk2	=[	$runattack2,	knight_runatk3	] {ai_charge_side();};
@@ -131,7 +132,7 @@ void()	knight_runatk11	=[	$runattack11,	knight_run1	] {ai_charge(10);};
 
 void()	knight_atk1	=[	$attackb1,		knight_atk2	]
 {
-sound (self, #CHAN_WEAPON, "knight/sword1.wav", 1, #ATTN_NORM);
+sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 ai_charge(0);};
 void()	knight_atk2	=[	$attackb2,		knight_atk3	] {ai_charge(7);};
 void()	knight_atk3	=[	$attackb3,		knight_atk4	] {ai_charge(4);};
@@ -179,7 +180,7 @@ void(entity attacker, float damage)	knight_pain =
 
 	r = random();
 	
-	sound (self, #CHAN_VOICE, "knight/khurt.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, "knight/khurt.wav", 1, ATTN_NORM);
 
 	if ((random()*60 > damage) )
 		return;		// didn't flinch
@@ -217,7 +218,7 @@ void()	knight_bow10	=[	$walk1,		knight_walk1	] {ai_turn();};
 void()	knight_die1	=[	$death1,	knight_die2	] {};
 void()	knight_die2	=[	$death2,	knight_die3	] {};
 void()	knight_die3	=[	$death3,	knight_die4	] 
-{self.solid = #SOLID_NOT;};
+{self.solid = SOLID_NOT;};
 void()	knight_die4	=[	$death4,	knight_die5	] {};
 void()	knight_die5	=[	$death5,	knight_die6	] {};
 void()	knight_die6	=[	$death6,	knight_die7	] {};
@@ -234,7 +235,7 @@ void()	knight_die10=[	$death10,	knight_die10]
 void()	knight_dieb1	=[	$deathb1,	knight_dieb2	] {};
 void()	knight_dieb2	=[	$deathb2,	knight_dieb3	] {};
 void()	knight_dieb3	=[	$deathb3,	knight_dieb4	] 	
-{self.solid = #SOLID_NOT;};
+{self.solid = SOLID_NOT;};
 void()	knight_dieb4	=[	$deathb4,	knight_dieb5	] {};
 void()	knight_dieb5	=[	$deathb5,	knight_dieb6	] {};
 void()	knight_dieb6	=[	$deathb6,	knight_dieb7	] {};
@@ -253,8 +254,8 @@ void() knight_die =
 {
     if (self.real_owner.classname == "player")
     {
-	    sprint(self.real_owner,#PRINT_HIGH,"Your knight is dead.\n");
-	    self.real_owner.job = self.real_owner.job - (self.real_owner.job & #JOB_DEMON_OUT);
+	    sprint(self.real_owner,PRINT_HIGH,"Your knight is dead.\n");
+	    self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 	    self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
         self.real_owner.demon_one = world;
     } 
@@ -265,7 +266,7 @@ void() knight_die =
 // check for gib
 	if (self.health < -40)
 	{
-		sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 		ThrowHead ("progs/h_knight.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib2.mdl", self.health);
@@ -274,7 +275,7 @@ void() knight_die =
 	}
 
 // regular death
-	sound (self, #CHAN_VOICE, "knight/kdeath.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, "knight/kdeath.wav", 1, ATTN_NORM);
 	if (random() < 0.5)
 		knight_die1 ();
 	else
@@ -300,8 +301,8 @@ void() knight_die =
 	precache_sound ("knight/sword2.wav");
 	precache_sound ("knight/idle.wav");
 
-	self.solid = #SOLID_SLIDEBOX;
-	self.movetype = #MOVETYPE_STEP;
+	self.solid = SOLID_SLIDEBOX;
+	self.movetype = MOVETYPE_STEP;
 
 	setmodel (self, "progs/knight.mdl");
 

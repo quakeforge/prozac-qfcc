@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*======================================================
 	ACTIONS.QC			Custom TeamFortress v3.2	
 
@@ -27,15 +28,15 @@ void() TeamFortress_Discard =
 //
 //CH new setup, checks if you have weapon that uses that ammo
 //and if you dont, throws it away
-	 if (self.playerclass != #PC_UNDEFINED)
+	 if (self.playerclass != PC_UNDEFINED)
 	{
-		if (!(self.weapons_carried & #WEAP_SNIPER_RIFLE || self.weapons_carried & #WEAP_AUTO_RIFLE || self.weapons_carried & #WEAP_SHOTGUN || self.weapons_carried & #WEAP_SUPER_SHOTGUN || self.weapons_carried & #WEAP_ASSAULT_CANNON || (self.cutf_items & #CUTF_SENTRYGUN && self.weapons_carried & #WEAP_SPANNER)))
+		if (!(self.weapons_carried & WEAP_SNIPER_RIFLE || self.weapons_carried & WEAP_AUTO_RIFLE || self.weapons_carried & WEAP_SHOTGUN || self.weapons_carried & WEAP_SUPER_SHOTGUN || self.weapons_carried & WEAP_ASSAULT_CANNON || (self.cutf_items & CUTF_SENTRYGUN && self.weapons_carried & WEAP_SPANNER)))
 			newmis.ammo_shells = self.ammo_shells;
-		if (!(self.weapons_carried & #WEAP_NAILGUN || self.weapons_carried & #WEAP_SNG || self.weapons_carried & #WEAP_LIGHT_ASSAULT || self.weapons_carried & #WEAP_LASER || self.weapons_carried & #WEAP_TRANQ || self.weapons_carried & #WEAP_MAUSER)) //CH is it just me or are there not many nail weapons? //WK It's just you
+		if (!(self.weapons_carried & WEAP_NAILGUN || self.weapons_carried & WEAP_SNG || self.weapons_carried & WEAP_LIGHT_ASSAULT || self.weapons_carried & WEAP_LASER || self.weapons_carried & WEAP_TRANQ || self.weapons_carried & WEAP_MAUSER)) //CH is it just me or are there not many nail weapons? //WK It's just you
 			newmis.ammo_nails = self.ammo_nails;
-		if (!(self.weapons_carried & #WEAP_ROCKET_LAUNCHER || self.weapons_carried & #WEAP_INCENDIARY || self.weapons_carried & #WEAP_GRENADE_LAUNCHER || (self.cutf_items & #CUTF_SENTRYGUN && self.weapons_carried & #WEAP_SPANNER) || self.job & #JOB_GUERILLA))
+		if (!(self.weapons_carried & WEAP_ROCKET_LAUNCHER || self.weapons_carried & WEAP_INCENDIARY || self.weapons_carried & WEAP_GRENADE_LAUNCHER || (self.cutf_items & CUTF_SENTRYGUN && self.weapons_carried & WEAP_SPANNER) || self.job & JOB_GUERILLA))
 			newmis.ammo_rockets = self.ammo_rockets;
-		if (!(self.cutf_items & #CUTF_CYBERAUG || self.cutf_items & #CUTF_HOLO || self.weapons_carried & #WEAP_LASERCANNON || self.weapons_carried & #WEAP_INCENDIARY || self.weapons_carried & #WEAP_LIGHTNING || self.weapons_carried & #WEAP_SUPER_SHOTGUN || self.weapons_carried & #WEAP_ASSAULT_CANNON || self.weapons_carried & #WEAP_DAEDALUS || (self.cutf_items & #CUTF_SENTRYGUN && self.weapons_carried & #WEAP_SPANNER) || (self.weapons_carried & #WEAP_SPANNER && self.tf_items & #NIT_TESLA) || (self.weapons_carried & #WEAP_SPANNER && self.tf_items & #NIT_SECURITY_CAMERA) || (self.weapons_carried & #WEAP_SPANNER && self.tf_items & #NIT_TELEPORTER)))
+		if (!(self.cutf_items & CUTF_CYBERAUG || self.cutf_items & CUTF_HOLO || self.weapons_carried & WEAP_LASERCANNON || self.weapons_carried & WEAP_INCENDIARY || self.weapons_carried & WEAP_LIGHTNING || self.weapons_carried & WEAP_SUPER_SHOTGUN || self.weapons_carried & WEAP_ASSAULT_CANNON || self.weapons_carried & WEAP_DAEDALUS || (self.cutf_items & CUTF_SENTRYGUN && self.weapons_carried & WEAP_SPANNER) || (self.weapons_carried & WEAP_SPANNER && self.tf_items & NIT_TESLA) || (self.weapons_carried & WEAP_SPANNER && self.tf_items & NIT_SECURITY_CAMERA) || (self.weapons_carried & WEAP_SPANNER && self.tf_items & NIT_TELEPORTER)))
 			newmis.ammo_cells = self.ammo_cells;
 	}
 
@@ -57,20 +58,20 @@ void() TeamFortress_Discard =
 		self.ammo_cells = 0;
 	W_SetCurrentAmmo();
 
-	sound(self, #CHAN_ITEM, "weapons/lock4.wav", 1, #ATTN_NORM);
+	sound(self, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
 
 	// The backpack is treated as an ammobox, so people can't crash svrs
 	// by making too many of them.
 	if (self.team_no != 0)
 	{
 		increment_team_ammoboxes(self.team_no);
-		if (num_team_ammoboxes(self.team_no) > (#MAX_WORLD_AMMOBOXES / number_of_teams))
+		if (num_team_ammoboxes(self.team_no) > (MAX_WORLD_AMMOBOXES / number_of_teams))
 			RemoveOldAmmobox(self.team_no);
 	}
 	else 
 	{
 		num_world_ammoboxes = num_world_ammoboxes + 1;
-		if (num_world_ammoboxes > #MAX_WORLD_AMMOBOXES)
+		if (num_world_ammoboxes > MAX_WORLD_AMMOBOXES)
 			RemoveOldAmmobox(0);
 	}
 
@@ -78,8 +79,8 @@ void() TeamFortress_Discard =
 	newmis.enemy = self;
 	newmis.health = time;
 	newmis.weapon = 0;
-	newmis.movetype = #MOVETYPE_TOSS;
-	newmis.solid = #SOLID_TRIGGER;
+	newmis.movetype = MOVETYPE_TOSS;
+	newmis.solid = SOLID_TRIGGER;
 	newmis.classname = "ammobox";
 	newmis.team_no = self.team_no;
 	makevectors (self.v_angle);
@@ -112,20 +113,20 @@ void() TeamFortress_SaveMe =
 	if (self.last_saveme_sound < time)
 	{
 		if (random() < 0.8)
-			sound(self, #CHAN_WEAPON, "speech/saveme1.wav", 1, #ATTN_NORM);	// MEDIC!
+			sound(self, CHAN_WEAPON, "speech/saveme1.wav", 1, ATTN_NORM);	// MEDIC!
 		else
-			sound(self, #CHAN_WEAPON, "speech/saveme2.wav", 1, #ATTN_NORM);	// Excuse me...
+			sound(self, CHAN_WEAPON, "speech/saveme2.wav", 1, ATTN_NORM);	// Excuse me...
 		self.last_saveme_sound = time + 4;
 	}
 
 	te = find(world, classname, "player");
 	while (te)
 	{	
-		if (self.weapons_carried & #WEAP_MEDIKIT)
+		if (self.weapons_carried & WEAP_MEDIKIT)
 
-		if (self == te || te.weapons_carried & #WEAP_MEDIKIT || te.weapons_carried & #WEAP_SPANNER || te.cutf_items & #CUTF_SPY_KIT) //WK Custom class friendly
+		if (self == te || te.weapons_carried & WEAP_MEDIKIT || te.weapons_carried & WEAP_SPANNER || te.cutf_items & CUTF_SPY_KIT) //WK Custom class friendly
 		{
-			if (Teammate(self.team_no, te.team_no) || (te.cutf_items & #CUTF_SPY_KIT))
+			if (Teammate(self.team_no, te.team_no) || (te.cutf_items & CUTF_SPY_KIT))
 			{
 				// If the other teammate is visible, show them I need help
 				if (visible(te))
@@ -134,15 +135,15 @@ void() TeamFortress_SaveMe =
 					tl = spawn();
 					tl.origin = self.origin;
 					tl.origin_z = tl.origin_z + 32;
-					WriteByte (#MSG_ONE, #SVC_TEMPENTITY);
-					WriteByte (#MSG_ONE, #TE_LIGHTNING3);
-					WriteEntity (#MSG_ONE, tl);
-					WriteCoord (#MSG_ONE, tl.origin_x);
-					WriteCoord (#MSG_ONE, tl.origin_y);
-					WriteCoord (#MSG_ONE, tl.origin_z + 24);
-					WriteCoord (#MSG_ONE, self.origin_x);
-					WriteCoord (#MSG_ONE, self.origin_y);
-					WriteCoord (#MSG_ONE, self.origin_z);
+					WriteByte (MSG_ONE, SVC_TEMPENTITY);
+					WriteByte (MSG_ONE, TE_LIGHTNING3);
+					WriteEntity (MSG_ONE, tl);
+					WriteCoord (MSG_ONE, tl.origin_x);
+					WriteCoord (MSG_ONE, tl.origin_y);
+					WriteCoord (MSG_ONE, tl.origin_z + 24);
+					WriteCoord (MSG_ONE, self.origin_x);
+					WriteCoord (MSG_ONE, self.origin_y);
+					WriteCoord (MSG_ONE, self.origin_z);
 					dremove(tl);
 				}
 			}
@@ -158,7 +159,7 @@ void() TeamFortress_SaveMe =
 void(float inAuto) TeamFortress_ID =
 {
 	// OfN Returns if any menu is being displayed
-    //if (self.current_menu != #MENU_DEFAULT) 
+    //if (self.current_menu != MENU_DEFAULT) 
     //    return; DON'T WORK
     
     //WK All the inAuto and spacer stuff I added
@@ -168,17 +169,17 @@ void(float inAuto) TeamFortress_ID =
 	src = self.origin + v_forward*10;
 	src_z = self.absmin_z + self.size_z * 0.7;
 	if (!inAuto) //WK I.e. just someone is doing it normally
-		traceline (src, src + v_forward*2048, #FALSE, self);
+		traceline (src, src + v_forward*2048, FALSE, self);
 	else		//WK I.e. it is an autoscan
-		traceline (src, src + v_forward*1024, #FALSE, self);
+		traceline (src, src + v_forward*1024, FALSE, self);
 
 	if (inAuto)
 	{
-        if (trace_ent.classname == "player" && trace_ent.job & (#JOB_THIEF + #JOB_ACTIVE))
+        if (trace_ent.classname == "player" && trace_ent.job & (JOB_THIEF + JOB_ACTIVE))
 			return;
 
         //- ofn - auto id doesnt pertubate menus
-        //if (self.current_menu != #MENU_DEFAULT)
+        //if (self.current_menu != MENU_DEFAULT)
          //   return; DOESNT WORK?
     }
 
@@ -196,19 +197,19 @@ void(float inAuto) TeamFortress_ID =
 
 			if (Teammate(trace_ent.team_no,self.team_no))
 			{
-				if (trace_ent.playerclass == #PC_CUSTOM)
+				if (trace_ent.playerclass == PC_CUSTOM)
 					cls = TeamFortress_GetJobName(trace_ent.job);
 				else
 					cls = TeamFortress_GetClassName(trace_ent.playerclass);
 
-				if (self.weapons_carried & #WEAP_MEDIKIT) //WK
+				if (self.weapons_carried & WEAP_MEDIKIT) //WK
 				{
 					st = ftos(trace_ent.health);
 					centerprint(self, spacer, trace_ent.netname, "\n\nFriendly ", cls, "\n\n", st, " health\n");
 //centerprint(self, "\n\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, //" health\n");
 					return;
 				}
-				else if (self.weapons_carried & #WEAP_SPANNER) //WK
+				else if (self.weapons_carried & WEAP_SPANNER) //WK
 				{
 					st = ftos(trace_ent.armorvalue);
 					centerprint(self, spacer, trace_ent.netname, "\n\nFriendly ", cls, "\n\n", st, " armor\n");
@@ -222,13 +223,13 @@ void(float inAuto) TeamFortress_ID =
 			if (trace_ent.is_feigning) //WK Can't id enemy spies feigning
 				return;
 
-			if (trace_ent.cutf_items & #CUTF_SPY_KIT)
+			if (trace_ent.cutf_items & CUTF_SPY_KIT)
 			{
 				cls = TeamFortress_GetClassName(trace_ent.undercover_skin);
 				// Report a false name
 				if (self.team_no != 0 && (self.team_no == trace_ent.undercover_team))
 				{
-					if (self.weapons_carried & #WEAP_MEDIKIT)
+					if (self.weapons_carried & WEAP_MEDIKIT)
 					{
 						st = ftos(trace_ent.health);
 						if (trace_ent.undercover_skin != 0)
@@ -237,7 +238,7 @@ void(float inAuto) TeamFortress_ID =
 							centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly Spy\n\n", st, " health\n");
 						return;
 					}
-					else if (self.weapons_carried & #WEAP_SPANNER)
+					else if (self.weapons_carried & WEAP_SPANNER)
 					{
 						st = ftos(trace_ent.armorvalue);
 						if (trace_ent.undercover_skin != 0)
@@ -274,7 +275,7 @@ void(float inAuto) TeamFortress_ID =
 			}
 			else 
 			{
-				if (trace_ent.playerclass == #PC_CUSTOM) {
+				if (trace_ent.playerclass == PC_CUSTOM) {
 					cls = TeamFortress_GetJobName(trace_ent.job);
 					centerprint(self, spacer, trace_ent.netname, "\n\nΕξενω ", cls, "\n");
 				}
@@ -385,14 +386,14 @@ void(float inAuto) TeamFortress_ID =
 				centerprint(self, spacer,"Demon summoned by\n\n", trace_ent.real_owner.netname);
 			else if (Teammate(trace_ent.real_owner.team_no, self.team_no))
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly demon summoned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly demon summoned by\n\n", trace_ent.real_owner.netname);
 			}
 			else
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω demon summoned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω demon summoned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
@@ -409,14 +410,14 @@ void(float inAuto) TeamFortress_ID =
 				centerprint(self, spacer,"Soldier in the pay of\n\n", trace_ent.real_owner.netname);
 			else if (Teammate(trace_ent.real_owner.team_no, self.team_no))
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly soldier owned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly soldier owned by\n\n", trace_ent.real_owner.netname);
 			}
 			else
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω soldier owned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω soldier owned by\n\n", trace_ent.real_owner.netname);
@@ -433,14 +434,14 @@ void(float inAuto) TeamFortress_ID =
 				centerprint(self, spacer,"Shambler under control of\n\n", trace_ent.real_owner.netname);
 			else if (Teammate(trace_ent.real_owner.team_no, self.team_no))
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly shambler summoned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly shambler summoned by\n\n", trace_ent.real_owner.netname);
 			}
 			else
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω shambler summoned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω shambler summoned by\n\n ", trace_ent.real_owner.netname);
@@ -457,14 +458,14 @@ void(float inAuto) TeamFortress_ID =
 				centerprint(self, spacer,"Scrag under control of\n\n", trace_ent.real_owner.netname);
 			else if (Teammate(trace_ent.real_owner.team_no, self.team_no))
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly Scrag summoned by\n\n", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nfriendly Scrag summoned by\n\n", trace_ent.real_owner.netname);
 			}
 			else
 			{
-				if (self.cutf_items & #CUTF_DEMONLORE)
+				if (self.cutf_items & CUTF_DEMONLORE)
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω Scrag summoned by\n\n ", trace_ent.real_owner.netname, "\n\n", st, " health");
 				else
 					centerprint(self, spacer,trace_ent.netname,"\n\nεξενω Scrag summoned by\n\n", trace_ent.real_owner.netname);
@@ -480,11 +481,11 @@ void() TeamFortress_ReloadCurrentWeapon =
 	local float rt;
 	local entity tWeapon;
 
-	if (self.current_weapon == #WEAP_SHOTGUN)
+	if (self.current_weapon == WEAP_SHOTGUN)
 	{
 		if (self.reload_shotgun == 0)
 		{
-			sprint(self, #PRINT_HIGH, "Clip full.\n");
+			sprint(self, PRINT_HIGH, "Clip full.\n");
 			return;
 		}
 
@@ -493,15 +494,15 @@ void() TeamFortress_ReloadCurrentWeapon =
 			Attack_Finished(0.4);
 
 			// Calculate the reload time needed
-			rt = (#RE_SHOTGUN - self.reload_shotgun) / #RE_SHOTGUN;
-			rt = #RE_SHOTGUN_TIME - (#RE_SHOTGUN_TIME * rt);
+			rt = (RE_SHOTGUN - self.reload_shotgun) / RE_SHOTGUN;
+			rt = RE_SHOTGUN_TIME - (RE_SHOTGUN_TIME * rt);
 
 			self.reload_shotgun = 0;
-			if (self.ammo_shells < #RE_SHOTGUN)
-				self.reload_shotgun = #RE_SHOTGUN - self.ammo_shells;
+			if (self.ammo_shells < RE_SHOTGUN)
+				self.reload_shotgun = RE_SHOTGUN - self.ammo_shells;
 		   
-			sprint(self, #PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | #TFSTATE_RELOADING);
+			sprint(self, PRINT_HIGH, "reloading...\n");
+			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -514,14 +515,14 @@ void() TeamFortress_ReloadCurrentWeapon =
         }
 		else
 		{
-			sprint(self, #PRINT_HIGH, "not enough ammo to reload\n");
+			sprint(self, PRINT_HIGH, "not enough ammo to reload\n");
 		}
 	}
-	else if (self.current_weapon == #WEAP_SUPER_SHOTGUN)
+	else if (self.current_weapon == WEAP_SUPER_SHOTGUN)
 	{
 		if (self.reload_super_shotgun == 0)
 		{
-			sprint (self, #PRINT_HIGH, "Clip full.\n");
+			sprint (self, PRINT_HIGH, "Clip full.\n");
 			return;
 		}
 
@@ -530,15 +531,15 @@ void() TeamFortress_ReloadCurrentWeapon =
         	Attack_Finished(0.7);
 
 			// Calculate the reload time needed
-			rt = (#RE_SUPER_SHOTGUN - self.reload_super_shotgun) / #RE_SUPER_SHOTGUN;
-			rt = #RE_SUPER_SHOTGUN_TIME - (#RE_SUPER_SHOTGUN_TIME * rt);
+			rt = (RE_SUPER_SHOTGUN - self.reload_super_shotgun) / RE_SUPER_SHOTGUN;
+			rt = RE_SUPER_SHOTGUN_TIME - (RE_SUPER_SHOTGUN_TIME * rt);
 
 			self.reload_super_shotgun = 0;
-			if (self.ammo_shells < #RE_SUPER_SHOTGUN)
-				self.reload_super_shotgun = #RE_SUPER_SHOTGUN - self.ammo_shells;
+			if (self.ammo_shells < RE_SUPER_SHOTGUN)
+				self.reload_super_shotgun = RE_SUPER_SHOTGUN - self.ammo_shells;
 
-	      	sprint (self, #PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | #TFSTATE_RELOADING);
+	      	sprint (self, PRINT_HIGH, "reloading...\n");
+			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -551,14 +552,14 @@ void() TeamFortress_ReloadCurrentWeapon =
 	  	}
 		else
 		{
-			sprint (self, #PRINT_HIGH, "not enough ammo to reload\n");
+			sprint (self, PRINT_HIGH, "not enough ammo to reload\n");
 		}
 	}
-	else if (self.current_weapon == #WEAP_LASERCANNON)
+	else if (self.current_weapon == WEAP_LASERCANNON)
 	{
 		if (self.reload_laser_cannon == 0)
 		{
-			sprint (self, #PRINT_HIGH, "Cannon already in full charge.\n");
+			sprint (self, PRINT_HIGH, "Cannon already in full charge.\n");
 			return;
 		}
 
@@ -567,15 +568,15 @@ void() TeamFortress_ReloadCurrentWeapon =
 	        	Attack_Finished(2);
 
 			// Calculate the reload time needed
-			rt = (#RE_LASER_CANNON - self.reload_laser_cannon) / #RE_LASER_CANNON;
-			rt = #RE_LASER_CANNON_TIME - (#RE_LASER_CANNON_TIME * rt);
+			rt = (RE_LASER_CANNON - self.reload_laser_cannon) / RE_LASER_CANNON;
+			rt = RE_LASER_CANNON_TIME - (RE_LASER_CANNON_TIME * rt);
 
 			self.reload_laser_cannon = 0;
-			if (self.ammo_cells < #RE_LASER_CANNON)
-				self.reload_laser_cannon = #RE_LASER_CANNON - self.ammo_cells;
+			if (self.ammo_cells < RE_LASER_CANNON)
+				self.reload_laser_cannon = RE_LASER_CANNON - self.ammo_cells;
 
-	      	sprint (self, #PRINT_HIGH, "Charging cannon...\n");
-			self.tfstate = (self.tfstate | #TFSTATE_RELOADING);
+	      	sprint (self, PRINT_HIGH, "Charging cannon...\n");
+			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -588,14 +589,14 @@ void() TeamFortress_ReloadCurrentWeapon =
 	  	}
 		else
 		{
-			sprint (self, #PRINT_HIGH, "not enough ammo to reload\n");
+			sprint (self, PRINT_HIGH, "not enough ammo to reload\n");
 		}
 	}
-    else if (self.current_weapon == #WEAP_LIGHT_ASSAULT)
+    else if (self.current_weapon == WEAP_LIGHT_ASSAULT)
 	{
 		if (self.reload_light_assault == 0)
 		{
-			sprint (self, #PRINT_HIGH, "Clip full.\n");
+			sprint (self, PRINT_HIGH, "Clip full.\n");
 			return;
 		}
 
@@ -604,15 +605,15 @@ void() TeamFortress_ReloadCurrentWeapon =
 	        	Attack_Finished(2);
 
 			// Calculate the reload time needed
-			rt = (#RE_LIGHT_ASSAULT - self.reload_light_assault) / #RE_LIGHT_ASSAULT;
-			rt = #RE_LIGHT_ASSAULT_TIME - (#RE_LIGHT_ASSAULT_TIME * rt);
+			rt = (RE_LIGHT_ASSAULT - self.reload_light_assault) / RE_LIGHT_ASSAULT;
+			rt = RE_LIGHT_ASSAULT_TIME - (RE_LIGHT_ASSAULT_TIME * rt);
 
 			self.reload_light_assault = 0;
-			if (self.ammo_nails < #RE_LIGHT_ASSAULT)
-				self.reload_light_assault = #RE_LIGHT_ASSAULT - self.ammo_nails;
+			if (self.ammo_nails < RE_LIGHT_ASSAULT)
+				self.reload_light_assault = RE_LIGHT_ASSAULT - self.ammo_nails;
 
-	      	sprint (self, #PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | #TFSTATE_RELOADING);
+	      	sprint (self, PRINT_HIGH, "reloading...\n");
+			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -625,14 +626,14 @@ void() TeamFortress_ReloadCurrentWeapon =
 	  	}
 		else
 		{
-			sprint (self, #PRINT_HIGH, "not enough ammo to reload\n");
+			sprint (self, PRINT_HIGH, "not enough ammo to reload\n");
 		}
 	}
-	else if (self.current_weapon == #WEAP_GRENADE_LAUNCHER)
+	else if (self.current_weapon == WEAP_GRENADE_LAUNCHER)
 	{
 		if (self.reload_grenade_launcher == 0)
 		{
-			sprint (self, #PRINT_HIGH, "Clip full.\n");
+			sprint (self, PRINT_HIGH, "Clip full.\n");
 			return;
 		}
 		
@@ -641,15 +642,15 @@ void() TeamFortress_ReloadCurrentWeapon =
 		Attack_Finished(0.6);
 
 		// Calculate the reload time needed
-		rt = (#RE_GRENADE_LAUNCHER - self.reload_grenade_launcher) / #RE_GRENADE_LAUNCHER;
-		rt = #RE_GRENADE_LAUNCHER_TIME - (#RE_GRENADE_LAUNCHER_TIME * rt);
+		rt = (RE_GRENADE_LAUNCHER - self.reload_grenade_launcher) / RE_GRENADE_LAUNCHER;
+		rt = RE_GRENADE_LAUNCHER_TIME - (RE_GRENADE_LAUNCHER_TIME * rt);
 
 	  	self.reload_grenade_launcher = 0;
-		if (self.ammo_rockets < #RE_GRENADE_LAUNCHER)
-			self.reload_grenade_launcher = #RE_GRENADE_LAUNCHER - self.ammo_rockets;
+		if (self.ammo_rockets < RE_GRENADE_LAUNCHER)
+			self.reload_grenade_launcher = RE_GRENADE_LAUNCHER - self.ammo_rockets;
 
-	  	sprint (self, #PRINT_HIGH, "reloading...\n");
-		self.tfstate = (self.tfstate | #TFSTATE_RELOADING);
+	  	sprint (self, PRINT_HIGH, "reloading...\n");
+		self.tfstate = (self.tfstate | TFSTATE_RELOADING);
 	     	tWeapon = spawn();
 		tWeapon.netname = "reloadtimer"; //WK For Judoka code
 	     	tWeapon.owner = self;
@@ -661,14 +662,14 @@ void() TeamFortress_ReloadCurrentWeapon =
 	      self.weaponframe = 0;
 	}
 	else {
-		sprint (self, #PRINT_HIGH, "not enough ammo to reload\n");
+		sprint (self, PRINT_HIGH, "not enough ammo to reload\n");
 	}
 	}
-	else if (self.current_weapon == #WEAP_ROCKET_LAUNCHER)
+	else if (self.current_weapon == WEAP_ROCKET_LAUNCHER)
 	{
 		if (self.reload_rocket_launcher == 0)
 		{
-			sprint (self, #PRINT_HIGH, "Clip full.\n");
+			sprint (self, PRINT_HIGH, "Clip full.\n");
 			return;
 		}
 
@@ -677,15 +678,15 @@ void() TeamFortress_ReloadCurrentWeapon =
         	Attack_Finished(0.8);
 
 		// Calculate the reload time needed
-		rt = (#RE_ROCKET_LAUNCHER - self.reload_rocket_launcher) / #RE_ROCKET_LAUNCHER;
-		rt = #RE_ROCKET_LAUNCHER_TIME - (#RE_ROCKET_LAUNCHER_TIME * rt);
+		rt = (RE_ROCKET_LAUNCHER - self.reload_rocket_launcher) / RE_ROCKET_LAUNCHER;
+		rt = RE_ROCKET_LAUNCHER_TIME - (RE_ROCKET_LAUNCHER_TIME * rt);
 
         	self.reload_rocket_launcher = 0;
-		if (self.ammo_rockets < #RE_ROCKET_LAUNCHER)
-			self.reload_rocket_launcher = #RE_ROCKET_LAUNCHER - self.ammo_rockets;
+		if (self.ammo_rockets < RE_ROCKET_LAUNCHER)
+			self.reload_rocket_launcher = RE_ROCKET_LAUNCHER - self.ammo_rockets;
 
-     		sprint (self, #PRINT_HIGH, "reloading...\n");
-		self.tfstate = (self.tfstate | #TFSTATE_RELOADING);
+     		sprint (self, PRINT_HIGH, "reloading...\n");
+		self.tfstate = (self.tfstate | TFSTATE_RELOADING);
          	tWeapon = spawn();
 		tWeapon.netname = "reloadtimer"; //WK For Judoka code
          	tWeapon.owner = self;
@@ -710,11 +711,11 @@ void() TeamFortress_DropItems =
 	{
 		if (tg.owner == self && tg != world && tg.classname == "item_tfgoal")
 		{
-			if (tg.goal_result & #TFGR_DROPITEMS)
+			if (tg.goal_result & TFGR_DROPITEMS)
 			{
-				sprint (self, #PRINT_HIGH, "Dropping item: ");
-				sprint (self, #PRINT_HIGH, tg.netname);
-				sprint (self, #PRINT_HIGH, "\n");
+				sprint (self, PRINT_HIGH, "Dropping item: ");
+				sprint (self, PRINT_HIGH, tg.netname);
+				sprint (self, PRINT_HIGH, "\n");
 				tfgoalitem_RemoveFromPlayer(tg, self, 0);
 //CH it treats it as though you died.  And if bits are set, you throw it, or it gets removed etc.
 			}

@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*
 	PYRO.QC
 
@@ -43,7 +44,7 @@ entity (string type, entity p_owner) FlameSpawn =
 	RPrint("\n");
 */
 
-	while (num_world_flames > #FLAME_MAXWORLDNUM)
+	while (num_world_flames > FLAME_MAXWORLDNUM)
 	{
 		if (!(RemoveFlameFromQueue(type)))
 		{
@@ -57,17 +58,17 @@ entity (string type, entity p_owner) FlameSpawn =
 	// to keep track of the number of each type of flames
 	if (type == "1") 
 	{
-		newmis.movetype = #MOVETYPE_FLYMISSILE;
-		newmis.solid = #SOLID_BBOX;
-		newmis.effects = #EF_DIMLIGHT; 
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.solid = SOLID_BBOX;
+		newmis.effects = EF_DIMLIGHT; 
 		newmis.flame_id = "1";
 		setmodel (newmis, "progs/flame2.mdl");
 		setsize (newmis, '0 0 0', '0 0 0');
 	}
 	else if (type == "2") 
 	{
-		newmis.movetype = #MOVETYPE_BOUNCE;
-		newmis.solid = #SOLID_BBOX;
+		newmis.movetype = MOVETYPE_BOUNCE;
+		newmis.solid = SOLID_BBOX;
 		newmis.flame_id = "2";
 		setmodel (newmis, "progs/flame2.mdl");
 		newmis.frame=1;
@@ -75,16 +76,16 @@ entity (string type, entity p_owner) FlameSpawn =
 	}
 	else if (type == "3")
 	{
-		newmis.movetype = #MOVETYPE_FLYMISSILE;
-		newmis.solid = #SOLID_BBOX;
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.solid = SOLID_BBOX;
 		newmis.flame_id = "3";
 		setmodel (newmis, "progs/flame2.mdl");
 		setsize (newmis, '0 0 0', '0 0 0');
 	}
 	else if (type == "4")
 	{
-		newmis.movetype = #MOVETYPE_FLYMISSILE;
-		newmis.solid = #SOLID_BBOX;
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.solid = SOLID_BBOX;
 		newmis.flame_id = "4";
 		setmodel (newmis, "progs/flame2.mdl");
 		newmis.frame=1;
@@ -118,10 +119,10 @@ float (string id_flame) RemoveFlameFromQueue =
 //	local string db1;
 
 
-	if (num_world_flames < #FLAME_MAXWORLDNUM)
+	if (num_world_flames < FLAME_MAXWORLDNUM)
 	{
 		RPrint("ERROR in RemoveFlameFromQueue\n");
-		return #FALSE;
+		return FALSE;
 	}
 /*
 	db1 = ftos(num_world_flames);
@@ -136,19 +137,19 @@ float (string id_flame) RemoveFlameFromQueue =
 	if (!tmp)
 	{
 		if (id_flame == "4") // if priority not high enough, don't continue
-			return #FALSE;
+			return FALSE;
 
 		tmp = find(world, flame_id, "3");
 		if (!tmp)
 		{
 			if (id_flame == "3")
-				return #FALSE;
+				return FALSE;
 
 			tmp = find(world, flame_id, "2");
 			if (!tmp)
 			{
 				if (id_flame == "2")
-					return #FALSE;
+					return FALSE;
 
 				tmp = find(world, flame_id, "1");
 			 	if (!tmp)
@@ -157,7 +158,7 @@ float (string id_flame) RemoveFlameFromQueue =
 					// the queue must be wrong
 					RPrint("\n\nRemoveFlameFromQueue():BOOM!\n");
 					RPrint("!! please report this bug !!\n");
-					return #FALSE;
+					return FALSE;
 				}
 			}
 		}
@@ -170,14 +171,14 @@ float (string id_flame) RemoveFlameFromQueue =
 */
 
 /*
-	if (tmp.effects == #EF_DIMLIGHT)
+	if (tmp.effects == EF_DIMLIGHT)
 	{
 		RPrint("** error: this flame should not be removed **\n");
 	}
 */
 
 	remove(tmp);
-	return #TRUE;
+	return TRUE;
 };
 
 
@@ -189,12 +190,12 @@ void() Remove=
 // function used by the flames spawned when the grenade explode : killed in water or when stopped
 void() NapalmGrenadeFollow =
 {
-	traceline(self.origin,self.origin,#TRUE,self);
+	traceline(self.origin,self.origin,TRUE,self);
 
 	//WK Bugfix
     if (self.enemy.waterlevel > 1)
 	{
-        sound (self, #CHAN_VOICE, "misc/vapeur2.wav", 1, #ATTN_NORM);
+        sound (self, CHAN_VOICE, "misc/vapeur2.wav", 1, ATTN_NORM);
 
 		FlameDestroy(self);
 	}
@@ -208,7 +209,7 @@ void() NapalmGrenadeFollow =
 
 void() NapalmGrenadeTouch =
 {
-	sound (self, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NORM);  // bounce sound
+	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);  // bounce sound
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -218,12 +219,12 @@ void() NapalmGrenadeExplode =
 {
 	local float i;
 
-	sound (self, #CHAN_AUTO, "weapons/flmgrexp.wav", 1, #ATTN_NORM);  // bounce sound
+	sound (self, CHAN_AUTO, "weapons/flmgrexp.wav", 1, ATTN_NORM);  // bounce sound
 
 	// Launch flames
-	traceline(self.origin,self.origin,#TRUE,self);
+	traceline(self.origin,self.origin,TRUE,self);
 
-    if (trace_inwater == #TRUE)
+    if (trace_inwater == TRUE)
 	{
 		dremove(self);
     	return;
@@ -238,7 +239,7 @@ void() NapalmGrenadeExplode =
 	local entity head;
 
 	// do an incendiary-cannon explosion instead
-	self.effects = self.effects | #EF_BRIGHTLIGHT;
+	self.effects = self.effects | EF_BRIGHTLIGHT;
 
 	// don't do radius damage to the other, because all the damage
 	// was done in the impact
@@ -248,8 +249,8 @@ void() NapalmGrenadeExplode =
 	{
 			if (head.takedamage)
 			{
-				deathmsg = #DMSG_FLAME;
-				TF_T_Damage (head, self, self.owner, 120, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+				deathmsg = DMSG_FLAME;
+				TF_T_Damage (head, self, self.owner, 120, TF_TD_NOTTEAM, TF_TD_FIRE);
 				// set 'em on fire
 				other = head;  // i can't believe this works!
 				Napalm_touch();
@@ -260,13 +261,13 @@ void() NapalmGrenadeExplode =
 		head = head.chain;
 	}
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 #else
 	BecomeExplosion ();
@@ -315,7 +316,7 @@ void (vector org, entity shooter) NapalmGrenadeLaunch =
 		newmis.avelocity='400 250 400';
 
 	setorigin (newmis, org);
-	setsize (newmis, #VEC_ORIGIN, #VEC_ORIGIN);
+	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
 };
 
 void() OnPlayerFlame_touch;
@@ -328,8 +329,8 @@ void() FlameFollow =
 	vtemp = self.enemy.absmin;
 	boundsize = self.enemy.size;
 
-	self.solid = #SOLID_NOT;
-	self.movetype = #MOVETYPE_NONE;
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_NONE;
 
 	// if no flames, remove itself
 	if (self.enemy.numflames == 0)
@@ -340,14 +341,14 @@ void() FlameFollow =
 
 	if (self.enemy.health < 1)
 	{
-		deathmsg = #DMSG_FLAME;
+		deathmsg = DMSG_FLAME;
 		T_RadiusDamage(self,self,10,self);
 		self.enemy.numflames = 0;
 		FlameDestroy(self);
 		return;
 	}
 
-	if (self.enemy.armorclass & #AT_SAVEFIRE)
+	if (self.enemy.armorclass & AT_SAVEFIRE)
 	{
 //		if ((random()*100) < self.enemy.armorvalue)
 		if (self.enemy.armorvalue > 0)
@@ -359,7 +360,7 @@ void() FlameFollow =
 	if (self.health < 1)
 	{
 		// only remove the flame if it is not the master flame, or if it is the last flame
-		if (self.effects != #EF_DIMLIGHT || self.enemy.numflames <= 1)
+		if (self.effects != EF_DIMLIGHT || self.enemy.numflames <= 1)
 		{
 			self.enemy.numflames = self.enemy.numflames - 1;
 			self.enemy.numflames = 0;
@@ -402,12 +403,12 @@ void() FlameFollow =
 
 #endif
 
-	//traceline(self.origin,self.origin,#TRUE,self);
+	//traceline(self.origin,self.origin,TRUE,self);
 
 	//WK Bugfix
     if (self.enemy.waterlevel > 1)
 	{
-        sound (self, #CHAN_VOICE, "misc/vapeur2.wav", 1, #ATTN_NORM);
+        sound (self, CHAN_VOICE, "misc/vapeur2.wav", 1, ATTN_NORM);
 		self.enemy.numflames = self.enemy.numflames - 1;
 		FlameDestroy(self);
 		return;
@@ -415,17 +416,17 @@ void() FlameFollow =
 
 	self.nextthink = time + 0.1;
 
-	if (self.effects == #EF_DIMLIGHT && self.heat >= #DAMAGE_TIME)
+	if (self.effects == EF_DIMLIGHT && self.heat >= DAMAGE_TIME)
 	{
-		damage = self.enemy.numflames * 0.3 * #DAMAGE_TIME;
+		damage = self.enemy.numflames * 0.3 * DAMAGE_TIME;
 		if (damage < 1) 
 			damage = 1;
 
 		self.heat = 1;
-		deathmsg = #DMSG_FLAME;
-		TF_T_Damage(self.enemy, self, self.owner, damage, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+		deathmsg = DMSG_FLAME;
+		TF_T_Damage(self.enemy, self, self.owner, damage, TF_TD_NOTTEAM, TF_TD_FIRE);
 	}
-	else if (self.effects == #EF_DIMLIGHT)
+	else if (self.effects == EF_DIMLIGHT)
 	{
 		self.heat = self.heat + 1;
 	}
@@ -440,22 +441,22 @@ void() OnPlayerFlame_touch =
 	if (other != world && other.health > 0 && other != self.enemy)
 	{
 
-		if (other.numflames >= #FLAME_MAXPLYRFLAMES)
+		if (other.numflames >= FLAME_MAXPLYRFLAMES)
 			return;
 
         if (other.classname == "player")
         {
-			if ((teamplay & #TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
+			if ((teamplay & TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
 				return;
 
              CenterPrint(other,"You are on fire!\n");
              stuffcmd (other,"bf\n");
         }
 
-		if (other.numflames < #FLAME_NUMLIGHTS)
+		if (other.numflames < FLAME_NUMLIGHTS)
 		{						    
 			flame = FlameSpawn ("1", other);
-			sound (flame, #CHAN_VOICE, "ambience/fire1.wav", 1, #ATTN_NORM);
+			sound (flame, CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
 		}
 		else
 		{
@@ -465,7 +466,7 @@ void() OnPlayerFlame_touch =
 		}
 
 		flame.classname = "fire";
-		flame.health = #FLAME_PLYRMAXTIME;
+		flame.health = FLAME_PLYRMAXTIME;
 		other.numflames = other.numflames + 1;
 
 		flame.velocity = other.velocity;
@@ -489,27 +490,27 @@ void() WorldFlame_touch =
 	local entity flame;
 	local vector dir,vtemp;
 
-	deathmsg = #DMSG_FLAME;
-	TF_T_Damage(other, self, self.enemy, 2, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+	deathmsg = DMSG_FLAME;
+	TF_T_Damage(other, self, self.enemy, 2, TF_TD_NOTTEAM, TF_TD_FIRE);
 
-	if (other != world && other.solid != #SOLID_TRIGGER && other.health > 0)
+	if (other != world && other.solid != SOLID_TRIGGER && other.health > 0)
 	{
 
-		if (other.numflames >= #FLAME_MAXPLYRFLAMES)
+		if (other.numflames >= FLAME_MAXPLYRFLAMES)
 			return;
 
         if (other.classname == "player")
         {
-			if ((teamplay & #TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
+			if ((teamplay & TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
 					return;
         	CenterPrint(other,"You are on fire!\n");
             stuffcmd (other,"bf\n");
         }
 
-		if (other.numflames < #FLAME_NUMLIGHTS)
+		if (other.numflames < FLAME_NUMLIGHTS)
 		{
 			flame = FlameSpawn ("1", other);
-			sound (flame,#CHAN_VOICE, "ambience/fire1.wav", 1, #ATTN_NORM);
+			sound (flame,CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
 		}
 		else
 		{
@@ -540,7 +541,7 @@ void() WorldFlame_touch =
 //Like the flamethrower touch, but it doesn't light them on fire
 void() Boot_Flamer_stream_touch =
 {
-	deathmsg = #DMSG_HOVER;
+	deathmsg = DMSG_HOVER;
 
 
 	//WK Sweep for mines at point of contact	
@@ -548,7 +549,7 @@ void() Boot_Flamer_stream_touch =
 
 	//WK if (other.takedamage && other.classname == "player")
 	if (other.takedamage)
-		TF_T_Damage(other,self,self.owner, 40, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+		TF_T_Damage(other,self,self.owner, 40, TF_TD_NOTTEAM, TF_TD_FIRE);
 	remove(self);
 };
 // first touch : direct touch with the flamer stream or flame from grenade
@@ -566,16 +567,16 @@ void() Flamer_stream_touch =
 
 	if (other != world)
 	{
-		if (other.takedamage == #DAMAGE_AIM && other.health > 0)
+		if (other.takedamage == DAMAGE_AIM && other.health > 0)
 		{
 
-			deathmsg = #DMSG_FLAME;
-			TF_T_Damage(other,self,self.owner, 15, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+			deathmsg = DMSG_FLAME;
+			TF_T_Damage(other,self,self.owner, 15, TF_TD_NOTTEAM, TF_TD_FIRE);
 	
-			if (other.numflames >= #FLAME_MAXPLYRFLAMES)
+			if (other.numflames >= FLAME_MAXPLYRFLAMES)
 				return;
 
-			if (other.armorclass & #AT_SAVEFIRE)
+			if (other.armorclass & AT_SAVEFIRE)
 			{
 //				if ((random()*100) < other.armorvalue)
 				if (other.armorvalue > 0)
@@ -587,17 +588,17 @@ void() Flamer_stream_touch =
 	
             if (other.classname == "player")
             {
-				if ((teamplay & #TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
+				if ((teamplay & TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
 						return;
 
             	CenterPrint(other,"You are on fire!\n");
 	            stuffcmd (other,"bf\n");
         	}
 
-			if (other.numflames < #FLAME_NUMLIGHTS)
+			if (other.numflames < FLAME_NUMLIGHTS)
 			{
 				flame = FlameSpawn("1", other);
-				sound (flame,#CHAN_VOICE, "ambience/fire1.wav", 1, #ATTN_NORM);
+				sound (flame,CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
 			}
 			else
 			{
@@ -606,7 +607,7 @@ void() Flamer_stream_touch =
 					return;
 			}
 			flame.classname = "fire";
-			flame.health = #FLAME_PLYRMAXTIME;
+			flame.health = FLAME_PLYRMAXTIME;
 			other.numflames=other.numflames + 1;
 
 			flame.velocity = other.velocity;
@@ -624,7 +625,7 @@ void() Flamer_stream_touch =
 	}
 	else
 	{
-		if (random() < #FLAME_BURNRATIO)
+		if (random() < FLAME_BURNRATIO)
 		{
 			remove(self);
 			return;
@@ -637,7 +638,7 @@ void() Flamer_stream_touch =
 
 			vtemp=self.origin + '0 0 10';
 			setorigin(flame , vtemp);
-			flame.nextthink = time + #FLAME_MAXBURNTIME;
+			flame.nextthink = time + FLAME_MAXBURNTIME;
 			flame.think = Remove;
 			flame.enemy = self.owner;
 		}
@@ -658,30 +659,30 @@ void() Napalm_touch =
 
 	if (other != world)
 	{
-		if (other.takedamage == #DAMAGE_AIM && other.health > 0)
+		if (other.takedamage == DAMAGE_AIM && other.health > 0)
 		{
-			deathmsg = #DMSG_FLAME;
-			TF_T_Damage(other, self, self.owner, 6, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+			deathmsg = DMSG_FLAME;
+			TF_T_Damage(other, self, self.owner, 6, TF_TD_NOTTEAM, TF_TD_FIRE);
 	
-			if (other.numflames >= #FLAME_MAXPLYRFLAMES)
+			if (other.numflames >= FLAME_MAXPLYRFLAMES)
 				return;
 
-			if (other.armorclass & #AT_SAVEFIRE && other.armorvalue > 0)
+			if (other.armorclass & AT_SAVEFIRE && other.armorvalue > 0)
 				return;
 	
 	        if (other.classname == "player")
 	        {
-				if ((teamplay & #TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
+				if ((teamplay & TEAMPLAY_NOEXPLOSIVE) && Teammate(other.team_no, self.owner.team_no))
 						return;
 
 	        	CenterPrint(other,"You are on fire!\n");
 	            stuffcmd (other,"bf\n");
         	}
 
-			if (other.numflames < #FLAME_NUMLIGHTS) // = 0
+			if (other.numflames < FLAME_NUMLIGHTS) // = 0
 			{
 				flame = FlameSpawn("1", other);
-				sound (flame,#CHAN_VOICE, "ambience/fire1.wav", 1, #ATTN_NORM);
+				sound (flame,CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
 			}
 			else
 			{
@@ -690,7 +691,7 @@ void() Napalm_touch =
 					return;
 			}
 			flame.classname = "fire";
-			flame.health = #FLAME_PLYRMAXTIME;
+			flame.health = FLAME_PLYRMAXTIME;
 			other.numflames = other.numflames + 1;
 
 			flame.velocity = other.velocity;
@@ -716,7 +717,7 @@ void() Napalm_touch =
 
 			vtemp=self.origin + '0 0 10';
 			setorigin(flame , vtemp);
-			flame.nextthink = time + #NAPALM_MAXBURNTIME;
+			flame.nextthink = time + NAPALM_MAXBURNTIME;
 			flame.think = Remove;
 			flame.enemy = self.owner;
 		}
@@ -737,8 +738,8 @@ local entity	bubble_spawner;
 
 	bubble_spawner = spawn();
     setorigin (bubble_spawner, bub_origin);
-	bubble_spawner.movetype = #MOVETYPE_NONE;
-	bubble_spawner.solid = #SOLID_NOT;
+	bubble_spawner.movetype = MOVETYPE_NONE;
+	bubble_spawner.solid = SOLID_NOT;
 	bubble_spawner.nextthink = time + 0.1;
 
     if (self.classname == "player")
@@ -764,9 +765,9 @@ void() W_FireFlame =
 
             rn = random();
             if (rn < 0.5)
-                    sound (self, #CHAN_WEAPON, "misc/water1.wav", 1, #ATTN_NORM);
+                    sound (self, CHAN_WEAPON, "misc/water1.wav", 1, ATTN_NORM);
             else
-                    sound (self, #CHAN_WEAPON, "misc/water2.wav", 1, #ATTN_NORM);
+                    sound (self, CHAN_WEAPON, "misc/water2.wav", 1, ATTN_NORM);
 
             return;
     }
@@ -774,13 +775,13 @@ void() W_FireFlame =
     // Take away a cell
     self.currentammo = self.ammo_cells = self.ammo_cells - 1;
 
-    sound (self, #CHAN_AUTO, "weapons/flmfire2.wav", 1, #ATTN_NORM);
+    sound (self, CHAN_AUTO, "weapons/flmfire2.wav", 1, ATTN_NORM);
 
     flame = spawn ();
 
     flame.owner = self;
-    flame.movetype = #MOVETYPE_FLYMISSILE;
-    flame.solid = #SOLID_BBOX;
+    flame.movetype = MOVETYPE_FLYMISSILE;
+    flame.solid = SOLID_BBOX;
     flame.classname = "flamerflame";
 
 	// set flame speed
@@ -814,19 +815,19 @@ void() T_IncendiaryTouch =
 	if (other == self.owner)
 		return;		// don't explode on owner
 
-	if (pointcontents(self.origin) == #CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);
 		return;
 	}
-	self.effects = self.effects | #EF_BRIGHTLIGHT;
+	self.effects = self.effects | EF_BRIGHTLIGHT;
 
 	damg = 20 + random()*20;
 	
 	if (other.health)
 	{
-		deathmsg = #DMSG_FLAME;
-		TF_T_Damage (other, self, self.owner, damg, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+		deathmsg = DMSG_FLAME;
+		TF_T_Damage (other, self, self.owner, damg, TF_TD_NOTTEAM, TF_TD_FIRE);
 	}
 
 	// don't do radius damage to the other, because all the damage
@@ -837,8 +838,8 @@ void() T_IncendiaryTouch =
 	{
 			if (head.takedamage)
 			{
-				deathmsg = #DMSG_FLAME;
-				TF_T_Damage (head, self, self.owner, 15, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+				deathmsg = DMSG_FLAME;
+				TF_T_Damage (head, self, self.owner, 15, TF_TD_NOTTEAM, TF_TD_FIRE);
 
 				// set 'em on fire
 				other = head;  // i can't believe this works!
@@ -846,13 +847,13 @@ void() T_IncendiaryTouch =
 				if (other.classname == "player")
 					stuffcmd(other, "bf\nbf\n");
 				if (IsBuilding(other)) 
-				TF_T_Damage (head, self, self.owner, 35, #TF_TD_NOTTEAM, #TF_TD_FIRE);
+				TF_T_Damage (head, self, self.owner, 35, TF_TD_NOTTEAM, TF_TD_FIRE);
 
 			}
 		head = head.chain;
 	}
 
-//	sound (self, #CHAN_WEAPON, "weapons/r_exp3.wav", 1, #ATTN_NORM);
+//	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
 	self.origin = self.origin - 8*normalize(self.velocity);
 
 #ifdef DEMO_STUFF
@@ -861,13 +862,13 @@ void() T_IncendiaryTouch =
 		CamProjectileLockOff();
 #endif
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it
         FieldExplosion(other,self.origin,self);
@@ -892,14 +893,14 @@ void() W_FireIncendiaryCannon =
 
 	self.currentammo = self.ammo_rockets = self.ammo_rockets - 3;
 	
-	sound (self, #CHAN_WEAPON, "weapons/sgun1.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
 
 	KickPlayer(-3, self);
 
 	newmis = spawn ();
 	newmis.owner = self;
-	newmis.movetype = #MOVETYPE_FLYMISSILE;
-	newmis.solid = #SOLID_BBOX;
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_BBOX;
 		
 	// set newmis speed	
 	makevectors (self.v_angle);
@@ -916,7 +917,7 @@ void() W_FireIncendiaryCannon =
 	newmis.nextthink = time + 5;
 	newmis.think = SUB_Remove;
 
-	newmis.weapon = #DMSG_INCENDIARY;
+	newmis.weapon = DMSG_INCENDIARY;
 	
 	setmodel (newmis, "progs/missile.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');		
@@ -933,32 +934,32 @@ void() W_FireIncendiaryCannon =
 // Incendiary cannon selection function
 void() TeamFortress_IncendiaryCannon =
 {
-	if (!(self.weapons_carried & #WEAP_INCENDIARY))
+	if (!(self.weapons_carried & WEAP_INCENDIARY))
 		return;
 
 	if (self.ammo_rockets < 3)
 	{
-		sprint (self, #PRINT_HIGH, "not enough ammo.\n");
+		sprint (self, PRINT_HIGH, "not enough ammo.\n");
 		return;
 	}
 
-	self.current_weapon = #WEAP_INCENDIARY;
+	self.current_weapon = WEAP_INCENDIARY;
 
 	W_SetCurrentAmmo();
 };
 // Flamethrower selection function
 void() TeamFortress_FlameThrower =
 {
-	if (!(self.weapons_carried & #WEAP_FLAMETHROWER))
+	if (!(self.weapons_carried & WEAP_FLAMETHROWER))
 		return;
 
 	if (self.ammo_cells < 1)
 	{
-		sprint (self, #PRINT_HIGH, "not enough ammo.\n");
+		sprint (self, PRINT_HIGH, "not enough ammo.\n");
 		return;
 	}
 
-	self.current_weapon = #WEAP_FLAMETHROWER;
+	self.current_weapon = WEAP_FLAMETHROWER;
 
 	W_SetCurrentAmmo();
 };

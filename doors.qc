@@ -1,4 +1,6 @@
 
+#include "defs.qh"
+
 #define DOOR_START_OPEN	1 
 #define DOOR_DONT_LINK	4 
 #define DOOR_GOLD_KEY	8 
@@ -37,7 +39,7 @@ void() door_blocked =
 // so let it just squash the object to death real fast
 	if (self.wait >= 0)
 	{
-		if (self.state == #STATE_DOWN)
+		if (self.state == STATE_DOWN)
 			door_go_up ();
 		else
 			door_go_down ();
@@ -47,9 +49,9 @@ void() door_blocked =
 
 void() door_hit_top =
 {
-	sound (self, #CHAN_VOICE, self.noise1, 1, #ATTN_NORM);
-	self.state = #STATE_TOP;
-	if (self.spawnflags & #DOOR_TOGGLE)
+	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	self.state = STATE_TOP;
+	if (self.spawnflags & DOOR_TOGGLE)
 		return;		// don't come down automatically
 	self.think = door_go_down;
 	self.nextthink = self.ltime + self.wait;
@@ -57,38 +59,38 @@ void() door_hit_top =
 
 void() door_hit_bottom =
 {
-	self.goal_state = #TFGS_INACTIVE;
+	self.goal_state = TFGS_INACTIVE;
 
-	sound (self, #CHAN_VOICE, self.noise1, 1, #ATTN_NORM);
-	self.state = #STATE_BOTTOM;
+	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	self.state = STATE_BOTTOM;
 };
 
 void() door_go_down =
 {
-	sound (self, #CHAN_VOICE, self.noise2, 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	if (self.max_health)
 	{
-		self.takedamage = #DAMAGE_YES;
+		self.takedamage = DAMAGE_YES;
 		self.health = self.max_health;
 	}
 	
-	self.state = #STATE_DOWN;
+	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos1, self.speed, door_hit_bottom);
 };
 
 void() door_go_up =
 {
-	if (self.state == #STATE_UP)
+	if (self.state == STATE_UP)
 		return;		// allready going up
 
-	if (self.state == #STATE_TOP)
+	if (self.state == STATE_TOP)
 	{	// reset top wait time
 		self.nextthink = self.ltime + self.wait;
 		return;
 	}
 	
-	sound (self, #CHAN_VOICE, self.noise2, 1, #ATTN_NORM);
-	self.state = #STATE_UP;
+	sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
+	self.state = STATE_UP;
 	SUB_CalcMove (self.pos2, self.speed, door_hit_top);
 
 	SUB_UseTargets();
@@ -114,14 +116,14 @@ void() door_fire =
 // play use key sound
 
 	if (self.items)
-		sound (self, #CHAN_VOICE, self.noise4, 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, self.noise4, 1, ATTN_NORM);
 
 	self.message = string_null;		// no more message
 	oself = self;
 
-	if (self.spawnflags & #DOOR_TOGGLE)
+	if (self.spawnflags & DOOR_TOGGLE)
 	{
-		if (self.state == #STATE_UP || self.state == #STATE_TOP)
+		if (self.state == STATE_UP || self.state == STATE_TOP)
 		{
 			starte = self;
 			do
@@ -172,7 +174,7 @@ void() door_trigger_touch =
 		{
 			te = Findgoal(self.else_goal);
 			if (te)
-				DoResults(te, other, (self.goal_result & #TFGR_ADD_BONUSES));
+				DoResults(te, other, (self.goal_result & TFGR_ADD_BONUSES));
 		}
 
 		return;
@@ -196,7 +198,7 @@ void() door_killed =
 	oself = self;
 	self = self.owner;
 	self.health = self.max_health;
-	self.takedamage = #DAMAGE_NO;	// wil be reset upon return
+	self.takedamage = DAMAGE_NO;	// wil be reset upon return
 	door_use ();
 	self = oself;
 };
@@ -228,7 +230,7 @@ void() door_touch =
 		{
 			te = Findgoal(self.else_goal);
 			if (te)
-				DoResults(te, other, (self.goal_result & #TFGR_ADD_BONUSES));
+				DoResults(te, other, (self.goal_result & TFGR_ADD_BONUSES));
 		}
 
 		return;
@@ -239,7 +241,7 @@ void() door_touch =
 	if (self.owner.message != "")
 	{
 		CenterPrint (other, self.owner.message);
-		sound (other, #CHAN_VOICE, "misc/talk.wav", 1, #ATTN_NORM);
+		sound (other, CHAN_VOICE, "misc/talk.wav", 1, ATTN_NORM);
 	}
 	
 // key door stuff
@@ -249,22 +251,22 @@ void() door_touch =
 // FIXME: blink key on player's status bar
 	if ( (self.items & other.items) != self.items )
 	{
-		if (self.owner.items == #IT_KEY1)
+		if (self.owner.items == IT_KEY1)
 		{
 			if (world.worldtype == 2)
 			{
 				CenterPrint (other, "You need the silver keycard");
-				sound (self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 			}
 			else if (world.worldtype == 1)
 			{
 				CenterPrint (other, "You need the silver runekey");
-				sound (self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 			}
 			else if (world.worldtype == 0)
 			{
 				CenterPrint (other, "You need the silver key");
-				sound (self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 			}
 		}
 		else
@@ -272,17 +274,17 @@ void() door_touch =
 			if (world.worldtype == 2)
 			{
 				CenterPrint (other, "You need the gold keycard\n");
-				sound (self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 			}
 			else if (world.worldtype == 1)
 			{
 				CenterPrint (other, "You need the gold runekey");
-				sound (self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);			
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);			
 			}
 			else if (world.worldtype == 0)
 			{
 				CenterPrint (other, "You need the gold key");
-				sound (self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+				sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 			}
 		}
 		return;
@@ -315,8 +317,8 @@ entity(vector fmins, vector fmaxs) spawn_field =
 	local	vector	t1, t2;
 
 	trigger = spawn();
-	trigger.movetype = #MOVETYPE_NONE;
-	trigger.solid = #SOLID_TRIGGER;
+	trigger.movetype = MOVETYPE_NONE;
+	trigger.solid = SOLID_TRIGGER;
 	trigger.owner = self;
 	trigger.touch = door_trigger_touch;
 
@@ -347,18 +349,18 @@ entity(vector fmins, vector fmaxs) spawn_field =
 float (entity e1, entity e2) EntitiesTouching =
 {
 	if (e1.mins_x > e2.maxs_x)
-		return #FALSE;
+		return FALSE;
 	if (e1.mins_y > e2.maxs_y)
-		return #FALSE;
+		return FALSE;
 	if (e1.mins_z > e2.maxs_z)
-		return #FALSE;
+		return FALSE;
 	if (e1.maxs_x < e2.mins_x)
-		return #FALSE;
+		return FALSE;
 	if (e1.maxs_y < e2.mins_y)
-		return #FALSE;
+		return FALSE;
 	if (e1.maxs_z < e2.mins_z)
-		return #FALSE;
-	return #TRUE;
+		return FALSE;
+	return TRUE;
 };
 
 
@@ -447,7 +449,7 @@ void() LinkDoors =
 };
 
 
-/*QUAKED func_door (0 .5 .8) ? START_OPEN x #DOOR_DONT_LINK GOLD_KEY SILVER_KEY TOGGLE
+/*QUAKED func_door (0 .5 .8) ? START_OPEN x DOOR_DONT_LINK GOLD_KEY SILVER_KEY TOGGLE
 if two doors touch, they are assumed to be connected and operate as a unit.
 
 TOGGLE causes the door to wait in both the start and end states for a trigger event.
@@ -474,7 +476,7 @@ Key doors are allways wait -1.
 
 void() func_door =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -571,8 +573,8 @@ void() func_door =
 	SetMovedir ();
 
 	self.max_health = self.health;
-	self.solid = #SOLID_BSP;
-	self.movetype = #MOVETYPE_PUSH;
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
 	setorigin (self, self.origin);	
 	setmodel (self, self.model);
 	self.classname = "door";
@@ -580,10 +582,10 @@ void() func_door =
 	self.blocked = door_blocked;
 	self.use = door_use;
 	
-	if (self.spawnflags & #DOOR_SILVER_KEY)
-		self.items = #IT_KEY1;
-	if (self.spawnflags & #DOOR_GOLD_KEY)
-		self.items = #IT_KEY2;
+	if (self.spawnflags & DOOR_SILVER_KEY)
+		self.items = IT_KEY1;
+	if (self.spawnflags & DOOR_GOLD_KEY)
+		self.items = IT_KEY2;
 	
 	if (!self.speed)
 		self.speed = 100;
@@ -597,20 +599,20 @@ void() func_door =
 	self.pos1 = self.origin;
 	self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
 
-// #DOOR_START_OPEN is to allow an entity to be lighted in the closed position
+// DOOR_START_OPEN is to allow an entity to be lighted in the closed position
 // but spawn in the open position
-	if (self.spawnflags & #DOOR_START_OPEN)
+	if (self.spawnflags & DOOR_START_OPEN)
 	{
 		setorigin (self, self.pos2);
 		self.pos2 = self.pos1;
 		self.pos1 = self.origin;
 	}
 
-	self.state = #STATE_BOTTOM;
+	self.state = STATE_BOTTOM;
 
 	if (self.health)
 	{
-		self.takedamage = #DAMAGE_YES;
+		self.takedamage = DAMAGE_YES;
 		self.th_die = door_killed;
 	}
 	
@@ -658,31 +660,31 @@ void () fd_secret_use =
 	if (self.origin != self.oldorigin)
 		return;
 	// TF Disable doors with spawnflags of DOOR_TOGGLE
-	if (self.spawnflags & #DOOR_TOGGLE)
+	if (self.spawnflags & DOOR_TOGGLE)
 		return;
 	
 	self.message = string_null;		// no more message
 
 	SUB_UseTargets();				// fire all targets / killtargets
 	
-	if (!(self.spawnflags & #SECRET_NO_SHOOT))
+	if (!(self.spawnflags & SECRET_NO_SHOOT))
 	{
 		self.th_pain = SUB_Null;
-		self.takedamage = #DAMAGE_NO;
+		self.takedamage = DAMAGE_NO;
 	}
 	self.velocity = '0 0 0';
 
 	// Make a sound, wait a little...
 	
-	sound(self, #CHAN_VOICE, self.noise1, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.nextthink = self.ltime + 0.1;
 
-	temp = 1 - (self.spawnflags & #SECRET_1ST_LEFT);	// 1 or -1
+	temp = 1 - (self.spawnflags & SECRET_1ST_LEFT);	// 1 or -1
 	makevectors(self.mangle);
 	
 	if (!self.t_width)
 	{
-		if (self.spawnflags & #SECRET_1ST_DOWN)
+		if (self.spawnflags & SECRET_1ST_DOWN)
 			self. t_width = fabs(v_up * self.size);
 		else
 			self. t_width = fabs(v_right * self.size);
@@ -691,14 +693,14 @@ void () fd_secret_use =
 	if (!self.t_length)
 		self. t_length = fabs(v_forward * self.size);
 
-	if (self.spawnflags & #SECRET_1ST_DOWN)
+	if (self.spawnflags & SECRET_1ST_DOWN)
 		self.dest1 = self.origin - v_up * self.t_width;
 	else
 		self.dest1 = self.origin + v_right * (self.t_width * temp);
 		
 	self.dest2 = self.dest1 + v_forward * self.t_length;
 	SUB_CalcMove(self.dest1, self.speed, fd_secret_move1);
-	sound(self, #CHAN_VOICE, self.noise2, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 };
 
 // Wait after first movement...
@@ -706,21 +708,21 @@ void () fd_secret_move1 =
 {
 	self.nextthink = self.ltime + 1.0;
 	self.think = fd_secret_move2;
-	sound(self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 };
 
 // Start moving sideways w/sound...
 void () fd_secret_move2 =
 {
-	sound(self, #CHAN_VOICE, self.noise2, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.dest2, self.speed, fd_secret_move3);
 };
 
 // Wait here until time to go back...
 void () fd_secret_move3 =
 {
-	sound(self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
-	if (!(self.spawnflags & #SECRET_OPEN_ONCE))
+	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+	if (!(self.spawnflags & SECRET_OPEN_ONCE))
 	{
 		self.nextthink = self.ltime + self.wait;
 		self.think = fd_secret_move4;
@@ -730,7 +732,7 @@ void () fd_secret_move3 =
 // Move backward...
 void () fd_secret_move4 =
 {
-	sound(self, #CHAN_VOICE, self.noise2, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.dest1, self.speed, fd_secret_move5);		
 };
 
@@ -739,25 +741,25 @@ void () fd_secret_move5 =
 {
 	self.nextthink = self.ltime + 1.0;
 	self.think = fd_secret_move6;
-	sound(self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 };
 
 void () fd_secret_move6 =
 {
-	sound(self, #CHAN_VOICE, self.noise2, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.oldorigin, self.speed, fd_secret_done);
 };
 
 void () fd_secret_done =
 {
-	if (!self.targetname || self.spawnflags&#SECRET_YES_SHOOT)
+	if (!self.targetname || self.spawnflags&SECRET_YES_SHOOT)
 	{
 		self.health = 10000;
-		self.takedamage = #DAMAGE_YES;
+		self.takedamage = DAMAGE_YES;
 		self.th_pain = fd_secret_use;	
 		self.th_die = fd_secret_use;
 	}
-	sound(self, #CHAN_VOICE, self.noise3, 1, #ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 };
 
 void () secret_blocked =
@@ -782,7 +784,7 @@ void() secret_touch =
 	if (self.attack_finished > time)
 		return;
 	// TF Disable doors with spawnflags of DOOR_TOGGLE
-	if (self.spawnflags & #DOOR_TOGGLE)
+	if (self.spawnflags & DOOR_TOGGLE)
 		return;
 
 	self.attack_finished = time + 2;
@@ -790,7 +792,7 @@ void() secret_touch =
 	if (self.message)
 	{
 		CenterPrint (other, self.message);
-		sound (other, #CHAN_BODY, "misc/talk.wav", 1, #ATTN_NORM);
+		sound (other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM);
 	}
 };
 
@@ -814,7 +816,7 @@ If a secret door has a targetname, it will only be opened by it's botton or trig
 
 void () func_door_secret =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -854,8 +856,8 @@ void () func_door_secret =
 	// Magic formula...
 	self.mangle = self.angles;
 	self.angles = '0 0 0';
-	self.solid = #SOLID_BSP;
-	self.movetype = #MOVETYPE_PUSH;
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
 	self.classname = "door";
 	setmodel (self, self.model);
 	setorigin (self, self.origin);	
@@ -864,10 +866,10 @@ void () func_door_secret =
 	self.blocked = secret_blocked;
 	self.speed = 50;
 	self.use = fd_secret_use;
-	if ( !self.targetname || self.spawnflags&#SECRET_YES_SHOOT)
+	if ( !self.targetname || self.spawnflags&SECRET_YES_SHOOT)
 	{
 		self.health = 10000;
-		self.takedamage = #DAMAGE_YES;
+		self.takedamage = DAMAGE_YES;
 		self.th_pain = fd_secret_use;
 	}
 	self.oldorigin = self.origin;

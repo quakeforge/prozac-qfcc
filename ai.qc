@@ -1,3 +1,5 @@
+#include "defs.qh"
+#include "ai.qh"
 void() movetarget_f;
 void() t_movetarget;
 //WK Selective AIs
@@ -7,10 +9,6 @@ void() knight_bow6;
 void() knight_bow1;
 void() demon1_fire1;
 #endif
-//CH How much to divide speed when tranqed
-//distance * (UP / DN)
-#define AI_TRANQ_FACTOR_UP		2
-#define AI_TRANQ_FACTOR_DN		3
 
 void(entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 
@@ -83,7 +81,7 @@ float(float v) anglemod =
 void(entity test) AI_Check_Contents =
 {
 //CH demons (and other ai) can be hurt by liquids //- OfN completely changed!
-	if (pointcontents(test.origin) ==  #CONTENT_EMPTY && IsMonsterNonArmy(self) && self.health < self.max_health)
+	if (pointcontents(test.origin) ==  CONTENT_EMPTY && IsMonsterNonArmy(self) && self.health < self.max_health)
 	{	// Heal it
 		if (self.dmgtime < time)
 		{
@@ -93,18 +91,18 @@ void(entity test) AI_Check_Contents =
             
             if (self.classname=="monster_shambler")
             {
-                heal = #SHAMBLER_REGEN;
-                rate = #SHAMBLER_REGRATE;
+                heal = SHAMBLER_REGEN;
+                rate = SHAMBLER_REGRATE;
             }
             else if (self.classname=="monster_wizzard")
             {
-                heal = #SCRAG_REGEN;
-                rate = #SCRAG_REGRATE;
+                heal = SCRAG_REGEN;
+                rate = SCRAG_REGRATE;
             }
             else if (self.classname=="mosnter_demon1")
             {
-                heal = #FIEND_REGEN;
-                rate = #FIEND_REGRATE;
+                heal = FIEND_REGEN;
+                rate = FIEND_REGRATE;
             }
 
             self.dmgtime = time + rate;
@@ -113,17 +111,17 @@ void(entity test) AI_Check_Contents =
             if (self.health > self.max_health)
 				self.health = self.max_health;
 			//T_Damage (self, world, world, 4*self.waterlevel);
-			//TF_T_Damage (self, world, world, 5, 0, #TF_TD_ELECTRICITY);
+			//TF_T_Damage (self, world, world, 5, 0, TF_TD_ELECTRICITY);
 		}
 	}
-	if (pointcontents(test.origin) == #CONTENT_LAVA)
+	if (pointcontents(test.origin) == CONTENT_LAVA)
 	{	// do damage
 		if (self.dmgtime < time)
 		{
 			self.dmgtime = time + 1;
 
 			// Asbestos armor helps against lava, but I doubt it'll save you :)
-			//TF_T_Damage (self, world, world, 25, 0, #TF_TD_FIRE);
+			//TF_T_Damage (self, world, world, 25, 0, TF_TD_FIRE);
             if (IsMonster(self))            
             {
                 local string MName;
@@ -134,25 +132,25 @@ void(entity test) AI_Check_Contents =
                     r=random();
                     if (r<0.4)
                     {
-                        bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                        bprint(#PRINT_MEDIUM," throws his ");
-                        bprint(#PRINT_MEDIUM,MName);
-                        bprint(#PRINT_MEDIUM," to the lava\n");
+                        bprint(PRINT_MEDIUM,self.real_owner.netname);
+                        bprint(PRINT_MEDIUM," throws his ");
+                        bprint(PRINT_MEDIUM,MName);
+                        bprint(PRINT_MEDIUM," to the lava\n");
                     }
                     else
                     {
-                        bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                        bprint(#PRINT_MEDIUM," realizes now why lava isn't the best place to put his ");
-                        bprint(#PRINT_MEDIUM,MName);
-                        bprint(#PRINT_MEDIUM,"\n");
+                        bprint(PRINT_MEDIUM,self.real_owner.netname);
+                        bprint(PRINT_MEDIUM," realizes now why lava isn't the best place to put his ");
+                        bprint(PRINT_MEDIUM,MName);
+                        bprint(PRINT_MEDIUM,"\n");
                     }
                 }
                 else
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM,"'s ");
-                    bprint(#PRINT_MEDIUM,MName);
-                    bprint(#PRINT_MEDIUM," burned into the lava\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM,"'s ");
+                    bprint(PRINT_MEDIUM,MName);
+                    bprint(PRINT_MEDIUM," burned into the lava\n");
                 }
                 
                 self.health = -1;
@@ -160,13 +158,13 @@ void(entity test) AI_Check_Contents =
             }
 		}
 	}
-	else if (pointcontents(test.origin) ==  #CONTENT_SLIME)
+	else if (pointcontents(test.origin) ==  CONTENT_SLIME)
 	{	// do damage
 		if (self.dmgtime < time)
 		{
 			self.dmgtime = time + 1;
 			//T_Damage (self, world, world, 4*self.waterlevel);
-			//TF_T_Damage (self, world, world, 5, 0, #TF_TD_ELECTRICITY);
+			//TF_T_Damage (self, world, world, 5, 0, TF_TD_ELECTRICITY);
 
             if (IsMonster(self))            
             {
@@ -174,17 +172,17 @@ void(entity test) AI_Check_Contents =
                 MName = GetMonsterName(self);
                 if (self.ltime > time - 4) //- OfN - if it felt just after summon
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM," throws his ");
-                    bprint(#PRINT_MEDIUM,MName);
-                    bprint(#PRINT_MEDIUM," to the slime\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM," throws his ");
+                    bprint(PRINT_MEDIUM,MName);
+                    bprint(PRINT_MEDIUM," to the slime\n");
                 }
                 else
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM,"'s ");
-                    bprint(#PRINT_MEDIUM,MName);
-                    bprint(#PRINT_MEDIUM," died into the slime\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM,"'s ");
+                    bprint(PRINT_MEDIUM,MName);
+                    bprint(PRINT_MEDIUM," died into the slime\n");
                 }
 
                 self.health = -1;
@@ -195,7 +193,7 @@ void(entity test) AI_Check_Contents =
 	/* WK Removed because water is ok for monsters, sheesh
 	Whatever you think, ceaf it is. */
     //- OfN - what the fuck means "ceaf"? heh
-	else if (pointcontents(test.origin) == #CONTENT_WATER && allow_watermonsters == #FALSE)
+	else if (pointcontents(test.origin) == CONTENT_WATER && allow_watermonsters == FALSE)
 	{
 		if (self.classname == "monster_demon1")
 		{	// do damage
@@ -203,7 +201,7 @@ void(entity test) AI_Check_Contents =
 			{
 //				self.dmgtime = time + 1;
 				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, #TF_TD_IGNOREARMOUR);
+				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
                 
                 //self.think = custom_demon_die;
                 //self.nextthink=time+0.1;
@@ -211,13 +209,13 @@ void(entity test) AI_Check_Contents =
 
                 if (self.ltime > time - 4) //- OfN - if it felt after summon
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM," enjoys throwing his demon to the water\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM," enjoys throwing his demon to the water\n");
                 }
                 else
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM,"'s demon touches the water and dies\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM,"'s demon touches the water and dies\n");
                 }
 
                 self.health = -1;
@@ -230,20 +228,20 @@ void(entity test) AI_Check_Contents =
 			{
 //				self.dmgtime = time + 1;
 				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, #TF_TD_IGNOREARMOUR);
+				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
                 
                 
                 if (self.ltime > time - 4) //- OfN - if it felt just after summon
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM," teleports his soldier to the water\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM," teleports his soldier to the water\n");
                     self.waterlevel = 3;
                 }
                 else
                 {
-                    bprint(#PRINT_MEDIUM,"Unfortunately, ");
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM,"'s soldier didn't learn to swim when he was a kid\n");
+                    bprint(PRINT_MEDIUM,"Unfortunately, ");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM,"'s soldier didn't learn to swim when he was a kid\n");
                     self.waterlevel = 3;
                 }
                 
@@ -258,13 +256,13 @@ void(entity test) AI_Check_Contents =
 			{
 //				self.dmgtime = time + 1;
 				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, #TF_TD_IGNOREARMOUR);
+				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
 
                 self.think = custom_shambler_die;
                 self.nextthink=time+0.1;
 
-                bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                bprint(#PRINT_MEDIUM,"'s shambler is too fat to swim\n");
+                bprint(PRINT_MEDIUM,self.real_owner.netname);
+                bprint(PRINT_MEDIUM,"'s shambler is too fat to swim\n");
                 
                 self.health = -1;
                 custom_shambler_die();
@@ -276,21 +274,21 @@ void(entity test) AI_Check_Contents =
 			{
 //				self.dmgtime = time + 1;
 				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, #TF_TD_IGNOREARMOUR);
+				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
 
                 self.think = wiz_die;
                 self.nextthink=time+0.1;
                 
                 if (self.ltime > time - 5) //- OfN - if it felt after summon
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM," learns that water is a bad place to summon\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM," learns that water is a bad place to summon\n");
                     //self.has_holo=666;
                 }
                 else
                 {
-                    bprint(#PRINT_MEDIUM,self.real_owner.netname);
-                    bprint(#PRINT_MEDIUM,"'s scrag touches water and dies\n");
+                    bprint(PRINT_MEDIUM,self.real_owner.netname);
+                    bprint(PRINT_MEDIUM,"'s scrag touches water and dies\n");
                 }
 			}
 		}*/
@@ -323,7 +321,7 @@ void() movetarget_f =
 	if (!self.targetname)
 		objerror ("monster_movetarget: no targetname");
 		
-	self.solid = #SOLID_TRIGGER;
+	self.solid = SOLID_TRIGGER;
 	self.touch = t_movetarget;
 	setsize (self, '-8 -8 -8', '8 8 8');
 	
@@ -334,7 +332,7 @@ Monsters will continue walking towards the next target corner.
 */
 void() path_corner =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -367,7 +365,7 @@ local entity	temp;
 	other = temp;
 
 	if (self.classname == "monster_ogre")
-		sound (self, #CHAN_VOICE, "ogre/ogdrag.wav", 1, #ATTN_IDLE);// play chainsaw drag sound
+		sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);// play chainsaw drag sound
 
 //RPrint ("t_movetarget\n");
 	self.goalentity = self.movetarget = find (world, targetname, other.target);
@@ -404,12 +402,12 @@ local float		r;
 	
 	r = vlen (spot1 - spot2);
 	if (r < 120)
-		return #RANGE_MELEE;
+		return RANGE_MELEE;
 	if (r < 500)
-		return #RANGE_NEAR;
+		return RANGE_NEAR;
 	if (r < 1000)
-		return #RANGE_MID;
-	return #RANGE_FAR;
+		return RANGE_MID;
+	return RANGE_FAR;
 };
 
 
@@ -433,9 +431,9 @@ float(entity targ) infront =
 	
 	if ( dot > 0.3)
 	{
-		return #TRUE;
+		return TRUE;
 	}
-	return #FALSE;
+	return FALSE;
 };
 
 
@@ -511,41 +509,41 @@ void() SightSound =
 local float	rsnd;
 
 	if (self.classname == "monster_ogre")	
-		sound (self, #CHAN_VOICE, "ogre/ogwake.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "ogre/ogwake.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_knight")
-		sound (self, #CHAN_VOICE, "knight/ksight.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "knight/ksight.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_shambler")
-		sound (self, #CHAN_VOICE, "shambler/ssight.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "shambler/ssight.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_demon1")
-		sound (self, #CHAN_VOICE, "demon/sight2.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "demon/sight2.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_wizard")
-		sound (self, #CHAN_VOICE, "wizard/wsight.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "wizard/wsight.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_zombie")
-		sound (self, #CHAN_VOICE, "zombie/z_idle.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_dog")
-		sound (self, #CHAN_VOICE, "dog/dsight.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "dog/dsight.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_hell_knight")
-		sound (self, #CHAN_VOICE, "hknight/sight1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "hknight/sight1.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_tarbaby")
-		sound (self, #CHAN_VOICE, "blob/sight1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "blob/sight1.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_vomit")
-		sound (self, #CHAN_VOICE, "vomitus/v_sight1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "vomitus/v_sight1.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_enforcer")
 	{
 		rsnd = rint(random() * 3);			
 		if (rsnd == 1)
-			sound (self, #CHAN_VOICE, "enforcer/sight1.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "enforcer/sight1.wav", 1, ATTN_NORM);
 		else if (rsnd == 2)
-			sound (self, #CHAN_VOICE, "enforcer/sight2.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "enforcer/sight2.wav", 1, ATTN_NORM);
 		else if (rsnd == 0)
-			sound (self, #CHAN_VOICE, "enforcer/sight3.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "enforcer/sight3.wav", 1, ATTN_NORM);
 		else
-			sound (self, #CHAN_VOICE, "enforcer/sight4.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "enforcer/sight4.wav", 1, ATTN_NORM);
 	}
 	else if (self.classname == "monster_army")
-		sound (self, #CHAN_VOICE, "soldier/sight1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "soldier/sight1.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_shalrath")
-		sound (self, #CHAN_VOICE, "shalrath/sight.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "shalrath/sight.wav", 1, ATTN_NORM);
 };
 
 void() FoundTarget =
@@ -611,13 +609,13 @@ entity (entity scanner) LookAround =
                 /*if (scanner.classname=="monster_army") // extra grunty checks
                 {
                     if (client.is_undercover)
-                        if (client.cutf_items & #CUTF_JAMMER || !scanner.tf_items & #NIT_SCANNER)
+                        if (client.cutf_items & CUTF_JAMMER || !scanner.tf_items & NIT_SCANNER)
                             gotatarget=0;
                     if (client.modelindex == modelindex_null)
-                        if (client.cutf_items & #CUTF_JAMMER || !scanner.tf_items & #NIT_SCANNER)
+                        if (client.cutf_items & CUTF_JAMMER || !scanner.tf_items & NIT_SCANNER)
                             gotatarget=0;
                     if (client.modelindex == modelindex_eyes)
-                        if (client.cutf_items & #CUTF_JAMMER || !scanner.tf_items & #NIT_SCANNER)
+                        if (client.cutf_items & CUTF_JAMMER || !scanner.tf_items & NIT_SCANNER)
                             if (random() < 2 - scanner.has_tesla * random())
                                 gotatarget=0;		
                 }*/
@@ -683,7 +681,7 @@ FindTarget
 
 Self is currently not attacking anything, so try to find a target
 
-Returns #TRUE if an enemy was sighted
+Returns TRUE if an enemy was sighted
 
 When a player fires a missile, the point of impact becomes a fakeplayer so
 that monsters that see the impact will respond as if they had seen the
@@ -711,91 +709,91 @@ float() FindTarget =
 	{
 		client = sight_entity;
 		if (client.enemy == self.enemy)
-			return #TRUE;
+			return TRUE;
 	}
 	else
 	{
 		client = checkclient ();
 		if (!client)
-			return #FALSE;	// current check entity isn't in PVS
+			return FALSE;	// current check entity isn't in PVS
 	} */
 	if (random() < 0.6) // don't always look around to save processor power
 		client = LookAround(self); // search for targets
 	else 
-		return #FALSE; //WK They missed a base condition here.*/
+		return FALSE; //WK They missed a base condition here.*/
 		// SB they did not miss a base condition, LookAround returns self if none
 	
 	if (client == self)
-		return #FALSE;
+		return FALSE;
 
 	if (client == self.enemy)
-		return #FALSE;
+		return FALSE;
 
     if (client == world) //- OfN - added, needed?
-        return #FALSE; 
+        return FALSE; 
 
 	/*if (client.health < 0) // - OfN DONE IN PHARSE?
-		return #FALSE;
+		return FALSE;
 
-	if (client.flags & #FL_NOTARGET)
-		return #FALSE;
-	if (client.items & #IT_INVISIBILITY)
-		return #FALSE;
+	if (client.flags & FL_NOTARGET)
+		return FALSE;
+	if (client.items & IT_INVISIBILITY)
+		return FALSE;
 
 	r = range (client);
-	if (r == #RANGE_FAR && self.classname == "monster_demon1")
-		return #FALSE;
+	if (r == RANGE_FAR && self.classname == "monster_demon1")
+		return FALSE;
 		
 	if (!visible (client))
-		return #FALSE;
+		return FALSE;
 
 	//WK Thief Invis 
 	if (client.modelindex == modelindex_null)
 		if (self.classname != "monster_demon1")
-			return #FALSE;
-		else if (r > #RANGE_MELEE)
-			return #FALSE;*/ // - OfN DONE IN PHARSE?
+			return FALSE;
+		else if (r > RANGE_MELEE)
+			return FALSE;*/ // - OfN DONE IN PHARSE?
 
 	//WK Thief Moving // - OfN DONE IN PHARSE?
 	/*if (client.modelindex == modelindex_eyes)
 	{
 		if ( self.classname == "monster_army" || (self.classname == "monster_shambler" && self.has_tesla < 5))
-			return #FALSE;
-		if (r > #RANGE_MID) //Demons have to smell out thieves. :)
-			return #FALSE;
+			return FALSE;
+		if (r > RANGE_MID) //Demons have to smell out thieves. :)
+			return FALSE;
 	}*/
 
 
 	//WK Don't target observers - OfN done in pharse?
-	//if (client.playerclass == #PC_UNDEFINED && client.classname == "player")
-	//	return #FALSE;
+	//if (client.playerclass == PC_UNDEFINED && client.classname == "player")
+	//	return FALSE;
 
 	//WK Don't target disconnected players - OfN done in pharse?
 	//if (client.has_disconnected)
-	//	return #FALSE;
+	//	return FALSE;
 
 	/*
 	//WK Demons are team-aware, but they still get owners
 	if (self.real_owner.team_no == client.team_no && client != self.real_owner)
-		return #FALSE;
+		return FALSE;
 	*/
 	//WK Demon remake, they won't target owners now
 	//if (self.real_owner.team_no == client.team_no )
-	//	return #FALSE;
+	//	return FALSE;
 
 	/*if (!Teammate(client.team_no,self.real_owner.team_no) && (client.is_undercover == 1)) // - OfN DONE IN PHARSE?
 	{ //Spy
 		if ( self.classname == "monster_army" || self.classname == "monster_wizard" || (self.classname == "monster_shambler" && self.has_tesla < 5))
-			return #FALSE;
-		if ((r > #RANGE_NEAR && self.classname == "monster_demon1") || (r > #RANGE_MELEE && self.classname == "monster_shambler"))
-			return #FALSE;
+			return FALSE;
+		if ((r > RANGE_NEAR && self.classname == "monster_demon1") || (r > RANGE_MELEE && self.classname == "monster_shambler"))
+			return FALSE;
 		if (self.last_saveme_sound < time)
 		{
 			if (random() < 0.2)
-				sound(client, #CHAN_MISC, "player/gasp1.wav", 1, #ATTN_NORM);	// Shocked
+				sound(client, CHAN_MISC, "player/gasp1.wav", 1, ATTN_NORM);	// Shocked
 			else
-				sound(client, #CHAN_MISC, "speech/saveme1.wav", 1, #ATTN_NORM);	// Call for a medic. :)
-			sprint(self.real_owner,#PRINT_HIGH,"Your demon has discovered a spy!\n");
+				sound(client, CHAN_MISC, "speech/saveme1.wav", 1, ATTN_NORM);	// Call for a medic. :)
+			sprint(self.real_owner,PRINT_HIGH,"Your demon has discovered a spy!\n");
 			self.last_saveme_sound = time + 15;
 		}
 	}*/ // - OfN DONE IN PHARSE?
@@ -804,19 +802,19 @@ float() FindTarget =
 	//TODO: Don't attack owner unless he's the only one in the room
 	if (client == self.real_owner)
 		if (random() < 0.8)
-			return #FALSE;
+			return FALSE;
 	*/
 
 /* WK 360 field of view -- makes AIs a little more powerful
-	if (r == #RANGE_NEAR)
+	if (r == RANGE_NEAR)
 	{
 		if (client.show_hostile < time && !infront (client))
-			return #FALSE;
+			return FALSE;
 	}
-	else if (r == #RANGE_MID)
+	else if (r == RANGE_MID)
 	{
 		if ( !infront (client))
-			return #FALSE;
+			return FALSE;
 	}
 */
 
@@ -830,13 +828,13 @@ float() FindTarget =
 		if (self.enemy.classname != "player")
 		{
 			self.enemy = world;
-			return #FALSE;
+			return FALSE;
 		}
 	} */
 	
 	FoundTarget ();
 
-	return #TRUE;
+	return TRUE;
 };
 
 
@@ -846,8 +844,8 @@ float() FindTarget =
 void(float dist) ai_forward =
 {
 AI_Check_Contents(self); //CH check if in lava
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		walkmove (self.angles_y, (dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN))); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		walkmove (self.angles_y, (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN))); //Tranq
 	else
 		walkmove (self.angles_y, dist);
 
@@ -856,8 +854,8 @@ AI_Check_Contents(self); //CH check if in lava
 void(float dist) ai_back =
 {
 AI_Check_Contents(self); //CH check if in lava
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		walkmove ( (self.angles_y+180), (dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN))); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		walkmove ( (self.angles_y+180), (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN))); //Tranq
 	else
 		walkmove ( (self.angles_y+180), dist);
 
@@ -874,8 +872,8 @@ stagger back a bit
 void(float dist) ai_pain =
 {
 AI_Check_Contents(self); //CH check if in lava
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		ai_back(dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN)); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		ai_back(dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN)); //Tranq
 	else
 		ai_back (dist);
 /*
@@ -898,8 +896,8 @@ stagger back a bit
 void(float dist) ai_painforward =
 {
 AI_Check_Contents(self); //CH check if in lava
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		walkmove (self.ideal_yaw, (dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN))); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		walkmove (self.ideal_yaw, (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN))); //Tranq
 	else
 		walkmove (self.ideal_yaw, dist);
 	
@@ -917,8 +915,8 @@ void(float dist) ai_walk =
     AI_Check_Contents(self); //CH check if in lava
 	local vector		mtemp;
 	
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		movedist = dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		movedist = dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN); //Tranq
 	else
 		movedist = dist;
 
@@ -932,8 +930,8 @@ void(float dist) ai_walk =
 	if (FindTarget ())
 		return;
 	
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		movetogoal (dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN)); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		movetogoal (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN)); //Tranq
 	else
 		movetogoal (dist);	
 };
@@ -1021,8 +1019,8 @@ float() FacingIdeal =
 	
 	delta = anglemod(self.angles_y - self.ideal_yaw);
 	if (delta > 45 && delta < 315)
-		return #FALSE;
-	return #TRUE;
+		return FALSE;
+	return TRUE;
 };
 
 
@@ -1040,7 +1038,7 @@ float()	ShamCheckAttack;
 float() CheckAnyAttack =
 {
 	if (!enemy_vis)
-		return #FALSE;
+		return FALSE;
 	if (self.classname == "monster_demon1")
 		return DemonCheckAttack ();
 /*	else if (self.classname == "monster_army")
@@ -1070,7 +1068,7 @@ void() ai_run_melee =
 	if (FacingIdeal())
 	{
 		self.th_melee ();
-		self.attack_state = #AS_STRAIGHT;
+		self.attack_state = AS_STRAIGHT;
 	}
 };
 
@@ -1090,7 +1088,7 @@ void() ai_run_missile =
 	if (FacingIdeal())
 	{
 		self.th_missile ();
-		self.attack_state = #AS_STRAIGHT;
+		self.attack_state = AS_STRAIGHT;
 	}
 };
 
@@ -1109,7 +1107,7 @@ AI_Check_Contents(self); //CH check if in lava
 	if (FacingIdeal())
 	{
 		self.th_fireball ();
-		self.attack_state = #AS_STRAIGHT;
+		self.attack_state = AS_STRAIGHT;
 	}
 };
 
@@ -1156,15 +1154,15 @@ void(float dist) ai_run =
 	local	float	axis;
 	local	float	direct, ang_rint, ang_floor, ang_ceil;
 	
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		movedist = dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		movedist = dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN); //Tranq
 	else
 		movedist = dist;
 
 #ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //CH
 	{
-        enemy_vis=#FALSE;
+        enemy_vis=FALSE;
         self.enemy=world;
         self.goalentity=world;
 
@@ -1201,7 +1199,7 @@ void(float dist) ai_run =
     //- OfN - don't make them hunt for ever if not visible!! -//
     if (self.enemy != world && random() < 0.010 && !visible2(self,self.enemy))
     {                                       
-        enemy_vis=#FALSE; 
+        enemy_vis=FALSE; 
 
         if (self.movetarget)
         	self.th_walk ();
@@ -1236,19 +1234,19 @@ void(float dist) ai_run =
 	enemy_range = range(self.enemy);
 	enemy_yaw = vectoyaw(self.enemy.origin - self.origin);
 	
-	if (self.attack_state == #AS_MISSILE)
+	if (self.attack_state == AS_MISSILE)
 	{
 //RPrint ("ai_run_missile\n");
 		ai_run_missile ();
 		return;
 	}
-	if (self.attack_state == #AS_MELEE)
+	if (self.attack_state == AS_MELEE)
 	{
 //RPrint ("ai_run_melee\n");
 		ai_run_melee ();
 		return;
 	}
-	if (self.attack_state == #AS_FIREBALL && self.classname == "monster_demon1") //CH only for demons..
+	if (self.attack_state == AS_FIREBALL && self.classname == "monster_demon1") //CH only for demons..
 	{
 //RPrint ("ai_run_fire\n");
 		ai_run_fire ();
@@ -1258,15 +1256,15 @@ void(float dist) ai_run =
 	if (CheckAnyAttack ())
 		return;					// beginning an attack
 		
-	if (self.attack_state == #AS_SLIDING)
+	if (self.attack_state == AS_SLIDING)
 	{
 		ai_run_slide ();
 		return;
 	}
 		
 // head straight in
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		movetogoal (dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN)); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		movetogoal (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN)); //Tranq
 	else
 		movetogoal (dist);		// done in C code...
 };

@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*======================================================
 	TESLA.QC			Custom TeamFortress v3.1	
 
@@ -13,9 +14,9 @@ Weapons and functions for the Tesla Sentries
 .health = current health
 .ammo_cells = Cells currently in battery, max cells always dynamically calculated
 .maxhealth = max health
-.tf_items #NIT_AUTOID = spydetector upgrade (0-1) 0 = no spy 1 = tesla will attack disguised spies
-.tf_items #NIT_FLYING_SENTRY = turret upgrade (0-1) 0 = normal 1 = tesla launches into the air and attaches to ceiling
-.tf_items #NIT_SCANNER = Improved Targeter (0-1) 0 = normal checkclient 1 = radiuscan attacks enemy mines & demons, etc
+.tf_items NIT_AUTOID = spydetector upgrade (0-1) 0 = no spy 1 = tesla will attack disguised spies
+.tf_items NIT_FLYING_SENTRY = turret upgrade (0-1) 0 = normal 1 = tesla launches into the air and attaches to ceiling
+.tf_items NIT_SCANNER = Improved Targeter (0-1) 0 = normal checkclient 1 = radiuscan attacks enemy mines & demons, etc
 .currentammo = total upgrades (0-5)
 .waitmin = battery drain
 Battery Drain = Power = I*V = (i+2)*(v+2) which will range between 4 to 25 cells per shot
@@ -29,12 +30,12 @@ Initial Attack Delay -- 0 = 1.5secs 1 = 1.5sec 2 = 1secs 3 = 2secs
 .ammo_cells = Cells currently in battery
 .maxammo_cells = Max cells
 .maxhealth = max health
-.tf_items #NIT_AUTOID = spydetector upgrade (0-1) 0 = no spy 1 = tesla will attack disguised spies
-.tf_items #NIT_FLYING_SENTRY = turret upgrade (0-1) 0 = normal 1 = tesla launches into the air and attaches to ceiling
-.tf_items #NIT_SCANNER = Improved Targeter (0-1) 0 = normal checkclient 1 = radiuscan attacks enemy mines & demons, etc
-.tf_items #NIT_TESLA_CLOAKING = Cloaking device (0-1) 0=nothing 1=Cloaked unless firing does not glow
-.tf_items #NIT_KEVLAR = Kevlar Armor (0-1) 0=nothing 1=has Kevlar Armor
-.tf_items #NIT_BLAST = Blast Armor (0-1) 0=nothing 1=has Blast Armor
+.tf_items NIT_AUTOID = spydetector upgrade (0-1) 0 = no spy 1 = tesla will attack disguised spies
+.tf_items NIT_FLYING_SENTRY = turret upgrade (0-1) 0 = normal 1 = tesla launches into the air and attaches to ceiling
+.tf_items NIT_SCANNER = Improved Targeter (0-1) 0 = normal checkclient 1 = radiuscan attacks enemy mines & demons, etc
+.tf_items NIT_TESLA_CLOAKING = Cloaking device (0-1) 0=nothing 1=Cloaked unless firing does not glow
+.tf_items NIT_KEVLAR = Kevlar Armor (0-1) 0=nothing 1=has Kevlar Armor
+.tf_items NIT_BLAST = Blast Armor (0-1) 0=nothing 1=has Blast Armor
 .has_sentry = Normal upgrades left
 .has_tesla = Misc upgrades left
 .waitmin = battery drain
@@ -128,8 +129,8 @@ void() Tesla_Check_Frags =
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			bprint(#PRINT_HIGH, self.real_owner.netname);
-			bprint(#PRINT_HIGH, " is a master of tesla placement, his tesla has over 50 kills!!\n");
+			bprint(PRINT_HIGH, self.real_owner.netname);
+			bprint(PRINT_HIGH, " is a master of tesla placement, his tesla has over 50 kills!!\n");
 			self.has_teleporter = 10;
 		}
 	}
@@ -164,39 +165,39 @@ void() Tesla_Check_Frags =
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			bprint(#PRINT_HIGH, self.real_owner.netname);
-			bprint(#PRINT_HIGH, " is a true legend at tesla placement, his tesla has over 100 kills!!\n");
+			bprint(PRINT_HIGH, self.real_owner.netname);
+			bprint(PRINT_HIGH, " is a true legend at tesla placement, his tesla has over 100 kills!!\n");
 			self.has_teleporter = 15;
 		}
 	}
 };
 void() Tesla_Lose_Glow =
 {
-	if ((self.tf_items & #NIT_TESLA_CLOAKING && (self.effects & #EF_DIMLIGHT)) || self.job == 3)
+	if ((self.tf_items & NIT_TESLA_CLOAKING && (self.effects & EF_DIMLIGHT)) || self.job == 3)
 	{
 		if (self.is_haxxxoring == 0)
         {
             self.modelindex = modelindex_null;
             spawnFOG(self.origin);
-            sound (self, #CHAN_MISC, "misc/r_tele3.wav", 1, #ATTN_NORM);
+            sound (self, CHAN_MISC, "misc/r_tele3.wav", 1, ATTN_NORM);
             if (self.job == 3) self.job = 1;
         }
 	}
-	self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+	self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 };
 void() Tesla_Give_Glow =
 {
-	if (self.tf_items & #NIT_TESLA_CLOAKING && !(self.effects & #EF_DIMLIGHT))
+	if (self.tf_items & NIT_TESLA_CLOAKING && !(self.effects & EF_DIMLIGHT))
 	{
 		if (self.is_haxxxoring == 0)
         {
             spawnFOG(self.origin);
-            sound (self, #CHAN_MISC, "misc/r_tele4.wav", 1, #ATTN_NORM);
+            sound (self, CHAN_MISC, "misc/r_tele4.wav", 1, ATTN_NORM);
 
             self.pain_finished=1;
         }
 	}
-	self.effects = self.effects | #EF_DIMLIGHT;
+	self.effects = self.effects | EF_DIMLIGHT;
 };
 
 void() TeslaThink;
@@ -248,18 +249,18 @@ void() TeslaThink =
     
     self.nextthink = time + 0.05;
    
-    if (self.has_holo <= time && self.no_grenades_1 == #FALSE)
+    if (self.has_holo <= time && self.no_grenades_1 == FALSE)
     {
-        self.no_grenades_1 = #TRUE; 
+        self.no_grenades_1 = TRUE; 
         Tesla_Idle();
     }
    
-    if (self.job == 1 && self.effects & #EF_DIMLIGHT)
+    if (self.job == 1 && self.effects & EF_DIMLIGHT)
     {
         tsla_fire1();
         return;
     }
-    else if (self.job == 2 && !(self.effects & #EF_DIMLIGHT))
+    else if (self.job == 2 && !(self.effects & EF_DIMLIGHT))
     {
         tsla_on1();
         return;
@@ -269,14 +270,14 @@ void() TeslaThink =
 //Main loop for tesla - OfN - was
 void() Tesla_Idle =
 {
-    if (self.is_malfunctioning & #SCREWUP_ONE)
+    if (self.is_malfunctioning & SCREWUP_ONE)
     {
         self.has_holo = time + 0.25; //FIXED - unhacked teslas work again
-        self.no_grenades_1 = #FALSE;
+        self.no_grenades_1 = FALSE;
         return;
     }
 	
-	if (self.tf_items & #NIT_TELEPORTER) //CH
+	if (self.tf_items & NIT_TELEPORTER) //CH
 		Tesla_Check_Frags();
 		
 	//self.waitmax holds if we have a target
@@ -287,14 +288,14 @@ void() Tesla_Idle =
 	{
         //Try to reacquire target
 		if (Tesla_FindTarget())
-			self.waitmax = #TRUE;
+			self.waitmax = TRUE;
         else
 		{
 			//Lost a lock
 			Tesla_Lose_Glow();
 			//self.nextthink = time + 0.25; //4Hz check rate
             self.has_holo = time + 0.25;
-            self.no_grenades_1 = #FALSE; // reset main think
+            self.no_grenades_1 = FALSE; // reset main think
 		}
 	}
 	
@@ -309,7 +310,7 @@ float() Tesla_FindTarget =
 	local entity client;
 
 	//WK Hack to get floating tesla working
-	if (self.tf_items & #NIT_TURRET)
+	if (self.tf_items & NIT_TURRET)
 		self.origin_z = self.origin_z - 40;//40;
 	//else
 	//	self.origin_z = self.origin_z + 24;
@@ -326,7 +327,7 @@ float() Tesla_FindTarget =
 		client = Tesla_RadiusScan (self, 3500); //I dont think that anyone would be this far away
 
 	//WK Unhack our hack
-	if (self.tf_items & #NIT_TURRET)
+	if (self.tf_items & NIT_TURRET)
 		self.origin_z = self.origin_z + 40;//+ 40;
 	//else
 	//	self.origin_z = self.origin_z - 24;
@@ -342,16 +343,16 @@ float() Tesla_FindTarget =
 	
 		Tesla_FoundTarget ();
 
-		return #TRUE;
+		return TRUE;
 	}
-	return #FALSE;
+	return FALSE;
 };
 
 void() Tesla_FoundTarget =
 {
 	// Cannon Powerup Sound?
 	if (self.ammo_cells > self.waitmin)
-		sound (self, #CHAN_VOICE, "weapons/guerilla_set.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "weapons/guerilla_set.wav", 1, ATTN_NORM);
 
 	//Glow
 	Tesla_Give_Glow();
@@ -360,7 +361,7 @@ void() Tesla_FoundTarget =
 
 	//self.nextthink = time + ReturnTeslaDelay();
     self.has_holo = time + ReturnTeslaDelay(); //- OfN -
-    self.no_grenades_1 = #FALSE;
+    self.no_grenades_1 = FALSE;
 };
 
 void() Tesla_Pain =
@@ -373,7 +374,7 @@ void() Tesla_Pain =
 
 void() Tesla_Die =
 {
-	sprint(self.real_owner, #PRINT_HIGH, "Your tesla gun was destroyed.\n");
+	sprint(self.real_owner, PRINT_HIGH, "Your tesla gun was destroyed.\n");
 	self.real_owner.has_tesla = self.real_owner.has_tesla - 1;
 	if (self.real_owner.has_tesla < 0)
 		self.real_owner.has_tesla = 0;
@@ -384,13 +385,13 @@ void() Tesla_Die =
     ThrowGib("progs/tesgib4.mdl", self.skin);
     ThrowGib("progs/tesgib4.mdl", self.skin);
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
 #else
 	BecomeExplosion ();
@@ -399,11 +400,11 @@ void() Tesla_Die =
 
 float (vector where) DoorsAt = 
 {
-	traceline (where, where, #FALSE, self);
+	traceline (where, where, FALSE, self);
 	if (trace_ent.classname == "door" || trace_ent.classname == "plat")
-		return #TRUE;
+		return TRUE;
 	else
-		return #FALSE;
+		return FALSE;
 };
 
 float() Tesla_Fire =
@@ -414,57 +415,57 @@ float() Tesla_Fire =
 	local float cheater;
 	local vector below;
 
-	if (self.tf_items & #NIT_TURRET)
+	if (self.tf_items & NIT_TURRET)
 	{
 		below = '0 0 1';	// So as not to hit tesla.
 		below_z = below_z + self.size_z; // Below should be 1 unit below the tesla.
 
 		// Check a varity of locations for a door. 5 and -5 should be the with of tesla
 		if (DoorsAt(self.origin - below + '0 0 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '8 0 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '-8 0 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '0 8 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '0 -8 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 
 		if (cheater){
-			sprint(self.real_owner,#PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
+			sprint(self.real_owner,PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
 			TF_T_Damage(self,world,world,self.health+100,0,0);
-			return #FALSE;
+			return FALSE;
 		}
 	}
 	//WK Stop gun from shooting at dead spies
 	if (!self.enemy)
-		return #FALSE;
+		return FALSE;
 	if (self.enemy == world)
-		return #FALSE;
+		return FALSE;
 	if (self.enemy == self)
-		return #FALSE;
+		return FALSE;
 	if (self.enemy.health <= 0)
-		return #FALSE;
+		return FALSE;
 #ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //CH
-		return #FALSE;
+		return FALSE;
 #endif
 	if (self.enemy.classname == "player")
 	{
 		if (self.enemy.has_disconnected)
 		{
 			self.enemy = world;
-			return #FALSE;
+			return FALSE;
 		}
-		if (!(self.tf_items & #NIT_AUTOID))
+		if (!(self.tf_items & NIT_AUTOID))
 		{
 			if (self.enemy.is_feigning)
-				return #FALSE;
+				return FALSE;
 			if (self.enemy.is_undercover)
-				return #FALSE;
-			if (self.enemy.job & #JOB_THIEF && self.enemy.job & #JOB_ACTIVE)
-				return #FALSE;
+				return FALSE;
+			if (self.enemy.job & JOB_THIEF && self.enemy.job & JOB_ACTIVE)
+				return FALSE;
 		}
 	}
 	//CH rechecks if target is out of range,  has a little extra room added.
@@ -482,111 +483,111 @@ float() Tesla_Fire =
 		maxrange = 4100;
 
 	/*if (self.ammo_shells == 0 && vlen(self.origin - self.enemy.origin) >= 500)
-		return #FALSE;
+		return FALSE;
 	else if (self.ammo_shells == 1 && vlen(self.origin - self.enemy.origin) >= 900) //+300 no
-		return #FALSE;
+		return FALSE;
 	else if (self.ammo_shells == 2 && vlen(self.origin - self.enemy.origin) >= 1300) //+500 no
-		return #FALSE;
+		return FALSE;
 	else if (self.ammo_shells == 3 && vlen(self.origin - self.enemy.origin) >= 4100) //+800 no
-		return #FALSE;*/
+		return FALSE;*/
 
     if (vlen(self.origin - self.enemy.origin) >= maxrange) //+800 no
-		return #FALSE;
+		return FALSE;
 
 	self.oldenemy = self.enemy; //CH for sbar
 
 	//WK Hack to get floating sentry working - reset before all the returns
-	if (self.tf_items & #NIT_TURRET) self.origin_z = self.origin_z - 40;// 40
+	if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z - 40;// 40
 	//else self.origin_z = self.origin_z + 24;
 	
 	if (!visible2(self.enemy, self))
 	{
-		if (self.tf_items & #NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
+		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
 		//else self.origin_z = self.origin_z - 24;
-		return #FALSE;
+		return FALSE;
 	}
 
 	self.ammo_cells = self.ammo_cells - self.waitmin; //Waitmin is precalculated cost
 	if (self.ammo_cells < 0)
 	{
 		self.ammo_cells = 0;
-		if (self.tf_items & #NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
+		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
 		//else self.origin_z = self.origin_z - 24;
 		self.enemy = world;
-		return #FALSE;
+		return FALSE;
 	}
 
 	Tesla_Give_Glow(); //FIXED
 
-	if (self.is_malfunctioning & #SCREWUP_THREE)
+	if (self.is_malfunctioning & SCREWUP_THREE)
 	{
 		local float damg;
 		damg = random() * 100 + 200 * self.ammo_nails; // the bigger they come, the harder they fall
-		deathmsg = #DMSG_TESLA;
-		WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-		WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-		WriteCoord (#MSG_BROADCAST, self.origin_x);
-		WriteCoord (#MSG_BROADCAST, self.origin_y);
-		WriteCoord (#MSG_BROADCAST, self.origin_z);
+		deathmsg = DMSG_TESLA;
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+		WriteCoord (MSG_BROADCAST, self.origin_x);
+		WriteCoord (MSG_BROADCAST, self.origin_y);
+		WriteCoord (MSG_BROADCAST, self.origin_z);
 		T_RadiusDamage(self, self, damg, world);
-		if (self.tf_items & #NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
+		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
 		//else self.origin_z = self.origin_z - 24;
-		return #FALSE;
+		return FALSE;
 	}
 		
-	deathmsg = #DMSG_TESLA;
+	deathmsg = DMSG_TESLA;
 
  // OfN - Check for force field
     local float shoulddmg;
-    shoulddmg = #TRUE;
+    shoulddmg = TRUE;
 
-    traceline (self.origin, self.enemy.origin, #FALSE, self);
+    traceline (self.origin, self.enemy.origin, FALSE, self);
 
     if (trace_ent.classname == "force_field")
     {
-        WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-        WriteByte (#MSG_BROADCAST, #TE_LIGHTNING2);
-        WriteEntity (#MSG_BROADCAST, self);
-        WriteCoord (#MSG_BROADCAST, self.origin_x);
-        WriteCoord (#MSG_BROADCAST, self.origin_y);
-        if (self.tf_items & #NIT_TURRET)
-            WriteCoord (#MSG_BROADCAST, self.origin_z + 10);
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+        WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
+        WriteEntity (MSG_BROADCAST, self);
+        WriteCoord (MSG_BROADCAST, self.origin_x);
+        WriteCoord (MSG_BROADCAST, self.origin_y);
+        if (self.tf_items & NIT_TURRET)
+            WriteCoord (MSG_BROADCAST, self.origin_z + 10);
         else
-            WriteCoord (#MSG_BROADCAST, self.origin_z + 30);        
-        WriteCoord (#MSG_BROADCAST, trace_endpos_x);
-        WriteCoord (#MSG_BROADCAST, trace_endpos_y);
-        WriteCoord (#MSG_BROADCAST, trace_endpos_z);
+            WriteCoord (MSG_BROADCAST, self.origin_z + 30);        
+        WriteCoord (MSG_BROADCAST, trace_endpos_x);
+        WriteCoord (MSG_BROADCAST, trace_endpos_y);
+        WriteCoord (MSG_BROADCAST, trace_endpos_z);
     #ifdef QUAKE_WORLD
-        multicast (self.origin, #MULTICAST_PHS);
+        multicast (self.origin, MULTICAST_PHS);
     #endif
         
-        shoulddmg = #FALSE;
+        shoulddmg = FALSE;
 
         FieldExplosion(trace_ent,trace_endpos,trace_ent);
         PutFieldWork(trace_ent);
     }
     else
     {
-        WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-        WriteByte (#MSG_BROADCAST, #TE_LIGHTNING2);
-        WriteEntity (#MSG_BROADCAST, self);
-        WriteCoord (#MSG_BROADCAST, self.origin_x);
-        WriteCoord (#MSG_BROADCAST, self.origin_y);
-        if (self.tf_items & #NIT_TURRET)
-            WriteCoord (#MSG_BROADCAST, self.origin_z + 10);
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+        WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
+        WriteEntity (MSG_BROADCAST, self);
+        WriteCoord (MSG_BROADCAST, self.origin_x);
+        WriteCoord (MSG_BROADCAST, self.origin_y);
+        if (self.tf_items & NIT_TURRET)
+            WriteCoord (MSG_BROADCAST, self.origin_z + 10);
         else
-            WriteCoord (#MSG_BROADCAST, self.origin_z + 30);
-        WriteCoord (#MSG_BROADCAST, self.enemy.origin_x);
-        WriteCoord (#MSG_BROADCAST, self.enemy.origin_y);
-        WriteCoord (#MSG_BROADCAST, self.enemy.origin_z);
+            WriteCoord (MSG_BROADCAST, self.origin_z + 30);
+        WriteCoord (MSG_BROADCAST, self.enemy.origin_x);
+        WriteCoord (MSG_BROADCAST, self.enemy.origin_y);
+        WriteCoord (MSG_BROADCAST, self.enemy.origin_z);
     #ifdef QUAKE_WORLD
-        multicast (self.origin, #MULTICAST_PHS);
+        multicast (self.origin, MULTICAST_PHS);
     #endif
     }
 
-	sound (self, #CHAN_WEAPON, "weapons/lhit.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
 	if (vlen(self.enemy.origin - self.origin) >= 800 && shoulddmg) //Only play end sound if far away
-		sound (self.enemy, #CHAN_WEAPON, "weapons/lhit.wav", 1, #ATTN_NORM); //CH at start and end of arc
+		sound (self.enemy, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM); //CH at start and end of arc
 
     /*if (self.ammo_nails == 0) damage = 40;
 	if (self.ammo_nails == 1) damage = 80;
@@ -599,13 +600,13 @@ float() Tesla_Fire =
 	if (self.ammo_nails == 3) damage = 240;
 
 
-    if (self.num_mines & #IMPROVED_FOUR) damage = damage * 1.15; //- OfN - Improved circuit hack - was 1.2 - TOO LOW NOW?
+    if (self.num_mines & IMPROVED_FOUR) damage = damage * 1.15; //- OfN - Improved circuit hack - was 1.2 - TOO LOW NOW?
 
-	if (self.is_malfunctioning & #SCREWUP_TWO) damage = 1;
-	//TF_T_Damage (self.enemy, self, self.real_owner, damage, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+	if (self.is_malfunctioning & SCREWUP_TWO) damage = 1;
+	//TF_T_Damage (self.enemy, self, self.real_owner, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 	
     if (shoulddmg)
-        TF_T_Damage (self.enemy, self, self, damage, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+        TF_T_Damage (self.enemy, self, self, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 
 	//self.nextthink = time + ReturnTeslaDelay();
     //self.has_holo = time + ReturnTeslaDelay(); //?? wTF
@@ -613,15 +614,15 @@ float() Tesla_Fire =
     	self.attack_finished = 1;
     
     self.has_holo = time + ReturnTeslaDelay(); //- OfN -
-    self.no_grenades_1 = #FALSE;
+    self.no_grenades_1 = FALSE;
 
 	// Warn owner that it's low on ammo
 	if (self.ammo_cells == 0 && (random() < 0.1))
-		sprint(self.real_owner, #PRINT_HIGH, "Tesla is out of cells.\n");
+		sprint(self.real_owner, PRINT_HIGH, "Tesla is out of cells.\n");
 	else if (self.ammo_cells <= self.waitmin)
-		sprint(self.real_owner, #PRINT_HIGH, "Tesla is low on cells.\n");
+		sprint(self.real_owner, PRINT_HIGH, "Tesla is low on cells.\n");
 
-	if (self.tf_items & #NIT_TURRET) self.origin_z = self.origin_z + 40; //40
+	if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; //40
 	//else self.origin_z = self.origin_z - 24;
 
 	//self.attack_finished = 1;
@@ -629,9 +630,9 @@ float() Tesla_Fire =
 	if (self.enemy.health <= 0)
 	{
 		self.enemy = world;
-		return #FALSE;
+		return FALSE;
 	}
-	return #TRUE;
+	return TRUE;
 	
 };
 
@@ -641,35 +642,35 @@ void() Tesla_Touch =
 {
 	local vector below;
 	local float cheater;
-	cheater = #FALSE;
+	cheater = FALSE;
 
 	//WK Check for blockage
-	if (pointcontents(self.origin) == #CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
-		sprint(self.real_owner, #PRINT_HIGH, "Your sentry gun flew away.\n");
+		sprint(self.real_owner, PRINT_HIGH, "Your sentry gun flew away.\n");
 		Tesla_Die();
 		return;
 	}
 
-    if (other.classname=="player" && !(self.tf_items & #NIT_TURRET) && (self.tf_items & #NIT_TESLA_CLOAKING) && self.no_grenades_2 < time && self.job == 1 && Teammate(self.team_no,other.team_no))
+    if (other.classname=="player" && !(self.tf_items & NIT_TURRET) && (self.tf_items & NIT_TESLA_CLOAKING) && self.no_grenades_2 < time && self.job == 1 && Teammate(self.team_no,other.team_no))
     {
         if (self.real_owner == other)
-            sprint(other,#PRINT_HIGH,"Your cloaked tesla here!\n"); 
+            sprint(other,PRINT_HIGH,"Your cloaked tesla here!\n"); 
         else
-            sprint(other,#PRINT_HIGH,"There is a cloaked friendly tesla here!\n");
+            sprint(other,PRINT_HIGH,"There is a cloaked friendly tesla here!\n");
 
         self.no_grenades_2 = time + 2;
     }
 
-	if (other.takedamage && !(self.tf_items & #NIT_TURRET))  // OfN - fixme: doesn't check for enemy disguised spies
+	if (other.takedamage && !(self.tf_items & NIT_TURRET))  // OfN - fixme: doesn't check for enemy disguised spies
 	{
-		deathmsg = #DMSG_BUG_ZAPPER;
+		deathmsg = DMSG_BUG_ZAPPER;
         
         if (IsMonster(other))
         {
             if (!Teammate(other.real_owner.team_no, self.real_owner.team_no))
             {
-                TF_T_Damage (other, self, self, 400, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+                TF_T_Damage (other, self, self, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
         		return;
             }
             
@@ -677,25 +678,25 @@ void() Tesla_Touch =
         }
 
 		if (!Teammate(other.team_no, self.real_owner.team_no) && (other.is_undercover != 1)) // <== FIXME
-			//TF_T_Damage (other, self, self.real_owner, 400, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
-			TF_T_Damage (other, self, self, 400, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+			//TF_T_Damage (other, self, self.real_owner, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+			TF_T_Damage (other, self, self, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 		return;
 	}
 	//I'm in midflight and hit something
-	if (self.tf_items & #NIT_TURRET && self.movetype == #MOVETYPE_FLY) 
+	if (self.tf_items & NIT_TURRET && self.movetype == MOVETYPE_FLY) 
 	{
 		//WK Check to see if we are blocked
-		if (pointcontents(self.origin) == #CONTENT_SKY || 
-			//pointcontents(self.origin - '0 0 10') == #CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 5') == #CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 10') == #CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 15') == #CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 20') == #CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 30') == #CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 40') == #CONTENT_SKY ||
-            pointcontents(self.origin + '0 0 70') == #CONTENT_SKY) //- OfN
+		if (pointcontents(self.origin) == CONTENT_SKY || 
+			//pointcontents(self.origin - '0 0 10') == CONTENT_SKY ||
+			//pointcontents(self.origin + '0 0 5') == CONTENT_SKY ||
+			//pointcontents(self.origin + '0 0 10') == CONTENT_SKY ||
+			//pointcontents(self.origin + '0 0 15') == CONTENT_SKY ||
+			//pointcontents(self.origin + '0 0 20') == CONTENT_SKY ||
+			//pointcontents(self.origin + '0 0 30') == CONTENT_SKY ||
+			//pointcontents(self.origin + '0 0 40') == CONTENT_SKY ||
+            pointcontents(self.origin + '0 0 70') == CONTENT_SKY) //- OfN
 		{
-			sprint(self.real_owner, #PRINT_HIGH, "Your tesla flew away.\n");
+			sprint(self.real_owner, PRINT_HIGH, "Your tesla flew away.\n");
 			Tesla_Die();
 			return;
 		}
@@ -704,35 +705,35 @@ void() Tesla_Touch =
 
 		// Check a varity of locations for a door. 5 and -5 should be the with of tesla
 		if (DoorsAt(self.origin - below + '0 0 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '8 0 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '-8 0 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '0 8 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 		if (DoorsAt(self.origin - below + '0 -8 0'))
-			cheater = #TRUE;
+			cheater = TRUE;
 
 		if (cheater){
-			sprint(self.real_owner,#PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
+			sprint(self.real_owner,PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
 			TF_T_Damage(self,world,world,self.health+100,0,0);
 			return;
 		}
 
 		if (other == world)
 		{ //The eagle has landed!
-		//	sprint(self.real_owner, #PRINT_HIGH, "The eagle has landed!\n");
-			self.solid = #SOLID_BBOX;
-			self.flags = self.flags | #FL_ONGROUND;
-			self.movetype = #MOVETYPE_STEP;
+		//	sprint(self.real_owner, PRINT_HIGH, "The eagle has landed!\n");
+			self.solid = SOLID_BBOX;
+			self.flags = self.flags | FL_ONGROUND;
+			self.movetype = MOVETYPE_STEP;
 			self.origin_z = self.origin_z + 40;
 
             self.is_haxxxoring=0; // this flag is for cloaked teslas be able to cloak again
 
             if (self.job == 1)
             {
-                self.effects = self.effects | #EF_DIMLIGHT; // hack to make lose_glow to run properly to make disappear again the tesla
+                self.effects = self.effects | EF_DIMLIGHT; // hack to make lose_glow to run properly to make disappear again the tesla
                 Tesla_Lose_Glow();
             }
 
@@ -740,19 +741,19 @@ void() Tesla_Touch =
 		}
 		else if (other.classname == "player")
 		{
-			deathmsg = #DMSG_BUG_ZAPPER;
-			//TF_T_Damage (other, self, self.real_owner, 400, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
-			TF_T_Damage (other, self, self, 400, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+			deathmsg = DMSG_BUG_ZAPPER;
+			//TF_T_Damage (other, self, self.real_owner, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+			TF_T_Damage (other, self, self, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 
             self.velocity_z = 200; //- OfN reset velocity, not stop
 		}
 		else
 		{
-			deathmsg = #DMSG_BUG_ZAPPER;
-			//TF_T_Damage (other, self, self.real_owner, 400, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+			deathmsg = DMSG_BUG_ZAPPER;
+			//TF_T_Damage (other, self, self.real_owner, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 			if (!Teammate(other.real_owner.team_no,self.real_owner.team_no))
-				TF_T_Damage (other, self, self, 400, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
-			//sprint(self.real_owner, #PRINT_HIGH, "The eagle has died.\n");
+				TF_T_Damage (other, self, self, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+			//sprint(self.real_owner, PRINT_HIGH, "The eagle has died.\n");
 			Tesla_Die();
 		}
 	}
@@ -777,11 +778,11 @@ float() ReturnTeslaDelay =
 	else
 		tesladelay = 1.5;
 
-	if (self.enemy.cutf_items & #CUTF_JAMMER) // if we have jammer - Share and Enjoy!
+	if (self.enemy.cutf_items & CUTF_JAMMER) // if we have jammer - Share and Enjoy!
 		tesladelay = tesladelay + 0.5;
 		
 	r = vlen(self.enemy.origin - self.origin);
-	if (self.tf_items & #NIT_AUTOID) //spy detect takes twice as long, as it does more in depth search
+	if (self.tf_items & NIT_AUTOID) //spy detect takes twice as long, as it does more in depth search
 		tesladelay = tesladelay + (r / 500);
 	else
 		tesladelay = tesladelay + (r / 1000);
@@ -795,10 +796,10 @@ float() ReturnTeslaDelay =
 	//Improved targetter decreases lock time to 5/8
 	//WK Changed to 7/8ths
 	// Changed back again, what a lame item
-	if (self.tf_items & #NIT_SCANNER)
+	if (self.tf_items & NIT_SCANNER)
 		tesladelay = (tesladelay * 5) / 8;
 
-    if (self.num_mines & #IMPROVED_FOUR) tesladelay = tesladelay * 0.85; //was 0.8
+    if (self.num_mines & IMPROVED_FOUR) tesladelay = tesladelay * 0.85; //was 0.8
 
 	tesladelay = tesladelay * self.attack_finished; // SB so we don't fire instantly at old targ...
 	// SB this also means we don't have to fully charge for new target
@@ -830,7 +831,7 @@ entity(entity scanner, float scanrange) Tesla_RadiusScan =
             #else
                 gotatarget = Pharse_Client(head, scanner, 1, 0, 1, 1);
             #endif
-			else if (scanner.tf_items & #NIT_SCANNER && scanner.team_no > 0) //Improved targeter
+			else if (scanner.tf_items & NIT_SCANNER && scanner.team_no > 0) //Improved targeter
 			{
 				if (head.classname == "monster_demon1")
 				{
@@ -881,7 +882,7 @@ entity(entity OldTesla) TeslaClone =
     newmis = spawn();
 
     //here the updates of any entity pointers (demon_two and building for players, plus goalentity and enemy for grunts)
-    OldTesla.solid=#SOLID_NOT;
+    OldTesla.solid=SOLID_NOT;
 
     local entity te;
     local vector tmp1, tmp2;
@@ -941,44 +942,44 @@ entity(entity OldTesla) TeslaClone =
     newmis.nextthink = time + 0.05;
 
 	newmis.colormap = OldTesla.colormap;
-	newmis.weapon = #BUILD_TESLA;
+	newmis.weapon = BUILD_TESLA;
 	//newmis.angles_y = anglemod(self.angles_y + 180);
     newmis.angles = OldTesla.angles;
 
 	//newmis.velocity = '0 0 8';
     newmis.velocity = OldTesla.velocity; // AVOIDS TURRET LAUNCHING BUG?
-	newmis.movetype = OldTesla.movetype;// #MOVETYPE_TOSS;    
+	newmis.movetype = OldTesla.movetype;// MOVETYPE_TOSS;    
 
-	newmis.solid = #SOLID_BBOX; // ;
+	newmis.solid = SOLID_BBOX; // ;
 	setmodel (newmis, newmis.mdl);
 	setsize (newmis, tmp1, tmp2);
 	setorigin (newmis, newmis.origin);
 
-    //if (objtobuild==#BUILD_TESLA) newmis.skin = self.team_no;
+    //if (objtobuild==BUILD_TESLA) newmis.skin = self.team_no;
     //if (self.team_no==3) newmis.skin=0;
     //else if (self.team_no==4) newmis.skin=3;
 
     newmis.skin = OldTesla.skin; //
 
-	//newmis.flags = newmis.flags - (newmis.flags & #FL_ONGROUND);
+	//newmis.flags = newmis.flags - (newmis.flags & FL_ONGROUND);
     newmis.flags = OldTesla.flags;
 
     ///////////////////////////
 
     newmis.classname = "building_tesla";
     newmis.netname = "tesla";
-    newmis.takedamage = OldTesla.takedamage; //#DAMAGE_AIM;
-    //newmis.solid = #SOLID_BBOX;
+    newmis.takedamage = OldTesla.takedamage; //DAMAGE_AIM;
+    //newmis.solid = SOLID_BBOX;
     newmis.th_die = OldTesla.th_die; //Tesla_Die; 		// Death function
     newmis.th_pain = OldTesla.th_pain; //Tesla_Pain; // BUG WAS DIE!!
-    //self.ammo_cells = self.ammo_cells - #BUILD_COST_TESLA;
+    //self.ammo_cells = self.ammo_cells - BUILD_COST_TESLA;
 
-    newmis.health = OldTesla.health; //#BUILD_HEALTH_TESLA;
-    newmis.movetype = OldTesla.movetype; //#MOVETYPE_TOSS;
+    newmis.health = OldTesla.health; //BUILD_HEALTH_TESLA;
+    newmis.movetype = OldTesla.movetype; //MOVETYPE_TOSS;
     newmis.colormap = OldTesla.colormap; //self.colormap;	// Set the Base Color
     //newmis.velocity = '0 0 -8';
     newmis.avelocity = '0 0 0';
-    newmis.flags = OldTesla.flags; // newmis.flags - (newmis.flags & #FL_ONGROUND);
+    newmis.flags = OldTesla.flags; // newmis.flags - (newmis.flags & FL_ONGROUND);
     newmis.team_no = OldTesla.team_no;
     
     //- OfN -
@@ -991,7 +992,7 @@ entity(entity OldTesla) TeslaClone =
     //newmis.job_finished = time; // change for frame animation purposes, instead of increasing its nextthing during charging
     newmis.job_finished = OldTesla.job_finished;
 
-    newmis.no_grenades_1 = OldTesla.no_grenades_1; //#FALSE; // first think reset
+    newmis.no_grenades_1 = OldTesla.no_grenades_1; //FALSE; // first think reset
     newmis.no_grenades_2 = OldTesla.no_grenades_2; //0; // cloak touch delay reset
 
     newmis.touch = Tesla_Touch;
@@ -1003,10 +1004,10 @@ entity(entity OldTesla) TeslaClone =
     newmis.maxammo_nails = OldTesla.maxammo_nails; //Amps == 0
     newmis.maxammo_rockets = OldTesla.maxammo_rockets; //Battery == 0
     newmis.max_health = OldTesla.max_health;//150;
-    newmis.ammo_cells = OldTesla.ammo_cells; //#MAXCELLS0; //Initial ammo allocation
-    newmis.maxammo_cells = OldTesla.maxammo_cells; //#MAXCELLS0; //Initial maxammo
-    newmis.tf_items = OldTesla.tf_items; //#NIT_CERAMIC; //Start with shock armor
-    newmis.armorclass = OldTesla.armorclass; //#AT_SAVEELECTRICITY; //Shock armor
+    newmis.ammo_cells = OldTesla.ammo_cells; //MAXCELLS0; //Initial ammo allocation
+    newmis.maxammo_cells = OldTesla.maxammo_cells; //MAXCELLS0; //Initial maxammo
+    newmis.tf_items = OldTesla.tf_items; //NIT_CERAMIC; //Start with shock armor
+    newmis.armorclass = OldTesla.armorclass; //AT_SAVEELECTRICITY; //Shock armor
 
     newmis.has_sentry = OldTesla.has_sentry;
     newmis.has_tesla = OldTesla.has_tesla;
@@ -1020,7 +1021,7 @@ entity(entity OldTesla) TeslaClone =
     newmis.health = OldTesla.health; 
     //newmis.health = newmis.max_health;
     newmis.waitmin = OldTesla.waitmin; //(newmis.ammo_shells + 2) * (newmis.ammo_nails + 2);
-    newmis.waitmax = OldTesla.waitmax; //#FALSE; //No target yet
+    newmis.waitmax = OldTesla.waitmax; //FALSE; //No target yet
 
     newmis.frags = OldTesla.frags; //0; //CH how many people has your sent killed?
     newmis.lip   = OldTesla.lip; //0; //WK How many tinkers have been done
@@ -1029,7 +1030,7 @@ entity(entity OldTesla) TeslaClone =
     newmis.num_mines=OldTesla.num_mines; //0; // OfN - reset HACKER improvements
     newmis.is_malfunctioning = OldTesla.is_malfunctioning;
     
-    //newmis.waitmax=#FALSE;
+    //newmis.waitmax=FALSE;
 
     newmis.pain_finished=0;
 

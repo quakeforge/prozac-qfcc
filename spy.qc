@@ -1,3 +1,5 @@
+#include "defs.qh"
+#include "menu.qh"
 /*==============================================
 	SPY.QC
 
@@ -207,24 +209,24 @@ void(float type) TeamFortress_SpyFeignDeath =
 	{
 		// Check to make sure there isn't anyone on top of us
 		at_spot = findradius(self.origin, 64);
-		i = #TRUE;
+		i = TRUE;
 
 		while (at_spot != world)
 		{
-			if (at_spot.classname == "player" && at_spot.deadflag == #DEAD_NO && self != at_spot)
-				i = #FALSE;
+			if (at_spot.classname == "player" && at_spot.deadflag == DEAD_NO && self != at_spot)
+				i = FALSE;
 			
 			at_spot = at_spot.chain;			
 		}
 
-		if (i == #TRUE)
+		if (i == TRUE)
 		{
 			i = 1 + floor(random()*5);
 
 			self.velocity = '0 0 0';
 			//WK Jump em up since they fall down now when feigning
 			//setorigin (self, self.origin + '0 0 30');
-			setsize (self, #VEC_HULL_MIN, #VEC_HULL_MAX);
+			setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 			self.view_ofs = '0 0 22';
 			//Prevent bad movetype errors, or something
 			if (self.classname != "player") {
@@ -232,18 +234,18 @@ void(float type) TeamFortress_SpyFeignDeath =
 				RPrint("Non-player tried to un-feign!\n");
 				return;
 			}
-			self.movetype = #MOVETYPE_WALK;
-			self.is_feigning = #FALSE;
+			self.movetype = MOVETYPE_WALK;
+			self.is_feigning = FALSE;
 			self.current_weapon = self.weapon;
 			W_SetCurrentAmmo();
 
 		#ifdef QUAKE_WORLD
-			self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 			TeamFortress_SetSpeed(self);
 		#endif
 
 			// Check .weapon, because .current_weapon has been reset
-			if (self.weapon <= #WEAP_AXE)
+			if (self.weapon <= WEAP_AXE)
 			{
 				spy_upaxe1 ();
 				return;
@@ -260,60 +262,60 @@ void(float type) TeamFortress_SpyFeignDeath =
 		}
 		else
 		{
-			sprint(self, #PRINT_HIGH, "You can't get up while someone\nis standing on you.\n");
+			sprint(self, PRINT_HIGH, "You can't get up while someone\nis standing on you.\n");
 		}
 	}
 	else
 	{
-		if (!(self.flags & #FL_ONGROUND) && (self.waterlevel == 0))
+		if (!(self.flags & FL_ONGROUND) && (self.waterlevel == 0))
 		{
-			sprint(self, #PRINT_HIGH, "You can't feign in the air.\n");
+			sprint(self, PRINT_HIGH, "You can't feign in the air.\n");
 			return;
 		}
 		
 		//WK - Can't feign while carrying flag. King cheater!
-		if (self.effects & (#EF_DIMLIGHT | #EF_BRIGHTLIGHT)) { 
-			sprint(self, #PRINT_HIGH, "Can't feign while glowing, you sloppy bitch.\n");
+		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT)) { 
+			sprint(self, PRINT_HIGH, "Can't feign while glowing, you sloppy bitch.\n");
 			return;
 		}
 		//WK - Can't feign while shooting grapple. Crash fix?
 		if (self.hook_out) { 
-			sprint(self, #PRINT_HIGH, "Can't feign and grapple, silly\n");
+			sprint(self, PRINT_HIGH, "Can't feign and grapple, silly\n");
 			return;
 		}
 		//WK - No feign detpackers
 		if (self.is_detpacking) { 
-			sprint(self, #PRINT_HIGH, "Can't feign while setting a detpack, fool\n");
+			sprint(self, PRINT_HIGH, "Can't feign while setting a detpack, fool\n");
 			return;
 		}
 		if (self.is_toffingadet) //SB same for C4 det
 		{
-			sprint(self, #PRINT_HIGH, "How are you going to throw a detpack while lying down?\n");
+			sprint(self, PRINT_HIGH, "How are you going to throw a detpack while lying down?\n");
 			return;
 		}
 		if (self.is_haxxxoring) // SB No sleep-hackers
 		{
-			sprint(self, #PRINT_HIGH, "You can't fall asleep AND hack, do one or the other.\n");
+			sprint(self, PRINT_HIGH, "You can't fall asleep AND hack, do one or the other.\n");
 			return;
 		}
 		//WK Stop detpackers
-		if (self.tfstate & #TFSTATE_CANT_MOVE) {
-			sprint(self,#PRINT_HIGH, "Can't feign whilst stationary\n");
+		if (self.tfstate & TFSTATE_CANT_MOVE) {
+			sprint(self,PRINT_HIGH, "Can't feign whilst stationary\n");
 			return;
 		}
 		//WK Prevent sliders
-		if (self.is_building == #TRUE) {
-			sprint(self, #PRINT_HIGH, "Can't feign while building, beeatch.\n");
+		if (self.is_building == TRUE) {
+			sprint(self, PRINT_HIGH, "Can't feign while building, beeatch.\n");
 			return;
 		}
 		//WK Prevent worker/feigners
-		if (self.job & #JOB_ACTIVE) {
-			sprint(self, #PRINT_HIGH, "Can't rest while working, you lazy bum!\n");
+		if (self.job & JOB_ACTIVE) {
+			sprint(self, PRINT_HIGH, "Can't rest while working, you lazy bum!\n");
 			return;
 		}
 		//CH Prevents the most evil bug of all, so evil that I can not speak of it.... j/k
-		if (self.done_custom & #CUSTOM_BUILDING) {
-			sprint (self, #PRINT_HIGH, "You can't pretend to die when you're not alive!\n");
+		if (self.done_custom & CUSTOM_BUILDING) {
+			sprint (self, PRINT_HIGH, "You can't pretend to die when you're not alive!\n");
 			return;
 		}
 
@@ -321,9 +323,9 @@ void(float type) TeamFortress_SpyFeignDeath =
 		at_spot = findradius(self.origin, 64);
 		while (at_spot != world)
 		{
-			if (at_spot.classname == "player" && self != at_spot && at_spot.is_feigning == #TRUE)
+			if (at_spot.classname == "player" && self != at_spot && at_spot.is_feigning == TRUE)
 			{
-				sprint(self, #PRINT_HIGH, "You can't feign on top of another spy!\n");
+				sprint(self, PRINT_HIGH, "You can't feign on top of another spy!\n");
 			}
 			
 			at_spot = at_spot.chain;			
@@ -332,11 +334,11 @@ void(float type) TeamFortress_SpyFeignDeath =
 	#ifdef QUAKE_WORLD
 		makeImmune(self,time+2);
 		//self.immune_to_check = time + 2;
-		self.tfstate = self.tfstate | #TFSTATE_CANT_MOVE;
+		self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
 		TeamFortress_SetSpeed(self);
 	#endif
 
-		self.is_feigning = #TRUE;
+		self.is_feigning = TRUE;
 		Attack_Finished(0.8);
 
 	    // make dead guy release hook (wedge)
@@ -344,11 +346,11 @@ void(float type) TeamFortress_SpyFeignDeath =
 	    {
 		    Reset_Grapple (self.hook);
 	    	Attack_Finished(0.75);
-		    self.hook_out = #TRUE;	// PutClientInServer will reset this
+		    self.hook_out = TRUE;	// PutClientInServer will reset this
 	    }
 
 		if (self.undercover_team == 0 && self.undercover_skin == 0)
-			self.items = self.items - (self.items & #IT_INVISIBILITY);
+			self.items = self.items - (self.items & IT_INVISIBILITY);
 		self.invisible_finished = 0;
 		self.modelindex = modelindex_player;	// don't use eyes
 
@@ -367,7 +369,7 @@ void(float type) TeamFortress_SpyFeignDeath =
  		// setsize (self, '0 0 -10', '0 0 0');
 		setsize (self, '-16 -16 -24', '16 16 4');
 		self.view_ofs = '0 0 4';
-		self.movetype = #MOVETYPE_TOSS;
+		self.movetype = MOVETYPE_TOSS;
 
 		if (type == 1) //CH normal feign
 			DeathSound();
@@ -376,7 +378,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 		self.angles_z = 0;
 
 		// Check .weapon, because .current_weapon has been reset
-		if (self.weapon <= #WEAP_AXE)
+		if (self.weapon <= WEAP_AXE)
 		{
 			spy_die_ax1 ();
 			return;
@@ -404,31 +406,31 @@ void() TeamFortress_SpyGoUndercover =
 {
 	local entity te;
 
-	if (self.effects & (#EF_DIMLIGHT | #EF_BRIGHTLIGHT))
+	if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT))
 	{
-		sprint(self, #PRINT_MEDIUM, "You cannot disguise while glowing.\n");
+		sprint(self, PRINT_MEDIUM, "You cannot disguise while glowing.\n");
 		return;
 	}
 
-	if (invis_only == #TRUE)
+	if (invis_only == TRUE)
 	{
 		// If the spy is already invisible, become visible
 		if (self.is_undercover == 1)
 		{
 			self.is_undercover = 0;
 			self.modelindex = modelindex_player;	// return to normal
-//WK			self.items = self.items - (self.items & #IT_INVISIBILITY);
+//WK			self.items = self.items - (self.items & IT_INVISIBILITY);
 		}
 		else if (self.is_undercover == 2)	
 		{
-			sprint(self, #PRINT_HIGH, "You stop going undercover.\n");
+			sprint(self, PRINT_HIGH, "You stop going undercover.\n");
 			self.is_undercover = 0;
 		}
 		else // Become invisible
 		{
 			if (self.ammo_cells > 1)
 			{
-				sprint(self, #PRINT_HIGH, "Going undercover...\n");
+				sprint(self, PRINT_HIGH, "Going undercover...\n");
 
 				self.is_undercover = 2;
 
@@ -437,7 +439,7 @@ void() TeamFortress_SpyGoUndercover =
 				te.classname = "timer";
 				te.owner = self;
 				te.think = TeamFortress_SpyUndercoverThink;
-				te.nextthink = time + #PC_SPY_GO_UNDERCOVER_TIME;
+				te.nextthink = time + PC_SPY_GO_UNDERCOVER_TIME;
 			}
 		}
 		self.StatusRefreshTime = time + 0.1;
@@ -447,13 +449,13 @@ void() TeamFortress_SpyGoUndercover =
 		// Pop up the menu
 		if (self.is_undercover != 2)
 		{
-			self.current_menu = #MENU_SPY;
-			self.menu_count = #MENU_REFRESH_RATE;
+			self.current_menu = MENU_SPY;
+			self.menu_count = MENU_REFRESH_RATE;
 		}
 		else // if (self.is_undercover == 2)
 		{
 			//WK Fix TF2.5 bug
-			sprint(self, #PRINT_HIGH, "You stop going undercover.\n");
+			sprint(self, PRINT_HIGH, "You stop going undercover.\n");
 			if (self.undercover_team != 0 || self.undercover_skin != 0)
 				self.is_undercover = 1;
 			else
@@ -511,13 +513,13 @@ void() TeamFortress_SpyUndercoverThink =
 	local float tc;
 	local string st;
 
-	if (!(self.owner.cutf_items & #CUTF_SPY_KIT)) //WK
+	if (!(self.owner.cutf_items & CUTF_SPY_KIT)) //WK
 		return;
 
 	if (self.owner.is_undercover == 2)
 	{
-//WK		self.owner.items = self.owner.items | #IT_INVISIBILITY;
-		if (invis_only == #TRUE)
+//WK		self.owner.items = self.owner.items | IT_INVISIBILITY;
+		if (invis_only == TRUE)
 		{
 			self.owner.frame = 0;
 			self.owner.modelindex = modelindex_eyes;
@@ -531,7 +533,7 @@ void() TeamFortress_SpyUndercoverThink =
 			// Skin change?
 			if (self.skin != 0)
 			{
-				sprint(self.owner, #PRINT_HIGH, "Skin set to ");
+				sprint(self.owner, PRINT_HIGH, "Skin set to ");
 				TeamFortress_PrintClassName(self.owner,self.skin,0);
 				
 				self.owner.undercover_skin = self.skin;
@@ -541,10 +543,10 @@ void() TeamFortress_SpyUndercoverThink =
 			// Color change
 			if (self.team != 0)
 			{
-				sprint(self.owner, #PRINT_HIGH, "Colors set to Team ");
+				sprint(self.owner, PRINT_HIGH, "Colors set to Team ");
 				st = ftos(self.team);
-				sprint(self.owner, #PRINT_HIGH, st);
-				sprint(self.owner, #PRINT_HIGH, "\n");
+				sprint(self.owner, PRINT_HIGH, st);
+				sprint(self.owner, PRINT_HIGH, "\n");
 
 				self.owner.undercover_team = self.team;
 				// Set their color 
@@ -582,21 +584,21 @@ void(float class) TeamFortress_SpyChangeSkin =
 	local entity te;
 
 	// If they're returning their skin to their Spy, just reset it
-	if (class == #PC_SPY && self.playerclass == #PC_SPY) //WK
+	if (class == PC_SPY && self.playerclass == PC_SPY) //WK
 	{
-		sprint (self, #PRINT_HIGH, "Skin reset.");
+		sprint (self, PRINT_HIGH, "Skin reset.");
 		self.undercover_skin = 0;
 		TeamFortress_SetSkin(self);
 
 		if (self.undercover_team == 0)
 		{
-//WK			self.items = self.items - (self.items & #IT_INVISIBILITY);
+//WK			self.items = self.items - (self.items & IT_INVISIBILITY);
 			self.is_undercover = 0;
 		}
 		return;
 	}
 
-	sprint(self, #PRINT_HIGH, "Going undercover...\n");
+	sprint(self, PRINT_HIGH, "Going undercover...\n");
 
 	self.is_undercover = 2;
 
@@ -605,7 +607,7 @@ void(float class) TeamFortress_SpyChangeSkin =
 	te.classname = "timer";
 	te.owner = self;
 	te.think = TeamFortress_SpyUndercoverThink;
-	te.nextthink = time + #PC_SPY_GO_UNDERCOVER_TIME;
+	te.nextthink = time + PC_SPY_GO_UNDERCOVER_TIME;
 	te.skin = class;
 	TeamFortress_SetSkin(self);
 };
@@ -621,7 +623,7 @@ void(float teamno) TeamFortress_SpyChangeColor =
 	// If they're returning their color to their own team, just reset it
 	if (teamno == self.team_no)
 	{
-		sprint (self, #PRINT_HIGH, "Colors reset.\n");
+		sprint (self, PRINT_HIGH, "Colors reset.\n");
 
 		makeImmune(self,time + 4);
 		//self.immune_to_check = time + 4;
@@ -638,13 +640,13 @@ void(float teamno) TeamFortress_SpyChangeColor =
 
 		if (self.undercover_skin == 0)
 		{
-//WK			self.items = self.items - (self.items & #IT_INVISIBILITY);
+//WK			self.items = self.items - (self.items & IT_INVISIBILITY);
 			self.is_undercover = 0;
 		}
 		return;
 	}
 
-	sprint(self, #PRINT_HIGH, "Going undercover...\n");
+	sprint(self, PRINT_HIGH, "Going undercover...\n");
 
 	self.is_undercover = 2;
 
@@ -653,7 +655,7 @@ void(float teamno) TeamFortress_SpyChangeColor =
 	te.classname = "timer";
 	te.owner = self;
 	te.think = TeamFortress_SpyUndercoverThink;
-	te.nextthink = time + #PC_SPY_GO_UNDERCOVER_TIME;
+	te.nextthink = time + PC_SPY_GO_UNDERCOVER_TIME;
 	te.team = teamno;
 };
 
@@ -663,7 +665,7 @@ void() GasGrenadeTouch =
 {
 	// Thrown grenades don't detonate when hitting an enemy
 
-	sound (self, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NORM);	// bounce sound
+	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -678,7 +680,7 @@ void() GasGrenadeExplode =
 
 	// Check the pointcontents to prevent detpack outside the world
 	pos = pointcontents(self.origin); 
-	if (pos == #CONTENT_EMPTY) 
+	if (pos == CONTENT_EMPTY) 
 	{
 		te = spawn();
 		te.think = GasGrenadeMakeGas;
@@ -698,8 +700,8 @@ void() GasGrenadeExplode =
 			newmis = spawn();
 			setmodel (newmis, "progs/s_bubble.spr");
 			setorigin (newmis, self.origin);
-			newmis.movetype = #MOVETYPE_NOCLIP;
-			newmis.solid = #SOLID_NOT;
+			newmis.movetype = MOVETYPE_NOCLIP;
+			newmis.solid = SOLID_NOT;
 			newmis.velocity = '0 0 15';
 			newmis.velocity_z = 10 + (random() * 20);
 			newmis.nextthink = time + 0.5;
@@ -738,20 +740,20 @@ void() GasGrenadeMakeGas =
 	te = findradius(self.origin, 200);
 	while (te != world)
 	{
-		if (te.classname == "player" && te.deadflag == #DEAD_NO)
+		if (te.classname == "player" && te.deadflag == DEAD_NO)
 		{
 			//Dont affect those with gas masks or invincible or biosuits
-			if (!(te.tf_items & #NIT_SCUBA || te.invincible_finished > time || te.radsuit_finished > time)) //WK
+			if (!(te.tf_items & NIT_SCUBA || te.invincible_finished > time || te.radsuit_finished > time)) //WK
 			{
 			// Damage
-			deathmsg = #DMSG_GREN_GAS;
+			deathmsg = DMSG_GREN_GAS;
 			if (self.heat = 0)
-				TF_T_Damage (te, world, self.owner, 20, #TF_TD_IGNOREARMOUR, #TF_TD_OTHER);
+				TF_T_Damage (te, world, self.owner, 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			else
-				TF_T_Damage (te, world, self.owner, 40, #TF_TD_IGNOREARMOUR, #TF_TD_OTHER);
+				TF_T_Damage (te, world, self.owner, 40, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 
 			// Make them hallucinate
-			if (te.tfstate & #TFSTATE_HALLUCINATING)
+			if (te.tfstate & TFSTATE_HALLUCINATING)
 			{
 				// Already Hallucination, so just increase the time
 				timer = find(world, classname, "timer");
@@ -764,16 +766,16 @@ void() GasGrenadeMakeGas =
 					timer.health = timer.health + 50; //SB used to be 25
 					if (timer.health > 100)
 						timer.health = 100;
-					timer.nextthink = time + #GR_HALLU_TIME;
+					timer.nextthink = time + GR_HALLU_TIME;
 				}
 			}
 			else
 			{
-				sprint(te, #PRINT_HIGH, "You stop breathing as the poison attacks your nerves...\n");
-				te.tfstate = te.tfstate | #TFSTATE_HALLUCINATING;
+				sprint(te, PRINT_HIGH, "You stop breathing as the poison attacks your nerves...\n");
+				te.tfstate = te.tfstate | TFSTATE_HALLUCINATING;
 				// Create a timer entity
 				timer = spawn();
-				timer.nextthink = time + #GR_HALLU_TIME;
+				timer.nextthink = time + GR_HALLU_TIME;
 				timer.think = HallucinationTimer;
 				timer.classname = "timer";
 				timer.owner = te;
@@ -791,13 +793,13 @@ void() GasGrenadeMakeGas =
 	// Do the cloud
 	if (self.heat == 1)
 	{
-		WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-		WriteByte (#MSG_BROADCAST, #TE_TAREXPLOSION);
-		WriteCoord (#MSG_BROADCAST, self.origin_x);
-		WriteCoord (#MSG_BROADCAST, self.origin_y);
-		WriteCoord (#MSG_BROADCAST, self.origin_z);
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_TAREXPLOSION);
+		WriteCoord (MSG_BROADCAST, self.origin_x);
+		WriteCoord (MSG_BROADCAST, self.origin_y);
+		WriteCoord (MSG_BROADCAST, self.origin_z);
 	#ifdef QUAKE_WORLD
-		multicast (self.origin, #MULTICAST_PVS);
+		multicast (self.origin, MULTICAST_PVS);
 	#endif
 		return;
 	}
@@ -806,13 +808,13 @@ void() GasGrenadeMakeGas =
 		self.weapon = self.weapon + 1;
 		if (self.weapon == 1)
 		{
-			WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-			WriteByte (#MSG_BROADCAST, #TE_LAVASPLASH);
-			WriteCoord (#MSG_BROADCAST, self.origin_x);
-			WriteCoord (#MSG_BROADCAST, self.origin_y);
-			WriteCoord (#MSG_BROADCAST, self.origin_z - 24);
+			WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+			WriteByte (MSG_BROADCAST, TE_LAVASPLASH);
+			WriteCoord (MSG_BROADCAST, self.origin_x);
+			WriteCoord (MSG_BROADCAST, self.origin_y);
+			WriteCoord (MSG_BROADCAST, self.origin_z - 24);
 		#ifdef QUAKE_WORLD
-			multicast (self.origin, #MULTICAST_PVS);
+			multicast (self.origin, MULTICAST_PVS);
 		#endif
 		}
 		else if (self.weapon == 2)
@@ -834,20 +836,20 @@ void() HallucinationTimer =
 	local float tmpx, tmpy, halltype;
 
 	// Setup for the next Think
-	self.health = self.health - #GR_HALLU_DEC;
+	self.health = self.health - GR_HALLU_DEC;
 	// medic recovers twice as fast
-	if (self.owner.weapons_carried & #WEAP_MEDIKIT) //WK
-		self.health = self.health - #GR_HALLU_DEC;
+	if (self.owner.weapons_carried & WEAP_MEDIKIT) //WK
+		self.health = self.health - GR_HALLU_DEC;
 	if (self.health <= 0)
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & #TFSTATE_HALLUCINATING);
-	if (!(self.owner.tfstate & #TFSTATE_HALLUCINATING))
+		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_HALLUCINATING);
+	if (!(self.owner.tfstate & TFSTATE_HALLUCINATING))
 	{
-		sprint(self.owner, #PRINT_HIGH, "You feel a little better now.\n");
+		sprint(self.owner, PRINT_HIGH, "You feel a little better now.\n");
 		dremove(self);
 		return;
 	}
 
-	self.nextthink = time + #GR_HALLU_TIME;
+	self.nextthink = time + GR_HALLU_TIME;
 
 	// Kick
 	if (random() < 0.5)
@@ -863,25 +865,25 @@ void() HallucinationTimer =
 	// Explosions
 	if (halltype < 0.4) //WK .4 We want all hallucination to be explosions. :)
 	{
-		WriteByte (#MSG_ONE, #SVC_TEMPENTITY);
+		WriteByte (MSG_ONE, SVC_TEMPENTITY);
 		if (halltype < 0.4)
-			WriteByte (#MSG_ONE, #TE_EXPLOSION);
+			WriteByte (MSG_ONE, TE_EXPLOSION);
 		else if (halltype < 0.6)
-			WriteByte (#MSG_ONE, #TE_TAREXPLOSION);
+			WriteByte (MSG_ONE, TE_TAREXPLOSION);
 		else // if (halltype < 0.4)
-			WriteByte (#MSG_ONE, #TE_LAVASPLASH);
-		WriteCoord (#MSG_ONE, msg_entity.origin_x + tmpx);
-		WriteCoord (#MSG_ONE, msg_entity.origin_y + tmpy);
-		WriteCoord (#MSG_ONE, msg_entity.origin_z);
+			WriteByte (MSG_ONE, TE_LAVASPLASH);
+		WriteCoord (MSG_ONE, msg_entity.origin_x + tmpx);
+		WriteCoord (MSG_ONE, msg_entity.origin_y + tmpy);
+		WriteCoord (MSG_ONE, msg_entity.origin_z);
 	}
 	// Teleport
 	else if (halltype < 0.7)
 	{
-		WriteByte (#MSG_ONE, #SVC_TEMPENTITY);
-		WriteByte (#MSG_ONE, #TE_TELEPORT);
-		WriteCoord (#MSG_ONE, msg_entity.origin_x + tmpx);
-		WriteCoord (#MSG_ONE, msg_entity.origin_y + tmpy);
-		WriteCoord (#MSG_ONE, msg_entity.origin_z);
+		WriteByte (MSG_ONE, SVC_TEMPENTITY);
+		WriteByte (MSG_ONE, TE_TELEPORT);
+		WriteCoord (MSG_ONE, msg_entity.origin_x + tmpx);
+		WriteCoord (MSG_ONE, msg_entity.origin_y + tmpy);
+		WriteCoord (MSG_ONE, msg_entity.origin_z);
 	}
 	// Lightning
 	else // if (halltype < 1)
@@ -890,17 +892,17 @@ void() HallucinationTimer =
 		te.origin_x = msg_entity.origin_x + tmpx;
 		te.origin_y = msg_entity.origin_y + tmpy;
 		te.origin_z = msg_entity.origin_z;
-		WriteByte (#MSG_ONE, #SVC_TEMPENTITY);
-		WriteByte (#MSG_ONE, #TE_LIGHTNING2);
-		WriteEntity (#MSG_ONE, te);
-		WriteCoord (#MSG_ONE, te.origin_x);
-		WriteCoord (#MSG_ONE, te.origin_y);
-		WriteCoord (#MSG_ONE, te.origin_z);
+		WriteByte (MSG_ONE, SVC_TEMPENTITY);
+		WriteByte (MSG_ONE, TE_LIGHTNING2);
+		WriteEntity (MSG_ONE, te);
+		WriteCoord (MSG_ONE, te.origin_x);
+		WriteCoord (MSG_ONE, te.origin_y);
+		WriteCoord (MSG_ONE, te.origin_z);
 		tmpx = (random() * 800) - 400;
 		tmpy = (random() * 800) - 400;
-		WriteCoord (#MSG_ONE, msg_entity.origin_x + tmpx);
-		WriteCoord (#MSG_ONE, msg_entity.origin_y + tmpy);
-		WriteCoord (#MSG_ONE, msg_entity.origin_z);
+		WriteCoord (MSG_ONE, msg_entity.origin_x + tmpx);
+		WriteCoord (MSG_ONE, msg_entity.origin_y + tmpy);
+		WriteCoord (MSG_ONE, msg_entity.origin_z);
 		dremove(te);
 	}
 };
@@ -915,8 +917,8 @@ void() W_FireTranq =
 
 	newmis = spawn ();
 	newmis.owner = self;
-	newmis.movetype = #MOVETYPE_FLYMISSILE;
-	newmis.solid = #SOLID_BBOX;
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_BBOX;
 		
 	makevectors (self.v_angle);
 	newmis.velocity = v_forward;
@@ -939,10 +941,10 @@ void() T_TranqDartTouch =
 {
 	local entity timer;
 
-	if (other.solid == #SOLID_TRIGGER)
+	if (other.solid == SOLID_TRIGGER)
 		return;	// trigger field, do nothing
 
-	if (pointcontents(self.origin) == #CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		dremove(self);
 		return;
@@ -955,20 +957,20 @@ void() T_TranqDartTouch =
 	if (other.takedamage)
 	{
 		//WK Make sure they aren't immune
-		if (!(other.tf_items & #NIT_SCUBA || other.invincible_finished > time || other.radsuit_finished > time))
+		if (!(other.tf_items & NIT_SCUBA || other.invincible_finished > time || other.radsuit_finished > time))
 		{
 		spawn_touchblood (9);
-		deathmsg = #DMSG_TRANQ;
+		deathmsg = DMSG_TRANQ;
 
 		// Do the Damage
-		TF_T_Damage (other, self, self.owner, 10, #TF_TD_NOTTEAM, #TF_TD_NAIL);
+		TF_T_Damage (other, self, self.owner, 10, TF_TD_NOTTEAM, TF_TD_NAIL);
 		// If its a player or demon, tranquilise them
-		//- OfN if (other.classname == "monster_demon1" && !(Teammate(other.real_owner.team_no,self.owner.team_no) && (teamplay & (#TEAMPLAY_HALFDIRECT | #TEAMPLAY_NODIRECT))))
-        if (IsMonster(other))// && !(Teammate(other.real_owner.team_no,self.owner.team_no) && (teamplay & (#TEAMPLAY_HALFDIRECT | #TEAMPLAY_NODIRECT))))
+		//- OfN if (other.classname == "monster_demon1" && !(Teammate(other.real_owner.team_no,self.owner.team_no) && (teamplay & (TEAMPLAY_HALFDIRECT | TEAMPLAY_NODIRECT))))
+        if (IsMonster(other))// && !(Teammate(other.real_owner.team_no,self.owner.team_no) && (teamplay & (TEAMPLAY_HALFDIRECT | TEAMPLAY_NODIRECT))))
 		{
-			//bprint(#PRINT_HIGH, "demon tranq!\n");
+			//bprint(PRINT_HIGH, "demon tranq!\n");
 			// If they're already tranquilised, just make it last longer
-			if (other.tfstate & #TFSTATE_TRANQUILISED)
+			if (other.tfstate & TFSTATE_TRANQUILISED)
 			{
 				timer = find(world, classname, "timer");
 				while (((timer.owner != other) || (timer.think != TranquiliserTimer2)) && (timer != world))
@@ -977,25 +979,25 @@ void() T_TranqDartTouch =
 				}
 				if (timer != world)
 				{
-					timer.nextthink = time + #TRANQ_TIME;
+					timer.nextthink = time + TRANQ_TIME;
 				}
 			}
 			else
 			{
-				other.tfstate = other.tfstate | #TFSTATE_TRANQUILISED;
+				other.tfstate = other.tfstate | TFSTATE_TRANQUILISED;
 				// Create a timer entity
 				timer = spawn();
-				timer.nextthink = time + #TRANQ_TIME;
+				timer.nextthink = time + TRANQ_TIME;
 				timer.think = TranquiliserTimer2;
 				timer.classname = "timer";
 				timer.owner = other;
 				timer.team_no = self.owner.team_no;
 			}
 		}		
-		if (other.classname == "player" && !(Teammate(other.team_no, self.owner.team_no) && (teamplay & (#TEAMPLAY_HALFDIRECT | #TEAMPLAY_NODIRECT))))
+		if (other.classname == "player" && !(Teammate(other.team_no, self.owner.team_no) && (teamplay & (TEAMPLAY_HALFDIRECT | TEAMPLAY_NODIRECT))))
 		{
 			// If they're already tranquilised, just make it last longer
-			if (other.tfstate & #TFSTATE_TRANQUILISED)
+			if (other.tfstate & TFSTATE_TRANQUILISED)
 			{
 				timer = find(world, classname, "timer");
 				while (((timer.owner != other) || (timer.think != TranquiliserTimer)) && (timer != world))
@@ -1004,16 +1006,16 @@ void() T_TranqDartTouch =
 				}
 				if (timer != world)
 				{
-					timer.nextthink = time + #TRANQ_TIME;
+					timer.nextthink = time + TRANQ_TIME;
 				}
 			}
 			else
 			{
-				sprint(other, #PRINT_HIGH, "You stop breathing...\n");
-				other.tfstate = other.tfstate | #TFSTATE_TRANQUILISED;
+				sprint(other, PRINT_HIGH, "You stop breathing...\n");
+				other.tfstate = other.tfstate | TFSTATE_TRANQUILISED;
 				// Create a timer entity
 				timer = spawn();
-				timer.nextthink = time + #TRANQ_TIME;
+				timer.nextthink = time + TRANQ_TIME;
 				timer.think = TranquiliserTimer;
 				timer.classname = "timer";
 				timer.owner = other;
@@ -1031,13 +1033,13 @@ void() T_TranqDartTouch =
             FieldExplosion(other,self.origin,self);
         else
         {
-            WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-            WriteByte (#MSG_BROADCAST, #TE_SPIKE);
-            WriteCoord (#MSG_BROADCAST, self.origin_x);
-            WriteCoord (#MSG_BROADCAST, self.origin_y);
-            WriteCoord (#MSG_BROADCAST, self.origin_z);
+            WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+            WriteByte (MSG_BROADCAST, TE_SPIKE);
+            WriteCoord (MSG_BROADCAST, self.origin_x);
+            WriteCoord (MSG_BROADCAST, self.origin_y);
+            WriteCoord (MSG_BROADCAST, self.origin_z);
         #ifdef QUAKE_WORLD
-            multicast (self.origin, #MULTICAST_PVS);
+            multicast (self.origin, MULTICAST_PVS);
         #endif
         }
 	}
@@ -1050,19 +1052,19 @@ void() T_TranqDartTouch =
 // Just remove the player's tranquilisation.
 void() TranquiliserTimer =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & #TFSTATE_TRANQUILISED);
+	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_TRANQUILISED);
 
 	TeamFortress_SetSpeed(self.owner);
 
-	sprint(self.owner, #PRINT_HIGH, "You feel more alert now\n");
+	sprint(self.owner, PRINT_HIGH, "You feel more alert now\n");
 
 	dremove(self);
 };
 //CH used for demons
 void() TranquiliserTimer2 =
 {
-	if (self.owner.tfstate & #TFSTATE_TRANQUILISED) //Just in case
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & #TFSTATE_TRANQUILISED);
+	if (self.owner.tfstate & TFSTATE_TRANQUILISED) //Just in case
+		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_TRANQUILISED);
 	dremove(self);
 };
 
@@ -1073,14 +1075,14 @@ void(entity spy) Spy_RemoveDisguise =
 	local float tc;
 	local float reset;
 
-	if (invis_only != #TRUE)
+	if (invis_only != TRUE)
 	{
-		if (spy.cutf_items & #CUTF_SPY_KIT)
+		if (spy.cutf_items & CUTF_SPY_KIT)
 		{
 			// Reset the Skin
 			if (spy.undercover_skin != 0)
 			{
-//WK				spy.items = spy.items - (spy.items & #IT_INVISIBILITY);
+//WK				spy.items = spy.items - (spy.items & IT_INVISIBILITY);
 				makeImmune(spy,time + 4);
 				//spy.immune_to_check = time + 4;
 				spy.undercover_skin = 0;
@@ -1091,7 +1093,7 @@ void(entity spy) Spy_RemoveDisguise =
 			// Set their color 
 			if (spy.undercover_team != 0)
 			{
-//WK				spy.items = spy.items - (spy.items & #IT_INVISIBILITY);
+//WK				spy.items = spy.items - (spy.items & IT_INVISIBILITY);
 				makeImmune(spy,time + 4);
 				//spy.immune_to_check = time + 4;
 				spy.undercover_team = 0;
@@ -1122,8 +1124,8 @@ void(entity spy) Spy_RemoveDisguise =
 			spy.is_undercover = 0;
 			spy.modelindex = modelindex_player;	// return to normal
 			
-//WK			if (spy.items & #IT_INVISIBILITY)
-//WK				spy.items = spy.items - #IT_INVISIBILITY;
+//WK			if (spy.items & IT_INVISIBILITY)
+//WK				spy.items = spy.items - IT_INVISIBILITY;
 
 			self.StatusRefreshTime = time + 0.1;
 		}

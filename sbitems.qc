@@ -1,5 +1,7 @@
 /* SB Items. New items for use with Custom TF 3.2 (or something) */
 
+#include "defs.qh"
+
 // Internal prototypes
 void() AntiGravGrenadeExplode; // antigrav goes boom
 void() AntiGravGrenadeTimer; // controls antigrav decay or whatever you call it
@@ -58,32 +60,32 @@ void() SwitchToCamera =
 	
 	camera = find(world, classname, "building_camera");
 	if (camera.real_owner == self)
-		done = #TRUE;
+		done = TRUE;
 	while (!done)
 	{
 		camera = find(camera, classname, "building_camera");
 		if (camera.real_owner == self)
-			done = #TRUE;
+			done = TRUE;
 		if (camera == world)
-			done = #TRUE;
+			done = TRUE;
 	}
 	
 	if (camera == world)
 		return;
 		
 	msg_entity = self;
-	WriteByte(#MSG_ONE, #SVC_SETVIEWPORT);
-	WriteEntity(#MSG_ONE, camera);
-	WriteByte(#MSG_ONE, #SVC_SETANGLES);
-	WriteAngle(#MSG_ONE, camera.angles_x);
-	WriteAngle(#MSG_ONE, camera.angles_y);
-	WriteAngle(#MSG_ONE, camera.angles_z);
-	self.fixangle = #TRUE;
-	self.is_cameraviewing = #TRUE;
+	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
+	WriteEntity(MSG_ONE, camera);
+	WriteByte(MSG_ONE, SVC_SETANGLES);
+	WriteAngle(MSG_ONE, camera.angles_x);
+	WriteAngle(MSG_ONE, camera.angles_y);
+	WriteAngle(MSG_ONE, camera.angles_z);
+	self.fixangle = TRUE;
+	self.is_cameraviewing = TRUE;
 	self.t_s_h = self.weaponmodel;
 	self.weaponmodel= "";
 	self.view_ofs = '0 0 0';
-	sprint(self, #PRINT_HIGH, "Camera view activated.\n");
+	sprint(self, PRINT_HIGH, "Camera view activated.\n");
 };
 
 void() SwitchFromCamera =
@@ -93,17 +95,17 @@ void() SwitchFromCamera =
 	if (!self.is_cameraviewing)
 		return;
 	msg_entity = self;
-	WriteByte(#MSG_ONE, #SVC_SETVIEWPORT);
-	WriteEntity(#MSG_ONE, self);
-	WriteByte(#MSG_ONE, #SVC_SETANGLES);
-	WriteAngle(#MSG_ONE, self.angles_x);
-	WriteAngle(#MSG_ONE, self.angles_y);
-	WriteAngle(#MSG_ONE, self.angles_z);
-	self.fixangle = #FALSE;
+	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
+	WriteEntity(MSG_ONE, self);
+	WriteByte(MSG_ONE, SVC_SETANGLES);
+	WriteAngle(MSG_ONE, self.angles_x);
+	WriteAngle(MSG_ONE, self.angles_y);
+	WriteAngle(MSG_ONE, self.angles_z);
+	self.fixangle = FALSE;
 	self.weaponmodel = self.t_s_h;
 	self.view_ofs = '0 0 22';
 	
-	self.is_cameraviewing = #FALSE;
+	self.is_cameraviewing = FALSE;
 };
 */
 
@@ -115,37 +117,37 @@ void() PrimeC4Det =
 {
 	local entity te;
 	
-	if (!(self.cutf_items & #CUTF_TOSSABLEDET))
+	if (!(self.cutf_items & CUTF_TOSSABLEDET))
 	{
-		sprint (self, #PRINT_HIGH, "You do not have the C4 tossable detpack.\n");
+		sprint (self, PRINT_HIGH, "You do not have the C4 tossable detpack.\n");
 		return;
 	}
 	if (self.ammo_c4det < 1)
 	{
-		sprint (self, #PRINT_HIGH, "Looks like you're out of C4.\n");
+		sprint (self, PRINT_HIGH, "Looks like you're out of C4.\n");
 		return;
 	}
 	if (self.is_detpacking || self.is_toffingadet)
 	{
-		sprint (self, #PRINT_HIGH, "You can only set one detpack at once, throwable or otherwise!\n");
+		sprint (self, PRINT_HIGH, "You can only set one detpack at once, throwable or otherwise!\n");
 		return;
 	}
 	if (self.is_haxxxoring)
 	{
-		sprint (self, #PRINT_HIGH, "You can't set a detpack while hacking.\n");
+		sprint (self, PRINT_HIGH, "You can't set a detpack while hacking.\n");
 		return;
 	}
 	
 	te = spawn();
 	te.owner = self;
-	te.nextthink = time + #WEAP_DETPACK_SETTIME;
+	te.nextthink = time + WEAP_DETPACK_SETTIME;
 	te.think = ThrowC4Det;
 	te.classname = "timer";
 	te.netname = "C4detpack_timer";
 	self.is_toffingadet = 1;
-	self.tfstate = self.tfstate | #TFSTATE_C4THROW;
+	self.tfstate = self.tfstate | TFSTATE_C4THROW;
 	TeamFortress_SetSpeed(self);
-	sprint(self, #PRINT_HIGH, "Arming detpack...\n");
+	sprint(self, PRINT_HIGH, "Arming detpack...\n");
 };
 
 void() TeamFortress_C4DetpackTouch = 
@@ -155,8 +157,8 @@ void() TeamFortress_C4DetpackTouch =
 	if (other.classname != "player")
 		return;
 
-	//WK if (other.playerclass != #PC_SCOUT)
-	if (!(other.tf_items & #NIT_SCANNER))
+	//WK if (other.playerclass != PC_SCOUT)
+	if (!(other.tf_items & NIT_SCANNER))
 		return;
     
 	if (self.weaponmode == 1)
@@ -167,22 +169,22 @@ void() TeamFortress_C4DetpackTouch =
 
 	makeImmune(other,time + 2);
 	//other.immune_to_check = time + 2;
-	other.tfstate = other.tfstate | #TFSTATE_CANT_MOVE;
+	other.tfstate = other.tfstate | TFSTATE_CANT_MOVE;
 
-	sprint(other, #PRINT_HIGH, "Disarming detpack...\n");
+	sprint(other, PRINT_HIGH, "Disarming detpack...\n");
 #ifdef QUAKE_WORLD
 	TeamFortress_SetSpeed(other);
 #else
-	other.pausetime = time + #WEAP_DETPACK_DISARMTIME;
+	other.pausetime = time + WEAP_DETPACK_DISARMTIME;
 #endif
 
 	// Spawn disarming entity
 	disarm = spawn();
-	disarm.movetype = #MOVETYPE_NONE; //WK M3 Bug Hunt
+	disarm.movetype = MOVETYPE_NONE; //WK M3 Bug Hunt
 	disarm.owner = other;		// the scout
 	disarm.enemy = self;		// the detpack
 	disarm.classname = "timer";
-	disarm.nextthink = time + #WEAP_DETPACK_DISARMTIME;
+	disarm.nextthink = time + WEAP_DETPACK_DISARMTIME;
 	disarm.think = TeamFortress_DetpackDisarm;
 	
 	self.weaponmode = 1;  // indicates disarming
@@ -203,14 +205,14 @@ void() ThrowC4Det =
 
 	user = self.owner;
 
-	sound (user, #CHAN_WEAPON, "weapons/grenade.wav", 1, #ATTN_NORM);
+	sound (user, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 	KickPlayer(-1, user);
 	
 	newmis = spawn ();
 	newmis.owner = user;
-	newmis.movetype = #MOVETYPE_BOUNCE;
-	newmis.solid = #SOLID_BBOX;
-	newmis.solid = #SOLID_TRIGGER;
+	newmis.movetype = MOVETYPE_BOUNCE;
+	newmis.solid = SOLID_BBOX;
+	newmis.solid = SOLID_TRIGGER;
 	newmis.classname = "detpack";
 
     // for identify it on airfist pushable? routine
@@ -261,7 +263,7 @@ void() ThrowC4Det =
 
 	newmis.weaponmode = 0;  // Detpack weaponmode = 1 when disarming
 
-	sound (newmis, #CHAN_WEAPON, "doors/medtry.wav", 1, #ATTN_NORM);  //CH play set detpack sound
+	sound (newmis, CHAN_WEAPON, "doors/medtry.wav", 1, ATTN_NORM);  //CH play set detpack sound
 	
 
 	// Create the CountDown entity
@@ -271,18 +273,18 @@ void() ThrowC4Det =
 	countd.health = 9;
 	countd.nextthink = time + 1;
 	countd.owner = newmis.owner;
-	countd.movetype = #MOVETYPE_BOUNCE; 
+	countd.movetype = MOVETYPE_BOUNCE; 
 	countd.classname = "countdown_timer"; // Don't call it timer, because we
 							  // don't want it removed if player dies
 	countd.enemy = newmis;
 	newmis.oldenemy = countd;
 
-	sprint(self, #PRINT_HIGH, "Detpack armed!\n");
+	sprint(self, PRINT_HIGH, "Detpack armed!\n");
 
     teamprefixsprint(self.team_no,self);
     teamsprint6(self,self.netname," throws a C4!\n","","","","");
 	
-	self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_C4THROW);
+	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_C4THROW);
 	TeamFortress_SetSpeed(self); // let's roll
 
 };
@@ -293,22 +295,22 @@ void() ThrowC4Det =
 
 void() SBBuildSensor =
 {
-	if (self.ammo_cells >= #BUILD_COST_SENSOR && self.has_sensor == 0)
+	if (self.ammo_cells >= BUILD_COST_SENSOR && self.has_sensor == 0)
 	{
-		self.ammo_cells = self.ammo_cells - #BUILD_COST_SENSOR;
+		self.ammo_cells = self.ammo_cells - BUILD_COST_SENSOR;
 		MotionSensorSpawn();
 		self.has_sensor = 1;
-		sprint(self, #PRINT_HIGH, "You place the motion sensor.\n");
+		sprint(self, PRINT_HIGH, "You place the motion sensor.\n");
         self.option = time + 2;
 	}
-	else if (self.ammo_cells < #BUILD_COST_SENSOR && self.has_sensor == 0)
-		sprint(self, #PRINT_HIGH, "You do not have enough metal to build a motion sensor.\n");
+	else if (self.ammo_cells < BUILD_COST_SENSOR && self.has_sensor == 0)
+		sprint(self, PRINT_HIGH, "You do not have enough metal to build a motion sensor.\n");
 	else
 	{
 		if (self.option < time) // avoids ppl overflowing by destroying/building it repeatedly
         {
             Find_And_Dmg("building_sensor", self, 1);
-		    sprint(self, #PRINT_HIGH, "You detonate your motion sensor.\n");
+		    sprint(self, PRINT_HIGH, "You detonate your motion sensor.\n");
 		    self.has_sensor = 0;
         }
 	}
@@ -318,26 +320,26 @@ void() MotionSensorTossTouch =
 {
 	if (other != world || other == self.real_owner)
 		return;
-	if (pointcontents(self.origin) == #CONTENT_SKY || pointcontents(self.origin + '0 0 2') == #CONTENT_SKY || pointcontents(self.origin) == #CONTENT_SOLID)
+	if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin + '0 0 2') == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID)
 	{
 		MotionSensorDie();
 		return;
 	}
 	//CH sees where landed and adjusts to proper things
-	if (pointcontents(self.origin + '0 0 1') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '0 0 1') == CONTENT_SOLID)
 		self.origin = self.origin - '0 0 12';
-	if (pointcontents(self.origin - '0 0 1') == #CONTENT_SOLID)
+	if (pointcontents(self.origin - '0 0 1') == CONTENT_SOLID)
 		self.origin = self.origin + '0 0 4';
-	if (pointcontents(self.origin + '0 1 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '0 1 0') == CONTENT_SOLID)
 		self.origin = self.origin - '0 16 0';
-	if (pointcontents(self.origin - '0 1 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin - '0 1 0') == CONTENT_SOLID)
 		self.origin = self.origin + '0 16 0';
-	if (pointcontents(self.origin + '1 0 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '1 0 0') == CONTENT_SOLID)
 		self.origin = self.origin - '16 0 0';
-	if (pointcontents(self.origin + '1 0 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '1 0 0') == CONTENT_SOLID)
 		self.origin = self.origin + '16 0 0';
 	setorigin (self, self.origin);
-	if (pointcontents(self.origin) == #CONTENT_SKY || pointcontents(self.origin + '0 0 2') == #CONTENT_SKY || pointcontents(self.origin) == #CONTENT_SOLID)
+	if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin + '0 0 2') == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID)
 	{
 		MotionSensorDie();
 		return;
@@ -347,11 +349,11 @@ void() MotionSensorTossTouch =
     teamsprint(self.real_owner.team_no, self.real_owner, self.real_owner.netname);
 	teamsprint(self.real_owner.team_no, self.real_owner, " has built a Motion Sensor.\n");
 
-	self.movetype = #MOVETYPE_NONE;
+	self.movetype = MOVETYPE_NONE;
 	setsize (self, '-16 -16 -6', '16 16 10');
-	self.solid = #SOLID_BBOX;
-	self.takedamage = #DAMAGE_AIM;
-	sound (self, #CHAN_WEAPON, "weapons/guerilla_set.wav", 1, #ATTN_NORM);
+	self.solid = SOLID_BBOX;
+	self.takedamage = DAMAGE_AIM;
+	sound (self, CHAN_WEAPON, "weapons/guerilla_set.wav", 1, ATTN_NORM);
 	self.think = MotionSensorIdle;
 	self.nextthink = time + 1;
 };
@@ -373,27 +375,27 @@ float() MotionSensorFindTarget =
 	// Try a few checks to make it react faster
 	r = 0;
 	loopc = 0;
-	gotone = #FALSE;
+	gotone = FALSE;
 	
-	if (self.is_malfunctioning & #SCREWUP_THREE)
-		return #FALSE;
+	if (self.is_malfunctioning & SCREWUP_THREE)
+		return FALSE;
 	
     local float trange; //- OfN - Hack
     trange=300; // was 250
 
-    if (self.num_mines & #IMPROVED_ONE)
+    if (self.num_mines & IMPROVED_ONE)
         trange=500; // was 400
 
 	//CH Theortetically this will check every client on the server now
-	while (loopc < 32 && gotone == #FALSE)
+	while (loopc < 32 && gotone == FALSE)
 	{
 		client = checkclient();
-		gotone = #TRUE;
+		gotone = TRUE;
 
 		if (!client)
-			gotone = #FALSE;
+			gotone = FALSE;
 		else if (!Pharse_Client(client, self, 1, trange, 0, 1))
-			gotone = #FALSE;
+			gotone = FALSE;
 
 		loopc = loopc + 1;
 		if (gotone) loopc = 1000;
@@ -403,7 +405,7 @@ float() MotionSensorFindTarget =
 	{
 		self.effects = 0;
         self.skin=1;
-		return #FALSE;
+		return FALSE;
 	}
 	
 	// Found a Target
@@ -415,56 +417,56 @@ float() MotionSensorFindTarget =
 		if (self.enemy.classname != "player")
 		{
 			self.enemy = world;
-			return #FALSE;
+			return FALSE;
 		}
 	}*/ // OfN - wtf does this?
 
     // SPIES, only returned by pharseclient if sensor is able to uncover them -changed
-    if (Teammate(self.enemy.undercover_team,self.team_no) && self.num_mines & #IMPROVED_FOUR)
+    if (Teammate(self.enemy.undercover_team,self.team_no) && self.num_mines & IMPROVED_FOUR)
     {
-        /*if (!(self.enemy.cutf_items & #CUTF_JAMMER)) // if they dont have a scanner jammer remove their disguise
+        /*if (!(self.enemy.cutf_items & CUTF_JAMMER)) // if they dont have a scanner jammer remove their disguise
         {*/
             Spy_RemoveDisguise(self.enemy);
-            sprint(self.real_owner, #PRINT_HIGH, "Your motion sensor detects a spy!\n");
-		    sprint(self.enemy, #PRINT_HIGH, "That motion sensor knows you are a spy!\n");
+            sprint(self.real_owner, PRINT_HIGH, "Your motion sensor detects a spy!\n");
+		    sprint(self.enemy, PRINT_HIGH, "That motion sensor knows you are a spy!\n");
         //}
         //else 
-        //    return #FALSE; // removed cause sensors alarm is activated anyway, even if they will not uncover them
+        //    return FALSE; // removed cause sensors alarm is activated anyway, even if they will not uncover them
     }
 
     // THIEVES, ALWAYS DETECTED BUT SENSOR ONLY UNCOVERS THEM IF HACKED TO DO- changed
     if (self.enemy.classname=="player")
     {
-        if (self.enemy.job & #JOB_THIEF && (self.enemy.job & #JOB_ACTIVE || self.enemy.job & #JOB_FULL_HIDE))
+        if (self.enemy.job & JOB_THIEF && (self.enemy.job & JOB_ACTIVE || self.enemy.job & JOB_FULL_HIDE))
         {
-            if (self.num_mines & #IMPROVED_SEVEN)
+            if (self.num_mines & IMPROVED_SEVEN)
             {
-                sprint(self.real_owner, #PRINT_HIGH, "Your motion sensor detects a thief!\n");
-                sprint(self.enemy, #PRINT_HIGH, "That motion sensor can see you!\n");
-                RevealThief(self.enemy,#TRUE);
+                sprint(self.real_owner, PRINT_HIGH, "Your motion sensor detects a thief!\n");
+                sprint(self.enemy, PRINT_HIGH, "That motion sensor can see you!\n");
+                RevealThief(self.enemy,TRUE);
             }
         }
     }
 	
-	if (!(self.is_malfunctioning & #SCREWUP_ONE))
-		sound(self, #CHAN_WEAPON, "misc/enemy.wav", 1, #ATTN_NORM);
+	if (!(self.is_malfunctioning & SCREWUP_ONE))
+		sound(self, CHAN_WEAPON, "misc/enemy.wav", 1, ATTN_NORM);
 	
-	if (!(self.is_malfunctioning & #SCREWUP_TWO))
-	{	self.effects = #EF_BRIGHTLIGHT; self.skin=0;}
+	if (!(self.is_malfunctioning & SCREWUP_TWO))
+	{	self.effects = EF_BRIGHTLIGHT; self.skin=0;}
 
 
-    sprint(self.real_owner,#PRINT_HIGH,"Your motion sensor reports enemy presence!\n");
+    sprint(self.real_owner,PRINT_HIGH,"Your motion sensor reports enemy presence!\n");
 
 	self.think = SensorBeAlarmed;
-	return #TRUE;
+	return TRUE;
 };
 
 void() SensorBeAlarmed =
 {
 	if (MotionSensorFindTarget())
 	{
-		if (!(self.is_malfunctioning & #SCREWUP_ONE))
-			sound(self, #CHAN_WEAPON, "misc/enemy.wav", 1, #ATTN_NORM);
+		if (!(self.is_malfunctioning & SCREWUP_ONE))
+			sound(self, CHAN_WEAPON, "misc/enemy.wav", 1, ATTN_NORM);
 
 		self.nextthink = 2.4;
 	}
@@ -480,13 +482,13 @@ void() SensorBeAlarmed =
 
 void() MotionSensorSpawn =
 {
-	self.has_sensor = #TRUE;
+	self.has_sensor = TRUE;
 	newmis = spawn();
-	newmis.movetype = #MOVETYPE_BOUNCE;
+	newmis.movetype = MOVETYPE_BOUNCE;
 	setsize (newmis, '0 0 0', '0 0 0');
 //	setsize (newmis, '-8 -8 -8', '8 8 8');
-	newmis.solid = #SOLID_BBOX;
-	newmis.takedamage = #DAMAGE_AIM;
+	newmis.solid = SOLID_BBOX;
+	newmis.takedamage = DAMAGE_AIM;
 	newmis.classname = "building_sensor";
 	newmis.netname = "motion_sensor";
 	setorigin (newmis, self.origin);
@@ -510,7 +512,7 @@ void() MotionSensorSpawn =
 	newmis.colormap = self.colormap;
 	newmis.heat = 0; //Beeps
 
-	newmis.health = newmis.max_health = #BUILD_HEALTH_SENSOR;
+	newmis.health = newmis.max_health = BUILD_HEALTH_SENSOR;
 	newmis.touch = MotionSensorTossTouch;
 
     newmis.num_mines=0; // OfN - reset HACKER improvements
@@ -520,20 +522,20 @@ void() MotionSensorSpawn =
 
 void() MotionSensorDie =
 {
-	sprint(self.real_owner, #PRINT_HIGH, "Your motion sensor was destroyed.\n");
-	self.real_owner.has_sensor = #FALSE;
+	sprint(self.real_owner, PRINT_HIGH, "Your motion sensor was destroyed.\n");
+	self.real_owner.has_sensor = FALSE;
 
 //	ThrowGib("progs/tgib1.mdl", -70);
 //	ThrowGib("progs/tgib2.mdl", -70);
 //	ThrowGib("progs/tgib3.mdl", -70);
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 #else
 	BecomeExplosion ();
@@ -556,13 +558,13 @@ void() AntiGravGrenadeExplode =
 		CamProjectileLockOff();
 #endif
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 #else
 	BecomeExplosion ();
@@ -591,7 +593,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 				if (points < 0)
 					points = 0;
 				points = bounce - points;
-				if (self.cutf_items & #CUTF_GYMNAST)
+				if (self.cutf_items & CUTF_GYMNAST)
 					points = points * 2;
 
 				if (!IsBuilding(head) && points > 0)
@@ -602,8 +604,8 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 
 					if (head.classname != "player")
 					{
-						if(head.flags & #FL_ONGROUND)
-							head.flags = head.flags - #FL_ONGROUND;
+						if(head.flags & FL_ONGROUND)
+							head.flags = head.flags - FL_ONGROUND;
 					}
 					else
 					{
@@ -620,7 +622,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 						{
 							head.gravity = 0.3 * random();
 							te.health = 100;
-							te.nextthink = time + #GR_CONCUSS_TIME;
+							te.nextthink = time + GR_CONCUSS_TIME;
 						}
 						else
 						{
@@ -628,7 +630,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 							stuffcmd(head,"bf\n");
 							// Create a timer entity
 							te = spawn();
-							te.nextthink = time + #GR_CONCUSS_TIME;
+							te.nextthink = time + GR_CONCUSS_TIME;
 							te.think = AntiGravGrenadeTimer;
 							te.team_no = attacker.team_no;
 							te.classname = "timer";
@@ -656,20 +658,20 @@ void() AntiGravGrenadeTimer =
 		return;
 	}
 
-	self.health = self.health - #GR_CONCUSS_DEC * 2;
+	self.health = self.health - GR_CONCUSS_DEC * 2;
 	
 	// hwguy recovers twice as fast - heh heh
-	if (self.owner.cutf_items & #CUTF_HWGUY)
-		self.health = self.health - #GR_CONCUSS_DEC * 2;
+	if (self.owner.cutf_items & CUTF_HWGUY)
+		self.health = self.health - GR_CONCUSS_DEC * 2;
 
 	if (self.health < 0)
 		self.health = 0;
-	self.nextthink = time + #GR_CONCUSS_TIME;
+	self.nextthink = time + GR_CONCUSS_TIME;
 
 	if (self.health == 0)
 	{
 		self.owner.gravity = 1;
-		sprint(self.owner, #PRINT_HIGH, "Your weight feels normal again.\n");
+		sprint(self.owner, PRINT_HIGH, "Your weight feels normal again.\n");
 		dremove(self);
 	}
 };

@@ -1,6 +1,3 @@
-
-#pragma DONT_COMPILE_THIS_FILE
-
 /*=======================================================//
 // ofndefs.QC - CustomTF 3.2.OfN           - 30/1/2001 - //
 // by Sergio Fumaña Grunwaldt - OfteN aka superCOCK2000  //
@@ -17,7 +14,7 @@
 //#define MAD_MONSTERS // for testing
 //#define MAD_TESLA // for testing
 
-//#define GRUNTY_EXTRA_WEAPONS #WEAP_ROCKET_LAUNCHER | #WEAP_SUPER_SHOTGUN // 0
+//#define GRUNTY_EXTRA_WEAPONS WEAP_ROCKET_LAUNCHER | WEAP_SUPER_SHOTGUN // 0
 
 //--- additional global defines ----------------------//
 #define MSG_OFTEN_CUTFVERSION "Running progs build 111 Û05¯09¯2001Ý\n"
@@ -42,7 +39,7 @@
 #define SENTRY_UNLOCKTIME       2.5 // (must be greater than 1.1) time for the sentries to begin to rotate after they have no target (+/- 1 second)
 #define HAX_UNSTABLEDIST      300 // distance at which enemy hacks take longer cause of "unstable connection"
 #define WAYPOINT_AI_LIFE       10 // life for grunty ai created waypoints - last seen enemy mark
-#define ATTN_MONSTERDIE #ATTN_NONE // #ATTN_NORM
+#define ATTN_MONSTERDIE ATTN_NONE // ATTN_NORM
 #define MINE_SCANRATE           0.6 // mines look again for nearby enemy after this time - it was 1 which caused high ping players to not trigger mines sometimes walking around them fast
 #define EXPBODY_DMG           160 // damage exp. body does /was 140
 #define MINE_DMG              200 // was 240 /215

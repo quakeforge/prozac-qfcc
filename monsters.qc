@@ -1,4 +1,6 @@
 /* ALL MONSTERS SHOULD BE 1 0 0 IN COLOR */
+#include "defs.qh"
+#include "monsters.qh"
 
 // name =[framenum,	nexttime, nextthink] {code}
 // expands to:
@@ -14,9 +16,6 @@
 entity (vector location, float life, float type) CreateWaypoint;
 void (entity player) kill_his_demon;
 string(entity themonster) GetMonsterName;
-#define WAYPOINT_TYPE_PRIMARY 0
-#define WAYPOINT_TYPE_SECONDARY 1
-#define WAYPOINT_TYPE_ENEMYLASTSEEN 2
 
 /*
 =============
@@ -32,14 +31,14 @@ float (entity targ) visible =
 	
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
-	traceline (spot1, spot2, #TRUE, self);	// see through other monsters
+	traceline (spot1, spot2, TRUE, self);	// see through other monsters
 	
 	if (trace_inopen && trace_inwater)
-		return #FALSE;			// sight line crossed contents
+		return FALSE;			// sight line crossed contents
 
 	if (trace_fraction == 1)
-		return #TRUE;
-	return #FALSE;
+		return TRUE;
+	return FALSE;
 };
 //CH so you can check other then self
 float (entity targ, entity check) visible2 =
@@ -48,14 +47,14 @@ float (entity targ, entity check) visible2 =
 	
 	spot1 = check.origin + check.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
-	traceline (spot1, spot2, #TRUE, check);	// see through other monsters
+	traceline (spot1, spot2, TRUE, check);	// see through other monsters
 	
 	if (trace_inopen && trace_inwater)
-		return #FALSE;			// sight line crossed contents
+		return FALSE;			// sight line crossed contents
 
 	if (trace_fraction == 1 && trace_endpos == spot2) //CH just extra check
-		return #TRUE;
-	return #FALSE;
+		return TRUE;
+	return FALSE;
 };
 
 //- OfN - Used for haxxx and sentrygun targetting
@@ -66,20 +65,20 @@ float (entity targ, entity check) visible2x =
 	spot1 = check.origin + check.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
 	
-    if (check.classname == "building_sentrygun" && (check.tf_items & #NIT_TURRET))
+    if (check.classname == "building_sentrygun" && (check.tf_items & NIT_TURRET))
         spot1 = check.origin + check.view_ofs - '0 0 20';
     
-    if (check.classname == "building_sentrygun" && !(check.tf_items & #NIT_TURRET))
+    if (check.classname == "building_sentrygun" && !(check.tf_items & NIT_TURRET))
         spot1 = check.origin + check.view_ofs + '0 0 20';
 
-    traceline (spot1, spot2, #TRUE, check);	// see through other monsters
+    traceline (spot1, spot2, TRUE, check);	// see through other monsters
 	
 	if (trace_inopen && trace_inwater)
-		return #FALSE;			// sight line crossed contents
+		return FALSE;			// sight line crossed contents
 
 	if (trace_fraction == 1)
-		return #TRUE;
-	return #FALSE;
+		return TRUE;
+	return FALSE;
 };
 
 
@@ -185,7 +184,7 @@ void() movetarget_f =
 	if (!self.targetname)
 		objerror ("monster_movetarget: no targetname");
 
-	self.solid = #SOLID_TRIGGER;
+	self.solid = SOLID_TRIGGER;
 	self.touch = t_movetarget;
 	setsize (self, '-8 -8 -8', '8 8 8');
 };
@@ -199,7 +198,7 @@ Monsters will continue walking towards the next target corner.
 /*
 void() path_corner =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -235,7 +234,7 @@ void() t_movetarget =
 */
 /*
 	if (self.classname == "monster_ogre")
-		sound (self, #CHAN_VOICE, "ogre/ogdrag.wav", 1, #ATTN_IDLE);// play chainsaw drag sound
+		sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);// play chainsaw drag sound
 */
 /*
 //RPrint ("t_movetarget\n");
@@ -268,12 +267,12 @@ float(entity targ) range =
 	
 	r = vlen (spot1 - spot2);
 	if (r < 120)
-		return #RANGE_MELEE;
+		return RANGE_MELEE;
 	if (r < 500)
-		return #RANGE_NEAR;
+		return RANGE_NEAR;
 	if (r < 1000)
-		return #RANGE_MID;
-	return #RANGE_FAR;
+		return RANGE_MID;
+	return RANGE_FAR;
 };
 
 */
@@ -296,9 +295,9 @@ float(entity targ) infront =
 	
 	if ( dot > 0.3)
 	{
-		return #TRUE;
+		return TRUE;
 	}
-	return #FALSE;
+	return FALSE;
 };
 
 
@@ -321,7 +320,7 @@ FindTarget
 
 Self is currently not attacking anything, so try to find a target
 
-Returns #TRUE if an enemy was sighted
+Returns TRUE if an enemy was sighted
 
 When a player fires a missile, the point of impact becomes a fakeplayer so
 that monsters that see the impact will respond as if they had seen the
@@ -336,100 +335,100 @@ slower noticing monsters.
 /*
 float() FindTarget =
 {
-//WK THIS CODE IS #DEF-ed out!!
+//WK THIS CODE IS DEF-ed out!!
 /* WK Replace this with the code from sentry
 	local entity	client;
 	
 	client = checkclient ();
 
 	if (!client)
-		return #FALSE;	// current check entity isn't in PVS
+		return FALSE;	// current check entity isn't in PVS
 
-	if (client.flags & #FL_NOTARGET)
-		return #FALSE;
-	if (client.items & #IT_INVISIBILITY)
-		return #FALSE;
+	if (client.flags & FL_NOTARGET)
+		return FALSE;
+	if (client.items & IT_INVISIBILITY)
+		return FALSE;
 	
 	if (!visible (client))
-		return #FALSE;
+		return FALSE;
 
 	if (client.classname != "player")
-		return #FALSE;	
+		return FALSE;	
 
 	self.enemy = client;
 
 	HuntTarget ();
 
-	return #TRUE;
+	return TRUE;
 */
 /*
 	local entity client;
 	local float	r, gotone, loopc;
 
 	//WK Hack to get floating sentry working
-	if (self.tf_items & #NIT_FLOATING_SENTRY) {
+	if (self.tf_items & NIT_FLOATING_SENTRY) {
 		self.origin_z = self.origin_z - 40;
 	}
 
 	// Try a few checks to make it react faster
 	r = 0;
 	loopc = 0;
-	gotone = #FALSE;
-	while (loopc < 5 && gotone == #FALSE) //WK 3
+	gotone = FALSE;
+	while (loopc < 5 && gotone == FALSE) //WK 3
 	{
 		client = checkclient();
 
-		gotone = #TRUE;
+		gotone = TRUE;
 
 		if (!client)
-			gotone = #FALSE;
+			gotone = FALSE;
 /*
 		if (teamplay)
 		{
 			// Only attack enemies
 			if (client.team_no == self.team_no && self.team_no != 0)
-				gotone = #FALSE;
+				gotone = FALSE;
 
 			// Cant see Undercover spies
 			if (client.undercover_team == self.team_no && self.team_no != 0)
-				gotone = #FALSE;
+				gotone = FALSE;
 		}
 
 //		if (client == self.real_owner)
-//			gotone = #FALSE;
+//			gotone = FALSE;
 */
 /*
 		if (client.is_feigning)
-			gotone = #FALSE;
+			gotone = FALSE;
 
-		if (client.flags & #FL_NOTARGET)
-			gotone = #FALSE;
-		if (client.items & #IT_INVISIBILITY)
-			gotone = #FALSE;
+		if (client.flags & FL_NOTARGET)
+			gotone = FALSE;
+		if (client.items & IT_INVISIBILITY)
+			gotone = FALSE;
 
 		if (!visible (client))
-			gotone = #FALSE;
+			gotone = FALSE;
 
 		r = range (client);
-		if (r == #RANGE_FAR)
-			gotone = #FALSE;			
+		if (r == RANGE_FAR)
+			gotone = FALSE;			
 	
-		if (r == #RANGE_NEAR)
+		if (r == RANGE_NEAR)
 		{
 			if (client.show_hostile < time && !infront (client))
-				gotone = #FALSE;
+				gotone = FALSE;
 		}
-		else if (r == #RANGE_MID)
+		else if (r == RANGE_MID)
 		{
 			if ( /* client.show_hostile < time || */ !infront (client))
-/*				gotone = #FALSE;
+/*				gotone = FALSE;
 		}
 		loopc = loopc + 1;
 		if (gotone) loopc = 1000;
 	}
 
 	if (!gotone)
-		return #FALSE;
+		return FALSE;
 
 	// Found a Target
 	self.enemy = client;
@@ -439,41 +438,18 @@ float() FindTarget =
 		if (self.enemy.classname != "player")
 		{
 			self.enemy = world;
-			return #FALSE;
+			return FALSE;
 		}
 	}
 	
 	HuntTarget ();
 
-	return #TRUE;
+	return TRUE;
 };*/
 #endif
 
 void() FoundTarget;
 
-/* WK We are already including these
-ai.qc
-fight.qc
-demon.qc
-*/
-#ifdef COOP_MODE
-// include all the monsters
-// WK In normal QW we only need demons
-// SB and soldiers, and shamblers
-#includelist
-dog.qc
-enforcer.qc
-fish.qc
-hknight.qc
-knight.qc
-ogre.qc
-oldone.qc
-shalrath.qc
-tarbaby.qc
-wizard.qc
-zombie.qc
-#endlist
-#endif
 
 /*
 ================
@@ -488,9 +464,9 @@ void() monster_use =
 		return;
 	if (self.health <= 0)
 		return;
-	if (activator.items & #IT_INVISIBILITY)
+	if (activator.items & IT_INVISIBILITY)
 		return;
-	if (activator.flags & #FL_NOTARGET)
+	if (activator.flags & FL_NOTARGET)
 		return;
 	if (activator.classname != "player")
 		return;
@@ -537,10 +513,10 @@ void() monster_death_use =
 	local entity 	ent, otemp;
 
 // fall to ground
-	if (self.flags & #FL_FLY)
-		self.flags = self.flags - #FL_FLY;
-	if (self.flags & #FL_SWIM)
-		self.flags = self.flags - #FL_SWIM;
+	if (self.flags & FL_FLY)
+		self.flags = self.flags - FL_FLY;
+	if (self.flags & FL_SWIM)
+		self.flags = self.flags - FL_SWIM;
 
 	if (!self.target)
 		return;
@@ -566,28 +542,28 @@ void() walkmonster_start_go =
 	test = self.origin;
 	test_z = test_z - self.mins_z - 1;
 	
-	if (pointcontents(test) == #CONTENT_SOLID)
+	if (pointcontents(test) == CONTENT_SOLID)
 		failure = 0;
 	
 	test = self.origin - self.mins;
 	test_z = test_z - 1;
 	
-	if (pointcontents(test) == #CONTENT_SOLID)
+	if (pointcontents(test) == CONTENT_SOLID)
 		failure = 0;
 	
 	test_x = test_x - self.mins_x + self.maxs_x;
 	
-	if (pointcontents(test) == #CONTENT_SOLID)
+	if (pointcontents(test) == CONTENT_SOLID)
 		failure = 0;
 	
 	test_y = test_y - self.mins_y + self.maxs_y;
 	
-	if (pointcontents(test) == #CONTENT_SOLID)
+	if (pointcontents(test) == CONTENT_SOLID)
 		failure = 0;
 		
 	test_x = test_x - self.maxs_x + self.mins_x;
 
-	if (pointcontents(test) == #CONTENT_SOLID)
+	if (pointcontents(test) == CONTENT_SOLID)
 		failure = 0;*/
 	
 	if (!walkmove(0,0))
@@ -601,31 +577,31 @@ void() walkmonster_start_go =
         if (IsMonster(self))
 			if (self.real_owner.classname == "player")
 			{
-				//self.real_owner.job = self.real_owner.job - (self.real_owner.job & #JOB_DEMON_OUT);
+				//self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 				local string MName;
                 MName=GetMonsterName(self);
-                sprint(self.real_owner,#PRINT_HIGH,"Your ");
-                sprint(self.real_owner,#PRINT_HIGH,MName);
-                sprint(self.real_owner,#PRINT_HIGH," was beamed into a wall and died.\n");
+                sprint(self.real_owner,PRINT_HIGH,"Your ");
+                sprint(self.real_owner,PRINT_HIGH,MName);
+                sprint(self.real_owner,PRINT_HIGH," was beamed into a wall and died.\n");
 
 				if (self.classname == "monster_shambler") //- ofn
 				{
 					self.real_owner.demon_blood = self.real_owner.demon_blood + 4;
-					if (self.real_owner.demon_blood > #MAX_KNIFE_BLOOD)
-						self.real_owner.demon_blood = #MAX_KNIFE_BLOOD;
+					if (self.real_owner.demon_blood > MAX_KNIFE_BLOOD)
+						self.real_owner.demon_blood = MAX_KNIFE_BLOOD;
 				}
                 else if (self.classname == "monster_demon1") //- ofn
 				{
 					self.real_owner.demon_blood = self.real_owner.demon_blood + 2;
-					if (self.real_owner.demon_blood > #MAX_KNIFE_BLOOD)
-						self.real_owner.demon_blood = #MAX_KNIFE_BLOOD;
+					if (self.real_owner.demon_blood > MAX_KNIFE_BLOOD)
+						self.real_owner.demon_blood = MAX_KNIFE_BLOOD;
 				}
                 
                 /*else if (self.classname == "monster_wizard") //- ofn
 				{
 					self.real_owner.demon_blood = self.real_owner.demon_blood + ? ;
-					if (self.real_owner.demon_blood > #MAX_KNIFE_BLOOD)
-						self.real_owner.demon_blood = #MAX_KNIFE_BLOOD;
+					if (self.real_owner.demon_blood > MAX_KNIFE_BLOOD)
+						self.real_owner.demon_blood = MAX_KNIFE_BLOOD;
 				}*/
 
                 kill_his_demon(self.real_owner);
@@ -635,7 +611,7 @@ void() walkmonster_start_go =
 		return;
 	}
 	
-	self.takedamage = #DAMAGE_AIM;
+	self.takedamage = DAMAGE_AIM;
 
 	self.ideal_yaw = self.angles * '0 1 0';
 	if (!self.yaw_speed)
@@ -643,7 +619,7 @@ void() walkmonster_start_go =
 	self.view_ofs = '0 0 25';
 	self.use = monster_use;
 	
-	self.flags = self.flags | #FL_MONSTER;
+	self.flags = self.flags | FL_MONSTER;
 	
 	if (self.target)
 	{
@@ -670,7 +646,7 @@ void() walkmonster_start_go =
 	
 	if (self.classname == "monster_army")
 	{
-        self.martyr_enemy = CreateWaypoint(self.origin,#WAYPOINT_LIFE,#WAYPOINT_TYPE_PRIMARY);
+        self.martyr_enemy = CreateWaypoint(self.origin,WAYPOINT_LIFE,WAYPOINT_TYPE_PRIMARY);
 		self.martyr_enemy.goalentity = world;
 
         // OFTEN
@@ -701,7 +677,7 @@ void() walkmonster_start =
 
 void() flymonster_start_go =
 {
-	self.takedamage = #DAMAGE_AIM;
+	self.takedamage = DAMAGE_AIM;
 
 	self.ideal_yaw = self.angles * '0 1 0';
 	if (!self.yaw_speed)
@@ -709,8 +685,8 @@ void() flymonster_start_go =
 	self.view_ofs = '0 0 25';
 	self.use = monster_use;
 
-	self.flags = self.flags | #FL_FLY;
-	self.flags = self.flags | #FL_MONSTER;
+	self.flags = self.flags | FL_FLY;
+	self.flags = self.flags | FL_MONSTER;
 
 	if (!walkmove(0,0))
 	{
@@ -761,7 +737,7 @@ void() swimmonster_start_go =
 		return;
 	}
 
-	self.takedamage = #DAMAGE_AIM;
+	self.takedamage = DAMAGE_AIM;
 	total_monsters = total_monsters + 1;
 
 	self.ideal_yaw = self.angles * '0 1 0';
@@ -770,8 +746,8 @@ void() swimmonster_start_go =
 	self.view_ofs = '0 0 10';
 	self.use = monster_use;
 	
-	self.flags = self.flags | #FL_SWIM;
-	self.flags = self.flags | #FL_MONSTER;
+	self.flags = self.flags | FL_SWIM;
+	self.flags = self.flags | FL_MONSTER;
 
 	if (self.target)
 	{
@@ -805,3 +781,25 @@ void() swimmonster_start =
 	set_monster_health();
 };
 // WK #endif
+
+/* WK We are already including these
+ai.qc
+fight.qc
+demon.qc
+*/
+#ifdef COOP_MODE
+// include all the monsters
+// WK In normal QW we only need demons
+// SB and soldiers, and shamblers
+#include "dog.qc"
+#include "enforcer.qc"
+#include "fish.qc"
+#include "hknight.qc"
+#include "knight.qc"
+#include "ogre.qc"
+#include "oldone.qc"
+#include "shalrath.qc"
+#include "tarbaby.qc"
+#include "wizard.qc"
+#include "zombie.qc"
+#endif

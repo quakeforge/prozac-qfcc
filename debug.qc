@@ -3,6 +3,9 @@
 
 	TeamFortress Software
 */			
+
+#include "defs.qh"
+
 float() CheckExistence;
 entity(float gno) Findgoal;
 
@@ -31,7 +34,7 @@ void(entity te) dremove =
 		return;
 	}
 
-	if (te.is_removed == #TRUE)
+	if (te.is_removed == TRUE)
 	{
 	/*
 		RPrint("***BUG BUG BUG BUG BUG BUG BUG***\n");
@@ -41,7 +44,7 @@ void(entity te) dremove =
 		return;
 	}
 
-	te.is_removed = #TRUE;
+	te.is_removed = TRUE;
 	remove(te);
 };
 
@@ -52,8 +55,8 @@ void() display_location =
 	local string st;
 
 	st = vtos(self.origin);
-	sprint (self, #PRINT_HIGH, st);
-	sprint (self, #PRINT_HIGH, "\n");
+	sprint (self, PRINT_HIGH, st);
+	sprint (self, PRINT_HIGH, "\n");
 };
 
 //- OfN
@@ -69,7 +72,7 @@ void (string msg) RPrint =
     if (debug_target==world)
         return;
 
-    sprint(debug_target,#PRINT_HIGH,msg);
+    sprint(debug_target,PRINT_HIGH,msg);
 };
 
 float(entity person) Is_Admin;
@@ -81,7 +84,7 @@ void(entity who) MakeMeDebug =
 {
     if (debug_target==who)
     {
-        sprint(debug_target,#PRINT_HIGH,"You are already the remote debugger!\n");    
+        sprint(debug_target,PRINT_HIGH,"You are already the remote debugger!\n");    
         return;
     }
     
@@ -98,12 +101,12 @@ void(entity who) MakeMeDebug =
 
     if (debug_target!=world)
     {
-        sprint(debug_target,#PRINT_HIGH,"(OfteN debug): You are not the remote debugger anymore.\n");
-        sprint(debug_target,#PRINT_HIGH," New remote debugger is: '");
+        sprint(debug_target,PRINT_HIGH,"(OfteN debug): You are not the remote debugger anymore.\n");
+        sprint(debug_target,PRINT_HIGH," New remote debugger is: '");
         sprint(debug_target,who.netname);
-        sprint(debug_target,#PRINT_HIGH,"'\n");
+        sprint(debug_target,PRINT_HIGH,"'\n");
     }
     
     debug_target=who;
-    sprint(debug_target,#PRINT_HIGH,"(OfteN debug): Server debug messages (dprints) will be sent to you...\n");
+    sprint(debug_target,PRINT_HIGH,"(OfteN debug): Server debug messages (dprints) will be sent to you...\n");
 };

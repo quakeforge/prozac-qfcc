@@ -1,3 +1,6 @@
+#include "defs.qh"
+#include "ai.qh"
+#include "monsters.qh"
 /* ------------------------------------------------------------------------------------
 ** ------------------------------------GRUNTY(tm)--------------------------------------
 ** -- Your artificially intelligent mercenary from beyond the Void					 --
@@ -165,7 +168,7 @@ void() grunty_stand = // We need two stand sections for axe and weapon
 	#ifdef VERBOSE_GRUNTY
 	if (self.super_time <= time)
 	{
-		sprint(self.real_owner, #PRINT_HIGH, "Soldier in position and awaiting target.\n");
+		sprint(self.real_owner, PRINT_HIGH, "Soldier in position and awaiting target.\n");
 		self.super_time = time + 5;
 	}
 	#endif
@@ -180,7 +183,7 @@ void() grunty_stand = // We need two stand sections for axe and weapon
 	}
 
 	GruntyThink();
-    //sprint(self.real_owner, #PRINT_HIGH, "Done gruntythink in stand().\n");
+    //sprint(self.real_owner, PRINT_HIGH, "Done gruntythink in stand().\n");
 };
 /* ---------------------------------------------------------------------------------- */
 //						GRUNTY - PART TWO
@@ -216,12 +219,12 @@ void() grunty_run =
 	#ifdef VERBOSE_GRUNTY
     if (self.super_time <= time)
 	{
-		sprint(self.real_owner, #PRINT_HIGH, "Hello, commander! I am currently running at speed ");
+		sprint(self.real_owner, PRINT_HIGH, "Hello, commander! I am currently running at speed ");
 		st = ftos(self.custom_speed);
-		sprint(self.real_owner, #PRINT_HIGH, st);
-		sprint(self.real_owner, #PRINT_HIGH, " towards ");
-		sprint(self.real_owner, #PRINT_HIGH, self.goalentity.netname);
-		sprint(self.real_owner, #PRINT_HIGH, "\n");
+		sprint(self.real_owner, PRINT_HIGH, st);
+		sprint(self.real_owner, PRINT_HIGH, " towards ");
+		sprint(self.real_owner, PRINT_HIGH, self.goalentity.netname);
+		sprint(self.real_owner, PRINT_HIGH, "\n");
 		self.super_time = time + 5;
 	}
 	#endif
@@ -236,17 +239,17 @@ void() grunty_run =
     GruntyThink();
 	
     #ifdef VERBOSE_GRUNTY
-    sprint(self.real_owner, #PRINT_HIGH, "I have just finished GruntyThink (self.enemy = ");
-	sprint(self.real_owner, #PRINT_HIGH, self.enemy);
-	sprint(self.real_owner, #PRINT_HIGH, ")\n");
+    sprint(self.real_owner, PRINT_HIGH, "I have just finished GruntyThink (self.enemy = ");
+	sprint(self.real_owner, PRINT_HIGH, self.enemy);
+	sprint(self.real_owner, PRINT_HIGH, ")\n");
 	#endif
     
 	GRun();
 	
     #ifdef VERBOSE_GRUNTY    
-	sprint(self.real_owner, #PRINT_HIGH, "I have just finished GRun (self.enemy = ");
-	sprint(self.real_owner, #PRINT_HIGH, self.enemy);
-	sprint(self.real_owner, #PRINT_HIGH, ")\n");
+	sprint(self.real_owner, PRINT_HIGH, "I have just finished GRun (self.enemy = ");
+	sprint(self.real_owner, PRINT_HIGH, self.enemy);
+	sprint(self.real_owner, PRINT_HIGH, ")\n");
 	#endif    
 	
 	Grunty_Check_Frags();
@@ -284,7 +287,7 @@ void() grunty_axeatta =
 	self.frame = $axatt1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 1)
-		if (self.current_weapon == #WEAP_AXE)
+		if (self.current_weapon == WEAP_AXE)
 			W_FireAxe();
 		else
 			W_FireSpanner();
@@ -303,7 +306,7 @@ void() grunty_axeattb =
 	self.frame = $axattb1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 2)
-		if (self.current_weapon == #WEAP_AXE)
+		if (self.current_weapon == WEAP_AXE)
 			W_FireAxe();
 		else
 			W_FireSpanner();
@@ -322,7 +325,7 @@ void() grunty_axeattc =
 	self.frame = $axattc1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 2)
-		if (self.current_weapon == #WEAP_AXE)
+		if (self.current_weapon == WEAP_AXE)
 			W_FireAxe();
 		else
 			W_FireSpanner();
@@ -341,7 +344,7 @@ void() grunty_axeattd =
 	self.frame = $axattd1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 2)
-		if (self.current_weapon == #WEAP_AXE)
+		if (self.current_weapon == WEAP_AXE)
 			W_FireAxe();
 		else
 			W_FireSpanner();
@@ -387,9 +390,9 @@ void() grunty_shotgun =
 	self.frame = $shotatt1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 0)
-		self.effects = self.effects | #EF_DIMLIGHT;
+		self.effects = self.effects | EF_DIMLIGHT;
 	else if (self.weaponframe == 0.5)
-		self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 	
 	self.weaponframe = self.weaponframe + 0.5;
 	GruntyThink();
@@ -411,9 +414,9 @@ void() grunty_rocket =
 	self.frame = $rockatt1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 0)
-		self.effects = self.effects | #EF_DIMLIGHT;
+		self.effects = self.effects | EF_DIMLIGHT;
 	else if (self.weaponframe == 0.5)
-		self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 	
 	self.weaponframe = self.weaponframe + 0.5;
 	GruntyThink();
@@ -434,18 +437,18 @@ void(vector org, vector dir) grunty_spike =
 {
 	newmis = spawn ();
 	newmis.owner = self;
-	newmis.movetype = #MOVETYPE_FLYMISSILE;
-	newmis.solid = #SOLID_BBOX;
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_BBOX;
 
 	newmis.angles = vectoangles(dir);
 
 	newmis.touch = spike_touch;
-	newmis.weapon = #DMSG_NAILGUN;
+	newmis.weapon = DMSG_NAILGUN;
 	newmis.classname = "spike";
 	newmis.think = SUB_Remove;
 	newmis.nextthink = time + 6;
 	setmodel (newmis, "progs/spike.mdl");
-	setsize (newmis, #VEC_ORIGIN, #VEC_ORIGIN);		
+	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
 	setorigin (newmis, org);
 
 	newmis.velocity = dir*(1100+1100*(self.has_sensor/17));
@@ -454,7 +457,7 @@ void(vector org, vector dir) grunty_spike =
 // Grunty uses the nailgun
 void() grunty_nail1 = [$nailatt1, grunty_nail2]
 {
-	GruntyThink(); GRun(); self.effects = self.effects | #EF_DIMLIGHT;
+	GruntyThink(); GRun(); self.effects = self.effects | EF_DIMLIGHT;
 	if (self.ammo_nails > 0)
     {   
         W_FireSpikes(4);
@@ -463,11 +466,11 @@ void() grunty_nail1 = [$nailatt1, grunty_nail2]
 };
 void() grunty_nail2 = [$nailatt1, grunty_nail3] 
 {
-    GruntyThink(); GRun(); self.effects = self.effects | #EF_DIMLIGHT;
+    GruntyThink(); GRun(); self.effects = self.effects | EF_DIMLIGHT;
 };
 void() grunty_nail3 = [$nailatt2, grunty_nail4] 
 {
-    GruntyThink(); GRun(); self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+    GruntyThink(); GRun(); self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 	if (self.ammo_nails > 0)
     {
         W_FireSpikes(-4);
@@ -476,7 +479,7 @@ void() grunty_nail3 = [$nailatt2, grunty_nail4]
 };
 void() grunty_nail4 = [$nailatt2, grunty_nail1] 
 {
-	GruntyThink(); GRun(); self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+	GruntyThink(); GRun(); self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 
     local float vis, dist;
 
@@ -512,7 +515,7 @@ vector () Grunty_LeadShot =
 	else
 		pvel = '0 0 0';*/
 	
-	//if (!self.enemy.flags & #FL_ONGROUND)
+	//if (!self.enemy.flags & FL_ONGROUND)
 	//	pvel_z = pvel_z / 20;
 	
 	//lead = pvel * (vlen(src - targ) / ReturnWeaponVelocity());
@@ -526,16 +529,16 @@ vector () Grunty_LeadShot =
 	
     dir = normalize (loc - src);
 
-    traceline(src, targ, #TRUE, self);
+    traceline(src, targ, TRUE, self);
 	if (trace_fraction != 1.0)
 	{
 		loc_z = loc_z + self.enemy.maxs_z; // already commented
-		//if (self.current_weapon == #WEAP_ROCKET_LAUNCHER)
+		//if (self.current_weapon == WEAP_ROCKET_LAUNCHER)
 		//	loc_z = loc_z + self.enemy.mins_z * -1;
 	}
     else
     {
-        if (self.current_weapon == #WEAP_ROCKET_LAUNCHER && random() > 0.3)
+        if (self.current_weapon == WEAP_ROCKET_LAUNCHER && random() > 0.3)
     		loc_z = loc_z - self.enemy.maxs_z/2; 
             //- OFN - makes grunty aim to the ground with RL sometimes, so evil! ^_^
     }
@@ -607,13 +610,13 @@ entity (entity scanner) LookAroundGrunty =
                 gotatarget = Pharse_Client(client, scanner, 1, 0, 0, 0);
 
                 if (client.is_undercover)
-                    if ((client.cutf_items & #CUTF_JAMMER) || !(scanner.tf_items & #NIT_SCANNER))
+                    if ((client.cutf_items & CUTF_JAMMER) || !(scanner.tf_items & NIT_SCANNER))
                         gotatarget=0;
                 if (client.modelindex == modelindex_null)
-                    if ((client.cutf_items & #CUTF_JAMMER) || !(scanner.tf_items & #NIT_SCANNER))
+                    if ((client.cutf_items & CUTF_JAMMER) || !(scanner.tf_items & NIT_SCANNER))
                         gotatarget=0;
                 if (client.modelindex == modelindex_eyes)
-                    if ((client.cutf_items & #CUTF_JAMMER) || !(scanner.tf_items & #NIT_SCANNER))
+                    if ((client.cutf_items & CUTF_JAMMER) || !(scanner.tf_items & NIT_SCANNER))
                         if (random() < 2 - scanner.has_tesla * random())
                             gotatarget=0;		
             }
@@ -690,7 +693,7 @@ void() GruntyScanTargets =
             }
 
             self.has_teleporter = 0;
-			self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+			self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 			return;
 		}
 	// If we have a target already
@@ -718,7 +721,7 @@ void() GruntyScanTargets =
                 self.goalentity = ReturnEasyWaypoint(self,self);
 
                 self.has_teleporter = 0;
-    			self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+    			self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 
                 return;
             }
@@ -731,10 +734,10 @@ void() GruntyScanTargets =
                     RemoveWaypoint(self.demon_one,self);
                 }
 
-                self.demon_one = CreateWaypoint(self.enemy.origin - self.enemy.velocity * 0.05, #WAYPOINT_AI_LIFE, #WAYPOINT_TYPE_ENEMYLASTSEEN);
+                self.demon_one = CreateWaypoint(self.enemy.origin - self.enemy.velocity * 0.05, WAYPOINT_AI_LIFE, WAYPOINT_TYPE_ENEMYLASTSEEN);
                 self.demon_one.goalentity = ReturnEasyWaypoint(self,self.demon_one);
                 self.goalentity = self.demon_one;
-                self.search_time = time + #GRUNTY_SEEKTIME; // was 8
+                self.search_time = time + GRUNTY_SEEKTIME; // was 8
                 //- OfN -
                 self.has_teleporter = 0;
             }
@@ -767,8 +770,8 @@ void() GruntyScanTargets =
             if (!IsBuilding(targ) && self.super_time < time && targ.netname != "land_mine")
             {
                 PrintFromSoldier(self,self.real_owner,"i can see ");
-                sprint(self.real_owner, #PRINT_HIGH, targ.netname);
-                sprint(self.real_owner, #PRINT_HIGH, " around there...\n");
+                sprint(self.real_owner, PRINT_HIGH, targ.netname);
+                sprint(self.real_owner, PRINT_HIGH, " around there...\n");
                 self.super_time = time + 4;
             }
             return;
@@ -781,8 +784,8 @@ void() GruntyScanTargets =
 
             PrintFromSoldier(self,self.real_owner,"Target ");
            
-            sprint(self.real_owner, #PRINT_HIGH, targ.netname);
-			sprint(self.real_owner, #PRINT_HIGH, " spotted!\n Engaging target...\n");
+            sprint(self.real_owner, PRINT_HIGH, targ.netname);
+			sprint(self.real_owner, PRINT_HIGH, " spotted!\n Engaging target...\n");
 			self.super_time = time + 2.5;
 		}
 		
@@ -815,7 +818,7 @@ void() GruntyCheckFire =
 		#ifdef VERBOSE_GRUNTY
 		//if (self.super_time <= time)
 		//{
-			sprint(self.real_owner, #PRINT_HIGH, "Target not visible! Cancelling firing...\n");
+			sprint(self.real_owner, PRINT_HIGH, "Target not visible! Cancelling firing...\n");
 			self.super_time = time + 5;
 		//}
 		#endif
@@ -839,69 +842,69 @@ void() GruntyCheckFire =
 	self.weaponframe = 0;
 	
     
-	if (dist < 64 && self.weapons_carried & #WEAP_AXE && self.cutf_items & #CUTF_KNIFE)
+	if (dist < 64 && self.weapons_carried & WEAP_AXE && self.cutf_items & CUTF_KNIFE)
 	{
-		self.current_weapon = #WEAP_AXE;
-		/*if (self.cutf_items & #CUTF_KNIFE)
+		self.current_weapon = WEAP_AXE;
+		/*if (self.cutf_items & CUTF_KNIFE)
 			self.attack_finished = time + 0.5;
 		else
 			self.attack_finished = time + 0.5;*/
         Attack_Finished(0.5);
 		if (self.health > 0) self.think = grunty_axeatt;
 		#ifdef VERBOSE_GRUNTY
-		sprint(self.real_owner, #PRINT_HIGH, "Attempting to knife...\n");
+		sprint(self.real_owner, PRINT_HIGH, "Attempting to knife...\n");
 		#endif
 		return;
 	}
-	if (dist < 200 && self.weapons_carried & #WEAP_SUPER_SHOTGUN)
+	if (dist < 200 && self.weapons_carried & WEAP_SUPER_SHOTGUN)
 	{
 		if (self.ammo_shells > 1)
 		{
-			self.current_weapon = #WEAP_SUPER_SHOTGUN;
+			self.current_weapon = WEAP_SUPER_SHOTGUN;
 			//self.attack_finished = time + 0.7;
             Attack_Finished(0.7);
 			W_FireSuperShotgun();
 			if (self.health > 0) self.think = grunty_shotgun;
 			#ifdef VERBOSE_GRUNTY
-			sprint(self.real_owner, #PRINT_HIGH, "Attempting to super shotgun...\n");
+			sprint(self.real_owner, PRINT_HIGH, "Attempting to super shotgun...\n");
 			#endif
 			return;
 		}
 	}
-	if (dist < 64 && self.weapons_carried & #WEAP_AXE)
+	if (dist < 64 && self.weapons_carried & WEAP_AXE)
 	{
-		self.current_weapon = #WEAP_AXE;
-		/*if (self.cutf_items & #CUTF_KNIFE)
+		self.current_weapon = WEAP_AXE;
+		/*if (self.cutf_items & CUTF_KNIFE)
 			self.attack_finished = time + 0.5;
 		else
 			self.attack_finished = time + 0.5;*/
         Attack_Finished(0.5);
 		if (self.health > 0) self.think = grunty_axeatt;
 		#ifdef VERBOSE_GRUNTY
-		sprint(self.real_owner, #PRINT_HIGH, "Attempting to axe...\n");
+		sprint(self.real_owner, PRINT_HIGH, "Attempting to axe...\n");
 		#endif
         return;
 	}                       //was 800
-	if (dist > 200 && dist < 1100 && self.weapons_carried & #WEAP_ROCKET_LAUNCHER)
+	if (dist > 200 && dist < 1100 && self.weapons_carried & WEAP_ROCKET_LAUNCHER)
 	{
         if (self.ammo_rockets > 1)
         {
-            self.current_weapon = #WEAP_ROCKET_LAUNCHER;
+            self.current_weapon = WEAP_ROCKET_LAUNCHER;
             //self.attack_finished = time + 0.8;
             Attack_Finished(0.8);
             W_FireRocket();
             if (self.health > 0) self.think = grunty_rocket;
             #ifdef VERBOSE_GRUNTY
-            sprint(self.real_owner, #PRINT_HIGH, "Attempting to rocket...\n");
+            sprint(self.real_owner, PRINT_HIGH, "Attempting to rocket...\n");
             #endif
             return;
         }
 	}
-    if (dist < 1400 && self.weapons_carried & #WEAP_ROCKET_LAUNCHER && random() > 0.75)
+    if (dist < 1400 && self.weapons_carried & WEAP_ROCKET_LAUNCHER && random() > 0.75)
 	{
         if (self.ammo_rockets > 1)
         {
-            self.current_weapon = #WEAP_ROCKET_LAUNCHER;
+            self.current_weapon = WEAP_ROCKET_LAUNCHER;
             //self.attack_finished = time + 0.8;
             Attack_Finished(0.8);
             W_FireRocket();
@@ -909,9 +912,9 @@ void() GruntyCheckFire =
             return;
         }
     }
-	if (dist < 2000 && self.weapons_carried & #WEAP_ROCKET_LAUNCHER && self.ammo_rockets > 1 && random() > 0.98)
+	if (dist < 2000 && self.weapons_carried & WEAP_ROCKET_LAUNCHER && self.ammo_rockets > 1 && random() > 0.98)
 	{
-		self.current_weapon = #WEAP_ROCKET_LAUNCHER;
+		self.current_weapon = WEAP_ROCKET_LAUNCHER;
 		//self.attack_finished = time + 0.8;
         Attack_Finished(0.8);
 		W_FireRocket();
@@ -920,32 +923,32 @@ void() GruntyCheckFire =
     }
 
     //- OfN 
-	if (dist < 400 && self.weapons_carried & #WEAP_SHOTGUN && self.ammo_shells > 0)
+	if (dist < 400 && self.weapons_carried & WEAP_SHOTGUN && self.ammo_shells > 0)
 	{
 		//if (self.ammo_shells > 0)
 		//{
-			self.current_weapon = #WEAP_SHOTGUN;
+			self.current_weapon = WEAP_SHOTGUN;
 			//self.attack_finished = time + 0.5; // TODO: MAKE ATTACK FINISHED
             Attack_Finished(0.5);
 			W_FireShotgun();
 			if (self.health > 0) self.think = grunty_shotgun;
 			#ifdef VERBOSE_GRUNTY
-			sprint(self.real_owner, #PRINT_HIGH, "Attempting to shotgun...\n");
+			sprint(self.real_owner, PRINT_HIGH, "Attempting to shotgun...\n");
 			#endif
 //            RPrint("SHOTGUN\n");
             return;
 		//}
 	}
-	if (dist < 2000 && self.weapons_carried & #WEAP_NAILGUN && self.ammo_nails > 0)
+	if (dist < 2000 && self.weapons_carried & WEAP_NAILGUN && self.ammo_nails > 0)
 	{
 		//if (self.ammo_nails > 0)
 		//{
-			self.current_weapon = #WEAP_NAILGUN;
+			self.current_weapon = WEAP_NAILGUN;
 			//self.attack_finished = time + 0.2;//+ 0.1;
             Attack_Finished(0.2);
 			if (self.health > 0) self.think = grunty_nail1;
 			#ifdef VERBOSE_GRUNTY
-			sprint(self.real_owner, #PRINT_HIGH, "Attempting to nail...\n");
+			sprint(self.real_owner, PRINT_HIGH, "Attempting to nail...\n");
 			#endif
 //            RPrint("NAIL\n");
 			return;
@@ -954,11 +957,11 @@ void() GruntyCheckFire =
 	else
 	{
 		// Do whatever you want
-		self.effects = self.effects - (self.effects & #EF_DIMLIGHT);
+		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 		//self.walkframe = 0; ofn
 		if (self.health > 0) self.think = grunty_run;
 		#ifdef VERBOSE_GRUNTY
-		sprint(self.real_owner, #PRINT_HIGH, "GruntyCheckFire defaulting to none...\n");
+		sprint(self.real_owner, PRINT_HIGH, "GruntyCheckFire defaulting to none...\n");
 		#endif	
 //        RPrint("NONE\n");
 	}
@@ -1007,10 +1010,10 @@ void() GRun =
 
 	dist = self.custom_speed;
 		
-	if (self.tfstate & #TFSTATE_TRANQUILISED)
-		dist = dist * (#AI_TRANQ_FACTOR_UP / #AI_TRANQ_FACTOR_DN); //Tranq
+	if (self.tfstate & TFSTATE_TRANQUILISED)
+		dist = dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN); //Tranq
 	
-	/* - OfN -if (self.enemy.classname == "monster_shambler" || self.enemy.weapons_carried & #WEAP_ASSAULT_CANNON)
+	/* - OfN -if (self.enemy.classname == "monster_shambler" || self.enemy.weapons_carried & WEAP_ASSAULT_CANNON)
 		if (self.has_teleporter == 0)
 			self.has_teleporter = 3;*/
 	
@@ -1027,10 +1030,10 @@ void() GRun =
 	
 	else if (self.has_teleporter == 2) // jump!
 	{
-		if (self.flags & #FL_ONGROUND) // only jump if we're on the ground
+		if (self.flags & FL_ONGROUND) // only jump if we're on the ground
 		{
 			self.velocity_z = self.velocity_z + 270; // boing
-			sound (self, #CHAN_BODY, "player/plyrjmp8.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 		}
 		self.has_teleporter = 0; // don't jump
 	}
@@ -1088,7 +1091,7 @@ void (float angle, float dist) botmovedist =
     }///////////////////////////////*/
     #endif
 
-    /*if (pointcontents(self.origin) == #CONTENT_EMPTY) // We're in open air
+    /*if (pointcontents(self.origin) == CONTENT_EMPTY) // We're in open air
 	{*/
 
         success = walkmove(angle, dist);
@@ -1112,14 +1115,14 @@ void (float angle, float dist) botmovedist =
             self.has_teleporter = 0; // abort dodging
             makevectors(self.angles);
             // First, we'll see if jumping would be suitable
-            if (self.flags & #FL_ONGROUND) // don't bother if we aren't on the ground
+            if (self.flags & FL_ONGROUND) // don't bother if we aren't on the ground
             {
-                traceline(self.origin + '0 0 20', self.origin + '0 0 20' + v_forward * 10, #FALSE, self);
+                traceline(self.origin + '0 0 20', self.origin + '0 0 20' + v_forward * 10, FALSE, self);
                 if (trace_fraction == 1.0)
                 {
                     self.velocity = self.velocity + v_forward * self.custom_speed * 20;
                     self.velocity_z = self.velocity_z + 270;
-                    sound (self, #CHAN_BODY, "player/plyrjmp8.wav", 1, #ATTN_NORM);
+                    sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
                     self.has_cheated = time + 0.5;
                     return;
                 }
@@ -1140,52 +1143,52 @@ void () Grunty_StateInv =
 	local string talk;
 	
 	talk = ftos(self.health);
-	sprint(self.real_owner, #PRINT_HIGH, "Your ÛÔÏ‰ÈÂÚ has ");
-	sprint(self.real_owner, #PRINT_HIGH, talk);
+	sprint(self.real_owner, PRINT_HIGH, "Your ÛÔÏ‰ÈÂÚ has ");
+	sprint(self.real_owner, PRINT_HIGH, talk);
 	talk = ftos(self.max_health);
-	sprint(self.real_owner, #PRINT_HIGH, "Ø");
-	sprint(self.real_owner, #PRINT_HIGH, talk);
-	sprint(self.real_owner, #PRINT_HIGH, " ËÂ·ÏÙË");
-	if (self.weapons_carried & #WEAP_AXE)
-		if (self.cutf_items & #CUTF_KNIFE)
-			sprint(self.real_owner, #PRINT_HIGH, ", a combat knife");
+	sprint(self.real_owner, PRINT_HIGH, "Ø");
+	sprint(self.real_owner, PRINT_HIGH, talk);
+	sprint(self.real_owner, PRINT_HIGH, " ËÂ·ÏÙË");
+	if (self.weapons_carried & WEAP_AXE)
+		if (self.cutf_items & CUTF_KNIFE)
+			sprint(self.real_owner, PRINT_HIGH, ", a combat knife");
 		else
-			sprint(self.real_owner, #PRINT_HIGH, ", an axe");
-	if (self.weapons_carried & #WEAP_SHOTGUN)
-		sprint(self.real_owner, #PRINT_HIGH, ", a shotgun");
-	if (self.weapons_carried & #WEAP_NAILGUN)
-		sprint(self.real_owner, #PRINT_HIGH, ", a nailgun");
-	if (self.weapons_carried & #WEAP_SUPER_SHOTGUN)
-		sprint(self.real_owner, #PRINT_HIGH, ", a double barreled shotgun");
-	if (self.weapons_carried & #WEAP_ROCKET_LAUNCHER)
-		sprint(self.real_owner, #PRINT_HIGH, ", a rocket launcher");
-	if (self.tf_items & #NIT_SCANNER)
-		sprint(self.real_owner, #PRINT_HIGH, ", a scanner");
+			sprint(self.real_owner, PRINT_HIGH, ", an axe");
+	if (self.weapons_carried & WEAP_SHOTGUN)
+		sprint(self.real_owner, PRINT_HIGH, ", a shotgun");
+	if (self.weapons_carried & WEAP_NAILGUN)
+		sprint(self.real_owner, PRINT_HIGH, ", a nailgun");
+	if (self.weapons_carried & WEAP_SUPER_SHOTGUN)
+		sprint(self.real_owner, PRINT_HIGH, ", a double barreled shotgun");
+	if (self.weapons_carried & WEAP_ROCKET_LAUNCHER)
+		sprint(self.real_owner, PRINT_HIGH, ", a rocket launcher");
+	if (self.tf_items & NIT_SCANNER)
+		sprint(self.real_owner, PRINT_HIGH, ", a scanner");
 	talk = ftos(self.custom_speed * 20);
-	sprint(self.real_owner, #PRINT_HIGH, ", moves at speed ");
-	sprint(self.real_owner, #PRINT_HIGH, talk);
+	sprint(self.real_owner, PRINT_HIGH, ", moves at speed ");
+	sprint(self.real_owner, PRINT_HIGH, talk);
 	talk = ftos(self.money);
-	sprint(self.real_owner, #PRINT_HIGH, " with $");
-	sprint(self.real_owner, #PRINT_HIGH, talk);
-	sprint(self.real_owner, #PRINT_HIGH, "\n");
+	sprint(self.real_owner, PRINT_HIGH, " with $");
+	sprint(self.real_owner, PRINT_HIGH, talk);
+	sprint(self.real_owner, PRINT_HIGH, "\n");
 
-    sprint(self.real_owner, #PRINT_HIGH, "·ÌÌÔ: ");
+    sprint(self.real_owner, PRINT_HIGH, "·ÌÌÔ: ");
 
     talk = ftos(self.ammo_shells);
-	sprint(self.real_owner, #PRINT_HIGH, talk);
-    sprint(self.real_owner, #PRINT_HIGH, " shells, ");
+	sprint(self.real_owner, PRINT_HIGH, talk);
+    sprint(self.real_owner, PRINT_HIGH, " shells, ");
 
         talk = ftos(self.ammo_nails);
-	sprint(self.real_owner, #PRINT_HIGH, talk);
-    sprint(self.real_owner, #PRINT_HIGH, " nails and ");
+	sprint(self.real_owner, PRINT_HIGH, talk);
+    sprint(self.real_owner, PRINT_HIGH, " nails and ");
 
     /*    talk = ftos(self.ammo_cells);
-	sprint(self.real_owner, #PRINT_HIGH, talk);
-    sprint(self.real_owner, #PRINT_HIGH, " cells\n");*/
+	sprint(self.real_owner, PRINT_HIGH, talk);
+    sprint(self.real_owner, PRINT_HIGH, " cells\n");*/
 
     talk = ftos(self.ammo_rockets);
-	sprint(self.real_owner, #PRINT_HIGH, talk);
-    sprint(self.real_owner, #PRINT_HIGH, " rockets\n");
+	sprint(self.real_owner, PRINT_HIGH, talk);
+    sprint(self.real_owner, PRINT_HIGH, " rockets\n");
 };
 
 /* ---------------------------------------------------------------------------------- */
@@ -1280,8 +1283,8 @@ void() custom_grunt_die =
     
     if (self.real_owner.classname == "player")
 	{
-		sprint(self.real_owner,#PRINT_HIGH,"Your soldier is dead.\n");
-		self.real_owner.job = self.real_owner.job - (self.real_owner.job & #JOB_DEMON_OUT);
+		sprint(self.real_owner,PRINT_HIGH,"Your soldier is dead.\n");
+		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 		self.real_owner.job_finished = time + 2; //Can't summon streams of demons SB can so
         self.real_owner.demon_one = world;
     	
@@ -1303,7 +1306,7 @@ void() custom_grunt_die =
     
     if (self.health < -30)
     {        
-        sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_MONSTERDIE);
+        sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_MONSTERDIE);
 
         ThrowGib ("progs/h_guard.mdl", self.health);
 	    ThrowGib ("progs/gib1.mdl", self.health);
@@ -1314,7 +1317,7 @@ void() custom_grunt_die =
         return;
     }
 
-    self.solid = #SOLID_NOT;
+    self.solid = SOLID_NOT;
 
     ArmyDeathSound();
     self.classname = "monster_corpse";
@@ -1351,7 +1354,7 @@ void() ArmyDeathSound =
 	if (self.waterlevel == 3)
 	{
 		DeathBubbles(10);
-        sound (self, #CHAN_VOICE, "player/h2odeath.wav", 1, #ATTN_MONSTERDIE);
+        sound (self, CHAN_VOICE, "player/h2odeath.wav", 1, ATTN_MONSTERDIE);
 		return;
 	}
 	
@@ -1367,7 +1370,7 @@ void() ArmyDeathSound =
 	if (rs == 5)
 		self.noise = "player/death5.wav";
 
-	sound (self, #CHAN_VOICE, self.noise, 1, #ATTN_MONSTERDIE);
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_MONSTERDIE);
 };
 
 // We'll include pain here
@@ -1396,7 +1399,7 @@ void(entity attacker, float damage) grunty_pain =
 	//self.real_owner.StatusBarScreen = 3; 
 
 #ifdef VERBOSE_GRUNTY
-//    RPrint(self.real_owner, #PRINT_HIGH, "Grunty PAIN!\n");
+//    RPrint(self.real_owner, PRINT_HIGH, "Grunty PAIN!\n");
 #endif
 
     if (self.pain_finished > time)
@@ -1436,7 +1439,7 @@ void() Waypoint_Touch =
 	if (other.goalentity != self)
 		return;
 
-    if (self.has_sensor == #WAYPOINT_TYPE_ENEMYLASTSEEN)
+    if (self.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN)
     {        
         if (self.owner.demon_one.demon_one == self)
            self.owner.demon_one.demon_one = world;   
@@ -1445,11 +1448,11 @@ void() Waypoint_Touch =
         return;
     }
 
-    if (self.has_sensor == #WAYPOINT_TYPE_PRIMARY)
+    if (self.has_sensor == WAYPOINT_TYPE_PRIMARY)
     {        
         self.owner.demon_one.job=2;
     }
-    else if (self.has_sensor == #WAYPOINT_TYPE_SECONDARY)
+    else if (self.has_sensor == WAYPOINT_TYPE_SECONDARY)
     {        
         self.owner.demon_one.job=1;
     }
@@ -1471,8 +1474,8 @@ void() Waypoint_DoNothing = // A waypoint checks for redundancy
 
     //- OfN - remove waypoint entity?
     if (self.owner.has_disconnected 
-        || !(self.owner.job & #JOB_ARMY)
-        || !(self.owner.job & #JOB_DEMON_OUT)
+        || !(self.owner.job & JOB_ARMY)
+        || !(self.owner.job & JOB_DEMON_OUT)
         || self.owner.classname!="player")
     {
        dremove(self); // no pointer set to world needed cause soldier shouldnt be present on game
@@ -1481,13 +1484,13 @@ void() Waypoint_DoNothing = // A waypoint checks for redundancy
 
     if (self.num_mines < time) // if it wasnt touched for specified life-time remove it
     {
-       if (self.has_sensor == #WAYPOINT_TYPE_PRIMARY
+       if (self.has_sensor == WAYPOINT_TYPE_PRIMARY
         && self.owner.demon_one.martyr_enemy == self)
            self.owner.demon_one.martyr_enemy = world;
-       if (self.has_sensor == #WAYPOINT_TYPE_SECONDARY
+       if (self.has_sensor == WAYPOINT_TYPE_SECONDARY
         && self.owner.demon_one.demon_two == self)
            self.owner.demon_one.demon_two = world;
-       if (self.has_sensor == #WAYPOINT_TYPE_ENEMYLASTSEEN
+       if (self.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN
         && self.owner.demon_one.demon_one == self)
            self.owner.demon_one.demon_one = world;
 
@@ -1513,7 +1516,7 @@ entity (vector location, float life, float type) CreateWaypoint =
  // set the origin.
     setsize (newmis, '-20 -20 -20', '20 20 20'); // set the size of the waypoint
     
-    newmis.solid = #SOLID_TRIGGER; // We're a solid trigger type - touch, but don't block
+    newmis.solid = SOLID_TRIGGER; // We're a solid trigger type - touch, but don't block
 
 	//newmis.netname = "grunty_waypoint"; // set the name so grunty can talk about us
     newmis.classname = "grunty_waypoint";
@@ -1526,7 +1529,7 @@ entity (vector location, float life, float type) CreateWaypoint =
     else if (self.classname=="monster_army")
         newmis.owner=self.real_owner;
 
-    newmis.num_mines = time + life; //#WAYPOINT_LIFE;
+    newmis.num_mines = time + life; //WAYPOINT_LIFE;
     newmis.has_holo = life;
     newmis.has_sensor = type; // sets the type of waypoint to has_sensor
     
@@ -1594,8 +1597,8 @@ void() Grunty_Check_Frags =
 		self.max_health = self.max_health + 20 + self.has_sensor * 16;//-was 25
 
         //ofn
-	    if (self.max_health > #GRUNT_MAX_HP)
-   		 	self.max_health = #GRUNT_MAX_HP;
+	    if (self.max_health > GRUNT_MAX_HP)
+   		 	self.max_health = GRUNT_MAX_HP;
 
 		if (self.health > self.max_health)
 			self.health = self.max_health;
@@ -1604,20 +1607,20 @@ void() Grunty_Check_Frags =
         
         GetRank(self);
 		
-        sprint(self.real_owner, #PRINT_HIGH, "Your soldier, ");
-		sprint(self.real_owner, #PRINT_HIGH, self.netname);
-		sprint(self.real_owner, #PRINT_HIGH, ", has reached the rank of ");
-		sprint(self.real_owner, #PRINT_HIGH, self.undercover_name);
-		sprint(self.real_owner, #PRINT_HIGH, "\n");
+        sprint(self.real_owner, PRINT_HIGH, "Your soldier, ");
+		sprint(self.real_owner, PRINT_HIGH, self.netname);
+		sprint(self.real_owner, PRINT_HIGH, ", has reached the rank of ");
+		sprint(self.real_owner, PRINT_HIGH, self.undercover_name);
+		sprint(self.real_owner, PRINT_HIGH, "\n");
 	}
 };
 
 float () ReturnWeaponVelocity =
 {
-	if (self.current_weapon == #WEAP_NAILGUN)
+	if (self.current_weapon == WEAP_NAILGUN)
 //		return 1250;
         return 99999999;
-	else if (self.current_weapon == #WEAP_ROCKET_LAUNCHER)
+	else if (self.current_weapon == WEAP_ROCKET_LAUNCHER)
 		//return 1100;
         return 99999999;
 	else
@@ -1651,14 +1654,14 @@ void () GruntyPayThink =
 		self.respawn_time = time + 20;
 	}
 	// Grunty is on a SHOPPING SPREE!
-	if (!(self.weapons_carried & #WEAP_ROCKET_LAUNCHER))
+	if (!(self.weapons_carried & WEAP_ROCKET_LAUNCHER))
 		spendalloc = self.money * 0.2; // amount to spend on health/speed upgrades
 	else
 		spendalloc = self.money;
 	// Consider buying more max health      )//- added
-	if (spendalloc >= #GRUNTY_COST_MAXHEALTH && self.max_health < #GRUNT_MAX_HP)
+	if (spendalloc >= GRUNTY_COST_MAXHEALTH && self.max_health < GRUNT_MAX_HP)
 	{
-		if (self.weapons_carried & #WEAP_ROCKET_LAUNCHER)
+		if (self.weapons_carried & WEAP_ROCKET_LAUNCHER)
 			chance = 0.75; //- was 0.9
 		else
 			chance = 0.25;
@@ -1667,21 +1670,21 @@ void () GruntyPayThink =
 		if (r < chance)
 		{
 			self.max_health = self.max_health + 25;
-			self.money = self.money - #GRUNTY_COST_MAXHEALTH;
-			spendalloc = spendalloc - #GRUNTY_COST_MAXHEALTH;
+			self.money = self.money - GRUNTY_COST_MAXHEALTH;
+			spendalloc = spendalloc - GRUNTY_COST_MAXHEALTH;
             //  	#ifdef VERBOSE_GRUNTY
             PrintFromSoldier(self,self.real_owner,"my health maximum has been increased!\n");				
-//		    sprint(self.real_owner, #PRINT_HIGH, "BUYS more MAX HP\n");
+//		    sprint(self.real_owner, PRINT_HIGH, "BUYS more MAX HP\n");
             //    #endif
 		}
 	}
 	// Consider buying a health pack
-	if (self.health < self.max_health && self.money >= #GRUNTY_COST_HEALTHPACK)
+	if (self.health < self.max_health && self.money >= GRUNTY_COST_HEALTHPACK)
 	{
 		local float loops, bought;
 		bought=0;
 
-		while (loops < (0.75+(self.has_sensor/4)) && self.money >= #GRUNTY_COST_HEALTHPACK && self.max_health > self.health)
+		while (loops < (0.75+(self.has_sensor/4)) && self.money >= GRUNTY_COST_HEALTHPACK && self.max_health > self.health)
 		{
 			if (self.health < self.max_health - 25)
 				chance = 1;
@@ -1696,10 +1699,10 @@ void () GruntyPayThink =
 				self.health = self.health + 25;
 				if (self.health > self.max_health)
 					self.health = self.max_health;
-				self.money = self.money - #GRUNTY_COST_HEALTHPACK;
+				self.money = self.money - GRUNTY_COST_HEALTHPACK;
               //                 	#ifdef VERBOSE_GRUNTY
                 				
-//                sprint(self.real_owner, #PRINT_HIGH, "BUYS A HEALTHPACK\n");
+//                sprint(self.real_owner, PRINT_HIGH, "BUYS A HEALTHPACK\n");
                 //PrintFromSoldier(self,self.real_owner,"i've bought a healthpack.\n");
                 bought=bought+1;
                 //                  #endif
@@ -1716,8 +1719,8 @@ void () GruntyPayThink =
                 local string tempst;
                 tempst=ftos(bought);                
                 PrintFromSoldier(self,self.real_owner,"i've bought ");
-                sprint(self.real_owner,#PRINT_HIGH,tempst);
-                sprint(self.real_owner,#PRINT_HIGH," healthpacks.\n");
+                sprint(self.real_owner,PRINT_HIGH,tempst);
+                sprint(self.real_owner,PRINT_HIGH," healthpacks.\n");
 
             }
         }
@@ -1725,126 +1728,126 @@ void () GruntyPayThink =
 	}
 	
 	// Consider buying a shotgun
-	if (!(self.weapons_carried & #WEAP_SHOTGUN))
-		if (self.money >= #GRUNTY_COST_SHOTGUN)
+	if (!(self.weapons_carried & WEAP_SHOTGUN))
+		if (self.money >= GRUNTY_COST_SHOTGUN)
 		{
 			r = random();
 			if (r < 0.5)
 			{
-				self.weapons_carried = self.weapons_carried | #WEAP_SHOTGUN;
-				self.money = self.money - #GRUNTY_COST_SHOTGUN;
+				self.weapons_carried = self.weapons_carried | WEAP_SHOTGUN;
+				self.money = self.money - GRUNTY_COST_SHOTGUN;
                 PrintFromSoldier(self,self.real_owner,"i have bought a shotgun.\n");				
-				//sprint(self.real_owner, #PRINT_HIGH, "Your soldier has just purchased a shotgun.\n");
+				//sprint(self.real_owner, PRINT_HIGH, "Your soldier has just purchased a shotgun.\n");
 			}
 		}
 	// Consider buying a knife
-	if (!(self.cutf_items & #CUTF_KNIFE))
-		if (self.money >= #GRUNTY_COST_KNIFE)
+	if (!(self.cutf_items & CUTF_KNIFE))
+		if (self.money >= GRUNTY_COST_KNIFE)
 		{
 			r = random();
 			if (r < 0.5)
 			{
-				self.cutf_items = self.cutf_items | #CUTF_KNIFE;
-				self.money = self.money - #GRUNTY_COST_KNIFE;
+				self.cutf_items = self.cutf_items | CUTF_KNIFE;
+				self.money = self.money - GRUNTY_COST_KNIFE;
                 PrintFromSoldier(self,self.real_owner,"i have bought a knife.\n");				
-				//sprint(self.real_owner, #PRINT_HIGH, "Your soldier has just purchased a knife.\n");
+				//sprint(self.real_owner, PRINT_HIGH, "Your soldier has just purchased a knife.\n");
 			}
 		}
 	// Consider buying a nailgun
-	if (!(self.weapons_carried & #WEAP_NAILGUN))
-		if (self.money >= #GRUNTY_COST_NAILGUN)
+	if (!(self.weapons_carried & WEAP_NAILGUN))
+		if (self.money >= GRUNTY_COST_NAILGUN)
 		{
 			r = random();
 			if (r < 0.25)
 			{
-				self.weapons_carried = self.weapons_carried | #WEAP_NAILGUN;
-				self.money = self.money - #GRUNTY_COST_NAILGUN;
+				self.weapons_carried = self.weapons_carried | WEAP_NAILGUN;
+				self.money = self.money - GRUNTY_COST_NAILGUN;
                 PrintFromSoldier(self,self.real_owner,"i now own a nailgun.\n");				
-				//sprint(self.real_owner, #PRINT_HIGH, "Your soldier now owns a nailgun.\n");
+				//sprint(self.real_owner, PRINT_HIGH, "Your soldier now owns a nailgun.\n");
 			}
 		}
 	// Consider buying a double barrel
-	if (!(self.weapons_carried & #WEAP_SUPER_SHOTGUN))
-		if (self.money >= #GRUNTY_COST_SUPER_SHOTGUN)
+	if (!(self.weapons_carried & WEAP_SUPER_SHOTGUN))
+		if (self.money >= GRUNTY_COST_SUPER_SHOTGUN)
 		{
 			r = random();
 			if (r < 0.25)
 			{
-				self.weapons_carried = self.weapons_carried | #WEAP_SUPER_SHOTGUN;
-				self.money = self.money - #GRUNTY_COST_SUPER_SHOTGUN;
+				self.weapons_carried = self.weapons_carried | WEAP_SUPER_SHOTGUN;
+				self.money = self.money - GRUNTY_COST_SUPER_SHOTGUN;
                 PrintFromSoldier(self,self.real_owner,"i've just bought a super shotgun.\n");				
-				//sprint(self.real_owner, #PRINT_HIGH, "Your soldier just bought a super shotgun.\n");
+				//sprint(self.real_owner, PRINT_HIGH, "Your soldier just bought a super shotgun.\n");
 				
 			}
 		}
 	// Consider buying a scanner
-	if (!(self.tf_items & #NIT_SCANNER))
-		if (self.money >= #GRUNTY_COST_SCANNER)
+	if (!(self.tf_items & NIT_SCANNER))
+		if (self.money >= GRUNTY_COST_SCANNER)
 		{
 			r = random();
 			if (r < 0.15)
 			{
-				self.tf_items = self.tf_items | #NIT_SCANNER;
-				self.money = self.money - #GRUNTY_COST_SCANNER;
+				self.tf_items = self.tf_items | NIT_SCANNER;
+				self.money = self.money - GRUNTY_COST_SCANNER;
                 PrintFromSoldier(self,self.real_owner,"i now own a scanner.\n");				
-                //sprint(self.real_owner, #PRINT_HIGH, "Your soldier now owns a scanner.\n");
+                //sprint(self.real_owner, PRINT_HIGH, "Your soldier now owns a scanner.\n");
 			}	
 		}
 	// Consider buying...a rocket launcher.
-	if (!(self.weapons_carried & #WEAP_ROCKET_LAUNCHER))
-		if (self.money >= #GRUNTY_COST_ROCKET_LAUNCHER)
+	if (!(self.weapons_carried & WEAP_ROCKET_LAUNCHER))
+		if (self.money >= GRUNTY_COST_ROCKET_LAUNCHER)
 		{
 			r = random();
 			if (r < 0.3) //- was 0.2
 			{
-				self.weapons_carried = self.weapons_carried | #WEAP_ROCKET_LAUNCHER;
-				self.money = self.money - #GRUNTY_COST_ROCKET_LAUNCHER;
+				self.weapons_carried = self.weapons_carried | WEAP_ROCKET_LAUNCHER;
+				self.money = self.money - GRUNTY_COST_ROCKET_LAUNCHER;
                 PrintFromSoldier(self,self.real_owner,"i have bought a ROCKET LAUNCHER!! hehe\n");				
-                //sprint(self.real_owner, #PRINT_HIGH, "Your soldier is now the proud owner of a brand new rocket launcher.\n");
+                //sprint(self.real_owner, PRINT_HIGH, "Your soldier is now the proud owner of a brand new rocket launcher.\n");
 			}
 		}
 		
 	// Buy ammo
-	if ((self.weapons_carried & #WEAP_ROCKET_LAUNCHER) && self.ammo_rockets < self.maxammo_rockets)
+	if ((self.weapons_carried & WEAP_ROCKET_LAUNCHER) && self.ammo_rockets < self.maxammo_rockets)
 	{
 		local float rocketstobuy;
 		
 		rocketstobuy = self.maxammo_rockets - self.ammo_rockets;
 		if (rocketstobuy > 4)
 			rocketstobuy = 4;
-		if (self.money >= rocketstobuy * #GRUNTY_COST_ROCKET)
+		if (self.money >= rocketstobuy * GRUNTY_COST_ROCKET)
 		{
 			self.ammo_rockets = self.ammo_rockets + rocketstobuy;
-			self.money = self.money - rocketstobuy * #GRUNTY_COST_ROCKET;
+			self.money = self.money - rocketstobuy * GRUNTY_COST_ROCKET;
             
             //    #ifdef VERBOSE_GRUNTY
             PrintFromSoldier(self,self.real_owner,"i've bought some rockets.\n");
-            //sprint(self.real_owner, #PRINT_HIGH, "BUYS SOME ROCKETS\n");
+            //sprint(self.real_owner, PRINT_HIGH, "BUYS SOME ROCKETS\n");
             //    #endif
 		}
 	}
 	
-    if ((self.weapons_carried & #WEAP_NAILGUN) && self.ammo_nails < self.maxammo_nails)
+    if ((self.weapons_carried & WEAP_NAILGUN) && self.ammo_nails < self.maxammo_nails)
 	{
 		local float nailstobuy;
 		
 		nailstobuy = self.maxammo_nails - self.ammo_nails;
 		if (nailstobuy > 50) // was 50
 			nailstobuy = 50;
-		if (self.money >= nailstobuy * #GRUNTY_COST_NAIL)
+		if (self.money >= nailstobuy * GRUNTY_COST_NAIL)
 		{
 			self.ammo_nails = self.ammo_nails + nailstobuy;
-			self.money = self.money - nailstobuy * #GRUNTY_COST_NAIL;
+			self.money = self.money - nailstobuy * GRUNTY_COST_NAIL;
             //   	#ifdef VERBOSE_GRUNTY
             PrintFromSoldier(self,self.real_owner,"i've bought some nails.\n");
-            //sprint(self.real_owner, #PRINT_HIGH, "BUYS SOME NAILS\n");
+            //sprint(self.real_owner, PRINT_HIGH, "BUYS SOME NAILS\n");
             //    #endif
 
 		}
 	}
     
-    if ((self.weapons_carried & #WEAP_SHOTGUN ||
-		self.weapons_carried & #WEAP_SUPER_SHOTGUN)
+    if ((self.weapons_carried & WEAP_SHOTGUN ||
+		self.weapons_carried & WEAP_SUPER_SHOTGUN)
 		&& self.ammo_shells < self.maxammo_shells)
 	{
 		local float shellstobuy;
@@ -1852,41 +1855,41 @@ void () GruntyPayThink =
 		shellstobuy = self.maxammo_shells - self.ammo_shells;
 		if (shellstobuy > 15)
 			shellstobuy = 15;
-		if (self.money >= shellstobuy * #GRUNTY_COST_SHELL)
+		if (self.money >= shellstobuy * GRUNTY_COST_SHELL)
 		{
 			self.ammo_shells = self.ammo_shells + shellstobuy;
-			self.money = self.money - shellstobuy * #GRUNTY_COST_SHELL;
+			self.money = self.money - shellstobuy * GRUNTY_COST_SHELL;
             //   	#ifdef VERBOSE_GRUNTY
             PrintFromSoldier(self,self.real_owner,"i've bought some shells.\n");
-		    //sprint(self.real_owner, #PRINT_HIGH, "BUYS SOME SHELLS\n");
+		    //sprint(self.real_owner, PRINT_HIGH, "BUYS SOME SHELLS\n");
             //    #endif
 		}
 	}
 	
 	// Consider buying more speed
-	if (spendalloc >= #GRUNTY_COST_SPEED)
+	if (spendalloc >= GRUNTY_COST_SPEED)
 	{
-		if (self.custom_speed < #GRUNTY_MAX_SPEED)
+		if (self.custom_speed < GRUNTY_MAX_SPEED)
 		{
 			r = random();
 			if (r < 0.3)
 			{
 				self.custom_speed = self.custom_speed + 1;
-				self.money = self.money - #GRUNTY_COST_SPEED;
-				spendalloc = spendalloc - #GRUNTY_COST_SPEED;
+				self.money = self.money - GRUNTY_COST_SPEED;
+				spendalloc = spendalloc - GRUNTY_COST_SPEED;
 
                 PrintFromSoldier(self,self.real_owner,"i'm faster now.\n");
-				//sprint(self.real_owner, #PRINT_HIGH, "Your soldier is now faster.\n");
+				//sprint(self.real_owner, PRINT_HIGH, "Your soldier is now faster.\n");
 			}
 		}
 	}
 	
-    //- OfteN: don't let grunt have more HP than #GRUNT_MAX_HP -//
-    if (self.health > #GRUNT_MAX_HP)
-    	self.health = #GRUNT_MAX_HP;
+    //- OfteN: don't let grunt have more HP than GRUNT_MAX_HP -//
+    if (self.health > GRUNT_MAX_HP)
+    	self.health = GRUNT_MAX_HP;
     
-    if (self.max_health > #GRUNT_MAX_HP)
-    	self.max_health = #GRUNT_MAX_HP;
+    if (self.max_health > GRUNT_MAX_HP)
+    	self.max_health = GRUNT_MAX_HP;
 
     self.suicide_time = time + 10;
 };
@@ -1926,12 +1929,12 @@ void() grunty_touch =
             if (rnum < 0.4)
             {
                 PrintFromSoldier(self,other,"Hi ");
-                sprint(other,#PRINT_HIGH,other.netname);
-                sprint(other,#PRINT_HIGH,", I'm ");
-                sprint(other,#PRINT_HIGH,self.netname);
-                sprint(other,#PRINT_HIGH,", ");
-                sprint(other,#PRINT_HIGH,self.real_owner.netname);
-                sprint(other,#PRINT_HIGH,"'s soldier!\n");
+                sprint(other,PRINT_HIGH,other.netname);
+                sprint(other,PRINT_HIGH,", I'm ");
+                sprint(other,PRINT_HIGH,self.netname);
+                sprint(other,PRINT_HIGH,", ");
+                sprint(other,PRINT_HIGH,self.real_owner.netname);
+                sprint(other,PRINT_HIGH,"'s soldier!\n");
 
             }
             else
@@ -1969,13 +1972,13 @@ void(entity wyp, entity soldier) RemoveWaypoint =
                 wyp.owner.demon_one.demon_two.goalentity = world;
         }
         
-        if (wyp.has_sensor == #WAYPOINT_TYPE_PRIMARY
+        if (wyp.has_sensor == WAYPOINT_TYPE_PRIMARY
          && wyp.owner.demon_one.martyr_enemy == wyp)
             wyp.owner.demon_one.martyr_enemy = world;
-        else if (wyp.has_sensor == #WAYPOINT_TYPE_SECONDARY
+        else if (wyp.has_sensor == WAYPOINT_TYPE_SECONDARY
          && wyp.owner.demon_one.demon_two == wyp)
             wyp.owner.demon_one.demon_two = world;
-        else if (wyp.has_sensor == #WAYPOINT_TYPE_ENEMYLASTSEEN
+        else if (wyp.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN
          && wyp.owner.demon_one.demon_one == wyp)
             wyp.owner.demon_one.demon_one = world;
         

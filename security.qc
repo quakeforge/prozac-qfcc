@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*======================================================
 	SECURITY.QC			Custom TeamFortress v3.1
 
@@ -34,46 +35,46 @@ float() Security_Camera_FindTarget =
 	local entity client;
 	local float	r, gotone, loopc;
 
-	if (self.is_malfunctioning & #SCREWUP_TWO) // SB how tragic, camera can't see
-		return #FALSE;
+	if (self.is_malfunctioning & SCREWUP_TWO) // SB how tragic, camera can't see
+		return FALSE;
 		
-	if (self.is_malfunctioning & #SCREWUP_THREE) // oh no, we're reading incorrect signals
+	if (self.is_malfunctioning & SCREWUP_THREE) // oh no, we're reading incorrect signals
 	{
 		if (Security_Camera_FindFakeTarget())
-			return #TRUE;
+			return TRUE;
 		else
-			return #FALSE;
+			return FALSE;
 	}
 
 	// Try a few checks to make it react faster
 	r = 0;
 	loopc = 0;
-	gotone = #FALSE;
+	gotone = FALSE;
 
     local float trange; //- OfN - Hack
     trange=1000;
 
-    if (self.num_mines & #IMPROVED_ONE)
+    if (self.num_mines & IMPROVED_ONE)
         trange=1250;
 
 	//CH Theortetically this will check every client on the server now
-	while (loopc < 32 && gotone == #FALSE)
+	while (loopc < 32 && gotone == FALSE)
 	{
 		client = checkclient();
-		gotone = #TRUE;
+		gotone = TRUE;
 
 		if (!client)
-			gotone = #FALSE;
+			gotone = FALSE;
 
 		if (!Pharse_Client(client, self, 1, trange, 0, 1))
-			gotone = #FALSE;
+			gotone = FALSE;
 
 		loopc = loopc + 1;
 		if (gotone) loopc = 1000;
 	}
 
 	if (!gotone)
-		return #FALSE;
+		return FALSE;
 
 	// Found a Target
 	self.enemy = client;
@@ -83,13 +84,13 @@ float() Security_Camera_FindTarget =
 		if (self.enemy.classname != "player")
 		{
 			self.enemy = world;
-			return #FALSE;
+			return FALSE;
 		}
 	}
 	
 	// Spotted sound
 	if (self.heat == 3) { //CH so it does not beep all the time.
-		sound (self, #CHAN_WEAPON, "weapons/camera_beep.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_WEAPON, "weapons/camera_beep.wav", 1, ATTN_NORM);
 		self.heat = 0;
 	}
 	else
@@ -97,7 +98,7 @@ float() Security_Camera_FindTarget =
 
 	Security_Camera_PrintTarget ();
 
-	return #TRUE;
+	return TRUE;
 };
 
 float() Security_Camera_FindFakeTarget =
@@ -105,43 +106,43 @@ float() Security_Camera_FindFakeTarget =
 	local entity client;
 	local float	r, gotone, loopc;
 
-	if (self.is_malfunctioning & #SCREWUP_THREE) // SB how tragic, camera can't see
-		return #FALSE;
+	if (self.is_malfunctioning & SCREWUP_THREE) // SB how tragic, camera can't see
+		return FALSE;
 
 	// Try a few checks to make it react faster
 	r = 0;
 	loopc = 0;
-	gotone = #FALSE;
+	gotone = FALSE;
 	// Pick a random client
-	while (loopc < 32 && gotone == #FALSE)
+	while (loopc < 32 && gotone == FALSE)
 	{
 		client = checkclient();
-		gotone = #TRUE;
+		gotone = TRUE;
 
 		if (!client)
-			gotone = #FALSE;
+			gotone = FALSE;
 
 		if (random() < 0.05)
-			gotone = #FALSE;
+			gotone = FALSE;
 
-		if (client.playerclass == #PC_UNDEFINED) {
-			return #FALSE;
+		if (client.playerclass == PC_UNDEFINED) {
+			return FALSE;
 		}
-		if (client.done_custom & #CUSTOM_BUILDING) {
-			return #FALSE;
+		if (client.done_custom & CUSTOM_BUILDING) {
+			return FALSE;
 		}
 		if (client.health <= 0) {
-			return #FALSE;
+			return FALSE;
 		}
 		if (client.has_disconnected) {
-			return #FALSE;
+			return FALSE;
 		}
 		loopc = loopc + 1;
 		if (gotone) loopc = 1000;
 	}
 
 	if (!gotone)
-		return #FALSE;
+		return FALSE;
 
 	// Found a Target
 	self.enemy = client;
@@ -151,45 +152,45 @@ float() Security_Camera_FindFakeTarget =
 		if (self.enemy.classname != "player")
 		{
 			self.enemy = world;
-			return #FALSE;
+			return FALSE;
 		}
 	}
 	
 	// Spotted sound
 	if (self.heat == 3) { //CH so it does not beep all the time.
-		sound (self, #CHAN_WEAPON, "weapons/camera_beep.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_WEAPON, "weapons/camera_beep.wav", 1, ATTN_NORM);
 		self.heat = 0;
 	}
 	else
 		self.heat = self.heat + 1;
 
-	if (!(self.is_malfunctioning & #SCREWUP_ONE))
+	if (!(self.is_malfunctioning & SCREWUP_ONE))
 		Security_Camera_PrintTarget ();
 
-	return #TRUE;
+	return TRUE;
 };
 //========
 void() Security_Camera_Pain =
 {
-	sound (self, #CHAN_WEAPON, "weapons/camera_beep.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/camera_beep.wav", 1, ATTN_NORM);
 };
 //======
 void() Security_Camera_Die =
 {
-	sprint(self.real_owner, #PRINT_HIGH, "Your security camera was destroyed.\n");
-	self.real_owner.has_camera = #FALSE;
+	sprint(self.real_owner, PRINT_HIGH, "Your security camera was destroyed.\n");
+	self.real_owner.has_camera = FALSE;
 
 //	ThrowGib("progs/tgib1.mdl", -70);
 //	ThrowGib("progs/tgib2.mdl", -70);
 //	ThrowGib("progs/tgib3.mdl", -70);
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
 #else
     BecomeExplosion ();
@@ -203,37 +204,37 @@ void() Security_Camera_PrintTarget =
 {
 	local string st;
 
-	sprint(self.real_owner, #PRINT_HIGH, "сецуриты цамера  "); //<>Security camera<>
+	sprint(self.real_owner, PRINT_HIGH, "сецуриты цамера  "); //<>Security camera<>
 	st = GetTrueTeamName(self.enemy.team_no);
-	sprint(self.real_owner, #PRINT_HIGH, st);
+	sprint(self.real_owner, PRINT_HIGH, st);
 
-	sprint(self.real_owner, #PRINT_HIGH, " ");
-			if (self.enemy.playerclass != #PC_CUSTOM)
+	sprint(self.real_owner, PRINT_HIGH, " ");
+			if (self.enemy.playerclass != PC_CUSTOM)
 				st = TeamFortress_GetClassName(self.enemy.playerclass);
 			else 
 				st = TeamFortress_GetJobName(self.enemy.job);
-	sprint(self.real_owner, #PRINT_HIGH, st);
-	sprint(self.real_owner, #PRINT_HIGH, " (");
-	sprint(self.real_owner, #PRINT_HIGH, self.enemy.netname);
-	sprint(self.real_owner, #PRINT_HIGH, ")\n");
+	sprint(self.real_owner, PRINT_HIGH, st);
+	sprint(self.real_owner, PRINT_HIGH, " (");
+	sprint(self.real_owner, PRINT_HIGH, self.enemy.netname);
+	sprint(self.real_owner, PRINT_HIGH, ")\n");
 };
 //==========
 void() Security_Camera_Spawn =
 {
-	if (self.ammo_cells < #BUILD_COST_CAMERA)
+	if (self.ammo_cells < BUILD_COST_CAMERA)
 	{
-		sprint(self,#PRINT_HIGH,"Not enough cells to build a Security Camera\n");		
+		sprint(self,PRINT_HIGH,"Not enough cells to build a Security Camera\n");		
 	}
 	else
 	{
-	self.ammo_cells = self.ammo_cells - #BUILD_COST_CAMERA;
-	self.has_camera = #TRUE;
+	self.ammo_cells = self.ammo_cells - BUILD_COST_CAMERA;
+	self.has_camera = TRUE;
 	newmis = spawn();
-	newmis.movetype = #MOVETYPE_BOUNCE;
+	newmis.movetype = MOVETYPE_BOUNCE;
 	setsize (newmis, '0 0 0', '0 0 0');
 //	setsize (newmis, '-8 -8 -8', '8 8 8');
-	newmis.solid = #SOLID_BBOX;
-	newmis.takedamage = #DAMAGE_AIM;
+	newmis.solid = SOLID_BBOX;
+	newmis.takedamage = DAMAGE_AIM;
 	newmis.classname = "building_camera";
 	newmis.netname = "security_camera";
 	setorigin (newmis, self.origin);
@@ -253,7 +254,7 @@ void() Security_Camera_Spawn =
 	newmis.colormap = self.colormap;
 	newmis.heat = 0; //Beeps
 
-	newmis.health = newmis.max_health = #BUILD_HEALTH_CAMERA;
+	newmis.health = newmis.max_health = BUILD_HEALTH_CAMERA;
 	newmis.touch = SecurityCameraTossTouch;
 
     newmis.num_mines=0; // OfN - reset HACKER improvements
@@ -266,31 +267,31 @@ void() SecurityCameraTossTouch =
 {
 	if (other != world || other == self.real_owner)
 		return;
-	if (pointcontents(self.origin) == #CONTENT_SKY || pointcontents(self.origin + '0 0 2') == #CONTENT_SKY || pointcontents(self.origin) == #CONTENT_SOLID)
+	if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin + '0 0 2') == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID)
 	{
 		Security_Camera_Die();
 		return;
 	}
 	//CH sees where landed and adjusts to proper things
-	if (pointcontents(self.origin + '0 0 1') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '0 0 1') == CONTENT_SOLID)
 		self.origin = self.origin - '0 0 12';
-	if (pointcontents(self.origin - '0 0 1') == #CONTENT_SOLID)
+	if (pointcontents(self.origin - '0 0 1') == CONTENT_SOLID)
 		self.origin = self.origin + '0 0 4';
-	if (pointcontents(self.origin + '0 1 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '0 1 0') == CONTENT_SOLID)
 		self.origin = self.origin - '0 16 0';
-	if (pointcontents(self.origin - '0 1 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin - '0 1 0') == CONTENT_SOLID)
 		self.origin = self.origin + '0 16 0';
-	if (pointcontents(self.origin + '1 0 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '1 0 0') == CONTENT_SOLID)
 		self.origin = self.origin - '16 0 0';
-	if (pointcontents(self.origin + '1 0 0') == #CONTENT_SOLID)
+	if (pointcontents(self.origin + '1 0 0') == CONTENT_SOLID)
 		self.origin = self.origin + '16 0 0';
 	setorigin (self, self.origin);
-	if (pointcontents(self.origin) == #CONTENT_SKY || pointcontents(self.origin + '0 0 2') == #CONTENT_SKY || pointcontents(self.origin) == #CONTENT_SOLID)
+	if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin + '0 0 2') == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID)
 	{
 		Security_Camera_Die();
 		return;
 	}
-	sprint (self.real_owner, #PRINT_HIGH, "You finish building the Security Camera.\n");
+	sprint (self.real_owner, PRINT_HIGH, "You finish building the Security Camera.\n");
 
     teamprefixsprint(self.real_owner.team_no,self.real_owner); //- OfN
     teamsprint(self.real_owner.team_no, self.real_owner, self.real_owner.netname);
@@ -298,11 +299,11 @@ void() SecurityCameraTossTouch =
 
     self.real_owner.option = time + 2; // so ppl cant destroy it for 2 seconds
 
-	self.movetype = #MOVETYPE_NONE;
+	self.movetype = MOVETYPE_NONE;
 	setsize (self, '-16 -16 -6', '16 16 10');
-	self.solid = #SOLID_BBOX;
-	self.takedamage = #DAMAGE_AIM;
-	sound (self, #CHAN_WEAPON, "weapons/guerilla_set.wav", 1, #ATTN_NORM);
+	self.solid = SOLID_BBOX;
+	self.takedamage = DAMAGE_AIM;
+	sound (self, CHAN_WEAPON, "weapons/guerilla_set.wav", 1, ATTN_NORM);
 	self.think = Security_Camera_Idle;
 	self.nextthink = time + 1;
 };

@@ -6,6 +6,9 @@ This has the optimizations that I have done, basically if
 I saw something similar being run in multi places I made
 a function and put it here.
 ======================================================*/
+
+#include "defs.qh"
+
 float (float t1, float t2) Teammate;
 float (entity targ, entity check) visible2;
 float (entity targ, entity check) visible2x;
@@ -15,31 +18,31 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 float(entity targ, entity checker, float chkvis, float chkrng, float istesla, float chkcease) Pharse_Client =
 {
 		if (targ.classname != "player")
-			return #FALSE;
+			return FALSE;
 #ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 		if (chkcease)
 			if (infokey(world,"ceasefire")=="on")
-				return #FALSE;
+				return FALSE;
 #endif
-		if (targ.playerclass == #PC_UNDEFINED)
-			return #FALSE;
-		if (targ.done_custom & #CUSTOM_BUILDING)
-			return #FALSE;
+		if (targ.playerclass == PC_UNDEFINED)
+			return FALSE;
+		if (targ.done_custom & CUSTOM_BUILDING)
+			return FALSE;
 		if (targ.health <= 0)
-			return #FALSE;
+			return FALSE;
 		if (targ.has_disconnected)
-			return #FALSE;
+			return FALSE;
 		if (teamplay)
 		{
 			if (Teammate(targ.team_no, checker.team_no))
 				{
 					if (istesla)
 					{
-						if (!(checker.tf_items & #NIT_SECURITY_CAMERA)) //CH Cyto's idea
-							return #FALSE;
+						if (!(checker.tf_items & NIT_SECURITY_CAMERA)) //CH Cyto's idea
+							return FALSE;
 					} else
 					{
-						return #FALSE;
+						return FALSE;
 					}
 				}
 			if (Teammate(targ.undercover_team,checker.team_no))
@@ -47,16 +50,16 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 					if (istesla)
 					{
 						//- OfN jammer only for scanner -// nope
-                        if (!(checker.tf_items & #NIT_AUTOID) || targ.cutf_items & #CUTF_JAMMER)
-                        //if (!(checker.tf_items & #NIT_AUTOID))
-							return #FALSE;
+                        if (!(checker.tf_items & NIT_AUTOID) || targ.cutf_items & CUTF_JAMMER)
+                        //if (!(checker.tf_items & NIT_AUTOID))
+							return FALSE;
 					}
 					else
 					{						
-                        if (! (checker.classname == "building_sensor" && checker.num_mines & #IMPROVED_FOUR)) 
-                            return #FALSE;
+                        if (! (checker.classname == "building_sensor" && checker.num_mines & IMPROVED_FOUR)) 
+                            return FALSE;
 
-                        // - OfN return #FALSE;
+                        // - OfN return FALSE;
 					}
 				}
 		}
@@ -64,58 +67,58 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 		{
 			if (istesla)
 			{
-				if (!(checker.tf_items & #NIT_SECURITY_CAMERA)) //CH Cyto's idea
-					return #FALSE;
+				if (!(checker.tf_items & NIT_SECURITY_CAMERA)) //CH Cyto's idea
+					return FALSE;
 			} else
 			{
-				return #FALSE;
+				return FALSE;
 			}
 		}
 		if (targ.is_feigning)
 		{
 			if (istesla)
 			{
-				if (!(checker.tf_items & #NIT_AUTOID))
-					return #FALSE;
+				if (!(checker.tf_items & NIT_AUTOID))
+					return FALSE;
 			}
 			else //if (checker.classname != "monster_army") - OfN soldiers cant detect feigning spies now
 			{
-				return #FALSE;
+				return FALSE;
 			}
 		}
-		if (targ.flags & #FL_NOTARGET)
-			return #FALSE;
-		if (targ.items & #IT_INVISIBILITY && (checker.classname != "building_sensor")) //|| checker.classname != "monster_army"))
-			return #FALSE;
-		if (targ.job & #JOB_THIEF && (targ.job & #JOB_ACTIVE || targ.job & #JOB_FULL_HIDE))
+		if (targ.flags & FL_NOTARGET)
+			return FALSE;
+		if (targ.items & IT_INVISIBILITY && (checker.classname != "building_sensor")) //|| checker.classname != "monster_army"))
+			return FALSE;
+		if (targ.job & JOB_THIEF && (targ.job & JOB_ACTIVE || targ.job & JOB_FULL_HIDE))
 		{
 			if (istesla)
 			{
 				//- OfN jammer only for scanner -// nope
-                if (!(checker.tf_items & #NIT_AUTOID) || targ.cutf_items & #CUTF_JAMMER)
-                //if (!(checker.tf_items & #NIT_AUTOID))
-					return #FALSE;
+                if (!(checker.tf_items & NIT_AUTOID) || targ.cutf_items & CUTF_JAMMER)
+                //if (!(checker.tf_items & NIT_AUTOID))
+					return FALSE;
 			}
 			else if (checker.classname != "building_sensor")// && checker.classname != "monster_army" && checker.classname != "monster_demon1")
-				return #FALSE;
+				return FALSE;
 		}
-		if (chkvis && checker.classname == "building_sentrygun" && !(checker.tf_items & #NIT_TURRET)) // - OfN - hackish fix for sentry gun targetting
+		if (chkvis && checker.classname == "building_sentrygun" && !(checker.tf_items & NIT_TURRET)) // - OfN - hackish fix for sentry gun targetting
 		{
             if (!visible2x(targ,checker)) // - OfN - hackish fix for sentry gun targetting
- 				return #FALSE;
+ 				return FALSE;
         }
         else if (chkvis)
 			if (!visible2(targ,checker))
- 				return #FALSE;
+ 				return FALSE;
 		if (chkrng)
 		{
 			local float r;
 			
 			r = vlen(targ.origin - checker.origin);
 			if (r > chkrng)
-				return #FALSE;
+				return FALSE;
 		}
-	return #TRUE;
+	return TRUE;
 };
 //gives entity passed into number of frags passed
 //entity gets frag, entity gave frag, give this many frags, (0-1) log frags, 1=real_frag 2=frag, (0-1) checks real_frag, (0-1) check frag vamp (takes from targ)
@@ -124,36 +127,36 @@ void(entity atk, entity targ, float numfrags, float fraggetlog, float howgive, f
 {
 /*
 local string st;
-bprint(#PRINT_HIGH, "atk:");
-bprint(#PRINT_HIGH, atk.classname);
-bprint(#PRINT_HIGH, " targ:");
-bprint(#PRINT_HIGH, targ.classname);
-bprint(#PRINT_HIGH, " Frag:");
+bprint(PRINT_HIGH, "atk:");
+bprint(PRINT_HIGH, atk.classname);
+bprint(PRINT_HIGH, " targ:");
+bprint(PRINT_HIGH, targ.classname);
+bprint(PRINT_HIGH, " Frag:");
 st = ftos(numfrags);
-bprint(#PRINT_HIGH, st);
-bprint(#PRINT_HIGH, " log:");
+bprint(PRINT_HIGH, st);
+bprint(PRINT_HIGH, " log:");
 if (fraggetlog)
-	bprint(#PRINT_HIGH, "yes");
+	bprint(PRINT_HIGH, "yes");
 else
-	bprint(#PRINT_HIGH, "no");
-bprint(#PRINT_HIGH, " howgive:");
+	bprint(PRINT_HIGH, "no");
+bprint(PRINT_HIGH, " howgive:");
 if (howgive == 1)
-	bprint(#PRINT_HIGH, "real_frags");
+	bprint(PRINT_HIGH, "real_frags");
 else if (howgive == 2)
-	bprint(#PRINT_HIGH, "frags");
+	bprint(PRINT_HIGH, "frags");
 else
-	bprint(#PRINT_HIGH, "ERROR");
-bprint(#PRINT_HIGH, " real:");
+	bprint(PRINT_HIGH, "ERROR");
+bprint(PRINT_HIGH, " real:");
 if (chkreal)
-	bprint(#PRINT_HIGH, "yes");
+	bprint(PRINT_HIGH, "yes");
 else
-	bprint(#PRINT_HIGH, "no");
-bprint(#PRINT_HIGH, " vamp:");
+	bprint(PRINT_HIGH, "no");
+bprint(PRINT_HIGH, " vamp:");
 if (chkvamp)
-	bprint(#PRINT_HIGH, "yes");
+	bprint(PRINT_HIGH, "yes");
 else
-	bprint(#PRINT_HIGH, "no");
-bprint(#PRINT_HIGH, "\n");
+	bprint(PRINT_HIGH, "no");
+bprint(PRINT_HIGH, "\n");
 */
 	if (atk.classname == "monster_army")
 	{
@@ -167,7 +170,7 @@ bprint(#PRINT_HIGH, "\n");
 		else if (howgive == 1)
 			atk.real_frags = atk.real_frags + numfrags;
 		else
-			bprint(#PRINT_HIGH, "Error in Give_Frags_Out!\n");
+			bprint(PRINT_HIGH, "Error in Give_Frags_Out!\n");
 			
 		#ifdef QUAKE_WORLD
 			if (fraggetlog)
@@ -177,17 +180,17 @@ bprint(#PRINT_HIGH, "\n");
 		#endif
 		if (chkvamp)
 		{
-			if (teamplay & #TEAMPLAY_VAMPIRE)
+			if (teamplay & TEAMPLAY_VAMPIRE)
 			{
 				targ.real_frags = targ.real_frags - numfrags;
-				if (!(toggleflags & #TFLAG_TEAMFRAGS))
+				if (!(toggleflags & TFLAG_TEAMFRAGS))
 					targ.frags = targ.real_frags;
 			}
 		}	
 	
 		if (chkreal)
 		{
-		 	if (!(toggleflags & #TFLAG_TEAMFRAGS))
+		 	if (!(toggleflags & TFLAG_TEAMFRAGS))
 		 	{
 				atk.frags = atk.real_frags;
 			}
@@ -217,8 +220,8 @@ void(string search, entity person, float chkown) Find_And_Dmg =
 
 float () isMelee =
 {
-	if (self.current_weapon == #WEAP_AXE || self.current_weapon == #WEAP_SPANNER || self.current_weapon == #WEAP_MEDIKIT)
-		return #TRUE;
+	if (self.current_weapon == WEAP_AXE || self.current_weapon == WEAP_SPANNER || self.current_weapon == WEAP_MEDIKIT)
+		return TRUE;
 	else
-		return #FALSE;
+		return FALSE;
 };

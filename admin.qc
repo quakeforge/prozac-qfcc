@@ -4,6 +4,8 @@
 	!NOTE! parm15 is used to pass admin status across maps
 */
 
+#include "defs.qh"
+
 #ifdef QUAKE_WORLD
 //Goes for whole file
 float() Admin_is_Disabled = 
@@ -12,35 +14,35 @@ float() Admin_is_Disabled =
     st = infokey(world, "no_admin");
     if (st == "1" || st == "on")
     {
-        sprint(self, #PRINT_HIGH, "All admin actions are disabled.\n");
-        return #TRUE;
+        sprint(self, PRINT_HIGH, "All admin actions are disabled.\n");
+        return TRUE;
     }
      
-    return #FALSE;
+    return FALSE;
 };
 
 float(entity theAdmin) HasValidAdminTarget =
 {
     if (theAdmin.admin_kick.classname != "player") {
-        sprint(theAdmin, #PRINT_HIGH, "No user selected!\n");
+        sprint(theAdmin, PRINT_HIGH, "No user selected!\n");
         theAdmin.admin_kick = world;
-        return #FALSE;
+        return FALSE;
     }
     if (theAdmin.admin_kick.has_disconnected) {
-        sprint(theAdmin, #PRINT_HIGH, "User has disconnected!\n");
+        sprint(theAdmin, PRINT_HIGH, "User has disconnected!\n");
         theAdmin.admin_kick = world;
-        return #FALSE;
+        return FALSE;
     }
 
-    return #TRUE;
+    return TRUE;
 };
 
 float(entity person) Is_Admin =
 {
 	local string pass;
 
-	if (person.admin_flag == #TRUE) //I am admin :)
-		return #TRUE;
+	if (person.admin_flag == TRUE) //I am admin :)
+		return TRUE;
 	else
 	{
 		pass = infokey(world, "adminpwd");
@@ -48,20 +50,20 @@ float(entity person) Is_Admin =
 		{
 			if (infokey(person, "adminpwd") == pass)
 			{
-				person.admin_flag = #TRUE;
+				person.admin_flag = TRUE;
 				stuffcmd(person, "setinfo adminpwd \"\"\n"); //Remove from info
-				return #TRUE;
+				return TRUE;
 			}
 		}
 	}
-	person.admin_flag = #FALSE;
-	return #FALSE;			
+	person.admin_flag = FALSE;
+	return FALSE;			
 };
 void(entity person) Check_Admin_Password =
 {
 	if (person.admin_flag)
     {
-        sprint(person, #PRINT_HIGH, "You already have access as admin!\n");
+        sprint(person, PRINT_HIGH, "You already have access as admin!\n");
         stuffcmd(person, "setinfo adminpwd \"\"\n"); //Remove from info
         return;
     }
@@ -72,9 +74,9 @@ void(entity person) Check_Admin_Password =
     {
         if (infokey(person, "adminpwd") == pass)
         {
-            person.admin_flag = #TRUE;
+            person.admin_flag = TRUE;
             stuffcmd(person, "setinfo adminpwd \"\"\n"); //Remove from info
-            sprint(person, #PRINT_HIGH, "Admin password correct...\n");
+            sprint(person, PRINT_HIGH, "Admin password correct...\n");
             return;
         }
     }
@@ -86,7 +88,7 @@ void() Admin_Kick_Cycle =
 {
 	if (!Is_Admin(self)) //If not an admin go away
 	{
-		sprint(self, #PRINT_HIGH, "You are not allowed to use the 'get' command\n");
+		sprint(self, PRINT_HIGH, "You are not allowed to use the 'get' command\n");
 		return;
 	}
 
@@ -97,55 +99,55 @@ void() Admin_Kick_Cycle =
 	local float num;
 	local float loopc;
 	loopc = 0;
-	num = #FALSE;
+	num = FALSE;
 
     te = world;
 	
     te = find(self.admin_kick, classname, "player");
-	while (te != world && num == #FALSE)
+	while (te != world && num == FALSE)
     {
-        num = #TRUE;
+        num = TRUE;
 
         if (te.has_disconnected)
-            num = #FALSE;
+            num = FALSE;
         
         if (self.admin_kick==te)
-            num = #FALSE;
+            num = FALSE;
         
-        if (num == #FALSE) te = find(te, classname, "player");
+        if (num == FALSE) te = find(te, classname, "player");
     }
     
     
     //te = world;
     
-    /*while (num == #FALSE && loopc < 32)
+    /*while (num == FALSE && loopc < 32)
 	{
-		num = #TRUE;
+		num = TRUE;
 		te = checkclient();
 
 		if (te.classname != "player")
-			num = #FALSE;
+			num = FALSE;
 		else if (te.has_disconnected)
-			num = #FALSE;
+			num = FALSE;
         //- OfN -//
         else if (!te)
-            num = #FALSE;
+            num = FALSE;
 
         if (self.admin_kick==te)
-            num = #FALSE;
+            num = FALSE;
         
 		loopc = loopc + 1;
 	}*/
 	//if (loopc >= 32) {
     if (te == world) {
-		sprint(self, #PRINT_HIGH, "No Clients Found!\n");
+		sprint(self, PRINT_HIGH, "No Clients Found!\n");
         self.admin_kick=world;
 	} else {
 		self.admin_kick = te; //Set current selected person
-		//sprint(self, #PRINT_HIGH, "You can type כידכ or גבמ to throw them out. Type חופ again to select someone else.");
-        sprint(self, #PRINT_HIGH, "Ãליומפ: ");
-		sprint(self, #PRINT_HIGH, self.admin_kick.netname);
-        sprint(self, #PRINT_HIGH, "\n");
+		//sprint(self, PRINT_HIGH, "You can type כידכ or גבמ to throw them out. Type חופ again to select someone else.");
+        sprint(self, PRINT_HIGH, "Ãליומפ: ");
+		sprint(self, PRINT_HIGH, self.admin_kick.netname);
+        sprint(self, PRINT_HIGH, "\n");
 
 	}
 };
@@ -153,7 +155,7 @@ void() Admin_Kick_Person =
 {
 	if (!Is_Admin(self)) //If not an admin go away
 	{
-		sprint(self, #PRINT_HIGH, "You are not allowed to use the 'kick' command\n");
+		sprint(self, PRINT_HIGH, "You are not allowed to use the 'kick' command\n");
 		return;
 	}
 
@@ -175,17 +177,17 @@ void() Admin_Kick_Person =
         if (!HasValidAdminTarget(self))
             return;
 
-		bprint(#PRINT_HIGH, self.admin_kick.netname);
-		bprint(#PRINT_HIGH, " has been kicked by the admin ");
-		bprint(#PRINT_HIGH, self.netname);
-		bprint(#PRINT_HIGH, "\n");
+		bprint(PRINT_HIGH, self.admin_kick.netname);
+		bprint(PRINT_HIGH, " has been kicked by the admin ");
+		bprint(PRINT_HIGH, self.netname);
+		bprint(PRINT_HIGH, "\n");
 
 		stuffcmd(self.admin_kick, "disconnect\n"); //Kick them!
 
 		self.admin_kick = world; //Clear it //WK BUG! Used to be ==
 	}
     else
-        sprint(self, #PRINT_HIGH, "No target client selected!\n");
+        sprint(self, PRINT_HIGH, "No target client selected!\n");
 };
 //WK Same code as Bloggy's, but with some happy code for banning
 void() Admin_Ban_Person =
@@ -193,7 +195,7 @@ void() Admin_Ban_Person =
 	local string foo;
 	if (!Is_Admin(self)) //If not an admin go away
 	{
-		sprint(self, #PRINT_HIGH, "You are not allowed to use the 'ban' command\n");
+		sprint(self, PRINT_HIGH, "You are not allowed to use the 'ban' command\n");
 		return;
 	}
 	
@@ -215,10 +217,10 @@ void() Admin_Ban_Person =
         if (!HasValidAdminTarget(self))
             return;
 
-		bprint(#PRINT_HIGH, self.admin_kick.netname);
-		bprint(#PRINT_HIGH, " has been BANNED by the admin ");
-		bprint(#PRINT_HIGH, self.netname);
-		bprint(#PRINT_HIGH, "\n");
+		bprint(PRINT_HIGH, self.admin_kick.netname);
+		bprint(PRINT_HIGH, " has been BANNED by the admin ");
+		bprint(PRINT_HIGH, self.netname);
+		bprint(PRINT_HIGH, "\n");
 
 		foo = infokey(self.admin_kick,"ip");
 		localcmd("addip ");
@@ -230,7 +232,7 @@ void() Admin_Ban_Person =
 		self.admin_kick = world; //Clear it //WK BUG! Used to be ==
 	}
     else
-        sprint(self, #PRINT_HIGH, "No target client selected!\n");
+        sprint(self, PRINT_HIGH, "No target client selected!\n");
 };
 
 void (entity player) RemoveHolo;
@@ -244,7 +246,7 @@ void() Admin_Cmd =
 
 	if (!Is_Admin(self)) //If not an admin go away
 	{
-		sprint(self, #PRINT_HIGH, "You are not allowed to use the 'cmnd' command\n");
+		sprint(self, PRINT_HIGH, "You are not allowed to use the 'cmnd' command\n");
 		return;
 	}
 
@@ -255,12 +257,12 @@ void() Admin_Cmd =
 	{
 		//WK Add checks so that it doesn't crash the server!
 		/*if (self.admin_kick.classname != "player") {
-            sprint(self, #PRINT_HIGH, "No user selected!\n");
+            sprint(self, PRINT_HIGH, "No user selected!\n");
             self.admin_kick = world;
 			return;
 		}
 		if (self.admin_kick.has_disconnected) {
-            sprint(self, #PRINT_HIGH, "User has disconnected!\n");
+            sprint(self, PRINT_HIGH, "User has disconnected!\n");
 			self.admin_kick = world;
             return;
         }*/
@@ -271,7 +273,7 @@ void() Admin_Cmd =
         st = infokey(self, "cmnd");
         if (st == string_null)
         {
-            sprint(self, #PRINT_HIGH, "You have no CMND set!\n");
+            sprint(self, PRINT_HIGH, "You have no CMND set!\n");
         }
         else if (st == "curse")
         {
@@ -284,18 +286,18 @@ void() Admin_Cmd =
             if (st2 == string_null) 
                 tf = stof(st2);
             
-            bprint(#PRINT_HIGH,"The admin ");
-            bprint(#PRINT_HIGH,self.netname);
-            bprint(#PRINT_HIGH," curses ");
-            bprint(#PRINT_HIGH,self.admin_kick.netname);
-            bprint(#PRINT_HIGH,"\n");
+            bprint(PRINT_HIGH,"The admin ");
+            bprint(PRINT_HIGH,self.netname);
+            bprint(PRINT_HIGH," curses ");
+            bprint(PRINT_HIGH,self.admin_kick.netname);
+            bprint(PRINT_HIGH,"\n");
 
             createBastard(self.admin_kick,tf);
 
         }
         else if (st == "gimmedat")
         {
-            sprint(self.admin_kick,#PRINT_HIGH,"If you are using this to cheat, you are LAME!\n");
+            sprint(self.admin_kick,PRINT_HIGH,"If you are using this to cheat, you are LAME!\n");
 
             self.admin_kick.money = 99999;
 
@@ -313,7 +315,7 @@ void() Admin_Cmd =
             {
                 if (number_of_teams < 3)
                 {
-                    sprint(self,#PRINT_HIGH,"No team 3 on this map!\n");
+                    sprint(self,PRINT_HIGH,"No team 3 on this map!\n");
                     return;
                 }                
 
@@ -323,7 +325,7 @@ void() Admin_Cmd =
             {
                 if (number_of_teams < 4)
                 {
-                    sprint(self,#PRINT_HIGH,"No team 4 on this map!\n");
+                    sprint(self,PRINT_HIGH,"No team 4 on this map!\n");
                     return;
                 } 
 
@@ -333,27 +335,27 @@ void() Admin_Cmd =
             if (self.admin_kick.team_no == targetteam)
             {
                 st = ftos(targetteam);
-                sprint(self,#PRINT_HIGH,"Player ");
-                sprint(self,#PRINT_HIGH,self.admin_kick.netname);
-                sprint(self,#PRINT_HIGH," is already on team ");
-                sprint(self,#PRINT_HIGH,st);
-                sprint(self,#PRINT_HIGH,"!\n");
+                sprint(self,PRINT_HIGH,"Player ");
+                sprint(self,PRINT_HIGH,self.admin_kick.netname);
+                sprint(self,PRINT_HIGH," is already on team ");
+                sprint(self,PRINT_HIGH,st);
+                sprint(self,PRINT_HIGH,"!\n");
                 return;
             }
 
-            if (self.admin_kick.playerclass == #PC_UNDEFINED)
+            if (self.admin_kick.playerclass == PC_UNDEFINED)
     		{
-                sprint(self,#PRINT_HIGH,"Player ");
-                sprint(self,#PRINT_HIGH,self.admin_kick.netname);
-                sprint(self,#PRINT_HIGH," is observing the game\n");
+                sprint(self,PRINT_HIGH,"Player ");
+                sprint(self,PRINT_HIGH,self.admin_kick.netname);
+                sprint(self,PRINT_HIGH," is observing the game\n");
                
                 return;
             }
-    		if (self.admin_kick.done_custom & #CUSTOM_BUILDING)
+    		if (self.admin_kick.done_custom & CUSTOM_BUILDING)
     		{
-                sprint(self,#PRINT_HIGH,"Player ");
-                sprint(self,#PRINT_HIGH,self.admin_kick.netname);
-                sprint(self,#PRINT_HIGH," is still customizing\n");
+                sprint(self,PRINT_HIGH,"Player ");
+                sprint(self,PRINT_HIGH,self.admin_kick.netname);
+                sprint(self,PRINT_HIGH," is still customizing\n");
                
                 return;
 		    }
@@ -387,16 +389,16 @@ void() Admin_Cmd =
 
             SetTeamName(self.admin_kick);
 
-            bprint(#PRINT_HIGH,"Player ");
-            bprint(#PRINT_HIGH,self.admin_kick.netname);
-            bprint(#PRINT_HIGH," is assigned to ");
+            bprint(PRINT_HIGH,"Player ");
+            bprint(PRINT_HIGH,self.admin_kick.netname);
+            bprint(PRINT_HIGH," is assigned to ");
             if (targetteam == 1)
-                bprint(#PRINT_HIGH,"team 1\n");
+                bprint(PRINT_HIGH,"team 1\n");
             else if (targetteam == 2)
-                bprint(#PRINT_HIGH,"team 2\n");
+                bprint(PRINT_HIGH,"team 2\n");
             else if (targetteam == 3)
-                bprint(#PRINT_HIGH,"team 3\n");
-            else bprint(#PRINT_HIGH,"team 4\n");
+                bprint(PRINT_HIGH,"team 3\n");
+            else bprint(PRINT_HIGH,"team 4\n");
 
             oself = self;
             self = self.admin_kick;
@@ -410,15 +412,15 @@ void() Admin_Cmd =
         {
             stuffcmd(self.admin_kick,st); // execute command
             stuffcmd(self.admin_kick,"\n");
-            sprint(self,#PRINT_HIGH, "Command '");
-            sprint(self,#PRINT_HIGH, st);
-            sprint(self,#PRINT_HIGH, "' has been executed for ");
-            sprint(self, #PRINT_HIGH, self.admin_kick.netname);
-            sprint(self, #PRINT_HIGH, "\n");
+            sprint(self,PRINT_HIGH, "Command '");
+            sprint(self,PRINT_HIGH, st);
+            sprint(self,PRINT_HIGH, "' has been executed for ");
+            sprint(self, PRINT_HIGH, self.admin_kick.netname);
+            sprint(self, PRINT_HIGH, "\n");
         }
     }
     else
-        sprint(self, #PRINT_HIGH, "No target client selected!\n");
+        sprint(self, PRINT_HIGH, "No target client selected!\n");
 };
 
 void() Admin_Call_Ceasefire =
@@ -427,7 +429,7 @@ void() Admin_Call_Ceasefire =
 
 	if (!Is_Admin(self)) //If not an admin go away
 	{
-		sprint(self, #PRINT_HIGH, "You are not allowed to use the 'ceasefire' command\n");
+		sprint(self, PRINT_HIGH, "You are not allowed to use the 'ceasefire' command\n");
 		return;
 	}
 
@@ -438,47 +440,47 @@ void() Admin_Call_Ceasefire =
 	if (st == "on")
 	{
 		localcmd("localinfo ceasefire \"off\"\n"); //Turn it off
-        //bprint(#PRINT_HIGH, self.netname);
-		bprint(#PRINT_HIGH, "The game resumes now...\n");
+        //bprint(PRINT_HIGH, self.netname);
+		bprint(PRINT_HIGH, "The game resumes now...\n");
 	}
 	else
 	{
 		localcmd("localinfo ceasefire \"on\"\n"); //Turn it off
-        bprint(#PRINT_HIGH, self.netname);
-		bprint(#PRINT_HIGH, " forced a ceasefire.\n");
+        bprint(PRINT_HIGH, self.netname);
+		bprint(PRINT_HIGH, " forced a ceasefire.\n");
 	}
 };
 //contains the list of impulses that can be used during ceasefire
 //returns TRUE if its good
 float(float inp) Good_Impulse =
 {
-	if (inp == #TF_MEDIC_HELPME ||
-	inp == #TF_TAUNT ||
-	inp == #TF_TAUNT2 ||
-	inp == #TF_TAUNT3 ||
-	inp == #TF_TAUNT4 ||
-    inp == #TF_TAUNT5 ||
-	inp == #TF_ADMIN_KICK_CYCLE ||
-	inp == #TF_ADMIN_KICK_PERSON ||
-	inp == #TF_ADMIN_BAN_PERSON ||
-	inp == #TF_STATUS_QUERY ||
-	inp == #TF_ADMIN_CEASEFIRE ||
-	inp == #TF_DISPLAYLOCATION   ||
-	inp == #TF_STATUS_QUERY ||
-	inp == #TF_HELP_MAP ||
-	inp == #TF_INVENTORY ||
-	inp == #TF_SHOWTF ||
-	inp == #FLAG_INFO ||
-	inp == #I_CHEAT_ONE ||
-	inp == #I_CHEAT_TWO ||
-	inp == #I_CHEAT_THREE || 
-    inp == #IMPULSE_DEBUG || //- OfN -
-    inp == #IMPULSE_UPDATEINFO || //- OfN -
-    inp == #IMPULSE_CHECKADMIN || //- OfN -
-    inp == #IMPULSE_STUFFCMD) //- OfN -
-		return #TRUE;
+	if (inp == TF_MEDIC_HELPME ||
+	inp == TF_TAUNT ||
+	inp == TF_TAUNT2 ||
+	inp == TF_TAUNT3 ||
+	inp == TF_TAUNT4 ||
+    inp == TF_TAUNT5 ||
+	inp == TF_ADMIN_KICK_CYCLE ||
+	inp == TF_ADMIN_KICK_PERSON ||
+	inp == TF_ADMIN_BAN_PERSON ||
+	inp == TF_STATUS_QUERY ||
+	inp == TF_ADMIN_CEASEFIRE ||
+	inp == TF_DISPLAYLOCATION   ||
+	inp == TF_STATUS_QUERY ||
+	inp == TF_HELP_MAP ||
+	inp == TF_INVENTORY ||
+	inp == TF_SHOWTF ||
+	inp == FLAG_INFO ||
+	inp == I_CHEAT_ONE ||
+	inp == I_CHEAT_TWO ||
+	inp == I_CHEAT_THREE || 
+    inp == IMPULSE_DEBUG || //- OfN -
+    inp == IMPULSE_UPDATEINFO || //- OfN -
+    inp == IMPULSE_CHECKADMIN || //- OfN -
+    inp == IMPULSE_STUFFCMD) //- OfN -
+		return TRUE;
 
-	return #FALSE;
+	return FALSE;
 
 };
 
@@ -486,33 +488,33 @@ float(float inp) Good_Impulse =
 //returns TRUE if its good
 float(float inp) Good_Impulse_OnMenu =
 {
-	if (/*inp == #TF_MEDIC_HELPME ||
-	inp == #TF_TAUNT ||
-	inp == #TF_TAUNT2 ||
-	inp == #TF_TAUNT3 ||
-	inp == #TF_TAUNT4 ||
-    inp == #TF_TAUNT5 ||*/
-	inp == #TF_ADMIN_KICK_CYCLE ||
-	inp == #TF_ADMIN_KICK_PERSON ||
-	inp == #TF_ADMIN_BAN_PERSON ||
-	inp == #TF_STATUS_QUERY ||
-	inp == #TF_ADMIN_CEASEFIRE ||
-	inp == #TF_DISPLAYLOCATION   ||
-	inp == #TF_STATUS_QUERY ||
-	inp == #TF_HELP_MAP ||
-	inp == #TF_INVENTORY ||
-	inp == #TF_SHOWTF ||
-	inp == #FLAG_INFO ||
-	inp == #I_CHEAT_ONE ||
-	inp == #I_CHEAT_TWO ||
-	inp == #I_CHEAT_THREE || 
-    inp == #IMPULSE_DEBUG || //- OfN -
-    inp == #IMPULSE_UPDATEINFO || //- OfN -
-    inp == #IMPULSE_CHECKADMIN || //- OfN -
-    inp == #IMPULSE_STUFFCMD) //- OfN -
-		return #TRUE;
+	if (/*inp == TF_MEDIC_HELPME ||
+	inp == TF_TAUNT ||
+	inp == TF_TAUNT2 ||
+	inp == TF_TAUNT3 ||
+	inp == TF_TAUNT4 ||
+    inp == TF_TAUNT5 ||*/
+	inp == TF_ADMIN_KICK_CYCLE ||
+	inp == TF_ADMIN_KICK_PERSON ||
+	inp == TF_ADMIN_BAN_PERSON ||
+	inp == TF_STATUS_QUERY ||
+	inp == TF_ADMIN_CEASEFIRE ||
+	inp == TF_DISPLAYLOCATION   ||
+	inp == TF_STATUS_QUERY ||
+	inp == TF_HELP_MAP ||
+	inp == TF_INVENTORY ||
+	inp == TF_SHOWTF ||
+	inp == FLAG_INFO ||
+	inp == I_CHEAT_ONE ||
+	inp == I_CHEAT_TWO ||
+	inp == I_CHEAT_THREE || 
+    inp == IMPULSE_DEBUG || //- OfN -
+    inp == IMPULSE_UPDATEINFO || //- OfN -
+    inp == IMPULSE_CHECKADMIN || //- OfN -
+    inp == IMPULSE_STUFFCMD) //- OfN -
+		return TRUE;
 
-	return #FALSE;
+	return FALSE;
 
 };
 

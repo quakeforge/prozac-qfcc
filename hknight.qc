@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*
 ==============================================================================
 
@@ -75,9 +76,9 @@ void(float offset) hknight_shot =
 	launch_spike (org, vec);
 	newmis.classname = "knightspike";
 	setmodel (newmis, "progs/k_spike.mdl");
-	setsize (newmis, #VEC_ORIGIN, #VEC_ORIGIN);		
+	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
 	newmis.velocity = vec*300;
-	sound (self, #CHAN_WEAPON, "hknight/attack1.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "hknight/attack1.wav", 1, ATTN_NORM);
 };
 
 void() CheckForCharge =
@@ -107,9 +108,9 @@ void() CheckContinueCharge =
 		return;		// done charging
 	}
 	if (random() > 0.5)
-		sound (self, #CHAN_WEAPON, "knight/sword2.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
 	else
-		sound (self, #CHAN_WEAPON, "knight/sword1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 };
 
 //===========================================================================
@@ -164,7 +165,7 @@ void()	hknight_run8	=[	$run8,		hknight_run1	] {ai_run(13*1.5);};
 
 //============================================================================
 
-void()	hknight_pain1	=[	$pain1,		hknight_pain2	] {sound (self, #CHAN_VOICE, "hknight/pain1.wav", 1, #ATTN_NORM);};
+void()	hknight_pain1	=[	$pain1,		hknight_pain2	] {sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);};
 void()	hknight_pain2	=[	$pain2,		hknight_pain3	] {};
 void()	hknight_pain3	=[	$pain3,		hknight_pain4	] {};
 void()	hknight_pain4	=[	$pain4,		hknight_pain5	] {};
@@ -175,7 +176,7 @@ void()	hknight_pain5	=[	$pain5,		hknight_run1	] {};
 void()	hknight_die1	=[	$death1,	hknight_die2	] {ai_forward(10);};
 void()	hknight_die2	=[	$death2,	hknight_die3	] {ai_forward(8);};
 void()	hknight_die3	=[	$death3,	hknight_die4	]
-{self.solid = #SOLID_NOT; ai_forward(7);};
+{self.solid = SOLID_NOT; ai_forward(7);};
 void()	hknight_die4	=[	$death4,	hknight_die5	] {};
 void()	hknight_die5	=[	$death5,	hknight_die6	] {};
 void()	hknight_die6	=[	$death6,	hknight_die7	] {};
@@ -189,7 +190,7 @@ void()	hknight_die12	=[	$death12,	hknight_die12	] {};
 void()	hknight_dieb1	=[	$deathb1,	hknight_dieb2	] {};
 void()	hknight_dieb2	=[	$deathb2,	hknight_dieb3	] {};
 void()	hknight_dieb3	=[	$deathb3,	hknight_dieb4	]
-{self.solid = #SOLID_NOT;};
+{self.solid = SOLID_NOT;};
 void()	hknight_dieb4	=[	$deathb4,	hknight_dieb5	] {};
 void()	hknight_dieb5	=[	$deathb5,	hknight_dieb6	] {};
 void()	hknight_dieb6	=[	$deathb6,	hknight_dieb7	] {};
@@ -201,8 +202,8 @@ void() hknight_die =
 {
     if (self.real_owner.classname == "player")
     {
-	    sprint(self.real_owner,#PRINT_HIGH,"Your hell knight is dead.\n");
-	    self.real_owner.job = self.real_owner.job - (self.real_owner.job & #JOB_DEMON_OUT);
+	    sprint(self.real_owner,PRINT_HIGH,"Your hell knight is dead.\n");
+	    self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 	    self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
         self.real_owner.demon_one = world;
     }   
@@ -210,7 +211,7 @@ void() hknight_die =
 // check for gib
 	if (self.health < -40)
 	{
-		sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 		ThrowHead ("progs/h_hellkn.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib2.mdl", self.health);
@@ -219,7 +220,7 @@ void() hknight_die =
 	}
 
 // regular death
-	sound (self, #CHAN_VOICE, "hknight/death1.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, "hknight/death1.wav", 1, ATTN_NORM);
 	if (random() > 0.5)
 		hknight_die1 ();
 	else
@@ -360,7 +361,7 @@ void()	hknight_watk22	=[	$w_attack22,	hknight_run1	] {ai_charge(3);};
 void() hk_idle_sound =
 {
 	if (random() < 0.2)
-		sound (self, #CHAN_VOICE, "hknight/idle.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "hknight/idle.wav", 1, ATTN_NORM);
 };
 
 void(entity attacker, float damage)	hknight_pain =
@@ -368,7 +369,7 @@ void(entity attacker, float damage)	hknight_pain =
 	if (self.pain_finished > time)
 		return;
 
-	sound (self, #CHAN_VOICE, "hknight/pain1.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);
 
 	if (time - self.pain_finished > 5)
 	{	// allways go into pain frame if it has been a while
@@ -390,7 +391,7 @@ void() hknight_melee =
 {
 	hknight_type = hknight_type + 1;
 
-	sound (self, #CHAN_WEAPON, "hknight/slash1.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "hknight/slash1.wav", 1, ATTN_NORM);
 	if (hknight_type == 1)
 		hknight_slice1 ();
 	else if (hknight_type == 2)
@@ -428,8 +429,8 @@ void() monster_hell_knight =
 	precache_sound ("knight/sword1.wav");
 	precache_sound ("knight/sword2.wav");
 	
-	self.solid = #SOLID_SLIDEBOX;
-	self.movetype = #MOVETYPE_STEP;
+	self.solid = SOLID_SLIDEBOX;
+	self.movetype = MOVETYPE_STEP;
 
 	setmodel (self, "progs/hknight.mdl");
 

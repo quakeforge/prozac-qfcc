@@ -1,6 +1,8 @@
 // QW CenterPrinting hack
 // these functions are only used if in normal quake
 
+#include "defs.qh"
+
 #ifndef QUAKE_WORLD
 
 void(float level, string s) bprint =
@@ -95,19 +97,19 @@ void(float psize, entity p) KickPlayer =
 #else
 	msg_entity = p;
 	if (psize > -3)
-		WriteByte (#MSG_ONE, #SVC_SMALLKICK);
+		WriteByte (MSG_ONE, SVC_SMALLKICK);
 	else // (size < -3)
-		WriteByte (#MSG_ONE, #SVC_BIGKICK);
+		WriteByte (MSG_ONE, SVC_BIGKICK);
 #endif
 };
 
 void() muzzleflash =
 {
 #ifdef QUAKE_WORLD
-	WriteByte (#MSG_MULTICAST, #SVC_MUZZLEFLASH);
-	WriteEntity (#MSG_MULTICAST, self);
-	multicast (self.origin, #MULTICAST_PVS);
+	WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
+	WriteEntity (MSG_MULTICAST, self);
+	multicast (self.origin, MULTICAST_PVS);
 #else
-	self.effects = self.effects | #EF_MUZZLEFLASH;
+	self.effects = self.effects | EF_MUZZLEFLASH;
 #endif
 };

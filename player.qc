@@ -1,5 +1,3 @@
-
-
 /*======================================================
 	PLAYER.QC			Custom TeamFortress v3.1
 
@@ -10,6 +8,9 @@
 Handles all player animations, death and etc. Most weapon
 firings get shunted through here.
 ======================================================*/
+
+#include "defs.qh"
+
 /*
 	Heavily Modified for TeamFortress V1.21
 	TeamFortress Software
@@ -121,25 +122,25 @@ void() player_touch =
 
 	// Spies and Scouts can uncloak enemy spies
 	// WK Or those with Spy kits & Scanners
-	if (invis_only == #FALSE && (self.cutf_items & #CUTF_SPY_KIT || other.cutf_items & #CUTF_SPY_KIT))
+	if (invis_only == FALSE && (self.cutf_items & CUTF_SPY_KIT || other.cutf_items & CUTF_SPY_KIT))
 	{
 		if (other.classname == "player")
 		{
 			if (self.undercover_team != 0 || self.undercover_skin != 0)
 			{
-				if ((other.cutf_items & #CUTF_SPY_KIT || other.tf_items & #NIT_SCANNER) && !Teammate(self.team_no,other.team_no))
+				if ((other.cutf_items & CUTF_SPY_KIT || other.tf_items & NIT_SCANNER) && !Teammate(self.team_no,other.team_no))
 				{
-					sprint(other, #PRINT_HIGH, "Wait a minute... he's a Spy!\n");
-					sprint(self, #PRINT_HIGH, "The enemy sees through your disguise!\n");
+					sprint(other, PRINT_HIGH, "Wait a minute... he's a Spy!\n");
+					sprint(self, PRINT_HIGH, "The enemy sees through your disguise!\n");
 					Spy_RemoveDisguise(self);
 				}
 			}
 			if (other.undercover_team != 0 || other.undercover_skin != 0)
 			{
-				if ((self.cutf_items & #CUTF_SPY_KIT || self.tf_items & #NIT_SCANNER) && !Teammate(other.team_no,self.team_no))
+				if ((self.cutf_items & CUTF_SPY_KIT || self.tf_items & NIT_SCANNER) && !Teammate(other.team_no,self.team_no))
 				{
-					sprint(self, #PRINT_HIGH, "Wait a minute... he's a Spy!\n");
-					sprint(other, #PRINT_HIGH, "The enemy sees through your disguise!\n");
+					sprint(self, PRINT_HIGH, "Wait a minute... he's a Spy!\n");
+					sprint(other, PRINT_HIGH, "The enemy sees through your disguise!\n");
 					Spy_RemoveDisguise(other);
 				}
 			}
@@ -147,16 +148,16 @@ void() player_touch =
 	}
 
 	// Pass on infections
-	if (self.tfstate & #TFSTATE_INFECTED)
+	if (self.tfstate & TFSTATE_INFECTED)
 	{
 		//WK Melee armor stops infections from spreading
-		if (other.classname == "player" && !(other.invincible_finished) && !(other.armorclass & #AT_SAVEMELEE))
+		if (other.classname == "player" && !(other.invincible_finished) && !(other.armorclass & AT_SAVEMELEE))
 		{
 			// may sure other player is not already infected
-			if (!(other.tfstate & #TFSTATE_INFECTED))
+			if (!(other.tfstate & TFSTATE_INFECTED))
 			{
 				// can't infect the medic
-				if (!(other.weapons_carried & #WEAP_MEDIKIT)) //WK
+				if (!(other.weapons_carried & WEAP_MEDIKIT)) //WK
 				{
 					// infect 'em
 					Bio = spawn ();
@@ -179,15 +180,15 @@ void() player_touch =
 					Bio.classname = "timer";
 					Bio.netname = "biotimer";
 					
-					other.tfstate = other.tfstate | #TFSTATE_INFECTED;
+					other.tfstate = other.tfstate | TFSTATE_INFECTED;
 					other.infection_team_no = self.infection_team_no;
 
-					sprint(other, #PRINT_MEDIUM, "You have been infected by ");
-					sprint(other, #PRINT_MEDIUM, self.netname);
-					sprint(other, #PRINT_MEDIUM, "!\n");
-					sprint(self, #PRINT_MEDIUM, "You have infected ");
-					sprint(self, #PRINT_MEDIUM, other.netname);
-					sprint(self, #PRINT_MEDIUM, "!\n");
+					sprint(other, PRINT_MEDIUM, "You have been infected by ");
+					sprint(other, PRINT_MEDIUM, self.netname);
+					sprint(other, PRINT_MEDIUM, "!\n");
+					sprint(self, PRINT_MEDIUM, "You have infected ");
+					sprint(self, PRINT_MEDIUM, other.netname);
+					sprint(self, PRINT_MEDIUM, "!\n");
                     //-OfN
 
 					teamprefixsprint(other.team_no,other);
@@ -208,15 +209,15 @@ void() player_touch =
 			if (v1 < 50)
 			{
 				v2 = vlen(self.velocity);
-				if (v2 > 55 || (self.items & (#IT_KEY1 | #IT_KEY2)))
+				if (v2 > 55 || (self.items & (IT_KEY1 | IT_KEY2)))
 				{
 					makevectors(self.angles);
-					traceline (self.origin, self.origin + v_forward*32, #FALSE, self);
+					traceline (self.origin, self.origin + v_forward*32, FALSE, self);
 					if (trace_ent == other)
 					{
-						if (self.items & (#IT_KEY1 | #IT_KEY2))
+						if (self.items & (IT_KEY1 | IT_KEY2))
 							other.velocity = other.velocity + (normalize(self.velocity) * 120);
-						else if (!(other.items & (#IT_KEY1 | #IT_KEY2)))
+						else if (!(other.items & (IT_KEY1 | IT_KEY2)))
 							other.velocity = other.velocity + (normalize(self.velocity) * 30);
 					}
 				}
@@ -240,7 +241,7 @@ void()	player_stand1 =[	$axstnd1,	player_stand1	]
 		return;
 	}
 
-	if (self.current_weapon <= #WEAP_AXE)
+	if (self.current_weapon <= WEAP_AXE)
 	{
 		if (self.walkframe >= 12)
 			self.walkframe = 0;
@@ -265,7 +266,7 @@ void()	player_run =[	$rockrun1,	player_run	]
 		return;
 	}
 
-	if (self.current_weapon <= #WEAP_AXE)
+	if (self.current_weapon <= WEAP_AXE)
 	{
 		if (self.walkframe >= 6)
 			self.walkframe = 0;
@@ -297,9 +298,9 @@ void()	player_axe2 =	[$axatt2, player_axe3	] {self.weaponframe=2;};
 void()	player_axe3 =	[$axatt3, player_axe4	] 
 {
 	self.weaponframe=3;
-	if (self.current_weapon == #WEAP_AXE)
+	if (self.current_weapon == WEAP_AXE)
 		W_FireAxe();
-	else // if (self.current_weapon == #WEAP_SPANNER)
+	else // if (self.current_weapon == WEAP_SPANNER)
 		W_FireSpanner();
 };
 void()	player_axe4 =	[$axatt4, player_run	] {self.weaponframe=4;};
@@ -309,9 +310,9 @@ void()	player_axeb2 =	[$axattb2, player_axeb3	] {self.weaponframe=6;};
 void()	player_axeb3 =	[$axattb3, player_axeb4	] 
 {
 	self.weaponframe=7;
-	if (self.current_weapon == #WEAP_AXE)
+	if (self.current_weapon == WEAP_AXE)
 		W_FireAxe();
-	else // if (self.current_weapon == #WEAP_SPANNER)
+	else // if (self.current_weapon == WEAP_SPANNER)
 		W_FireSpanner();
 };
 void()	player_axeb4 =	[$axattb4, player_run	] {self.weaponframe=8;};
@@ -321,9 +322,9 @@ void()	player_axec2 =	[$axattc2, player_axec3	] {self.weaponframe=2;};
 void()	player_axec3 =	[$axattc3, player_axec4	] 
 {
 	self.weaponframe=3;
-	if (self.current_weapon == #WEAP_AXE)
+	if (self.current_weapon == WEAP_AXE)
 		W_FireAxe();
-	else // if (self.current_weapon == #WEAP_SPANNER)
+	else // if (self.current_weapon == WEAP_SPANNER)
 		W_FireSpanner();
 };
 void()	player_axec4 =	[$axattc4, player_run	] {self.weaponframe=4;};
@@ -333,9 +334,9 @@ void()	player_axed2 =	[$axattd2, player_axed3	] {self.weaponframe=6;};
 void()	player_axed3 =	[$axattd3, player_axed4	] 
 {
 	self.weaponframe=7;
-	if (self.current_weapon == #WEAP_AXE)
+	if (self.current_weapon == WEAP_AXE)
 		W_FireAxe();
-	else // if (self.current_weapon == #WEAP_SPANNER)
+	else // if (self.current_weapon == WEAP_SPANNER)
 		W_FireSpanner();
 };
 void()	player_axed4 =	[$axattd4, player_run	] {self.weaponframe=8;};
@@ -382,22 +383,22 @@ void()  player_chain5=  [$axattd4, player_run    ] {self.weaponframe=0;};
 
 void()	player_medikit1 =	[$axatt1, player_medikit2	] {self.weaponframe=1;};
 void()	player_medikit2 =	[$axatt2, player_medikit3	] {self.weaponframe=2;};
-void()	player_medikit3 =	[$axatt3, player_medikit4	] {self.weaponframe=3;W_FireMedikit(#FALSE);};
+void()	player_medikit3 =	[$axatt3, player_medikit4	] {self.weaponframe=3;W_FireMedikit(FALSE);};
 void()	player_medikit4 =	[$axatt4, player_run		] {self.weaponframe=4;};
 
 void()	player_medikitb1 =	[$axattb1, player_medikitb2	] {self.weaponframe=5;};
 void()	player_medikitb2 =	[$axattb2, player_medikitb3	] {self.weaponframe=6;};
-void()	player_medikitb3 =	[$axattb3, player_medikitb4	] {self.weaponframe=7;W_FireMedikit(#FALSE);};
+void()	player_medikitb3 =	[$axattb3, player_medikitb4	] {self.weaponframe=7;W_FireMedikit(FALSE);};
 void()	player_medikitb4 =	[$axattb4, player_run		] {self.weaponframe=8;};
 
 void()	player_medikitc1 =	[$axattc1, player_medikitc2	] {self.weaponframe=1;};
 void()	player_medikitc2 =	[$axattc2, player_medikitc3	] {self.weaponframe=2;};
-void()	player_medikitc3 =	[$axattc3, player_medikitc4	] {self.weaponframe=3;W_FireMedikit(#FALSE);};
+void()	player_medikitc3 =	[$axattc3, player_medikitc4	] {self.weaponframe=3;W_FireMedikit(FALSE);};
 void()	player_medikitc4 =	[$axattc4, player_run		] {self.weaponframe=4;};
 
 void()	player_medikitd1 =	[$axattd1, player_medikitd2	] {self.weaponframe=5;};
 void()	player_medikitd2 =	[$axattd2, player_medikitd3	] {self.weaponframe=6;};
-void()	player_medikitd3 =	[$axattd3, player_medikitd4	] {self.weaponframe=7;W_FireMedikit(#FALSE);};
+void()	player_medikitd3 =	[$axattd3, player_medikitd4	] {self.weaponframe=7;W_FireMedikit(FALSE);};
 void()	player_medikitd4 =	[$axattd4, player_run		] {self.weaponframe=8;};
 
 void()	player_bioweapon1 =	[$axatt1, player_bioweapon2	] {self.weaponframe=1;};
@@ -574,7 +575,7 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 		// Let him/her walk again
 		//if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed()
         //{
-            self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 		    TeamFortress_SetSpeed(self);
         //}
 
@@ -584,10 +585,10 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 		return;
 	}
 
-    self.fire_held_down = #TRUE;
+    self.fire_held_down = TRUE;
 
 	if (self.heat == 1)
-		sound (self, #CHAN_WEAPON, "weapons/asscan1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_WEAPON, "weapons/asscan1.wav", 1, ATTN_NORM);
 
 	SuperDamageSound();
 	Attack_Finished(0.1);
@@ -616,7 +617,7 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 		// Let him/her walk again
 		//if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed()
         //{
-            self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 		    TeamFortress_SetSpeed(self);
         //}
 
@@ -654,13 +655,13 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 
 	muzzleflash();
 
-	sound (self, #CHAN_WEAPON, "weapons/asscan2.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/asscan2.wav", 1, ATTN_NORM);
 
 	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
 	{
 		stuffcmd(self, "v_idlescale 0\n");
 		// Let him/her walk again
-        self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+        self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
         TeamFortress_SetSpeed(self);
     
 		self.weaponframe = 0;
@@ -696,7 +697,7 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 	{
 		stuffcmd(self, "v_idlescale 0\n");
 		// Let him/her walk again
-	    self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 	    TeamFortress_SetSpeed(self);
     
 		self.weaponframe = 0;
@@ -727,15 +728,15 @@ void() player_assaultcannondown1   =[$nailatt1, player_assaultcannondown1  ]
 	local entity tcool;
 
 	if (self.count == 1)
-		sound (self, #CHAN_WEAPON, "weapons/asscan3.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_WEAPON, "weapons/asscan3.wav", 1, ATTN_NORM);
 
 	if (self.count >= 15)
 	{
 		self.heat = 0;
-	    self.fire_held_down = #FALSE;
+	    self.fire_held_down = FALSE;
 
 		// Let him/her walk again
-	    self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 	    TeamFortress_SetSpeed(self);
      
 		if (self.ammo_shells < 1 || self.ammo_cells < 6)
@@ -797,7 +798,7 @@ void() player_light_assault1   =[$light1, player_light_assault2  ]
 {
 	//muzzleflash();
 
-    if (!self.button0 || intermission_running || self.tfstate & #TFSTATE_RELOADING)
+    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
 		{player_run ();return;}
 
     muzzleflash(); //- oFn moved
@@ -811,7 +812,7 @@ void() player_light_assault1   =[$light1, player_light_assault2  ]
 };
 void() player_light_assault2   =[$light2, player_light_assault1  ]
 {
-	if (!self.button0 || intermission_running || self.tfstate & #TFSTATE_RELOADING)
+	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
 		{player_run ();return;}
 	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe == 5)
@@ -843,38 +844,38 @@ local float		rs;
 
 	if (damage_attacker.classname == "teledeath")
 	{
-		sound (self, #CHAN_VOICE, "player/teledth1.wav", 1, #ATTN_NONE);
+		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 		return;
 	}
 
 	// water pain sounds
-	if (self.watertype == #CONTENT_WATER && self.waterlevel == 3)
+	if (self.watertype == CONTENT_WATER && self.waterlevel == 3)
 	{
 		DeathBubbles(1);
 		if (random() > 0.5)
-			sound (self, #CHAN_VOICE, "player/drown1.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/drown1.wav", 1, ATTN_NORM);
 		else
-			sound (self, #CHAN_VOICE, "player/drown2.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/drown2.wav", 1, ATTN_NORM);
 		return;
 	}
 	
 	// slime pain sounds
-	if (self.watertype == #CONTENT_SLIME)
+	if (self.watertype == CONTENT_SLIME)
 	{
 		// FIX ME	put in some steam here
 		if (random() > 0.5)
-			sound (self, #CHAN_VOICE, "player/lburn1.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
 		else
-			sound (self, #CHAN_VOICE, "player/lburn2.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
 		return;
 	}
 
-	if (self.watertype == #CONTENT_LAVA)
+	if (self.watertype == CONTENT_LAVA)
 	{
 		if (random() > 0.5)
-			sound (self, #CHAN_VOICE, "player/lburn1.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
 		else
-			sound (self, #CHAN_VOICE, "player/lburn2.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
 		return;
 	}
 
@@ -891,7 +892,7 @@ local float		rs;
 	if (self.axhitme == 1)
 	{
 		self.axhitme = 0;
-		sound (self, #CHAN_VOICE, "player/axhit1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "player/axhit1.wav", 1, ATTN_NORM);
 		return;
 	}
 
@@ -911,7 +912,7 @@ local float		rs;
 	else
 		self.noise = "player/pain6.wav";
 
-	sound (self, #CHAN_VOICE, self.noise, 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	return;
 };
 
@@ -946,10 +947,10 @@ void() player_pain =
 	}
 
 	// HvyWeap Guys firing assault cannon don't have pain frames
-	if (self.button0 && self.current_weapon == #WEAP_ASSAULT_CANNON)
+	if (self.button0 && self.current_weapon == WEAP_ASSAULT_CANNON)
 		return;
 
-	if (self.current_weapon <= #WEAP_AXE)
+	if (self.current_weapon <= WEAP_AXE)
 		player_axpain1 ();
 	else
 		player_pain1 ();
@@ -969,8 +970,8 @@ void() DeathBubblesSpawn =
 	newmis = spawn();
 	setmodel (newmis, "progs/s_bubble.spr");
 	setorigin (newmis, self.owner.origin + '0 0 24');
-	newmis.movetype = #MOVETYPE_NOCLIP;
-	newmis.solid = #SOLID_NOT;
+	newmis.movetype = MOVETYPE_NOCLIP;
+	newmis.solid = SOLID_NOT;
 	newmis.velocity = '0 0 15';
 	newmis.nextthink = time + 0.5;
 	newmis.think = bubble_bob;
@@ -992,8 +993,8 @@ local entity	bubble_spawner;
 	bubble_spawner = spawn();
 	setorigin (bubble_spawner, self.origin);
 
-	bubble_spawner.movetype = #MOVETYPE_NONE;
-	bubble_spawner.solid = #SOLID_NOT;
+	bubble_spawner.movetype = MOVETYPE_NONE;
+	bubble_spawner.solid = SOLID_NOT;
 	bubble_spawner.nextthink = time + 0.1;
 	bubble_spawner.think = DeathBubblesSpawn;
 	bubble_spawner.air_finished = 0;
@@ -1019,7 +1020,7 @@ void() DeathSound =
 			DeathBubbles(2);
 		else
 			DeathBubbles(10);
-		sound (self, #CHAN_VOICE, "player/h2odeath.wav", 1, #ATTN_NONE);
+		sound (self, CHAN_VOICE, "player/h2odeath.wav", 1, ATTN_NONE);
 		return;
 	}
 	
@@ -1035,7 +1036,7 @@ void() DeathSound =
 	if (rs == 5)
 		self.noise = "player/death5.wav";
 
-	sound (self, #CHAN_VOICE, self.noise, 1, #ATTN_NONE);
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
 	return;
 };
 
@@ -1044,7 +1045,7 @@ void() PlayerDead =
 {
 	self.nextthink = -1;
 	// allow respawn after a certain time
-	self.deadflag = #DEAD_DEAD;
+	self.deadflag = DEAD_DEAD;
 };
 
 vector(float dm) VelocityForDamage =
@@ -1078,8 +1079,8 @@ void(string gibname, float dm) ThrowGib =
 	setmodel (newmis, gibname);
 	setsize (newmis, '0 0 0', '0 0 0');
 	newmis.velocity = VelocityForDamage (dm);
-	newmis.movetype = #MOVETYPE_BOUNCE;
-	newmis.solid = #SOLID_NOT;
+	newmis.movetype = MOVETYPE_BOUNCE;
+	newmis.solid = SOLID_NOT;
 	newmis.avelocity_x = random()*600;
 	newmis.avelocity_y = random()*600;
 	newmis.avelocity_z = random()*600;
@@ -1102,14 +1103,14 @@ void(string gibname, float dm) ThrowHead =
 	self.skin = 0;
 	self.frame = 0;
 	self.nextthink = -1;
-	self.movetype = #MOVETYPE_BOUNCE;
-	self.takedamage = #DAMAGE_NO;
-	self.solid = #SOLID_NOT;
+	self.movetype = MOVETYPE_BOUNCE;
+	self.takedamage = DAMAGE_NO;
+	self.solid = SOLID_NOT;
 	self.view_ofs = '0 0 8';
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.velocity = VelocityForDamage (dm);
 	self.origin_z = self.origin_z - 24;
-	self.flags = self.flags - (self.flags & #FL_ONGROUND);
+	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.avelocity = crandom() * '0 600 0';
 
     /*
@@ -1137,20 +1138,20 @@ void(string gibname) HeadShotThrowHead =
 	setmodel (self, gibname);
 	self.frame = 0;
 	self.nextthink = -1;
-	self.movetype = #MOVETYPE_BOUNCE;
-	self.takedamage = #DAMAGE_NO;
-	self.solid = #SOLID_NOT;
+	self.movetype = MOVETYPE_BOUNCE;
+	self.takedamage = DAMAGE_NO;
+	self.solid = SOLID_NOT;
 	self.view_ofs = '0 0 8';
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.velocity = normalize(self.head_shot_vector) * 600;
 	self.origin_z = self.origin_z + 24;
-	self.flags = self.flags - (self.flags & #FL_ONGROUND);
+	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.avelocity = '0 0 0';
 };
 
 void() KillPlayer =
 {
-	self.owner.deadflag = #DEAD_DEAD;
+	self.owner.deadflag = DEAD_DEAD;
 	dremove(self);
 };
 
@@ -1160,16 +1161,16 @@ void() GibPlayer =
   // Decapitation ------------------------------------------------------//
   if (headless == 1)
   {
-	if (deathmsg == #DMSG_SNIPERHEADSHOT) //- Ofn - I don't like this:  || deathmsg == #DMSG_BACKSTAB)
+	if (deathmsg == DMSG_SNIPERHEADSHOT) //- Ofn - I don't like this:  || deathmsg == DMSG_BACKSTAB)
 	{
-		//if (deathmsg == #DMSG_SNIPERHEADSHOT)
+		//if (deathmsg == DMSG_SNIPERHEADSHOT)
 			HeadShotThrowHead("progs/h_player.mdl");
 		//else
 		//	ThrowHead("progs/h_player.mdl", -60);
 
 		newmis = spawn();
-		newmis.solid = #SOLID_NOT;
-        newmis.movetype = #MOVETYPE_STEP;
+		newmis.solid = SOLID_NOT;
+        newmis.movetype = MOVETYPE_STEP;
 
         newmis.angles = self.angles;
 
@@ -1184,7 +1185,7 @@ void() GibPlayer =
 		     		
 		newmis.think = Headless_Think;
 		newmis.nextthink = time + 0.1;
-		if (self.current_weapon <= #WEAP_AXE)
+		if (self.current_weapon <= WEAP_AXE)
 			newmis.frame = 0;
 		else
 			newmis.frame = 8;
@@ -1213,7 +1214,7 @@ void() GibPlayer =
 
 	// Why do we need this? What are we doing that's clobbering _something_
 	// within a second after a trigger_hurt kills the player?
-	if (deathmsg == #DMSG_TRIGGER)
+	if (deathmsg == DMSG_TRIGGER)
 	{
 		newmis = spawn();
 		newmis.owner = self;
@@ -1222,14 +1223,14 @@ void() GibPlayer =
 	}
 	else
 	{
-		self.deadflag = #DEAD_DEAD;
+		self.deadflag = DEAD_DEAD;
 	}
 
-	TeamFortress_SetupRespawn(#FALSE);
+	TeamFortress_SetupRespawn(FALSE);
 
 	if (damage_attacker.classname == "teledeath")
 	{
-		sound (self, #CHAN_VOICE, "player/teledth1.wav", 1, #ATTN_NONE);
+		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 
 		// if telefragged, extend respawn delay to prevent chaining telefrags
 		self.respawn_time = self.respawn_time + 2;
@@ -1239,7 +1240,7 @@ void() GibPlayer =
 
 	if (damage_attacker.classname == "teledeath2")
 	{
-		sound (self, #CHAN_VOICE, "player/teledth1.wav", 1, #ATTN_NONE);
+		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 
 		// if telefragged, extend respawn delay to prevent chaining telefrags
 		self.respawn_time = self.respawn_time + 2;
@@ -1248,9 +1249,9 @@ void() GibPlayer =
 	}
 		
 	if (random() < 0.5)
-		sound (self, #CHAN_VOICE, "player/gib.wav", 1, #ATTN_NONE);
+		sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
 	else
-		sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NONE);
+		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
 };
 
 void() PlayerDie =
@@ -1258,27 +1259,27 @@ void() PlayerDie =
 	local float i,finished;
 	local entity te;
 	//WK Stop orff
-	sound (self, #CHAN_MUSIC, "items/r_item1.wav", 0.1, #ATTN_NORM);
+	sound (self, CHAN_MUSIC, "items/r_item1.wav", 0.1, ATTN_NORM);
 	//WK Stop glows!
-	self.flags = self.flags - (self.flags & (#EF_BRIGHTLIGHT | #EF_DIMLIGHT));
+	self.flags = self.flags - (self.flags & (EF_BRIGHTLIGHT | EF_DIMLIGHT));
       self.effects = 0;
     // make dead guy release hook (wedge)
     if (self.hook_out)
     {
 	    Reset_Grapple (self.hook);
     	Attack_Finished(0.75);
-	    self.hook_out = #TRUE;	// PutClientInServer will reset this
+	    self.hook_out = TRUE;	// PutClientInServer will reset this
     }
         self.items = self.items - (self.items &
-        (#IT_INVISIBILITY | #IT_INVULNERABILITY | #IT_SUIT | #IT_QUAD) );
+        (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD) );
         self.invisible_finished = 0;    // don't die as eyes
         self.invincible_finished = 0;
         self.super_damage_finished = 0;
         self.radsuit_finished = 0;
         self.modelindex = modelindex_player;    // don't use eyes
 	// If infected, give the medic a frag
-	finished = #TRUE;
-	if (self.tfstate & #TFSTATE_INFECTED && self == self.enemy)
+	finished = TRUE;
+	if (self.tfstate & TFSTATE_INFECTED && self == self.enemy)
 	{
 		te = find(world, classname, "timer");
 		while (te)
@@ -1289,9 +1290,9 @@ void() PlayerDie =
 				logfrag(te.enemy, self);
 			#endif
 				te.enemy.real_frags = te.enemy.real_frags + 1;
-			 	if (!(toggleflags & #TFLAG_TEAMFRAGS))
+			 	if (!(toggleflags & TFLAG_TEAMFRAGS))
 					te.enemy.frags = te.enemy.real_frags;
-				finished = #TRUE;
+				finished = TRUE;
 			}
 
 			te = find(te, classname, "timer");
@@ -1317,10 +1318,10 @@ void() PlayerDie =
 	
 	self.weaponmodel="";
 	self.view_ofs = '0 0 -8';
-	self.deadflag = #DEAD_DYING;
-	self.solid = #SOLID_NOT;
-	self.flags = self.flags - (self.flags & #FL_ONGROUND);
-	self.movetype = #MOVETYPE_TOSS;
+	self.deadflag = DEAD_DYING;
+	self.solid = SOLID_NOT;
+	self.flags = self.flags - (self.flags & FL_ONGROUND);
+	self.movetype = MOVETYPE_TOSS;
 
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;
@@ -1335,10 +1336,10 @@ void() PlayerDie =
 	self.angles_x = 0;
 	self.angles_z = 0;
 
-	if (self.current_weapon <= #WEAP_AXE)
+	if (self.current_weapon <= WEAP_AXE)
 	{
 		player_die_ax1 ();
-		TeamFortress_SetupRespawn(#FALSE);
+		TeamFortress_SetupRespawn(FALSE);
 		return;
 	}
 
@@ -1356,7 +1357,7 @@ void() PlayerDie =
 		player_diee1();
 	
 	// get ready to spawn!
-	TeamFortress_SetupRespawn(#FALSE);
+	TeamFortress_SetupRespawn(FALSE);
 };
 
 void() set_suicide_frame =
@@ -1366,13 +1367,13 @@ void() set_suicide_frame =
 
 /*
 	self.frame = $deatha11;
-	self.solid = #SOLID_NOT;
-	self.movetype = #MOVETYPE_TOSS;
-	self.deadflag = #DEAD_DEAD;
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_TOSS;
+	self.deadflag = DEAD_DEAD;
 	self.nextthink = -1;
 */
 	setmodel(self, string_null);
-	setsize (self, #VEC_HULL_MIN, #VEC_HULL_MAX);
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 };
 
 
@@ -1478,7 +1479,7 @@ void() player_failedairgun3   =[$nailatt2, player_run  ] {self.weaponframe=8;};
 
 void() player_laser1   =[$nailatt1, player_laser2  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & #TFSTATE_RELOADING)
+    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
 		{player_run ();return;}
 
     self.attack_finished = time + 0.2;
@@ -1487,14 +1488,14 @@ void() player_laser1   =[$nailatt1, player_laser2  ]
 };
 void() player_laser2   =[$nailatt2, player_laser3  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & #TFSTATE_RELOADING)
+    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
 		{player_run ();return;}
 
     self.weaponframe=2;
 };
 void() player_laser3   =[$nailatt2, player_laser4  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & #TFSTATE_RELOADING)
+    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
 		{player_run ();return;}
 
     self.attack_finished = time + 0.2;
@@ -1503,7 +1504,7 @@ void() player_laser3   =[$nailatt2, player_laser4  ]
 };
 void() player_laser4   =[$nailatt1, player_laser1  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & #TFSTATE_RELOADING)
+    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
 		{player_run ();return;}
 
     self.weaponframe=5;

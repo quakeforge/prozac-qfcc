@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*======================================================
 	DEMOMAN.QC
 
@@ -47,7 +48,7 @@ void() TeamFortress_DetonatePipebombs =
 // Pipebomb touch function
 void() PipebombTouch =
 {
-	sound (self, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NORM);	// bounce sound
+	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -58,7 +59,7 @@ void() PipebombTouch =
 void() MirvGrenadeTouch =
 {
 	// If the Mirv Grenade hits a player, it just bounces off
-	sound (self, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -69,23 +70,23 @@ void() MirvGrenadeExplode =
 {
 	local float i;
 
-	deathmsg = #DMSG_GREN_MIRV;
+	deathmsg = DMSG_GREN_MIRV;
 	T_RadiusDamage (self, self.owner, 100, world);
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 #endif
 
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 
 	// Launch mirvs
 	i = 0;
-	while (i < #GR_TYPE_MIRV_NO)
+	while (i < GR_TYPE_MIRV_NO)
 	{
 		MirvGrenadeLaunch (self.origin + '0 0 -1',self.owner);
 		i = i + 1;
@@ -112,11 +113,11 @@ void (vector org, entity shooter) MirvGrenadeLaunch =
 
 	newmis = spawn ();
 	newmis.owner = shooter;
-	newmis.movetype = #MOVETYPE_BOUNCE;
-	newmis.solid = #SOLID_BBOX;
+	newmis.movetype = MOVETYPE_BOUNCE;
+	newmis.solid = SOLID_BBOX;
 
 	newmis.classname = "grenade";
-	newmis.weapon = #DMSG_GREN_MIRV;
+	newmis.weapon = DMSG_GREN_MIRV;
 
 #ifdef NET_SERVER
 	newmis.touch = NormalGrenadeTouch;
@@ -136,7 +137,7 @@ void (vector org, entity shooter) MirvGrenadeLaunch =
 	newmis.avelocity='100 100 400';
 
 	setmodel (newmis, "progs/grenade2.mdl");
-	setsize (newmis, #VEC_ORIGIN, #VEC_ORIGIN);
+	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin (newmis, org);
 };
 
@@ -150,32 +151,32 @@ void(float timer) TeamFortress_SetDetpack =
 	self.impulse = 0;
 	self.last_impulse = 0;
 
-	if (!(self.cutf_items & #CUTF_DETPACK))
+	if (!(self.cutf_items & CUTF_DETPACK))
 		return;
 
 	if (self.ammo_detpack <= 0)
 		return;
 
 	// Cant set detpack if you're in the air
-	if (!(self.flags & #FL_ONGROUND))
+	if (!(self.flags & FL_ONGROUND))
 	{
-		sprint (self, #PRINT_HIGH, "You can't set detpacks in the air!\n");
+		sprint (self, PRINT_HIGH, "You can't set detpacks in the air!\n");
 		return;
 	}
 	//WK Prevents spy sliding bug
 	if (self.is_feigning)
 	{
-		sprint (self, #PRINT_HIGH, "You can't set detpacks while playing dead!\n");
+		sprint (self, PRINT_HIGH, "You can't set detpacks while playing dead!\n");
 		return;
 	}
 	if (self.is_haxxxoring)
 	{
-		sprint (self, #PRINT_HIGH, "You can't set a detpack while you're hacking something.\n");
+		sprint (self, PRINT_HIGH, "You can't set a detpack while you're hacking something.\n");
 		return;
 	}
 	if (timer < 5)
 	{
-		sprint (self, #PRINT_HIGH, "You can't set detpacks for less that 5 seconds.\n");
+		sprint (self, PRINT_HIGH, "You can't set detpacks for less that 5 seconds.\n");
 		return;
 	}
 
@@ -187,7 +188,7 @@ void(float timer) TeamFortress_SetDetpack =
 
 	makeImmune(self,time + 2);
 	//self.immune_to_check = time + 2;
-	self.tfstate = self.tfstate | #TFSTATE_CANT_MOVE;
+	self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
 	// Save the current weapon and remove it
 	self.weapon = self.current_weapon;
 	self.current_weapon = 0;
@@ -198,20 +199,20 @@ void(float timer) TeamFortress_SetDetpack =
 	TeamFortress_SetSpeed(self);
 #endif
 
-	self.pausetime = time + #WEAP_DETPACK_SETTIME;
+	self.pausetime = time + WEAP_DETPACK_SETTIME;
 
 	stimer = ftos(timer);
 
-	sprint(self, #PRINT_HIGH, "Setting detpack for ");
-	sprint(self, #PRINT_HIGH, stimer);
-	sprint(self, #PRINT_HIGH, " seconds...\n");
+	sprint(self, PRINT_HIGH, "Setting detpack for ");
+	sprint(self, PRINT_HIGH, stimer);
+	sprint(self, PRINT_HIGH, " seconds...\n");
 
 	newmis = spawn();
 	newmis.owner = self;
 	newmis.classname = "timer";
 	newmis.netname = "detpack_timer";
-	newmis.movetype = #MOVETYPE_NONE; //WK M3 Bug Hunt
-	newmis.nextthink = time + #WEAP_DETPACK_SETTIME;
+	newmis.movetype = MOVETYPE_NONE; //WK M3 Bug Hunt
+	newmis.nextthink = time + WEAP_DETPACK_SETTIME;
 	newmis.think = TeamFortress_DetpackSet;
 	newmis.health = timer;
 
@@ -233,16 +234,16 @@ void(float krac) TeamFortress_DetpackStop =
 	if (detpack_timer == world)  
 		return;
 
-	if (krac == #TRUE) {
-		sprint(self, #PRINT_HIGH, "Your detpack got Kraced!\n");
+	if (krac == TRUE) {
+		sprint(self, PRINT_HIGH, "Your detpack got Kraced!\n");
 	} else {
-		sprint(self, #PRINT_HIGH, "Detpack retrieved.\n");
+		sprint(self, PRINT_HIGH, "Detpack retrieved.\n");
 		self.ammo_detpack = self.ammo_detpack + 1;
 	}
 
 	dremove(detpack_timer);
 
-	self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 
 	self.is_detpacking = 0;
 	self.current_weapon = self.weapon;
@@ -262,7 +263,7 @@ void() TeamFortress_DetpackSet =
 	local entity countd, oldself;
 
 	self.is_detpacking = 0;
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & #TFSTATE_CANT_MOVE);
+	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_CANT_MOVE);
     self.owner.is_detpacking = 0;
 
 #ifdef QUAKE_WORLD
@@ -283,14 +284,14 @@ void() TeamFortress_DetpackSet =
 	newmis = spawn ();
 	newmis.owner = self.owner;
     newmis.origin = self.owner.origin - '0 0 23';
-	newmis.movetype = #MOVETYPE_BOUNCE;
+	newmis.movetype = MOVETYPE_BOUNCE;
 #ifdef QUAKE_WORLD
-	newmis.solid = #SOLID_BBOX;
+	newmis.solid = SOLID_BBOX;
 #else
-	newmis.solid = #SOLID_TRIGGER;
+	newmis.solid = SOLID_TRIGGER;
 #endif
 	newmis.classname = "detpack";
-    newmis.flags = #FL_ITEM;
+    newmis.flags = FL_ITEM;
 		
 	newmis.angles = '90 0 0';
 	newmis.angles_y = self.owner.angles_y;
@@ -304,7 +305,7 @@ void() TeamFortress_DetpackSet =
 	setsize (newmis, '-16 -16 0', '16 16 8');
 	setorigin (newmis, self.owner.origin);
 
-	sound (newmis, #CHAN_WEAPON, "doors/medtry.wav", 1, #ATTN_NORM);  //CH play set detpack sound
+	sound (newmis, CHAN_WEAPON, "doors/medtry.wav", 1, ATTN_NORM);  //CH play set detpack sound
 	
 
 	// Create the CountDown entity
@@ -313,7 +314,7 @@ void() TeamFortress_DetpackSet =
 	countd.think = TeamFortress_DetpackCountDown;
 	countd.health = self.health - 1;
 	countd.owner = self.owner;
-	countd.movetype = #MOVETYPE_NONE; //WK M3 Bug Hunt
+	countd.movetype = MOVETYPE_NONE; //WK M3 Bug Hunt
 	countd.classname = "countdown_timer"; // Don't call it timer, because we
 							  // don't want it removed if player dies
 	countd.enemy = newmis;
@@ -328,7 +329,7 @@ void() TeamFortress_DetpackSet =
 	newmis.nextthink = time + self.health;
 	newmis.think = TeamFortress_DetpackExplode;
 
-	sprint(self.owner, #PRINT_HIGH, "Detpack set!\n");
+	sprint(self.owner, PRINT_HIGH, "Detpack set!\n");
 
     teamprefixsprint(self.team_no,self);
     teamsprint6(self,self.netname," sets a detpack!\n","","","","");
@@ -346,33 +347,33 @@ void() TeamFortress_DetpackExplode =
 {
 	local float pos;
 
-	bprint(#PRINT_MEDIUM, "FIRE IN THE HOLE!\n");
+	bprint(PRINT_MEDIUM, "FIRE IN THE HOLE!\n");
 
 	// Check the pointcontents to prevent detpack outside the world
 	pos = pointcontents(self.origin); 
-	if (pos != #CONTENT_SOLID && pos != #CONTENT_SKY) 
+	if (pos != CONTENT_SOLID && pos != CONTENT_SKY) 
 	{
-		deathmsg = #DMSG_DETPACK;
-		T_RadiusDamage (self, self.owner, #WEAP_DETPACK_SIZE, world);
+		deathmsg = DMSG_DETPACK;
+		T_RadiusDamage (self, self.owner, WEAP_DETPACK_SIZE, world);
 
-        sound(self, #CHAN_MISC, "weapons/detpack.wav", 1, #ATTN_NONE);
+        sound(self, CHAN_MISC, "weapons/detpack.wav", 1, ATTN_NONE);
 
-		WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-		WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-		WriteCoord (#MSG_BROADCAST, self.origin_x);
-		WriteCoord (#MSG_BROADCAST, self.origin_y);
-		WriteCoord (#MSG_BROADCAST, self.origin_z);
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+		WriteCoord (MSG_BROADCAST, self.origin_x);
+		WriteCoord (MSG_BROADCAST, self.origin_y);
+		WriteCoord (MSG_BROADCAST, self.origin_z);
 	#ifdef QUAKE_WORLD
-		multicast (self.origin, #MULTICAST_PHS);
+		multicast (self.origin, MULTICAST_PHS);
 	#endif
 
-        WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-		WriteByte (#MSG_BROADCAST, #TE_LAVASPLASH);
-		WriteCoord (#MSG_BROADCAST, self.origin_x);
-		WriteCoord (#MSG_BROADCAST, self.origin_y);
-		WriteCoord (#MSG_BROADCAST, self.origin_z);
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_LAVASPLASH);
+		WriteCoord (MSG_BROADCAST, self.origin_x);
+		WriteCoord (MSG_BROADCAST, self.origin_y);
+		WriteCoord (MSG_BROADCAST, self.origin_z);
 	#ifdef QUAKE_WORLD
-		multicast (self.origin, #MULTICAST_PHS);
+		multicast (self.origin, MULTICAST_PHS);
 	#endif
 
     //- OfN - Should a detpack make the same explosion a gren does? dont think so...
@@ -383,7 +384,7 @@ void() TeamFortress_DetpackExplode =
 
         loopc = 0;
 
-        while (loopc < #EXTRA_DETEXPOSIONS)
+        while (loopc < EXTRA_DETEXPOSIONS)
         {
             rexp_x = self.origin_x + random()*400 - 200;
             rexp_y = self.origin_y + random()*400 - 200;
@@ -391,13 +392,13 @@ void() TeamFortress_DetpackExplode =
 
             if (vis2orig(self.origin,rexp))
             {
-                WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-                WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-                WriteCoord (#MSG_BROADCAST, rexp_x);
-                WriteCoord (#MSG_BROADCAST, rexp_y);
-                WriteCoord (#MSG_BROADCAST, rexp_z);
+                WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+                WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+                WriteCoord (MSG_BROADCAST, rexp_x);
+                WriteCoord (MSG_BROADCAST, rexp_y);
+                WriteCoord (MSG_BROADCAST, rexp_z);
             #ifdef QUAKE_WORLD
-                multicast (rexp, #MULTICAST_PHS);
+                multicast (rexp, MULTICAST_PHS);
             #endif
             }
             loopc = loopc + 1;
@@ -411,15 +412,15 @@ void() TeamFortress_DetpackExplode =
 
         local vector v;
 	    
-        head = findradius(self.origin, #DETPACK_EARTHQUAKE_RANGE);
+        head = findradius(self.origin, DETPACK_EARTHQUAKE_RANGE);
 
         while (head)
         {
             if (head.classname == "player")
             if (head.health > 0)
             if (!head.has_disconnected)
-            if (head.playerclass != #PC_UNDEFINED)
-            if (head.flags & #FL_ONGROUND || head.waterlevel)
+            if (head.playerclass != PC_UNDEFINED)
+            if (head.flags & FL_ONGROUND || head.waterlevel)
             {
                 v_x = 100 * crandom();
             	v_y = 100 * crandom();
@@ -436,8 +437,8 @@ void() TeamFortress_DetpackExplode =
 	}
 	else
 	{
-//		bprint(#PRINT_HIGH, "Your detpack fizzled out.\n");
-		sprint(self.owner, #PRINT_HIGH, "Your detpack fizzled out.\n");
+//		bprint(PRINT_HIGH, "Your detpack fizzled out.\n");
+		sprint(self.owner, PRINT_HIGH, "Your detpack fizzled out.\n");
 	}
 
 	// This code handles a disarming scout with protection
@@ -465,8 +466,8 @@ void() TeamFortress_DetpackTouch =
 	if (other.classname != "player")
 		return;
 
-	//WK if (other.playerclass != #PC_SCOUT)
-	if (!(other.tf_items & #NIT_SCANNER))
+	//WK if (other.playerclass != PC_SCOUT)
+	if (!(other.tf_items & NIT_SCANNER))
 		return;
     
 	if (self.weaponmode == 1)
@@ -477,22 +478,22 @@ void() TeamFortress_DetpackTouch =
 
 	makeImmune(other,time + 2);
 	//other.immune_to_check = time + 2;
-	other.tfstate = other.tfstate | #TFSTATE_CANT_MOVE;
+	other.tfstate = other.tfstate | TFSTATE_CANT_MOVE;
 
-	sprint(other, #PRINT_HIGH, "Disarming detpack...\n");
+	sprint(other, PRINT_HIGH, "Disarming detpack...\n");
 #ifdef QUAKE_WORLD
 	TeamFortress_SetSpeed(other);
 #else
-	other.pausetime = time + #WEAP_DETPACK_DISARMTIME;
+	other.pausetime = time + WEAP_DETPACK_DISARMTIME;
 #endif
 
 	// Spawn disarming entity
 	disarm = spawn();
-	disarm.movetype = #MOVETYPE_NONE; //WK M3 Bug Hunt
+	disarm.movetype = MOVETYPE_NONE; //WK M3 Bug Hunt
 	disarm.owner = other;		// the scout
 	disarm.enemy = self;		// the detpack
 	disarm.classname = "timer";
-	disarm.nextthink = time + #WEAP_DETPACK_DISARMTIME;
+	disarm.nextthink = time + WEAP_DETPACK_DISARMTIME;
 	disarm.think = TeamFortress_DetpackDisarm;
 	
 	self.weaponmode = 1;  // indicates disarming
@@ -511,15 +512,15 @@ void() TeamFortress_DetpackDisarm =
 		return;
 	}
 
-	bprint (#PRINT_MEDIUM, self.enemy.owner.netname);
-	bprint (#PRINT_MEDIUM, "'s detpack was defused by ");
-	bprint (#PRINT_MEDIUM, self.owner.netname);
-	bprint (#PRINT_MEDIUM, "\n");
+	bprint (PRINT_MEDIUM, self.enemy.owner.netname);
+	bprint (PRINT_MEDIUM, "'s detpack was defused by ");
+	bprint (PRINT_MEDIUM, self.owner.netname);
+	bprint (PRINT_MEDIUM, "\n");
 	
     //if (!(self.owner.is_feigning))
 	//- OfN already checked on TeamFortress_SetSpeed()
     //{
-        self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & #TFSTATE_CANT_MOVE);
+        self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_CANT_MOVE);
 
 	// Reset speeds of scout
 #ifdef QUAKE_WORLD
@@ -543,8 +544,8 @@ void() TeamFortress_DetpackCountDown =
 
 	cd = ftos(self.health);
 
-	sprint(self.owner, #PRINT_HIGH, cd);
-	sprint(self.owner, #PRINT_HIGH, "...\n");
+	sprint(self.owner, PRINT_HIGH, cd);
+	sprint(self.owner, PRINT_HIGH, "...\n");
 
 	self.nextthink = time + 1;
 	self.health = self.health - 1;
@@ -554,8 +555,8 @@ void() TeamFortress_DetpackCountDown =
 		self.enemy.skin = 1;
 
 	if (self.health <= 3 && self.health > 2) { //WK Detpack alerts
-		sound (self.owner, #CHAN_VOICE, "weapons/fith.wav", 1, #ATTN_NORM);
-		sound (self.enemy, #CHAN_WEAPON, "doors/baseuse.wav", 1, #ATTN_NORM);  //CH play set detpack sound
+		sound (self.owner, CHAN_VOICE, "weapons/fith.wav", 1, ATTN_NORM);
+		sound (self.enemy, CHAN_WEAPON, "doors/baseuse.wav", 1, ATTN_NORM);  //CH play set detpack sound
 	}
 
 	if (self.health == 0)

@@ -1,18 +1,20 @@
+#include "defs.qh"
+
 void () BadTinker = {
 	local float prob;
 	prob = random();
         if (prob <= 0.6){ // Zilch
-		sprint(self,#PRINT_HIGH,"Nothing happened.\n");
+		sprint(self,PRINT_HIGH,"Nothing happened.\n");
 	}
         else if (prob <= 0.8){ // Zowie!
 		TF_T_Damage(self.building, world, world, self.building.health+1, 0, 0);
-		sprint(self,#PRINT_HIGH,"The tesla blew up.\n");
+		sprint(self,PRINT_HIGH,"The tesla blew up.\n");
 	}
         else { // ZAP!
-		self.building.tf_items = self.building.tf_items | #NIT_SECURITY_CAMERA; //Turns tesla against team.
+		self.building.tf_items = self.building.tf_items | NIT_SECURITY_CAMERA; //Turns tesla against team.
 		self.building.health = 100; //WK Make it easy to kill
 		self.building.max_health = 100;
-		sprint(self,#PRINT_HIGH,"You cut the wrong wire!\n");
+		sprint(self,PRINT_HIGH,"You cut the wrong wire!\n");
 	}
 };
 
@@ -21,12 +23,12 @@ void () DoTinker = {
                 local entity te;
 
 		if (self.building.has_sentry > 0) {
-			sprint(self,#PRINT_HIGH,"You have to fully upgrade before tinkering\n");
+			sprint(self,PRINT_HIGH,"You have to fully upgrade before tinkering\n");
 			return;
 		}
 
 		if (self.ammo_cells < 100) {//not enough cells
-			sprint(self,#PRINT_HIGH,"You need more cells to tinker on the tesla\n");
+			sprint(self,PRINT_HIGH,"You need more cells to tinker on the tesla\n");
 		}
 		else {
 			self.ammo_cells = self.ammo_cells - 100;
@@ -51,25 +53,25 @@ void () DoTinker = {
 		}
 
 		if ((self.building.ammo_shells + self.building.ammo_nails + self.building.ammo_rockets) >= 7)
-			enough = #TRUE;
+			enough = TRUE;
 		// Ok, good tinker.
 		prob = random();
 		if (prob <= 0.2){ // Zilch, yet again.
-			sprint(self,#PRINT_HIGH,"Nothing happened.\n");
+			sprint(self,PRINT_HIGH,"Nothing happened.\n");
 		}
 		else if (prob <= 0.35){
-                        if (!(self.building.tf_items & #NIT_SCANNER)){
-				self.building.tf_items = (self.building.tf_items | #NIT_SCANNER);
-				sprint(self,#PRINT_HIGH,"The tesla gets a free improved targeter!\n");
+                        if (!(self.building.tf_items & NIT_SCANNER)){
+				self.building.tf_items = (self.building.tf_items | NIT_SCANNER);
+				sprint(self,PRINT_HIGH,"The tesla gets a free improved targeter!\n");
                         }
 			else{
 				Tesla_Add_Rand_Upgrade(self.building, self);
 			}
 		}
 		else if (prob <= 0.4){
-			if (!(self.building.tf_items & #NIT_AUTOID)){
-				self.building.tf_items = (self.building.tf_items | #NIT_AUTOID);
-				sprint(self,#PRINT_HIGH,"The tesla got a free spy detector!\n");
+			if (!(self.building.tf_items & NIT_AUTOID)){
+				self.building.tf_items = (self.building.tf_items | NIT_AUTOID);
+				sprint(self,PRINT_HIGH,"The tesla got a free spy detector!\n");
 			}
 			else{
 				Tesla_Add_Rand_Upgrade(self.building, self);
@@ -81,12 +83,12 @@ void () DoTinker = {
 		else if (prob <= 0.9){
 			self.building.max_health = self.building.max_health + 100;	
 			self.building.health = self.building.health + 100;
-			sprint(self,#PRINT_HIGH,"The tesla got more health.\n");
+			sprint(self,PRINT_HIGH,"The tesla got more health.\n");
 		}
 		else if (prob <= 1){
 			self.building.maxammo_cells = self.building.maxammo_cells + 100;	
 			self.building.ammo_cells = self.building.ammo_cells + 100;
-			sprint(self,#PRINT_HIGH,"The tesla got more cells.\n");
+			sprint(self,PRINT_HIGH,"The tesla got more cells.\n");
 		}
 		}
 };

@@ -1,7 +1,3 @@
-
-#pragma DONT_COMPILE_THIS_FILE
-
-
 // This file contains defines for some of the messages
 #define MSG_INTRO  "\nWelcome to ĞÒÏÚÁÃ CustomÔÆ\na Quake ÔÆ MOD by ShakaUVM\nwww®telefragged®com¯shaka\n\nŸ\n\n"
 #define MSG_INTRO2 "Based on the aussie ver by SB-1\nModified version by Clan Prozac\n\nŸ\n\nGet any files needed at:\n\nhttp:¯¯quake®prozac®net¯"

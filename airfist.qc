@@ -1,3 +1,4 @@
+#include "defs.qh"
 // AIRG_MAIN_START
 
 /*
@@ -42,57 +43,57 @@ $frame ablast1 ablast2 ablast3 ablast4 ablast5 ablast6
 float (entity thing) canairpush =
 {
 	if (thing.classname == "player")
-		return #TRUE;
+		return TRUE;
 	else if (thing.classname == "pipebomb")
     {
 		thing.avelocity = '300 300 300';
-        return #TRUE;
+        return TRUE;
     }
 	else if (thing.classname == "spike")
-		return #TRUE;
+		return TRUE;
 	else if (thing.classname == "grenade")
     {
 		thing.avelocity = '300 300 300';
-        return #TRUE;
+        return TRUE;
     }
     else if (thing.classname == "rocket")
-		return #TRUE;
+		return TRUE;
 
     else if (thing.classname == "caltrop")
     {
 		thing.avelocity = '500 500 500';
-        return #TRUE;
+        return TRUE;
     }
 
     #ifdef pushable_army
     
     else if (thing.classname == "monster_army")
-		return #TRUE;
+		return TRUE;
 
     #endif
 
     #ifdef pushable_fiend
 
     else if (thing.classname == "monster_demon1")
-		return #TRUE;
+		return TRUE;
 
     #endif
 
     #ifdef pushable_scrag
     
     else if (thing.classname == "monster_wizard")
-		return #TRUE;
+		return TRUE;
     
     #endif
 
   	else if (thing.classname == "detpack" && no_detpush == 0)
     {
 		thing.avelocity = '300 300 300';
-        thing.movetype = #MOVETYPE_BOUNCE;
-        return #TRUE;
+        thing.movetype = MOVETYPE_BOUNCE;
+        return TRUE;
     }
 
-	return #FALSE;
+	return FALSE;
 };
 
 // The Main code for the AirFist that is called when the AirFist is fired.
@@ -178,11 +179,11 @@ void() launch_horn =
     // play failed AirFist sound
     if(self.waterlevel > 2)
     {  // below the water, play under water sound
-      sound (self, #CHAN_AUTO, "weapons/agwfail.wav", 1, #ATTN_NORM);
+      sound (self, CHAN_AUTO, "weapons/agwfail.wav", 1, ATTN_NORM);
     }
     else
     { // play above water sound
-      sound (self, #CHAN_AUTO, "weapons/agfail.wav", 1, #ATTN_NORM);
+      sound (self, CHAN_AUTO, "weapons/agfail.wav", 1, ATTN_NORM);
     }
 
     // play Failed AirFist animation
@@ -222,9 +223,9 @@ void() launch_horn =
     //if (visible(e)) // must be visible AND // - OfN candamage
     if(CanDamage(e,self)) // - OfN - For forcefields
     if(self.waterlevel > 2 || hornInfront(e)) // infront of self or anywhere in the water AND
-    if(e.movetype != #MOVETYPE_NONE) // anything that can move
-    if(e.movetype != #MOVETYPE_PUSH)
-    if(e.movetype != #MOVETYPE_NOCLIP)
+    if(e.movetype != MOVETYPE_NONE) // anything that can move
+    if(e.movetype != MOVETYPE_PUSH)
+    if(e.movetype != MOVETYPE_NOCLIP)
 // AIRG_EXCLUDE_START
     //if((e.AIRG_Flags & AIRG_EXCLUDEENTITY) != AIRG_EXCLUDEENTITY) // custom exclusion (like laser fire)
 // AIRG_EXCLUDE_END
@@ -240,12 +241,12 @@ void() launch_horn =
       //   entity's when they died.  When dead, they fall UP instead of down.
       //   Other than this they did not seam to have any adverse affect.  If you
       //   find that you have trouble with this code, let us know.
-      if(e.flags & #FL_FLY)
+      if(e.flags & FL_FLY)
       {
-      	if(e.movetype == #MOVETYPE_STEP)
+      	if(e.movetype == MOVETYPE_STEP)
 	      {
           // set so we can affect velocity
-	        e.movetype = #MOVETYPE_FLY;
+	        e.movetype = MOVETYPE_FLY;
 
           // create a entity to remove the MOVETYPE_FLY when we are done with it.
           //   the only problem with using this method is that while the entity
@@ -253,13 +254,13 @@ void() launch_horn =
           //   entity will fall up until changed.  For a generic method, we
           //   at the Evolve team can live with that.
           e.AIRG_FlyTracker = spawn();
-          e.AIRG_Flags = e.AIRG_Flags + #AIRG_STEPCONVERTEDTOFLY;
+          e.AIRG_Flags = e.AIRG_Flags + AIRG_STEPCONVERTEDTOFLY;
           e.AIRG_FlyTracker.owner = e;
           e.AIRG_FlyTracker.nextthink = time + 2;
           e.AIRG_FlyTracker.think = removeFlyMode;
 
         }
-        else if(e.AIRG_Flags & #AIRG_STEPCONVERTEDTOFLY)
+        else if(e.AIRG_Flags & AIRG_STEPCONVERTEDTOFLY)
         {
           // We have already converted this one, just extend the time to convert
           e.AIRG_FlyTracker.nextthink = time + 2;
@@ -273,7 +274,7 @@ void() launch_horn =
       // Convert distance to a percentage.
       percent = (inRange - dist) / inRange;
 
-      if (e.flags & #FL_ONGROUND && !(e.classname == "player" && e.cutf_items & #CUTF_HWGUY))
+      if (e.flags & FL_ONGROUND && !(e.classname == "player" && e.cutf_items & CUTF_HWGUY))
       {
       	// If there on the ground, raise them up so that the velocity will
         // take affect.
@@ -286,7 +287,7 @@ void() launch_horn =
         // of along the ground (cas there below the line of sight).
 
         // If on the ground, makem go up, up, and away
-        e.flags = e.flags - #FL_ONGROUND;
+        e.flags = e.flags - FL_ONGROUND;
         if (delta_z < 0)
           delta_z = delta_z / -2;
         delta = delta * 0.7;
@@ -295,7 +296,7 @@ void() launch_horn =
           delta_z = 100;
       }
 
-      if (e.classname == "player" && e.cutf_items & #CUTF_HWGUY)
+      if (e.classname == "player" && e.cutf_items & CUTF_HWGUY)
         delta = '0 0 0';
 
       // calculate the velocity adjustment.
@@ -328,7 +329,7 @@ void() launch_horn =
         }
       }
 
-      if(e.movetype == #MOVETYPE_FLYMISSILE)
+      if(e.movetype == MOVETYPE_FLYMISSILE)
       {
         // If its a missile, change the direction but keep the same speed.
         eSpeed = vlen(e.velocity);
@@ -346,7 +347,7 @@ void() launch_horn =
         // T_Damage function that recoils damaged entity's away from the attacker.
         //   NOTE:  If that section of code in T_Damage changesm then this will have to
         //          change.
-        if(e.movetype != #MOVETYPE_WALK) // to even out the T_Damage "figure momentum add"
+        if(e.movetype != MOVETYPE_WALK) // to even out the T_Damage "figure momentum add"
               {
           dir = e.origin - (self.absmin + self.absmax) * 0.5;
           dir = normalize(dir);
@@ -354,10 +355,10 @@ void() launch_horn =
         }
 
         // Apply damage to the entity.
-	    deathmsg = #DMSG_AIRG;
+	    deathmsg = DMSG_AIRG;
 
         if(self.waterlevel > 2)
-            deathmsg = #DMSG_AIRG_WATER;
+            deathmsg = DMSG_AIRG_WATER;
 
         T_Damage(e, self, self, ldmg);
       }
@@ -373,7 +374,7 @@ void() launch_horn =
   // check if near a wall
   makevectors(self.v_angle);
   dir = self.origin + self.view_ofs;
-  traceline (dir, dir + v_forward * 64, #FALSE, self);
+  traceline (dir, dir + v_forward * 64, FALSE, self);
 
   if (trace_fraction != 1.0 && !trace_ent.takedamage)
   {
@@ -397,14 +398,14 @@ void() launch_horn =
   }
 
   // recoil code
-  if (self.flags & #FL_ONGROUND)
+  if (self.flags & FL_ONGROUND)
   {
    	// If self on the ground, raise me up so that the velocity will
     // take affect.
 
     // raise the bugger a bit 
     //setorigin(self, self.origin + '0 0 1'); // - OfN - And make them stuck in wall? :) nope..
-    self.flags = self.flags - #FL_ONGROUND;
+    self.flags = self.flags - FL_ONGROUND;
    }
 
   if(nearAWall)
@@ -417,11 +418,11 @@ void() launch_horn =
 
   if(self.waterlevel > 2)
   {  // below the water, play under water sound
-    sound (self, #CHAN_AUTO, "weapons/agwater.wav", 1, #ATTN_NORM);
+    sound (self, CHAN_AUTO, "weapons/agwater.wav", 1, ATTN_NORM);
   }
   else
   { // play above water sound
-    sound (self, #CHAN_AUTO, "weapons/agfire.wav", 1, #ATTN_NORM);
+    sound (self, CHAN_AUTO, "weapons/agfire.wav", 1, ATTN_NORM);
   }
 
   // AirFist gun frame animation
@@ -441,9 +442,9 @@ float (entity e) hornInfront =
 
   if ( dot > 0.8 )
   {
-    return #TRUE;
+    return TRUE;
   }
-  return #FALSE;
+  return FALSE;
 };
 
 // The AirFist fire blast sprite animation code.
@@ -485,15 +486,15 @@ void(float nearAWall, float adjustForward, float adjustRight, float adjustUp, fl
 
   sprite = spawn();
 
-  sprite.solid = #SOLID_NOT;
+  sprite.solid = SOLID_NOT;
 
   if(oldself.waterlevel > 2)
   {  // below the water, play under water animation
-	  sprite.movetype = #MOVETYPE_NOCLIP;
+	  sprite.movetype = MOVETYPE_NOCLIP;
   }
   else
   {  // above water, play normal animation
-	  sprite.movetype = #MOVETYPE_BOUNCE;
+	  sprite.movetype = MOVETYPE_BOUNCE;
   }
 
   setmodel(sprite, "progs/s_ablast.spr");
@@ -538,8 +539,8 @@ void() removeFlyMode =
 {
 	// convert the movetype back to MOVETYPE_STEP cas we are finished with
   // the velocity change (we should be anyway).
-  self.owner.movetype = #MOVETYPE_STEP;
-  self.owner.AIRG_Flags = self.owner.AIRG_Flags - #AIRG_STEPCONVERTEDTOFLY;
+  self.owner.movetype = MOVETYPE_STEP;
+  self.owner.AIRG_Flags = self.owner.AIRG_Flags - AIRG_STEPCONVERTEDTOFLY;
 
   // don't need self anymore, remove self.
   remove(self);

@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*======================================================
 	SNIPER.QC
 
@@ -25,25 +26,25 @@ void() TeamFortress_SniperWeapon =
 	
 	self.impulse = 0;
 
-    if (self.tfstate & #TFSTATE_RELOADING)
+    if (self.tfstate & TFSTATE_RELOADING)
    		return;
 
-	if (!((self.weapons_carried & #WEAP_SNIPER_RIFLE) && (self.weapons_carried & #WEAP_AUTO_RIFLE)))
+	if (!((self.weapons_carried & WEAP_SNIPER_RIFLE) && (self.weapons_carried & WEAP_AUTO_RIFLE)))
 		return;
 
 	if (self.ammo_shells < 1)
 	{	// don't have the ammo
-		sprint (self, #PRINT_HIGH, "not enough ammo.\n");
+		sprint (self, PRINT_HIGH, "not enough ammo.\n");
 		return;
 	}
 
-	if (self.current_weapon == #WEAP_SNIPER_RIFLE)
+	if (self.current_weapon == WEAP_SNIPER_RIFLE)
 	{
-		self.current_weapon = #WEAP_AUTO_RIFLE;
+		self.current_weapon = WEAP_AUTO_RIFLE;
 	}
 	else
 	{
-		self.current_weapon = #WEAP_SNIPER_RIFLE;
+		self.current_weapon = WEAP_SNIPER_RIFLE;
 	}
 
 	W_SetCurrentAmmo ();
@@ -55,7 +56,7 @@ void(float zoom_level) TF_zoom =
 {
 	local string zl;
 	
-	if (self.tfstate & #TFSTATE_ZOOMOFF)
+	if (self.tfstate & TFSTATE_ZOOMOFF)
 		return;
 
 	zl = ftos(zoom_level);
@@ -72,9 +73,9 @@ void() SniperSight_Update =
 {
 	local vector org;
 
-	if (!(self.owner.tfstate & #TFSTATE_AIMING) || (self.owner.current_weapon != #WEAP_SNIPER_RIFLE))
+	if (!(self.owner.tfstate & TFSTATE_AIMING) || (self.owner.current_weapon != WEAP_SNIPER_RIFLE))
 	{
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & #TFSTATE_AIMING);
+		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_AIMING);
 		TeamFortress_SetSpeed(self.owner);
 		self.owner.heat = 0;
 		dremove(self);
@@ -86,7 +87,7 @@ void() SniperSight_Update =
 	org = self.owner.origin + v_forward*10;
 	org_z = self.owner.absmin_z + self.owner.size_z * 0.7;
 
-    traceline (org, org + v_forward*9192, #FALSE, self);
+    traceline (org, org + v_forward*9192, FALSE, self);
 
     if (trace_fraction == 1.0)
 	{
@@ -102,12 +103,12 @@ void() SniperSight_Update =
 //CH used for the rl
 void() SniperSight_Update2 =
 {
-	//bprint(#PRINT_HIGH, "Sight Think..\n");
+	//bprint(PRINT_HIGH, "Sight Think..\n");
 	local vector org;
 
-	if (!(self.owner.tfstate & #TFSTATE_RL_LASER) || (self.owner.current_weapon != #WEAP_ROCKET_LAUNCHER))
+	if (!(self.owner.tfstate & TFSTATE_RL_LASER) || (self.owner.current_weapon != WEAP_ROCKET_LAUNCHER))
 	{
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & #TFSTATE_RL_LASER);
+		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RL_LASER);
 		TeamFortress_SetSpeed(self.owner);
 		self.owner.heat = 0;
 		dremove(self);
@@ -119,7 +120,7 @@ void() SniperSight_Update2 =
 	org = self.owner.origin + v_forward*10;
 	org_z = self.owner.absmin_z + self.owner.size_z * 0.7;
 
-    traceline (org, org + v_forward*9192, #FALSE, self);
+    traceline (org, org + v_forward*9192, FALSE, self);
 
     if (trace_fraction == 1.0)
 	{
@@ -140,14 +141,14 @@ void(float type) SniperSight_Create =
 {
 	local entity sight;
 	if (type == 1)
-		self.tfstate = self.tfstate | #TFSTATE_RL_LASER;
+		self.tfstate = self.tfstate | TFSTATE_RL_LASER;
 	else
-		self.tfstate = self.tfstate | #TFSTATE_AIMING;
+		self.tfstate = self.tfstate | TFSTATE_AIMING;
 
 	sight = spawn ();
 	sight.owner = self;
-	sight.movetype = #MOVETYPE_NOCLIP;
-	sight.solid = #SOLID_NOT;
+	sight.movetype = MOVETYPE_NOCLIP;
+	sight.solid = SOLID_NOT;
 
 	setmodel (sight, "progs/sight.spr");
 
@@ -164,15 +165,15 @@ void(float type) SniperSight_Create =
 // this toggles the snipers autozoom on/off
 void() TeamFortress_AutoZoomToggle =
 {
-	if (self.tfstate & #TFSTATE_ZOOMOFF)
+	if (self.tfstate & TFSTATE_ZOOMOFF)
 	{
-		self.tfstate = self.tfstate - #TFSTATE_ZOOMOFF;
-		sprint(self, #PRINT_HIGH, "autozoom ON\n");
+		self.tfstate = self.tfstate - TFSTATE_ZOOMOFF;
+		sprint(self, PRINT_HIGH, "autozoom ON\n");
 	}
 	else
 	{
-		self.tfstate = self.tfstate | #TFSTATE_ZOOMOFF;
-		sprint(self, #PRINT_HIGH, "autozoom OFF\n");
+		self.tfstate = self.tfstate | TFSTATE_ZOOMOFF;
+		sprint(self, PRINT_HIGH, "autozoom OFF\n");
 	}
 
 };

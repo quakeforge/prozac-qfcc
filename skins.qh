@@ -9,8 +9,6 @@
 
 // These only work under QuakeWorld.
 
-#pragma DONT_COMPILE_THIS_FILE
-
 // Team 1 skins
 #define TEAM1_SCOUT_SKIN	"tf_scout\n"
 #define TEAM1_SNIPER_SKIN	"tf_snipe\n"

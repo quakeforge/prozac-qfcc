@@ -1,5 +1,3 @@
-#pragma DONT_COMPILE_THIS_FILE
-
 // This contains non-option defines that are needed in the options.qc file.
 
 #define FALSE 0 

@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*=======================================================//
 // Warlock.QC - CustomTF 3.2.OfN           - 30/1/2001 - //
 =========================================================//
@@ -25,7 +26,7 @@ void() Menu_Demon =
 	
 	str1 = ftos(self.demon_blood);
 
-    //if (self.job & #JOB_BLOODY_KNIFE)
+    //if (self.job & JOB_BLOODY_KNIFE)
     //    st2="ÛÂÌÏÏÄÝ";
 
 	if (self.demon_one!=world)
@@ -39,7 +40,7 @@ void() Menu_Demon =
     else
     {
 
-        if (self.job & #JOB_BLOODY_KNIFE)
+        if (self.job & JOB_BLOODY_KNIFE)
            st="\n Áãôéïî:           \n\n“.. Summon Scrag      (âìïïä)";
         else
            st="\n Áãôéïî:           \n\n“.. Summon Scrag      (blood)";
@@ -78,7 +79,7 @@ void() Menu_Demon =
                   
 
 
-        CenterPrint6(self, st,st2,st3,"\n\n’.. Îïôèéîç                  \n\nËîéæå Ëéììó: ", str1,"¯#MAX_KNIFE_BLOOD");
+        CenterPrint6(self, st,st2,st3,"\n\n’.. Îïôèéîç                  \n\nËîéæå Ëéììó: ", str1,"¯MAX_KNIFE_BLOOD");
 
     }
 
@@ -144,9 +145,9 @@ void(float inp) Menu_Demon_Input =
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
-                sprint(self,#PRINT_HIGH,"Your ");
-                sprint(self,#PRINT_HIGH,st);
-                sprint(self,#PRINT_HIGH," is busy trying to kill!\n");
+                sprint(self,PRINT_HIGH,"Your ");
+                sprint(self,PRINT_HIGH,st);
+                sprint(self,PRINT_HIGH," is busy trying to kill!\n");
                 self.impulse=0;
                 return;
             }
@@ -154,9 +155,9 @@ void(float inp) Menu_Demon_Input =
 
         if (self.demon_one.goalentity == self) 
         {
-            sprint(self,#PRINT_HIGH,"Your ");
-            sprint(self,#PRINT_HIGH,st);
-            sprint(self,#PRINT_HIGH," is already trying to reach your position!\n");
+            sprint(self,PRINT_HIGH,"Your ");
+            sprint(self,PRINT_HIGH,st);
+            sprint(self,PRINT_HIGH," is already trying to reach your position!\n");
             self.impulse=0;
             return;
         }
@@ -167,9 +168,9 @@ void(float inp) Menu_Demon_Input =
 
         PutMonsterWalk(self.demon_one);
 
-        sprint(self,#PRINT_HIGH,"You call your ");
-        sprint(self,#PRINT_HIGH,st);
-        sprint(self,#PRINT_HIGH,".\n");
+        sprint(self,PRINT_HIGH,"You call your ");
+        sprint(self,PRINT_HIGH,st);
+        sprint(self,PRINT_HIGH,".\n");
         ResetMenu();
         self.impulse=0;
         return;
@@ -185,9 +186,9 @@ void(float inp) Menu_Demon_Input =
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
-                sprint(self,#PRINT_HIGH,"Your ");
-                sprint(self,#PRINT_HIGH,st);
-                sprint(self,#PRINT_HIGH," is busy tring to kill!\n");
+                sprint(self,PRINT_HIGH,"Your ");
+                sprint(self,PRINT_HIGH,st);
+                sprint(self,PRINT_HIGH," is busy tring to kill!\n");
                 self.impulse=0;
                 return;
             }
@@ -199,9 +200,9 @@ void(float inp) Menu_Demon_Input =
         
         PutMonsterWalk(self.demon_one);
 
-        sprint(self,#PRINT_HIGH,"Your ");
-        sprint(self,#PRINT_HIGH,st);
-        sprint(self,#PRINT_HIGH," will patrol the zone now...\n");
+        sprint(self,PRINT_HIGH,"Your ");
+        sprint(self,PRINT_HIGH,st);
+        sprint(self,PRINT_HIGH," will patrol the zone now...\n");
 
         ResetMenu();
         self.impulse=0;
@@ -218,9 +219,9 @@ void(float inp) Menu_Demon_Input =
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
-                sprint(self,#PRINT_HIGH,"Your ");
-                sprint(self,#PRINT_HIGH,st);
-                sprint(self,#PRINT_HIGH," is busy tring to kill!\n");
+                sprint(self,PRINT_HIGH,"Your ");
+                sprint(self,PRINT_HIGH,st);
+                sprint(self,PRINT_HIGH," is busy tring to kill!\n");
                 self.impulse=0;
                 return;
             }
@@ -269,7 +270,7 @@ void(float inp) Menu_Demon_Input =
 	}*/
 	else if (inp == 8) // unsummon
 	{
-		if (self.job & #JOB_DEMON_OUT)
+		if (self.job & JOB_DEMON_OUT)
         {
             local string MName;
             MName=GetMonsterName(self.demon_one);    
@@ -293,9 +294,9 @@ void(float inp) Menu_Demon_Input =
       return;
 	
 
-    if (self.job & #JOB_DEMON_OUT)
+    if (self.job & JOB_DEMON_OUT)
     {
-        sprint(self, #PRINT_HIGH, "You already have a monster summoned.\n");
+        sprint(self, PRINT_HIGH, "You already have a monster summoned.\n");
         //ResetMenu();
         self.impulse = 0;
         return;
@@ -305,7 +306,7 @@ void(float inp) Menu_Demon_Input =
 
     if (self.demon_blood < 4 && self.demon_choice == 3)
     {
-        sprint (self, #PRINT_HIGH, "You need to kill 5 enemies with your knife to summon a shambler.\n");
+        sprint (self, PRINT_HIGH, "You need to kill 5 enemies with your knife to summon a shambler.\n");
         //ResetMenu();
         self.impulse = 0;
         return;
@@ -313,7 +314,7 @@ void(float inp) Menu_Demon_Input =
 
 /*    if (self.demon_blood < 3 && self.demon_choice == 4)
     {
-        sprint (self, #PRINT_HIGH, "You need to kill 4 enemies with your knife to summon a hell knight.\n");
+        sprint (self, PRINT_HIGH, "You need to kill 4 enemies with your knife to summon a hell knight.\n");
         //ResetMenu();
         self.impulse = 0;
         return;
@@ -321,7 +322,7 @@ void(float inp) Menu_Demon_Input =
 
     if (self.demon_blood < 2 && self.demon_choice == 2)
     {
-        sprint (self, #PRINT_HIGH, "You need to kill 2 enemies with your knife to summon a fiend.\n");
+        sprint (self, PRINT_HIGH, "You need to kill 2 enemies with your knife to summon a fiend.\n");
         //ResetMenu();
         self.impulse = 0;
         return;
@@ -329,15 +330,15 @@ void(float inp) Menu_Demon_Input =
 
     /*if (self.demon_blood < 1 && self.demon_choice == 2)
     {
-        sprint (self, #PRINT_HIGH, "You need to kill 1 enemies with your knife to summon a knight.\n");
+        sprint (self, PRINT_HIGH, "You need to kill 1 enemies with your knife to summon a knight.\n");
         //ResetMenu();
         self.impulse = 0;
         return;
     } // temp*/
 
-    if (!(self.job & #JOB_BLOODY_KNIFE) && self.demon_choice == 1)
+    if (!(self.job & JOB_BLOODY_KNIFE) && self.demon_choice == 1)
     {
-        sprint(self,#PRINT_HIGH,"You have to get blood from an enemy to summon a scrag.\n");
+        sprint(self,PRINT_HIGH,"You have to get blood from an enemy to summon a scrag.\n");
         //ResetMenu();
         self.impulse = 0;
         return;
@@ -359,10 +360,10 @@ void(float inp) Menu_Demon_Input =
     //else
     //	self.demon_blood = 0;
     
-    if (self.job & #JOB_BLOODY_KNIFE && self.demon_choice == 1)
-        self.job = self.job - #JOB_BLOODY_KNIFE; //- OfN - caused bug
+    if (self.job & JOB_BLOODY_KNIFE && self.demon_choice == 1)
+        self.job = self.job - JOB_BLOODY_KNIFE; //- OfN - caused bug
     
-    if (self.current_weapon == #WEAP_AXE && self.demon_choice == 1)
+    if (self.current_weapon == WEAP_AXE && self.demon_choice == 1)
     {
         self.weaponmode = 0; // Remove blood on the knife
         self.weaponmodel = "progs/v_knife.mdl";
@@ -372,11 +373,11 @@ void(float inp) Menu_Demon_Input =
 
     //r = random(); //Random summon sounds. :)
     //if (r < 0.33) 
-        sound (self, #CHAN_WEAPON, "boss2/sight.wav", 1, #ATTN_NORM);
+        sound (self, CHAN_WEAPON, "boss2/sight.wav", 1, ATTN_NORM);
     //else if (r < 0.66)
-    //	sound (self, #CHAN_WEAPON, "wizard/widle2.wav", 1, #ATTN_NORM);
+    //	sound (self, CHAN_WEAPON, "wizard/widle2.wav", 1, ATTN_NORM);
     //else
-    //	sound (self, #CHAN_WEAPON, "shambler/sdeath.wav", 1, #ATTN_NORM);
+    //	sound (self, CHAN_WEAPON, "shambler/sdeath.wav", 1, ATTN_NORM);
 
     SummonTimer = spawn ();
     SummonTimer.classname = "timer";
@@ -533,11 +534,11 @@ void (float points) custom_demon_create =
 	//Play random summoning sound here
 	//r = random();
 	//if (r < 0.33)
-	    sound (self, #CHAN_VOICE, "ambience/thunder1.wav", 1, #ATTN_NORM);
+	    sound (self, CHAN_VOICE, "ambience/thunder1.wav", 1, ATTN_NORM);
 	//else if (r < 0.66)
-	//    sound (self, #CHAN_WEAPON, "boss1/sight1.wav", 1, #ATTN_NORM);
+	//    sound (self, CHAN_WEAPON, "boss1/sight1.wav", 1, ATTN_NORM);
 	//else
-	  //  sound (self, #CHAN_WEAPON, "boss1/out1.wav", 1, #ATTN_NORM);
+	  //  sound (self, CHAN_WEAPON, "boss1/out1.wav", 1, ATTN_NORM);
 
 	makevectors (self.v_angle);
 	v_forward_z = 0;
@@ -592,12 +593,12 @@ void (float points) custom_demon_create =
 	newmis.has_camera = 4;
 	custom_demon_name(newmis); //SB - Share and Enjoy - ceaf put health in here
 	//setorigin (newmis, self.origin + v_forward*50 + '0 0 16');
-	//setsize (newmis, #VEC_HULL_MIN, #VEC_HULL_MAX);
+	//setsize (newmis, VEC_HULL_MIN, VEC_HULL_MAX);
 	if (!CheckArea(newmis,self)) { //No room for el diablo
-		sprint(self,#PRINT_HIGH,"Not enough room to summon creature!\n");
+		sprint(self,PRINT_HIGH,"Not enough room to summon creature!\n");
 		newmis.think = SUB_Remove;
 		newmis.nextthink = time + 0.1;
-        //self.job = self.job - (self.job & #JOB_DEMON_OUT); // FIXME - This shouldn't be needed - OfN done
+        //self.job = self.job - (self.job & JOB_DEMON_OUT); // FIXME - This shouldn't be needed - OfN done
 		return;
 	}
 
@@ -616,7 +617,7 @@ void (float points) custom_demon_create =
 	{
         setmodel (newmis, "progs/knight.mdl");
         //setsize (self, '-16 -16 -24', '16 16 40');
-        setsize (newmis, #VEC_HULL2_MIN, #VEC_HULL2_MAX);	
+        setsize (newmis, VEC_HULL2_MIN, VEC_HULL2_MAX);	
 		setorigin (newmis, newmis.origin + '0 0 30');
 	}*/
 	else if ( self.demon_choice == 2 )
@@ -627,14 +628,14 @@ void (float points) custom_demon_create =
         setmodel (newmis, "progs/tf_demon.mdl");
 		#endif
         
-        setsize (newmis, #VEC_HULL2_MIN, #VEC_HULL2_MAX);	
+        setsize (newmis, VEC_HULL2_MIN, VEC_HULL2_MAX);	
 		setorigin (newmis, newmis.origin + '0 0 30');
     }
 	/*else if ( self.demon_choice == 4 )
 	{
         setmodel (newmis, "progs/hknight.mdl");
         //setsize (self, '-16 -16 -24', '16 16 40');
-        setsize (newmis, #VEC_HULL2_MIN, #VEC_HULL2_MAX);
+        setsize (newmis, VEC_HULL2_MIN, VEC_HULL2_MAX);
 		setorigin (newmis, newmis.origin + '0 0 30');
 	}*/
     else  if (self.demon_choice == 3)
@@ -645,7 +646,7 @@ void (float points) custom_demon_create =
         setmodel (newmis, "progs/tf_sham.mdl");
         #endif
 
-		setsize (newmis, #VEC_HULL2_MIN, #VEC_HULL2_MAX);
+		setsize (newmis, VEC_HULL2_MIN, VEC_HULL2_MAX);
 		setorigin (newmis, newmis.origin + '0 0 30');
     }
 
@@ -674,37 +675,37 @@ void (float points) custom_demon_create =
 	teamsprint(self.team_no,self,"\n");
 
 
-	self.job = self.job | #JOB_DEMON_OUT; 
+	self.job = self.job | JOB_DEMON_OUT; 
 	self.job_finished = time + 3;	//Don't let em kill demon for 15 secs.
 									// SB 15 is tight; 10
 									// 10 is tight; 5
                                     // OfN 5 is tight; 3 ;)
 	
     if (self.demon_choice==2) 
-        sound (self, #CHAN_BODY, "demon/sight2.wav", 1, #ATTN_NORM);    
+        sound (self, CHAN_BODY, "demon/sight2.wav", 1, ATTN_NORM);    
 
 	newmis.velocity = v_forward * 10;// + '0 0 250';
     newmis.angles = vectoangles(newmis.velocity);
 
-	if (newmis.flags & #FL_ONGROUND)
-		newmis.flags = newmis.flags - #FL_ONGROUND;
+	if (newmis.flags & FL_ONGROUND)
+		newmis.flags = newmis.flags - FL_ONGROUND;
     
     newmis.velocity = v_forward * 10;
     
-    newmis.movetype = #MOVETYPE_TOSS;
-    newmis.solid = #SOLID_SLIDEBOX;
-	newmis.takedamage = #DAMAGE_AIM;
+    newmis.movetype = MOVETYPE_TOSS;
+    newmis.solid = SOLID_SLIDEBOX;
+	newmis.takedamage = DAMAGE_AIM;
 
     if (self.demon_choice==1)
     {
         newmis.velocity='0 0 0';
-        newmis.movetype = #MOVETYPE_STEP;
+        newmis.movetype = MOVETYPE_STEP;
     }
 
 	/*if ( newmis.classname == "monster_hknight" )
 	{
-		newmis.health = #HKNIGHT_HP; //WK 300
-		newmis.armorclass = #AT_SAVEFIRE; //#AT_SAVESHOT | #AT_SAVEFIRE;
+		newmis.health = HKNIGHT_HP; //WK 300
+		newmis.armorclass = AT_SAVEFIRE; //AT_SAVESHOT | AT_SAVEFIRE;
 		newmis.last_saveme_sound = 0;
 
     	newmis.th_stand = hknight_stand1;
@@ -721,12 +722,12 @@ void (float points) custom_demon_create =
 		
         //newmis.touch = SUB_Null;
 
-   		sprint(self, #PRINT_HIGH, "You summon a hell knight.\n");
+   		sprint(self, PRINT_HIGH, "You summon a hell knight.\n");
 	}
     else if ( newmis.classname == "monster_knight" )
 	{
-		newmis.health = #KNIGHT_HP; //WK 300
-		newmis.armorclass = #AT_SAVEFIRE; //#AT_SAVESHOT | #AT_SAVEFIRE;
+		newmis.health = KNIGHT_HP; //WK 300
+		newmis.armorclass = AT_SAVEFIRE; //AT_SAVESHOT | AT_SAVEFIRE;
 		newmis.last_saveme_sound = 0;
 
     	newmis.th_stand = knight_stand1;
@@ -742,12 +743,12 @@ void (float points) custom_demon_create =
 		
         //newmis.touch = SUB_Null;
 
-   		sprint(self, #PRINT_HIGH, "You summon a knight.\n");
+   		sprint(self, PRINT_HIGH, "You summon a knight.\n");
 	}*/
     if ( newmis.classname == "monster_demon1" )
 	{
-		newmis.health = #DEMON_HP; //WK 300
-		newmis.armorclass = #AT_SAVEFIRE; //#AT_SAVESHOT | #AT_SAVEFIRE;
+		newmis.health = DEMON_HP; //WK 300
+		newmis.armorclass = AT_SAVEFIRE; //AT_SAVESHOT | AT_SAVEFIRE;
 		newmis.last_saveme_sound = 0;
 		newmis.has_tesla = 0; //CH determines if jello jump
 		newmis.has_sentry = 0; //CH stuck jump
@@ -765,12 +766,12 @@ void (float points) custom_demon_create =
 		
         //newmis.touch = SUB_Null;
 
-   		sprint(self, #PRINT_HIGH, "You summon a fiend.\n");
+   		sprint(self, PRINT_HIGH, "You summon a fiend.\n");
 	}
 	else if ( newmis.classname == "monster_shambler" )
 	{
-		newmis.health = #SHAMBLER_HP;//750 + points * 350; //WK 300
-		newmis.armorclass = 0;// ofn- #AT_SAVEEXPLOSION | #AT_SAVEMELEE;
+		newmis.health = SHAMBLER_HP;//750 + points * 350; //WK 300
+		newmis.armorclass = 0;// ofn- AT_SAVEEXPLOSION | AT_SAVEMELEE;
 		newmis.last_saveme_sound = 0;
 		newmis.has_tesla = points;
 		newmis.has_sentry = 0;
@@ -787,12 +788,12 @@ void (float points) custom_demon_create =
 		//newmis.touch = Demon_JumpTouch;
 		//newmis.touch = SUB_Null;
 		////newmis.real_owner.demon_blood = 0; marduk bug
-		sprint(self, #PRINT_HIGH, "You summon a shambler.\n");
+		sprint(self, PRINT_HIGH, "You summon a shambler.\n");
 	}
 	else
 	{
         
-        newmis.health = #SCRAG_HP;
+        newmis.health = SCRAG_HP;
 		newmis.think =flymonster_start_go;// walkmonster_start;
         newmis.th_stand = wiz_stand1;
 	    newmis.th_walk = wiz_walk1;
@@ -802,11 +803,11 @@ void (float points) custom_demon_create =
 	    newmis.th_die = wiz_die;
 
 		newmis.nextthink = time + 0.05;
-		//newmis.armorclass = 0; //- OfN - none #AT_SAVESHOT; // kevlar
+		//newmis.armorclass = 0; //- OfN - none AT_SAVESHOT; // kevlar
 		newmis.last_saveme_sound = 0; // ? oh that
 		//newmis.touch = SUB_Null;
 
-		sprint(self, #PRINT_HIGH, "You summon a scrag.\n");
+		sprint(self, PRINT_HIGH, "You summon a scrag.\n");
 
     }
 
@@ -941,14 +942,14 @@ void () kill_my_demon =
             ThrowGib ("progs/gib2.mdl", -70);
             ThrowGib ("progs/gib3.mdl", -80);
             
-			sound (self, #CHAN_VOICE, "demon/ddeath.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "demon/ddeath.wav", 1, ATTN_NORM);
 			self = oself;
 			te.think = SUB_Remove;
 			te.touch = SUB_Null;
 			te.nextthink = time + 0.1;
 
-			sprint(self, #PRINT_HIGH, "Your fiend is dead.\n");
-			self.job = self.job - (self.job & #JOB_DEMON_OUT);
+			sprint(self, PRINT_HIGH, "Your fiend is dead.\n");
+			self.job = self.job - (self.job & JOB_DEMON_OUT);
 		}
 
 		te = find(te, classname, "monster_demon1");
@@ -969,7 +970,7 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib2.mdl", -70);
             ThrowGib ("progs/gib3.mdl", -70);
             ThrowGib ("progs/gib2.mdl", -70);
-			sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 //			custom_grunt_die;
 			te.think = SUB_Remove;
 			te.touch = SUB_Null;
@@ -1024,8 +1025,8 @@ void () kill_my_demon =
 
 			self = oself;
                                         //grunt
-			sprint (self, #PRINT_HIGH, "Your soldier is dead.\n");
-			self.job = self.job - (self.job & #JOB_DEMON_OUT);
+			sprint (self, PRINT_HIGH, "Your soldier is dead.\n");
+			self.job = self.job - (self.job & JOB_DEMON_OUT);
 
             self.demon_one = world;
             SetArmyTimer();
@@ -1047,16 +1048,16 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib1.mdl", -10);
 			ThrowGib ("progs/gib3.mdl", -30);
 			ThrowGib ("progs/gib3.mdl", -70);
-			sound (self, #CHAN_VOICE, "knight/kdeath.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "knight/kdeath.wav", 1, ATTN_NORM);
             
-			//sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NORM);
+			//sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
 			te.touch = SUB_Null;
 			te.nextthink = time + 0.1;
 			self = oself;
 
-			//self.job = self.job - (self.job & #JOB_DEMON_OUT);
-			sprint (self, #PRINT_HIGH, "Your knight is dead.\n");
+			//self.job = self.job - (self.job & JOB_DEMON_OUT);
+			sprint (self, PRINT_HIGH, "Your knight is dead.\n");
 			//TF_T_Damage(te, world, world, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_knight");
@@ -1074,14 +1075,14 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib1.mdl", -10);
 			ThrowGib ("progs/gib3.mdl", -30);
 			ThrowGib ("progs/gib3.mdl", -70);
-			sound (self, #CHAN_VOICE, "hknight/death1.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "hknight/death1.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
 			te.touch = SUB_Null;
 			te.nextthink = time + 0.1;
 			self = oself;
 
-			//self.job = self.job - (self.job & #JOB_DEMON_OUT);
-			sprint (self, #PRINT_HIGH, "Your hell knight is dead.\n");
+			//self.job = self.job - (self.job & JOB_DEMON_OUT);
+			sprint (self, PRINT_HIGH, "Your hell knight is dead.\n");
 			//TF_T_Damage(te, world, world, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_hknight");
@@ -1099,14 +1100,14 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib1.mdl", -10);
 			ThrowGib ("progs/gib3.mdl", -30);
 			ThrowGib ("progs/gib3.mdl", -70);
-			sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
 			te.touch = SUB_Null;
 			te.nextthink = time + 0.1;
 			self = oself;
 
-			//self.job = self.job - (self.job & #JOB_DEMON_OUT);
-			sprint (self, #PRINT_HIGH, "Your shambler is dead.\n");
+			//self.job = self.job - (self.job & JOB_DEMON_OUT);
+			sprint (self, PRINT_HIGH, "Your shambler is dead.\n");
 			//TF_T_Damage(te, world, world, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_shambler");
@@ -1125,20 +1126,20 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib1.mdl", -10);
 			ThrowGib ("progs/gib3.mdl", -30);
 			ThrowGib ("progs/gib3.mdl", -70);
-			sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NORM);
+			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
 			te.touch = SUB_Null;
 			te.nextthink = time + 0.1;
 			self = oself;
 
 
-			sprint (self, #PRINT_HIGH, "Your scrag is dead.\n");
+			sprint (self, PRINT_HIGH, "Your scrag is dead.\n");
 			//TF_T_Damage(te, world, world, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_wizard");
 	}   
 
-    self.job = self.job - (self.job & #JOB_DEMON_OUT);
+    self.job = self.job - (self.job & JOB_DEMON_OUT);
     self.demon_one = world;
 
     self.summon_one = world;
@@ -1201,7 +1202,7 @@ void (entity player) UpdateSummons =
     }
 
     // are we a warlock?
-    if (!(player.job & #JOB_WARLOCK))
+    if (!(player.job & JOB_WARLOCK))
     {
         RPrint("Non-warlock player in UpdateSummons()\n");
         return;

@@ -1,3 +1,4 @@
+#include "defs.qh"
 /* ------------------------------------------------------------------------------------
 ** ------------------------------------GRUNTYBOT(tm)-----------------------------------
 ** -- Your new, improved artificially intelligent mercenary from beyond the Void	 --

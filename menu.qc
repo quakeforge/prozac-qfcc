@@ -8,67 +8,14 @@
 This file handles all menu functions and displays.
 ======================================================*/
 
+#include "defs.qh"
+#include "messages.qh"
+#include "menu.qh"
+
 void(vector where) spawnFOG;
 void(entity pl, string s1, string s2, string s3, string s4) CenterPrint4;
 void(entity pl, string s1, string s2, string s3, string s4, string s5, string s6, string s7) CenterPrint7;
 
-#define MENU_DEFAULT					1
-#define MENU_TEAM 						2
-#define MENU_CLASS 						3
-#define MENU_DROP  						4
-#define MENU_INTRO 						5
-#define MENU_CLASSHELP					6
-#define MENU_CLASSHELP2 				7
-#define MENU_REPEATHELP 				8
-#define MENU_PICKBINDS  				9
-#define MENU_SHOWBINDS1 				10
-#define MENU_SHOWBINDS2 				11
-#define MENU_SPY						12
-#define MENU_SPY_SKIN					13
-#define MENU_SPY_COLOR					14
-
-#define MENU_ENGINEER					15
-
-#define MENU_ENGINEER_FIX_DISPENSER		16
-#define MENU_ENGINEER_FIX_SENTRYGUN		17
-#define MENU_ENGINEER_FIX_TESLA			18
-#define MENU_ENGINEER_FIX_TESLA2		19
-#define MENU_DISPENSER					20
-#define MENU_ENGINEER_FIX_CAMERA		21
-#define MENU_ENGINEER_FIX_TELEPORTER	22
-#define MENU_ENGINEER_FIX_SENSOR		23
-#define MENU_ENGINEER_FIX_FIELDGEN      24
-
-#define MENU_DEMON				        26 	// SB menu for demon summon, I use 26 in the hope that nobody
-									        // has made anything conflicting with this for future vers.
-									        // Not that I expect anyone else to ever do anything...
-#define MENU_ARMY				        27
-#define MENU_F_HACK				        28
-#define MENU_E_HACK				        29
-
-#define MENU_CRUSADER                   30
-
-//WK - Menus for making a custom class
-#define MENU_PRIMARY_WEAPON			    31
-#define MENU_SECONDARY_WEAPON		    32
-#define MENU_MISC_WEAPON                33
-#define MENU_LEGS					    34
-#define MENU_HEALTH					    35
-#define MENU_ARMOR					    36
-#define MENU_SPECIAL				    37
-#define MENU_SPECIAL2				    38
-#define MENU_GREN1					    39
-#define MENU_GREN2					    40
-#define MENU_ENGINEERING			    41
-#define MENU_PROFESSION				    42
-#define MENU_PROFESSION2			    43
-#define MENU_PROFICIENCY			    44
-#define MENU_OPTION					    45
-
-//If we extend this, search for "MENU_OPTION" below
-//WK ------------------------------------
-
-#define MENU_REFRESH_RATE 			25
 
 void(entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType) TF_T_Damage;
 void() W_SetCurrentAmmo;
@@ -243,14 +190,14 @@ void() ResetMenu =
 		CenterPrint(self, "\n");
 	else
 		self.StatusRefreshTime = time + 0.1;
-	self.menu_count = #MENU_REFRESH_RATE;
-	self.current_menu = #MENU_DEFAULT;
+	self.menu_count = MENU_REFRESH_RATE;
+	self.current_menu = MENU_DEFAULT;
 };
 
 void() Player_Menu =
 {
 	// loop function
-	if (self.menu_count > #MENU_REFRESH_RATE)
+	if (self.menu_count > MENU_REFRESH_RATE)
 	{
 		self.menu_count = 0;
 	}
@@ -262,212 +209,212 @@ void() Player_Menu =
 
 	// determine which menu to display
 	// WK - Check to see if the custom class menu is overriding us
-	if ((self.done_custom & #CUSTOM_BUILDING) && !(self.done_custom & #CUSTOM_OVERRIDE) && self.playerclass == #PC_CUSTOM) {
-		self.current_menu = #MENU_PRIMARY_WEAPON;
-		self.done_custom = self.done_custom | #CUSTOM_OVERRIDE;
+	if ((self.done_custom & CUSTOM_BUILDING) && !(self.done_custom & CUSTOM_OVERRIDE) && self.playerclass == PC_CUSTOM) {
+		self.current_menu = MENU_PRIMARY_WEAPON;
+		self.done_custom = self.done_custom | CUSTOM_OVERRIDE;
 	}
 
 	//Don't flash status bars
-	if (self.current_menu >= #MENU_PRIMARY_WEAPON && self.current_menu <= #MENU_OPTION)
+	if (self.current_menu >= MENU_PRIMARY_WEAPON && self.current_menu <= MENU_OPTION)
 		self.StatusRefreshTime = time + 1.5;
 
     //- OfN - Checks for destroyed buildings - NEEDED?
-    /*if (self.current_menu >= #MENU_ENGINEER_FIX_DISPENSER && self.current_menu <= #MENU_ENGINEER_FIX_FIELDGEN && self.building == world)
+    /*if (self.current_menu >= MENU_ENGINEER_FIX_DISPENSER && self.current_menu <= MENU_ENGINEER_FIX_FIELDGEN && self.building == world)
     {
         ResetMenu();
         return;
     }*/
     
-    if (self.current_menu == #MENU_INTRO)
+    if (self.current_menu == MENU_INTRO)
 	{
 		Menu_Intro();
-		self.current_menu = #MENU_DEFAULT;
+		self.current_menu = MENU_DEFAULT;
 	}
-	else if (self.current_menu == #MENU_CLASSHELP)
+	else if (self.current_menu == MENU_CLASSHELP)
 	{
 		Menu_ClassHelp();
 		if (self.menu_displaytime > 8)
 		{
 			Menu_StuffClassHelp();
-			self.current_menu = #MENU_DEFAULT;
+			self.current_menu = MENU_DEFAULT;
 		}
 		else
 			self.menu_displaytime = self.menu_displaytime + 1;
 	}
-	else if (self.current_menu == #MENU_CLASSHELP2)
+	else if (self.current_menu == MENU_CLASSHELP2)
 	{
 		Menu_ClassHelp2();
 		if (self.menu_displaytime > 5)
 		{
 			Menu_StuffClassHelp();
-			self.current_menu = #MENU_DEFAULT;
+			self.current_menu = MENU_DEFAULT;
 		}
 		else
 			self.menu_displaytime = self.menu_displaytime + 1;
 	}
-	else if (self.current_menu == #MENU_SHOWBINDS1)
+	else if (self.current_menu == MENU_SHOWBINDS1)
 	{
 		Menu_ShowBindings1();
 		if (self.menu_displaytime > 8)
 		{
-			self.current_menu = #MENU_DEFAULT;
+			self.current_menu = MENU_DEFAULT;
 		}
 		else
 			self.menu_displaytime = self.menu_displaytime + 1;
 	}
-	else if (self.current_menu == #MENU_SHOWBINDS2)
+	else if (self.current_menu == MENU_SHOWBINDS2)
 	{
 		Menu_ShowBindings2();
 		if (self.menu_displaytime > 8)
 		{
-			self.current_menu = #MENU_DEFAULT;
+			self.current_menu = MENU_DEFAULT;
 		}
 		else
 			self.menu_displaytime = self.menu_displaytime + 1;
 	}
-	else if (self.current_menu == #MENU_DROP)
+	else if (self.current_menu == MENU_DROP)
 	{	
 		Menu_Drop();
 	}
-	else if (self.current_menu == #MENU_SPY)
+	else if (self.current_menu == MENU_SPY)
 	{
 		Menu_Spy();
 	}
-	else if (self.current_menu == #MENU_SPY_SKIN)
+	else if (self.current_menu == MENU_SPY_SKIN)
 	{
 		Menu_Spy_Skin();
 	}
-	else if (self.current_menu == #MENU_SPY_COLOR)
+	else if (self.current_menu == MENU_SPY_COLOR)
 	{
 		Menu_Spy_Color();
 	}
-	else if (self.current_menu == #MENU_ENGINEER)
+	else if (self.current_menu == MENU_ENGINEER)
 	{
 		Menu_Engineer();
 	}
-	else if (self.current_menu == #MENU_ENGINEER_FIX_DISPENSER)
+	else if (self.current_menu == MENU_ENGINEER_FIX_DISPENSER)
 	{
 		Menu_EngineerFix_Dispenser();
 	}
-	else if (self.current_menu == #MENU_ENGINEER_FIX_SENTRYGUN)
+	else if (self.current_menu == MENU_ENGINEER_FIX_SENTRYGUN)
 	{
 		Menu_EngineerFix_SentryGun();
 	}
-	else if (self.current_menu == #MENU_ENGINEER_FIX_TESLA)
+	else if (self.current_menu == MENU_ENGINEER_FIX_TESLA)
 	{
 		Menu_EngineerFix_Tesla();
 	}
-	else if (self.current_menu == #MENU_ENGINEER_FIX_TESLA2)
+	else if (self.current_menu == MENU_ENGINEER_FIX_TESLA2)
 	{
 		Menu_EngineerFix_Tesla2();
 	}
-	else if (self.current_menu == #MENU_ENGINEER_FIX_CAMERA)
+	else if (self.current_menu == MENU_ENGINEER_FIX_CAMERA)
 	{
 		Menu_EngineerFix_Camera();
 	}
-	else if (self.current_menu == #MENU_ENGINEER_FIX_SENSOR)
+	else if (self.current_menu == MENU_ENGINEER_FIX_SENSOR)
 	{
 		Menu_EngineerFix_Sensor();
 	}
-	else if (self.current_menu == #MENU_ENGINEER_FIX_TELEPORTER)
+	else if (self.current_menu == MENU_ENGINEER_FIX_TELEPORTER)
 	{
 		Menu_EngineerFix_Teleporter();
 	}
-    else if (self.current_menu == #MENU_ENGINEER_FIX_FIELDGEN)
+    else if (self.current_menu == MENU_ENGINEER_FIX_FIELDGEN)
 	{
 		Menu_EngineerFix_FieldGen();
 	}
-	else if (self.current_menu == #MENU_DISPENSER)
+	else if (self.current_menu == MENU_DISPENSER)
 	{
 		Menu_Dispenser();
 	}
-	else if (self.current_menu == #MENU_REPEATHELP)
+	else if (self.current_menu == MENU_REPEATHELP)
 	{	
 		Menu_RepeatHelp();
-		self.current_menu = #MENU_DEFAULT;
+		self.current_menu = MENU_DEFAULT;
 	}
-	else if (self.current_menu == #MENU_PICKBINDS)
+	else if (self.current_menu == MENU_PICKBINDS)
 	{	
 		Menu_DoBindings();
 	}
-	else if (self.current_menu == #MENU_DEMON)
+	else if (self.current_menu == MENU_DEMON)
 	{
 		Menu_Demon();
 	}
-	else if (self.current_menu == #MENU_ARMY) //- OfN
+	else if (self.current_menu == MENU_ARMY) //- OfN
 	{
 		Menu_Army();
 	}
-    else if (self.current_menu == #MENU_E_HACK) //- OfN
+    else if (self.current_menu == MENU_E_HACK) //- OfN
     {
         Menu_Enemy_Hax();
     }
-    else if (self.current_menu == #MENU_F_HACK) //- OfN
+    else if (self.current_menu == MENU_F_HACK) //- OfN
     {
         Menu_Friend_Hax();
     }
-    else if (self.current_menu == #MENU_CRUSADER)
+    else if (self.current_menu == MENU_CRUSADER)
     {
         Menu_Crusader();
     }
     //WK ------------------
-	else if (self.current_menu == #MENU_PRIMARY_WEAPON)
+	else if (self.current_menu == MENU_PRIMARY_WEAPON)
 	{
 		Menu_PrimaryWeapon();
 	}
-	else if (self.current_menu == #MENU_SECONDARY_WEAPON)
+	else if (self.current_menu == MENU_SECONDARY_WEAPON)
 	{
 		Menu_SecondaryWeapon();
 	}
-    else if (self.current_menu == #MENU_MISC_WEAPON)
+    else if (self.current_menu == MENU_MISC_WEAPON)
 	{
 		Menu_MiscWeapon();
 	}
-	else if (self.current_menu == #MENU_LEGS)
+	else if (self.current_menu == MENU_LEGS)
 	{
 		Menu_Legs();
 	}
-	else if (self.current_menu == #MENU_HEALTH)
+	else if (self.current_menu == MENU_HEALTH)
 	{
 		Menu_Health();
 	}
-	else if (self.current_menu == #MENU_ARMOR)
+	else if (self.current_menu == MENU_ARMOR)
 	{
 			Menu_Armor();
 	}
-	else if (self.current_menu == #MENU_SPECIAL)
+	else if (self.current_menu == MENU_SPECIAL)
 	{
 		Menu_Special();
 	}
-	else if (self.current_menu == #MENU_SPECIAL2)
+	else if (self.current_menu == MENU_SPECIAL2)
 	{
 		Menu_Special2();
 	}
-	else if (self.current_menu == #MENU_GREN1)
+	else if (self.current_menu == MENU_GREN1)
 	{
 		Menu_Gren1();
 	}
-	else if (self.current_menu == #MENU_GREN2)
+	else if (self.current_menu == MENU_GREN2)
 	{
 		Menu_Gren2();
 	}
-	else if (self.current_menu == #MENU_ENGINEERING)
+	else if (self.current_menu == MENU_ENGINEERING)
 	{
 		Menu_Engineering();
 	}
-	else if (self.current_menu == #MENU_PROFESSION)
+	else if (self.current_menu == MENU_PROFESSION)
 	{
 		Menu_Profession();
 	}
-	else if (self.current_menu == #MENU_PROFESSION2)
+	else if (self.current_menu == MENU_PROFESSION2)
 	{
 		Menu_Profession2();
 	}
-	else if (self.current_menu == #MENU_PROFICIENCY)
+	else if (self.current_menu == MENU_PROFICIENCY)
 	{
 		Menu_Proficiency();
 	}
-	else if (self.current_menu == #MENU_OPTION)
+	else if (self.current_menu == MENU_OPTION)
 	{
 		Menu_Option();
 	}    
@@ -475,22 +422,22 @@ void() Player_Menu =
     //WK ----------------
 	else if (self.team_no == 0 && teamplay && (self.lives != 0))
 	{
-		if (self.motd >= #MOTD_FINISHED) {
-			self.current_menu = #MENU_TEAM;
+		if (self.motd >= MOTD_FINISHED) {
+			self.current_menu = MENU_TEAM;
 			Menu_Team();
 		}
 	}
 //WK Default to custom class gen - OfN - nope!
-	else if (self.playerclass == #PC_UNDEFINED && (self.lives != 0))
+	else if (self.playerclass == PC_UNDEFINED && (self.lives != 0))
 	{
 		//- OfN - stock_mode applies
         if (stock_mode < 2) {
-            self.current_menu = #MENU_CLASS;//-was commented
+            self.current_menu = MENU_CLASS;//-was commented
 		    Menu_Class();//-was commented
 		}
         else
         {
-            self.impulse = #PC_CUSTOM + #TF_CHANGEPC; //-wasnt commented
+            self.impulse = PC_CUSTOM + TF_CHANGEPC; //-wasnt commented
 		    TeamFortress_ChangeClass();//-wasnt commented
         }
 	}
@@ -505,11 +452,11 @@ void(float menu_no) DisplayMenu =
 {
 	self.current_menu = menu_no;
 
-	if (menu_no == #MENU_TEAM)
+	if (menu_no == MENU_TEAM)
 	{
 		Menu_Team();
 	}
-	else if (menu_no == #MENU_CLASS)
+	else if (menu_no == MENU_CLASS)
 	{
 		Menu_Class();
 	}
@@ -520,7 +467,7 @@ void(float inp) Menu_Team_Input;
 
 void() Menu_Team =
 {
-	if ((toggleflags & #TFLAG_AUTOTEAM) && teamplay)
+	if ((toggleflags & TFLAG_AUTOTEAM) && teamplay)
 	{
 		// assign player a team
 		if (TeamFortress_TeamPutPlayerInTeam())
@@ -534,7 +481,7 @@ void() Menu_Team =
 		return;
 	}
 
-	if (CTF_Map == #TRUE)							   							 
+	if (CTF_Map == TRUE)							   							 
 		CenterPrint(self, "ùûü √ËÔÔÛÂ ŸÔıÚ ‘Â·Ì ùûü\n\nì.. Blue Team           \nî.. Red Team            \n\n\n\nô.. Bind my keys for me!\n\nFor full details on this patch:\nhttp://www.telefragged.com/teamfortress/\n");
 	else if (number_of_teams == 1)
 		CenterPrint(self, "ùûü √ËÔÔÛÂ ŸÔıÚ ‘Â·Ì ùûü\n\nì.. Team One  \n");
@@ -555,7 +502,7 @@ void(float inp) Menu_Team_Input =
 		TeamFortress_TeamPutPlayerInTeam();
 	else if (inp <= number_of_teams && inp > 0)
 		TeamFortress_TeamSet(inp);		
-	else if (number_of_teams == 0 && inp <= #TM_MAX_NO)
+	else if (number_of_teams == 0 && inp <= TM_MAX_NO)
 		TeamFortress_TeamSet(inp);
 	else //- OfN
     {
@@ -565,11 +512,11 @@ void(float inp) Menu_Team_Input =
     }
 
     /*else if (inp == 7)
-		self.current_menu = #MENU_PICKBINDS;
+		self.current_menu = MENU_PICKBINDS;
 	else if (inp == 8)
 		PlayerObserverMode();*/
 
-    if (custom_mode!=2) sprint(self, #PRINT_MEDIUM, "Press í for a custom player class\n");
+    if (custom_mode!=2) sprint(self, PRINT_MEDIUM, "Press í for a custom player class\n");
 
 	ResetMenu();		
 	self.impulse = 0;
@@ -621,7 +568,7 @@ void() Menu_Class =
     {
 	    if (TeamFortress_TeamIsCivilian(self.team_no))
 		    CenterPrint(self, "Your team can only be Civilians.\n");
-	    else if (spy_off == #TRUE)
+	    else if (spy_off == TRUE)
 		    CenterPrint(self, "ùûü √ËÔÔÛÂ ˘ÔıÚ „Ï·ÛÛ ùûü\n\nì.. Scout   \nî.. Sniper  \nï.. Soldier \nñ.. Demoman \nó.. Medic   \nò.. Hvwep   \nô.. Pyro    \nõ.. Engineer\n\ní.. √ıÛÙÔÌ! \n");
 	    else  
 		    CenterPrint(self, "ùûü √ËÔÔÛÂ ˘ÔıÚ „Ï·ÛÛ ùûü\n\nì.. Scout   \nî.. Sniper  \nï.. Soldier \nñ.. Demoman \nó.. Medic   \nò.. Hvwep   \nô.. Pyro    \nö.. Spy     \nõ.. Engineer\n\ní.. √ıÛÙÔÌ! \n");
@@ -630,7 +577,7 @@ void() Menu_Class =
     {
 	    if (TeamFortress_TeamIsCivilian(self.team_no))
 		    CenterPrint(self, "Your team can only be Civilians.\n");
-	    else if (spy_off == #TRUE)
+	    else if (spy_off == TRUE)
 		    CenterPrint(self, "ùûü √ËÔÔÛÂ ˘ÔıÚ „Ï·ÛÛ ùûü\n\nì.. Scout   \nî.. Sniper  \nï.. Soldier \nñ.. Demoman \nó.. Medic   \nò.. Hvwep   \nô.. Pyro    \nõ.. Engineer\n");
 	    else  
 		    CenterPrint(self, "ùûü √ËÔÔÛÂ ˘ÔıÚ „Ï·ÛÛ ùûü\n\nì.. Scout   \nî.. Sniper  \nï.. Soldier \nñ.. Demoman \nó.. Medic   \nò.. Hvwep   \nô.. Pyro    \nö.. Spy     \nõ.. Engineer\n");
@@ -648,20 +595,20 @@ void(float inp) Menu_Class_Input =
       return;
     }
 
-	self.impulse = inp + #TF_CHANGEPC;
+	self.impulse = inp + TF_CHANGEPC;
 	if (inp == 10) //We picked custom, chnage it from random
-		self.impulse = #PC_CUSTOM + #TF_CHANGEPC;
+		self.impulse = PC_CUSTOM + TF_CHANGEPC;
 		
 //WK Default to Custom class. TODO: Make this a serverside option - OfN - done!
-//	self.impulse = #PC_CUSTOM + #TF_CHANGEPC;
+//	self.impulse = PC_CUSTOM + TF_CHANGEPC;
 
 	TeamFortress_ChangeClass();			
 	ResetMenu();		
 
-	if ( #DISPLAY_CLASS_HELP ) 
-		self.current_menu = #MENU_CLASSHELP;
+	if ( DISPLAY_CLASS_HELP ) 
+		self.current_menu = MENU_CLASSHELP;
 	else
-		self.current_menu = #MENU_DEFAULT;
+		self.current_menu = MENU_DEFAULT;
 
 	self.menu_displaytime = 0;
 
@@ -670,7 +617,7 @@ void(float inp) Menu_Class_Input =
 
 void () Menu_Drop =
 {
-	if (self.weapons_carried & #WEAP_SPANNER)
+	if (self.weapons_carried & WEAP_SPANNER)
 		CenterPrint(self, "ƒÚÔ ÔÚ Õ·ÎÂ:                   \n\nì.. Shells                      \nî.. Nails                       \nï.. Rockets                     \nñ.. Cells                       \n\nó.. ŒÔÙËÈÓÁ                     \n\n");
 	else
 		CenterPrint(self, "ƒÚÔ:                           \n\nì.. Shells                      \nî.. Nails                       \nï.. Rockets                     \nñ.. Cells                       \n\nó.. ŒÔÙËÈÓÁ                     \n\n");
@@ -722,8 +669,8 @@ void(float inp) Menu_DoBindings_Input =
 			// Inventory
 			stuffcmd(self, "bind z \"inv\"\n");
 		
-			self.menu_count = #MENU_REFRESH_RATE;
-			self.current_menu = #MENU_SHOWBINDS1;
+			self.menu_count = MENU_REFRESH_RATE;
+			self.current_menu = MENU_SHOWBINDS1;
 			self.menu_displaytime = 0;
 			return;
 		}
@@ -748,8 +695,8 @@ void(float inp) Menu_DoBindings_Input =
 			// Inventory
 			stuffcmd(self, "bind n \"inv\"\n");
 		
-			self.menu_count = #MENU_REFRESH_RATE;
-			self.current_menu = #MENU_SHOWBINDS2;
+			self.menu_count = MENU_REFRESH_RATE;
+			self.current_menu = MENU_SHOWBINDS2;
 			self.menu_displaytime = 0;
 			return;
 		}
@@ -759,134 +706,134 @@ void(float inp) Menu_DoBindings_Input =
 
 void(float inp) Menu_Input =
 {
-	if (self.current_menu == #MENU_TEAM)
+	if (self.current_menu == MENU_TEAM)
 		Menu_Team_Input(inp);
-	else if (self.current_menu == #MENU_CLASS)
+	else if (self.current_menu == MENU_CLASS)
 		Menu_Class_Input(inp);
-	else if (self.current_menu == #MENU_DROP)
+	else if (self.current_menu == MENU_DROP)
 	    Menu_Drop_Input(inp);
-	else if (self.current_menu == #MENU_SPY)
+	else if (self.current_menu == MENU_SPY)
 	    Menu_Spy_Input(inp);
-	else if (self.current_menu == #MENU_SPY_SKIN)
+	else if (self.current_menu == MENU_SPY_SKIN)
 	    Menu_Spy_Skin_Input(inp);
-	else if (self.current_menu == #MENU_SPY_COLOR)
+	else if (self.current_menu == MENU_SPY_COLOR)
 	    Menu_Spy_Color_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEER)
+	else if (self.current_menu == MENU_ENGINEER)
 	    Menu_Engineer_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEER_FIX_DISPENSER)
+	else if (self.current_menu == MENU_ENGINEER_FIX_DISPENSER)
 	    Menu_EngineerFix_Dispenser_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEER_FIX_TESLA)
+	else if (self.current_menu == MENU_ENGINEER_FIX_TESLA)
 	    Menu_EngineerFix_Tesla_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEER_FIX_TESLA2)
+	else if (self.current_menu == MENU_ENGINEER_FIX_TESLA2)
 	    Menu_EngineerFix_Tesla_Input2(inp);
-	else if (self.current_menu == #MENU_ENGINEER_FIX_SENTRYGUN)
+	else if (self.current_menu == MENU_ENGINEER_FIX_SENTRYGUN)
 	    Menu_EngineerFix_SentryGun_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEER_FIX_CAMERA)
+	else if (self.current_menu == MENU_ENGINEER_FIX_CAMERA)
 	    Menu_EngineerFix_Camera_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEER_FIX_SENSOR)
+	else if (self.current_menu == MENU_ENGINEER_FIX_SENSOR)
 	    Menu_EngineerFix_Sensor_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEER_FIX_TELEPORTER)
+	else if (self.current_menu == MENU_ENGINEER_FIX_TELEPORTER)
 	    Menu_EngineerFix_Teleporter_Input(inp);
-   	else if (self.current_menu == #MENU_ENGINEER_FIX_FIELDGEN)
+   	else if (self.current_menu == MENU_ENGINEER_FIX_FIELDGEN)
 	    Menu_EngineerFix_FieldGen_Input(inp);
-	else if (self.current_menu == #MENU_DISPENSER)
+	else if (self.current_menu == MENU_DISPENSER)
 		Menu_Dispenser_Input(inp);
-	else if (self.current_menu == #MENU_CLASSHELP)
+	else if (self.current_menu == MENU_CLASSHELP)
 		Menu_ClassHelp_Input(inp);
-	else if (self.current_menu == #MENU_PICKBINDS)
+	else if (self.current_menu == MENU_PICKBINDS)
 		Menu_DoBindings_Input(inp);
-	else if (self.current_menu == #MENU_DEMON)
+	else if (self.current_menu == MENU_DEMON)
 		Menu_Demon_Input(inp);
-    else if (self.current_menu == #MENU_ARMY)
+    else if (self.current_menu == MENU_ARMY)
 		Menu_Army_Input(inp);
-    else if (self.current_menu == #MENU_E_HACK)
+    else if (self.current_menu == MENU_E_HACK)
 		Menu_EnemyHax_Inp(inp);
-    else if (self.current_menu == #MENU_F_HACK)
+    else if (self.current_menu == MENU_F_HACK)
 		Menu_FriendHax_Inp(inp);
-    else if (self.current_menu == #MENU_CRUSADER)
+    else if (self.current_menu == MENU_CRUSADER)
         Menu_Crusader_Input(inp);
-	else if (self.current_menu == #MENU_PRIMARY_WEAPON) //WK --
+	else if (self.current_menu == MENU_PRIMARY_WEAPON) //WK --
 		Menu_PrimaryWeapon_Input(inp);
-	else if (self.current_menu == #MENU_SECONDARY_WEAPON)
+	else if (self.current_menu == MENU_SECONDARY_WEAPON)
 		Menu_SecondaryWeapon_Input(inp);
-    else if (self.current_menu == #MENU_MISC_WEAPON)
+    else if (self.current_menu == MENU_MISC_WEAPON)
 		Menu_MiscWeapon_Input(inp);
-	else if (self.current_menu == #MENU_LEGS)
+	else if (self.current_menu == MENU_LEGS)
 		Menu_Legs_Input(inp);
-	else if (self.current_menu == #MENU_HEALTH)
+	else if (self.current_menu == MENU_HEALTH)
 		Menu_Health_Input(inp);
-	else if (self.current_menu == #MENU_ARMOR)
+	else if (self.current_menu == MENU_ARMOR)
 		Menu_Armor_Input(inp);
-	else if (self.current_menu == #MENU_SPECIAL)
+	else if (self.current_menu == MENU_SPECIAL)
 		Menu_Special_Input(inp);
-	else if (self.current_menu == #MENU_SPECIAL2)
+	else if (self.current_menu == MENU_SPECIAL2)
 		Menu_Special2_Input(inp);
-	else if (self.current_menu == #MENU_GREN1)
+	else if (self.current_menu == MENU_GREN1)
 		Menu_Gren1_Input(inp);
-	else if (self.current_menu == #MENU_GREN2)
+	else if (self.current_menu == MENU_GREN2)
 		Menu_Gren2_Input(inp);
-	else if (self.current_menu == #MENU_ENGINEERING)
+	else if (self.current_menu == MENU_ENGINEERING)
 		Menu_Engineering_Input(inp);
-	else if (self.current_menu == #MENU_PROFESSION)
+	else if (self.current_menu == MENU_PROFESSION)
 		Menu_Profession_Input(inp);
-      else if (self.current_menu == #MENU_PROFESSION2)
+      else if (self.current_menu == MENU_PROFESSION2)
 		Menu_Profession2_Input(inp);
-	else if (self.current_menu == #MENU_PROFICIENCY)
+	else if (self.current_menu == MENU_PROFICIENCY)
 		Menu_Proficiency_Input(inp);
-	else if (self.current_menu == #MENU_OPTION)
+	else if (self.current_menu == MENU_OPTION)
 		Menu_Option_Input(inp); //WK --
 };
 
 void() Menu_Intro =
 {
-    CenterPrint2(self, #MSG_INTRO, #MSG_INTRO2);
+    CenterPrint2(self, MSG_INTRO, MSG_INTRO2);
 };
 
 void() Menu_ClassHelp =
 {
 	if (self.menu_displaytime < 5)
 	{
-		if (self.playerclass == #PC_SCOUT)
+		if (self.playerclass == PC_SCOUT)
 			CenterPrint(self, "”√œ’‘ Details:               \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n4.. Nailgun                  \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_SNIPER)
+		else if (self.playerclass == PC_SNIPER)
 			CenterPrint(self, "”Œ…–≈“ Details:              \n\n◊≈¡–œŒ”:                     \n2.. Sniper Rifle/Auto Rifle  \n4.. Nailgun                  \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_SOLDIER)
+		else if (self.playerclass == PC_SOLDIER)
 			CenterPrint(self, "”œÃƒ…≈“ Details:             \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n3.. Super Shotgun            \n7.. Rocket Launcher          \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_DEMOMAN)
+		else if (self.playerclass == PC_DEMOMAN)
 			CenterPrint(self, "ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:     \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n6.. Grenade/Pipebomb Launcher\n                             \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_MEDIC)
+		else if (self.playerclass == PC_MEDIC)
 			CenterPrint(self, "Õ≈ƒ…√ Details:               \n\n◊≈¡–œŒ”:                     \n1.. Medikit/BioWeapon        \n2.. Shotgun                  \n3.. Super Shotgun            \n5.. Super Nailgun            \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_HVYWEAP)
+		else if (self.playerclass == PC_HVYWEAP)
 			CenterPrint(self, "»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:   \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n3.. Super Shotgun            \n7.. Assault Cannon           \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_PYRO)
+		else if (self.playerclass == PC_PYRO)
 			CenterPrint(self, "–Ÿ“œ Details:                \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n6.. Flamethrower             \n7.. Incendiary Cannon        \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_SPY)
+		else if (self.playerclass == PC_SPY)
 			CenterPrint(self, "”–Ÿ Details:                 \n\n◊≈¡–œŒ”:                     \n2.. Tranquiliser Gun         \n3.. Super Shotgun            \n4.. Nailgun                  \n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_ENGINEER)
+		else if (self.playerclass == PC_ENGINEER)
 			CenterPrint(self, "≈Œ«…Œ≈≈“ Details:            \n\n◊≈¡–œŒ”:                     \n1.. Spanner                  \n2.. RailGun                  \n3.. Super Shotgun            \n\nPress õ for alias help\n");
 	}
 	else
 	{
-		if (self.playerclass == #PC_SCOUT)
+		if (self.playerclass == PC_SCOUT)
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nFlash Grenade       \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nScanner: scan10,scan50,scan250\nHolograph:  holo        \n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_SNIPER)
+		else if (self.playerclass == PC_SNIPER)
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nFlare               \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nautozoom : Toggle Rifle Autozooming\n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_SOLDIER)																							
+		else if (self.playerclass == PC_SOLDIER)																							
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNail Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_DEMOMAN)																																							                                                                                                
+		else if (self.playerclass == PC_DEMOMAN)																																							                                                                                                
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nThe Detpack : det5,det20,det50\nDetonate Pipebombs : detpipe  \n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_MEDIC)
+		else if (self.playerclass == PC_MEDIC)
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_HVYWEAP)
+		else if (self.playerclass == PC_HVYWEAP)
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_PYRO)
+		else if (self.playerclass == PC_PYRO)
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNapalm Grenade      \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_SPY)
+		else if (self.playerclass == PC_SPY)
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nHallucinogen Grenade\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nGo Undercover : disguise\nStart feigning: feign\n\n\nPress õ for alias help\n");
-		else if (self.playerclass == #PC_ENGINEER)
+		else if (self.playerclass == PC_ENGINEER)
 			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nEMP Grenade         \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nStart Building : build  \n\n\nPress õ for alias help\n");
 		/* WK Stop GRENADES - Build your own class from appearing
-			else if (self.playerclass == #PC_CUSTOM)
+			else if (self.playerclass == PC_CUSTOM)
 				CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nBuild your own class!\n\n");
 		*/
 	}
@@ -895,59 +842,59 @@ void() Menu_ClassHelp =
 void() Menu_StuffClassHelp =
 {
 	/*
-    if (self.playerclass == #PC_SCOUT)
+    if (self.playerclass == PC_SCOUT)
 	{
-		sprint(self, #PRINT_HIGH, "”√œ’‘ Details:\n◊≈¡–œŒ”:\n   2.. Shotgun\n   4.. Nailgun\n");
-		sprint(self, #PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Concussion Grenade\n   Flare\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
-		sprint(self, #PRINT_HIGH, "Scanner: scan10,scan30,scan100\nHolograph: holo\n\n\n");
+		sprint(self, PRINT_HIGH, "”√œ’‘ Details:\n◊≈¡–œŒ”:\n   2.. Shotgun\n   4.. Nailgun\n");
+		sprint(self, PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Concussion Grenade\n   Flare\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
+		sprint(self, PRINT_HIGH, "Scanner: scan10,scan30,scan100\nHolograph: holo\n\n\n");
 	}
-	else if (self.playerclass == #PC_SNIPER)
+	else if (self.playerclass == PC_SNIPER)
 	{
-		sprint (self, #PRINT_HIGH, "”Œ…–≈“ Details:\n\n◊≈¡–œŒ”:\n   2.. Sniper Rifle/Auto Rifle\n");
-		sprint (self, #PRINT_HIGH, "4.. Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
-		sprint (self, #PRINT_HIGH, "  autozoom : Toggle Rifle Autozooming\n\n\n");
+		sprint (self, PRINT_HIGH, "”Œ…–≈“ Details:\n\n◊≈¡–œŒ”:\n   2.. Sniper Rifle/Auto Rifle\n");
+		sprint (self, PRINT_HIGH, "4.. Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
+		sprint (self, PRINT_HIGH, "  autozoom : Toggle Rifle Autozooming\n\n\n");
 	}
-	else if (self.playerclass == #PC_SOLDIER)
+	else if (self.playerclass == PC_SOLDIER)
 	{
-		sprint (self, #PRINT_HIGH, "”œÃƒ…≈“ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   3.. Super Shotgun\n");
-		sprint (self, #PRINT_HIGH, "   7.. Rocket Launcher\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Nail Grenade\n");
-		sprint (self, #PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+		sprint (self, PRINT_HIGH, "”œÃƒ…≈“ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   3.. Super Shotgun\n");
+		sprint (self, PRINT_HIGH, "   7.. Rocket Launcher\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Nail Grenade\n");
+		sprint (self, PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
 	}
-	else if (self.playerclass == #PC_DEMOMAN)
+	else if (self.playerclass == PC_DEMOMAN)
 	{
-		sprint (self, #PRINT_HIGH, "ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   6.. Grenade/Pipebomb Launcher\n");
-		sprint (self, #PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Mirv Grenade\n");
-		sprint (self, #PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   The Detpack : det5,det20,det50\n   Detonate Pipebombs : detpipe\n\n\n");
+		sprint (self, PRINT_HIGH, "ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   6.. Grenade/Pipebomb Launcher\n");
+		sprint (self, PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Mirv Grenade\n");
+		sprint (self, PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   The Detpack : det5,det20,det50\n   Detonate Pipebombs : detpipe\n\n\n");
 	}
-	else if (self.playerclass == #PC_MEDIC)
+	else if (self.playerclass == PC_MEDIC)
 	{
-		sprint (self, #PRINT_HIGH, "Õ≈ƒ…√ Details:\n\n◊≈¡–œŒ”:\n   1.. Medikit/BioWeapon\n   2.. Shotgun\n   3.. Super Shotgun\n");
-		sprint (self, #PRINT_HIGH, "   5.. Super Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Concussion Grenade\n");
-		sprint (self, #PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+		sprint (self, PRINT_HIGH, "Õ≈ƒ…√ Details:\n\n◊≈¡–œŒ”:\n   1.. Medikit/BioWeapon\n   2.. Shotgun\n   3.. Super Shotgun\n");
+		sprint (self, PRINT_HIGH, "   5.. Super Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Concussion Grenade\n");
+		sprint (self, PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
 	}
-	else if (self.playerclass == #PC_HVYWEAP)
+	else if (self.playerclass == PC_HVYWEAP)
 	{
-		sprint (self, #PRINT_HIGH, "»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   3.. Super Shotgun\n");
-		sprint (self, #PRINT_HIGH, "   7.. Assault Cannon\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n");
-		sprint (self, #PRINT_HIGH, "   Mirv Grenade\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+		sprint (self, PRINT_HIGH, "»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   3.. Super Shotgun\n");
+		sprint (self, PRINT_HIGH, "   7.. Assault Cannon\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n");
+		sprint (self, PRINT_HIGH, "   Mirv Grenade\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
 	}
-	else if (self.playerclass == #PC_PYRO)
+	else if (self.playerclass == PC_PYRO)
 	{
-		sprint (self, #PRINT_HIGH, "–Ÿ“œ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   6.. Flamethrower\n   7.. Incendiary Cannon\n");
-		sprint (self, #PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Napalm Grenade\n");
-		sprint (self, #PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+		sprint (self, PRINT_HIGH, "–Ÿ“œ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   6.. Flamethrower\n   7.. Incendiary Cannon\n");
+		sprint (self, PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Napalm Grenade\n");
+		sprint (self, PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
 	}
-	else if (self.playerclass == #PC_SPY)
+	else if (self.playerclass == PC_SPY)
 	{
-		sprint (self, #PRINT_HIGH, "”–Ÿ Details:\n\n◊≈¡–œŒ”:\n   2.. Tranquiliser Gun\n   3.. Super Shotgun\n   4.. Nailgun\n");
-		sprint (self, #PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
-		sprint (self, #PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Go Undercover : disguise\n   Start feigning: feign\n\n\n");
+		sprint (self, PRINT_HIGH, "”–Ÿ Details:\n\n◊≈¡–œŒ”:\n   2.. Tranquiliser Gun\n   3.. Super Shotgun\n   4.. Nailgun\n");
+		sprint (self, PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
+		sprint (self, PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Go Undercover : disguise\n   Start feigning: feign\n\n\n");
 	}
-	else if (self.playerclass == #PC_ENGINEER)
+	else if (self.playerclass == PC_ENGINEER)
 	{
-		sprint (self, #PRINT_HIGH, "≈Œ«…Œ≈≈“ Details:\n\n◊≈¡–œŒ”:\n   1.. Spanner\n   2.. RailGun\n   3.. Super Shotgun\n");
-		sprint (self, #PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   EMP Grenade\n");
-		sprint (self, #PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Start Building : build\n\n\n");
+		sprint (self, PRINT_HIGH, "≈Œ«…Œ≈≈“ Details:\n\n◊≈¡–œŒ”:\n   1.. Spanner\n   2.. RailGun\n   3.. Super Shotgun\n");
+		sprint (self, PRINT_HIGH, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   EMP Grenade\n");
+		sprint (self, PRINT_HIGH, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Start Building : build\n\n\n");
 	}
     */
 };
@@ -959,14 +906,14 @@ void() Menu_ClassHelp2 =
 
 void(float inp) Menu_ClassHelp_Input =
 {
-    if (self.playerclass == #PC_UNDEFINED) return;
+    if (self.playerclass == PC_UNDEFINED) return;
 
 //CH changed inp from 8 to 9,  lgun uses 8
 	if (inp == 9)
 	{
 		Menu_ClassHelp2();
-		self.menu_count = #MENU_REFRESH_RATE;
-		self.current_menu = #MENU_CLASSHELP2;
+		self.menu_count = MENU_REFRESH_RATE;
+		self.current_menu = MENU_CLASSHELP2;
 		self.menu_displaytime = 0;
 		self.impulse = 0;
 	}
@@ -1024,16 +971,16 @@ void(float inp) Menu_Spy_Input =
 	
 	if (inp == 1 || inp == 2)
 	{
-		if (self.effects & (#EF_DIMLIGHT | #EF_BRIGHTLIGHT))
+		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT))
 		{
-			sprint(self, #PRINT_HIGH, "You can't go undercover while glowing.\n");
+			sprint(self, PRINT_HIGH, "You can't go undercover while glowing.\n");
 			ResetMenu();		
 			self.impulse = 0;
 			return;
 		}
 		if (self.is_unabletospy == 1)
 		{
-			sprint(self, #PRINT_HIGH, "You can't go undercover right now.\n");
+			sprint(self, PRINT_HIGH, "You can't go undercover right now.\n");
 			ResetMenu();		
 			self.impulse = 0;
 			return;
@@ -1043,16 +990,16 @@ void(float inp) Menu_Spy_Input =
 	if (inp == 1)
 	{
 		Menu_Spy_Skin();
-		self.menu_count = #MENU_REFRESH_RATE;
-		self.current_menu = #MENU_SPY_SKIN;
+		self.menu_count = MENU_REFRESH_RATE;
+		self.current_menu = MENU_SPY_SKIN;
 		self.menu_displaytime = 0;
 		self.impulse = 0;
 	}
 	else if (inp == 2)
 	{
 		Menu_Spy_Color();
-		self.menu_count = #MENU_REFRESH_RATE;
-		self.current_menu = #MENU_SPY_COLOR;
+		self.menu_count = MENU_REFRESH_RATE;
+		self.current_menu = MENU_SPY_COLOR;
 		self.menu_displaytime = 0;
 		self.impulse = 0;
 	}
@@ -1099,7 +1046,7 @@ void() Menu_Spy_Color =
 {
 	if (number_of_teams == 0)
 	{
-		sprint(self, #PRINT_HIGH, "No Color changing allowed in deathmatch.\n");
+		sprint(self, PRINT_HIGH, "No Color changing allowed in deathmatch.\n");
 		ResetMenu();		
 		self.impulse = 0;
 		return;
@@ -1143,53 +1090,53 @@ void() Menu_Engineer =
     local string line7;
 
 	//Check line for Dispenser
-	if (self.has_dispenser == #TRUE)
+	if (self.has_dispenser == TRUE)
 	 	line1 = "¡„ÙÈÔÓ:                           \n\nìÆÆ Destroy Dispenser             \n";
-	else if (self.ammo_cells >= #BUILD_COST_DISPENSER && (self.cutf_items & #CUTF_DISPENSER))//SB
+	else if (self.ammo_cells >= BUILD_COST_DISPENSER && (self.cutf_items & CUTF_DISPENSER))//SB
 	 	line1 = "¡„ÙÈÔÓ:                           \n\nì.. Build Dispenser               \n";
 	else
 		line1 = "¡„ÙÈÔÓ:                           \n\n                                  \n";
 
-	if (self.has_sentry == #TRUE)
+	if (self.has_sentry == TRUE)
 		line2 = "îÆÆ Destroy Sentry Gun            \n";
-	else if (self.ammo_cells >= #BUILD_COST_SENTRYGUN && self.cutf_items & #CUTF_SENTRYGUN)
+	else if (self.ammo_cells >= BUILD_COST_SENTRYGUN && self.cutf_items & CUTF_SENTRYGUN)
 		line2 = "î.. Build Sentry Gun              \n";
 	else
 		line2 = "                                  \n";
 
-	if (self.has_tesla == #TRUE)
+	if (self.has_tesla == TRUE)
 		line3 = "ïÆÆ Destroy Tesla Sentry          \n";
-	else if (self.ammo_cells >= #BUILD_COST_TESLA && self.tf_items & #NIT_TESLA)
+	else if (self.ammo_cells >= BUILD_COST_TESLA && self.tf_items & NIT_TESLA)
 		line3 = "ï.. Build Tesla Sentry            \n";
 	else
 		line3 = "                                  \n";
 	
-    if (self.has_camera == #TRUE)
+    if (self.has_camera == TRUE)
 		line4 = "ÆÆ Destroy Security Camera       \n"; //CH impulse 4 for both
-	else if (self.ammo_cells >= #BUILD_COST_CAMERA && self.tf_items & #NIT_SECURITY_CAMERA)
+	else if (self.ammo_cells >= BUILD_COST_CAMERA && self.tf_items & NIT_SECURITY_CAMERA)
 		line4 = ".. Launch Security Camera        \n";
 	else
 		line4 = "                                  \n";
 	
     if (self.has_teleporter != 0) //CH messy, yes
 	{
-		if (self.has_teleporter == 1 && self.ammo_cells >= #BUILD_COST_TELEPORTER)
+		if (self.has_teleporter == 1 && self.ammo_cells >= BUILD_COST_TELEPORTER)
 			line5 = ".. Build a Teleporter Pad        \nÆÆ Destroy a Teleporter Pad      \n"; //ofn the number is 5
-		else if (self.has_teleporter == 1 && self.ammo_cells < #BUILD_COST_TELEPORTER)
+		else if (self.has_teleporter == 1 && self.ammo_cells < BUILD_COST_TELEPORTER)
 			line5 = "ÆÆ Destroy a Teleporter Pad      \n"; // 6
 		if (self.has_teleporter == 2)
 			line5 = "ÆÆ Destroy Both Teleporter Pads  \n"; // 6
 	}
-	else if (self.ammo_cells >= #BUILD_COST_TELEPORTER && self.tf_items & #NIT_TELEPORTER)
+	else if (self.ammo_cells >= BUILD_COST_TELEPORTER && self.tf_items & NIT_TELEPORTER)
 		line5 = ".. Build a Teleporter Pad        \n";
 	else
 		line5 = "                                  \n";
 
-    if (self.has_sensor==#TRUE)
+    if (self.has_sensor==TRUE)
     {
 		line6 = "ôÆÆ Destroy Motion Sensor         \n";
     }
-	else if (self.ammo_cells >= #BUILD_COST_SENSOR && self.cutf_items & #CUTF_SENSOR)
+	else if (self.ammo_cells >= BUILD_COST_SENSOR && self.cutf_items & CUTF_SENSOR)
 	{
         line6 = "ô.. Deploy Motion Sensor          \n";		
     }
@@ -1200,9 +1147,9 @@ void() Menu_Engineer =
 
     if (self.has_fieldgen != 0) //CH messy, yes
 	{
-		if (self.has_fieldgen == 1 && self.ammo_cells >= #BUILD_COST_FIELDGEN)
+		if (self.has_fieldgen == 1 && self.ammo_cells >= BUILD_COST_FIELDGEN)
 			line7 = "ö.. Build a Field Generator       \nõÆÆ Destroy a Field Generator     \n\n.. ŒÔÙËÈÓÁ                       \n"; //ofn the number is 5
-		else if (self.has_fieldgen == 1 && self.ammo_cells < #BUILD_COST_FIELDGEN)
+		else if (self.has_fieldgen == 1 && self.ammo_cells < BUILD_COST_FIELDGEN)
 			line7 = "õÆÆ Destroy a Field Generator     \n\n.. ŒÔÙËÈÓÁ                       \n"; // 6
 
 #ifdef FIELD_FORCEMODE
@@ -1223,7 +1170,7 @@ void() Menu_Engineer =
 #endif
 
     }
-	else if (self.ammo_cells >= #BUILD_COST_FIELDGEN && self.cutf_items & #CUTF_FIELDGEN)
+	else if (self.ammo_cells >= BUILD_COST_FIELDGEN && self.cutf_items & CUTF_FIELDGEN)
 		line7 = "ö.. Build a Field Generator       \n\n.. ŒÔÙËÈÓÁ                       \n";
 	else
 		line7 = "                                  \n.. ŒÔÙËÈÓÁ                       \n";
@@ -1238,38 +1185,38 @@ void(float inp) Menu_Engineer_Input =
 {
 	local entity te;
 
-	if (inp == 1 && self.ammo_cells >= #BUILD_COST_DISPENSER && self.has_dispenser == #FALSE)
+	if (inp == 1 && self.ammo_cells >= BUILD_COST_DISPENSER && self.has_dispenser == FALSE)
 	{
-		if (!self.has_dispenser) TeamFortress_Build(#BUILD_DISPENSER);
+		if (!self.has_dispenser) TeamFortress_Build(BUILD_DISPENSER);
 		ResetMenu();		
 		self.impulse = 0;
 	}
-	else if (inp == 2 && self.ammo_cells >= #BUILD_COST_SENTRYGUN && self.has_sentry == #FALSE)
+	else if (inp == 2 && self.ammo_cells >= BUILD_COST_SENTRYGUN && self.has_sentry == FALSE)
 	{
-        if (HasFlag(self.team_no) == #FALSE) {
+        if (HasFlag(self.team_no) == FALSE) {
             CenterPrint(self, "No building until your team has the flag!\n");
             return;		
         }
     
-        TeamFortress_Build(#BUILD_SENTRYGUN);
+        TeamFortress_Build(BUILD_SENTRYGUN);
 		ResetMenu();		
 		self.impulse = 0;
 	}
-	else if (inp == 3 && self.ammo_cells >= #BUILD_COST_TESLA && self.has_tesla == #FALSE)
+	else if (inp == 3 && self.ammo_cells >= BUILD_COST_TESLA && self.has_tesla == FALSE)
 	{
-        if (HasFlag(self.team_no) == #FALSE) {
+        if (HasFlag(self.team_no) == FALSE) {
             CenterPrint(self, "No building until your team has the flag!\n");
             return;		
         }
 		
-		TeamFortress_Build(#BUILD_TESLA);
+		TeamFortress_Build(BUILD_TESLA);
 		ResetMenu();		
 		self.impulse = 0;
 	}
 	else if (inp == 4)
 	{
 		if (!self.has_camera)
-			TeamFortress_Build(#BUILD_SECURITY_CAMERA);
+			TeamFortress_Build(BUILD_SECURITY_CAMERA);
 		else
 		{
 			if (self.option < time)
@@ -1284,9 +1231,9 @@ void(float inp) Menu_Engineer_Input =
 		self.impulse = 0;
 	}
 //CH uses 5 and 6 
-	else if (inp == 5 && (self.has_teleporter == 0 || self.has_teleporter == 1) && self.ammo_cells >= #BUILD_COST_TELEPORTER) //ch if have one out, can build
+	else if (inp == 5 && (self.has_teleporter == 0 || self.has_teleporter == 1) && self.ammo_cells >= BUILD_COST_TELEPORTER) //ch if have one out, can build
 	{
-        if (HasFlag(self.team_no) == #FALSE) {
+        if (HasFlag(self.team_no) == FALSE) {
                 CenterPrint(self, "No building until your team has the flag!\n");
                 return;		
         }
@@ -1300,13 +1247,13 @@ void(float inp) Menu_Engineer_Input =
 					if (te.real_owner == self)
 					{
 						r = vlen(te.origin - self.origin);
-						if (r > #TELEPORTER_RANGE && !(te.num_mines & #IMPROVED_FOUR))
+						if (r > TELEPORTER_RANGE && !(te.num_mines & IMPROVED_FOUR))
                         {						    
-                            sprint(self, #PRINT_HIGH, "Other Teleporter is too far away\n");
+                            sprint(self, PRINT_HIGH, "Other Teleporter is too far away\n");
                         }
 						else
 						{
-							TeamFortress_Build(#BUILD_TELEPORTER);	
+							TeamFortress_Build(BUILD_TELEPORTER);	
 							ResetMenu();		
 							self.impulse = 0;
 						}
@@ -1316,7 +1263,7 @@ void(float inp) Menu_Engineer_Input =
 		}
 		else
 		{
-			TeamFortress_Build(#BUILD_TELEPORTER);	
+			TeamFortress_Build(BUILD_TELEPORTER);	
 			ResetMenu();		
 			self.impulse = 0;
 		}
@@ -1328,7 +1275,7 @@ void(float inp) Menu_Engineer_Input =
 		ResetMenu();		
 		self.impulse = 0;
 	}
-    else if (inp == 7 && (self.ammo_cells >= #BUILD_COST_SENSOR || self.has_sensor) && self.cutf_items & #CUTF_SENSOR)
+    else if (inp == 7 && (self.ammo_cells >= BUILD_COST_SENSOR || self.has_sensor) && self.cutf_items & CUTF_SENSOR)
     {
         SBBuildSensor();
         ResetMenu();		
@@ -1337,9 +1284,9 @@ void(float inp) Menu_Engineer_Input =
     //CH uses 5 and 6 
 	else if (inp == 8) //ch if have one out, can build
 	{
-        if ((self.has_fieldgen == 0 || self.has_fieldgen == 1) && self.ammo_cells >= #BUILD_COST_FIELDGEN)
+        if ((self.has_fieldgen == 0 || self.has_fieldgen == 1) && self.ammo_cells >= BUILD_COST_FIELDGEN)
         {
-            if (HasFlag(self.team_no) == #FALSE) {
+            if (HasFlag(self.team_no) == FALSE) {
                 CenterPrint(self, "No building until your team has the flag!\n");
                 return;		
             }
@@ -1363,20 +1310,20 @@ void(float inp) Menu_Engineer_Input =
                     te = find(te, classname, "building_fieldgen");
                 }	
 
-                if (mindist < #FIELDGEN_HACKEDRANGE) // * 2
+                if (mindist < FIELDGEN_HACKEDRANGE) // * 2
                 {						    
-                    sprint(self, #PRINT_HIGH, "There are interferences with other field generators here!\n");
+                    sprint(self, PRINT_HIGH, "There are interferences with other field generators here!\n");
                 }
                 else
                 {
-                    TeamFortress_Build(#BUILD_FIELDGEN);	
+                    TeamFortress_Build(BUILD_FIELDGEN);	
                     ResetMenu();		
                     self.impulse = 0;
                 }
             }
             else
             {
-                TeamFortress_Build(#BUILD_FIELDGEN);	
+                TeamFortress_Build(BUILD_FIELDGEN);	
                 ResetMenu();		
                 self.impulse = 0;
             }
@@ -1388,13 +1335,13 @@ void(float inp) Menu_Engineer_Input =
         {
             if (GetFieldForcedStatus())
             {
-                SetFieldForcedStatus(#FALSE);
-                sprint(self,#PRINT_HIGH,"You set the force field to Intelligent Mode\n");
+                SetFieldForcedStatus(FALSE);
+                sprint(self,PRINT_HIGH,"You set the force field to Intelligent Mode\n");
             }
             else
             {
-                SetFieldForcedStatus(#TRUE);
-                sprint(self,#PRINT_HIGH,"You set the force field to Closed Mode\n");
+                SetFieldForcedStatus(TRUE);
+                sprint(self,PRINT_HIGH,"You set the force field to Closed Mode\n");
             }
 
             ResetMenu();
@@ -1412,27 +1359,27 @@ void(float inp) Menu_Engineer_Input =
 		self.impulse = 0;
 	}
 //-----------------------------------------------------------------//
-	else if (inp == 1 && self.has_dispenser == #TRUE)
+	else if (inp == 1 && self.has_dispenser == TRUE)
 	{
 		Find_And_Dmg("building_dispenser", self, 1);
 		ResetMenu();		
 		self.impulse = 0;
 	}
-	else if (inp == 2 && self.has_sentry == #TRUE)
+	else if (inp == 2 && self.has_sentry == TRUE)
 	{
 		Find_And_Dmg("building_sentrygun", self, 1);
 		ResetMenu();		
 		self.impulse = 0;
 	}
-	else if (inp == 3 && self.has_tesla == #TRUE)
+	else if (inp == 3 && self.has_tesla == TRUE)
 	{
 		te = find(world, classname, "building_tesla");
 		while (te)
 		{
 			if (te.real_owner == self)
 			{
-				if (te.tf_items & #NIT_SECURITY_CAMERA) {
-					sprint(self, #PRINT_HIGH, "Can't detonate a rogue tesla. Sorry, it's not that easy.\n");
+				if (te.tf_items & NIT_SECURITY_CAMERA) {
+					sprint(self, PRINT_HIGH, "Can't detonate a rogue tesla. Sorry, it's not that easy.\n");
 					ResetMenu();		
 					self.impulse = 0;
 					return;
@@ -1458,10 +1405,10 @@ void(entity person, string build) Add_Building_Teamkill =
 	local string st;
 	local float threshold;
 	threshold = 0;
-	bprint (#PRINT_HIGH, person.netname);
-	bprint (#PRINT_HIGH, " has dismantled a friendly ");
-	bprint (#PRINT_HIGH, build);
-	bprint (#PRINT_HIGH, "!\n");
+	bprint (PRINT_HIGH, person.netname);
+	bprint (PRINT_HIGH, " has dismantled a friendly ");
+	bprint (PRINT_HIGH, build);
+	bprint (PRINT_HIGH, "!\n");
 
 	st = infokey(world, "curse");
 	if (st != string_null)
@@ -1478,7 +1425,7 @@ void(entity person, string build) Add_Building_Teamkill =
 			createBastard(person.building.real_owner,threshold);
 		if ((person.ff_count == threshold - 2) || (person.ff_count == threshold - 1.5) || (person.ff_count == threshold - 1) || (person.ff_count == threshold - 0.5))
 		{
-			sprint (person, #PRINT_MEDIUM, "One more dismantling and you will be cursed.\n");
+			sprint (person, PRINT_MEDIUM, "One more dismantling and you will be cursed.\n");
 		}
 	}
 };
@@ -1501,55 +1448,55 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 
     local float iI; // is Improved?
     iI=1;
-    if (self.building.num_mines & #IMPROVED_ONE)
+    if (self.building.num_mines & IMPROVED_ONE)
         iI=2;
 
 	if (inp == 1)
 	{
 		// shells
-		am = (#DROP_SHELLS * 2);
+		am = (DROP_SHELLS * 2);
 		if (am > self.ammo_shells)
 			am = self.ammo_shells; 
-		if (am > (#BUILD_DISPENSER_MAX_SHELLS*iI - self.building.ammo_shells))
-			am = #BUILD_DISPENSER_MAX_SHELLS*iI - self.building.ammo_shells;
+		if (am > (BUILD_DISPENSER_MAX_SHELLS*iI - self.building.ammo_shells))
+			am = BUILD_DISPENSER_MAX_SHELLS*iI - self.building.ammo_shells;
 		self.ammo_shells = self.ammo_shells - am;
 		self.building.ammo_shells = self.building.ammo_shells + am;
 
 		// nails
-		am = (#DROP_NAILS * 2);
+		am = (DROP_NAILS * 2);
 		if (am > self.ammo_nails)
 			am = self.ammo_nails; 
-		if (am > (#BUILD_DISPENSER_MAX_NAILS*iI - self.building.ammo_nails))
-			am = #BUILD_DISPENSER_MAX_NAILS*iI - self.building.ammo_nails;
+		if (am > (BUILD_DISPENSER_MAX_NAILS*iI - self.building.ammo_nails))
+			am = BUILD_DISPENSER_MAX_NAILS*iI - self.building.ammo_nails;
 		self.ammo_nails = self.ammo_nails - am;
 		self.building.ammo_nails = self.building.ammo_nails + am;
 
 		// rockets
-		am = (#DROP_ROCKETS * 2);
+		am = (DROP_ROCKETS * 2);
 		if (am > self.ammo_rockets)
 			am = self.ammo_rockets; 
-		if (am > (#BUILD_DISPENSER_MAX_ROCKETS*iI - self.building.ammo_rockets))
-			am = #BUILD_DISPENSER_MAX_ROCKETS*iI - self.building.ammo_rockets;
+		if (am > (BUILD_DISPENSER_MAX_ROCKETS*iI - self.building.ammo_rockets))
+			am = BUILD_DISPENSER_MAX_ROCKETS*iI - self.building.ammo_rockets;
 		self.ammo_rockets = self.ammo_rockets - am;
 		self.building.ammo_rockets = self.building.ammo_rockets + am;
 
 		// cells
-		am = (#DROP_CELLS * 2);
+		am = (DROP_CELLS * 2);
 		if (am > self.ammo_cells)
 			am = self.ammo_cells; 
-		if (am > (#BUILD_DISPENSER_MAX_CELLS*iI - self.building.ammo_cells))
-			am = #BUILD_DISPENSER_MAX_CELLS*iI - self.building.ammo_cells;
+		if (am > (BUILD_DISPENSER_MAX_CELLS*iI - self.building.ammo_cells))
+			am = BUILD_DISPENSER_MAX_CELLS*iI - self.building.ammo_cells;
 		self.ammo_cells = self.ammo_cells - am;
 		self.building.ammo_cells = self.building.ammo_cells + am;
 	}
 	else if (inp == 2)
 	{
 		// armor
-		am = (#DROP_ARMOR * 2);
+		am = (DROP_ARMOR * 2);
 		if (am > self.armorvalue)
 			am = self.armorvalue; 
-		if (am > (#BUILD_DISPENSER_MAX_ARMOR*iI - self.building.armorvalue))
-			am = #BUILD_DISPENSER_MAX_ARMOR*iI - self.building.armorvalue;
+		if (am > (BUILD_DISPENSER_MAX_ARMOR*iI - self.building.armorvalue))
+			am = BUILD_DISPENSER_MAX_ARMOR*iI - self.building.armorvalue;
 		self.armorvalue = self.armorvalue - am;
 		self.building.armorvalue = self.building.armorvalue + am;
 	}
@@ -1567,10 +1514,10 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 	}
 	else if (inp == 4)
 	{
-        if (CheckEnemyDismantle()==#FALSE) {ResetMenu(); self.impulse=0; return;}
+        if (CheckEnemyDismantle()==FALSE) {ResetMenu(); self.impulse=0; return;}
 
-        sprint (self, #PRINT_HIGH, "You dismantle the Dispenser.\n");
-  		self.ammo_cells = self.ammo_cells + (#BUILD_COST_DISPENSER / 2);
+        sprint (self, PRINT_HIGH, "You dismantle the Dispenser.\n");
+  		self.ammo_cells = self.ammo_cells + (BUILD_COST_DISPENSER / 2);
 ///////////////////////////
 #ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
@@ -1579,7 +1526,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 #endif
 
         self.building.health=0; // - OfN aborts hacks on it
-        self.building.real_owner.has_dispenser = #FALSE;
+        self.building.real_owner.has_dispenser = FALSE;
         dremove(self.building);
 
     }
@@ -1596,7 +1543,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -1607,16 +1554,16 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 
 void() Menu_EngineerFix_SentryGun =
 {
-	if (self.building.weapon < 3 && self.ammo_cells >= #BUILD_COST_SENTRYGUN)
+	if (self.building.weapon < 3 && self.ammo_cells >= BUILD_COST_SENTRYGUN)
 	{
-        if (!(self.tf_items & #NIT_TURRET)) // TODO: Action --> OfteN's sentry gun
+        if (!(self.tf_items & NIT_TURRET)) // TODO: Action --> OfteN's sentry gun
             CenterPrint(self, "¡„ÙÈÔÓ:                            \n\n.. Put Ammo into Sentry Gun    \n.. Upgrade Sentry Gun          \nï.. Repair Sentry Gun           \n\nñ.. ŒÔÙËÈÓÁ                     \n\nó.. Dismantle Sentry Gun        \nò.. Rotate Clockwise            \nô.. Rotate Counter-Clockwise    \n");
         else
             CenterPrint(self, "¡„ÙÈÔÓ:                            \n\n.. Put Ammo into Sentry Gun    \n.. Upgrade Sentry Gun          \nï.. Repair Sentry Gun           \n\nñ.. ŒÔÙËÈÓÁ                     \n\nó.. Dismantle Sentry Gun        \nò.. Rotate Clockwise            \nô.. Rotate Counter-Clockwise    \nö.. Create Turret               \n");
     }
 	else
     {
-        if (!(self.tf_items & #NIT_TURRET))
+        if (!(self.tf_items & NIT_TURRET))
             CenterPrint(self, "¡„ÙÈÔÓ:                            \n\n.. Put Ammo into Sentry Gun    \nï.. Repair Sentry Gun           \n\nñ.. ŒÔÙËÈÓÁ                     \n\nó.. Dismantle Sentry Gun        \nò.. Rotate Clockwise            \nô.. Rotate Counter-Clockwise    \n");
         else
             CenterPrint(self, "¡„ÙÈÔÓ:                            \n\n.. Put Ammo into Sentry Gun    \nï.. Repair Sentry Gun           \n\nñ.. ŒÔÙËÈÓÁ                     \n\nó.. Dismantle Sentry Gun        \nò.. Rotate Clockwise            \nô.. Rotate Counter-Clockwise    \nö.. Create Turret               \n");
@@ -1634,7 +1581,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 	if (inp == 1)
 	{
 		// shells
-		am = (#DROP_SHELLS * 2);
+		am = (DROP_SHELLS * 2);
 		if (am > self.ammo_shells)
 			am = self.ammo_shells;
 		if (am > (self.building.maxammo_shells - self.building.ammo_shells))
@@ -1645,7 +1592,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		// If it's level 3, put some rockets in too
 		if (self.building.weapon == 3)
 		{
-			am = (#DROP_ROCKETS * 2);
+			am = (DROP_ROCKETS * 2);
 			if (am > self.ammo_rockets)
 				am = self.ammo_rockets;
 			if (am > (self.building.maxammo_rockets - self.building.ammo_rockets))
@@ -1654,18 +1601,18 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 			self.building.ammo_rockets = self.building.ammo_rockets + am;
 		}
 	}
-	else if (self.building.weapon < 3 && inp == 2 && self.ammo_cells >= #BUILD_COST_SENTRYGUN)
+	else if (self.building.weapon < 3 && inp == 2 && self.ammo_cells >= BUILD_COST_SENTRYGUN)
 	{
-		self.ammo_cells = self.ammo_cells - #BUILD_COST_SENTRYGUN;
+		self.ammo_cells = self.ammo_cells - BUILD_COST_SENTRYGUN;
 		self.building.weapon = self.building.weapon + 1;
 
 		local float HPfactor,AMMOfactor;
-        if (self.building.num_mines & #IMPROVED_THREE)
+        if (self.building.num_mines & IMPROVED_THREE)
             HPfactor=2;
         else
             HPfactor=1;
 
-        if (self.building.num_mines & #IMPROVED_ONE)
+        if (self.building.num_mines & IMPROVED_ONE)
             AMMOfactor=2;
         else
             AMMOfactor=1;
@@ -1679,7 +1626,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		// Change the skin and frames
 		if (self.building.weapon == 2)
 		{
-			sound (self.building, #CHAN_ITEM, "weapons/turrset.wav", 1, #ATTN_NORM);
+			sound (self.building, CHAN_ITEM, "weapons/turrset.wav", 1, ATTN_NORM);
 			self.building.think = lvl2_sentry_stand;
 			//self.building.skin = 1;
             self.building.max_health = 180 * HPfactor;
@@ -1687,7 +1634,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		}
 		else // if (self.building.weapon == 3)
 		{
-			sound (self.building, #CHAN_ITEM, "weapons/turrset.wav", 1, #ATTN_NORM);
+			sound (self.building, CHAN_ITEM, "weapons/turrset.wav", 1, ATTN_NORM);
 			self.building.think = lvl3_sentry_stand;
 			//self.building.skin = 2;
             self.building.max_health = 220 * HPfactor;
@@ -1696,10 +1643,10 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
         
         self.building.health = self.building.max_health;
 
-		sprint(self, #PRINT_HIGH, "You upgrade the Sentry Gun to level ");
+		sprint(self, PRINT_HIGH, "You upgrade the Sentry Gun to level ");
 		st = ftos(self.building.weapon); 
-		sprint(self, #PRINT_HIGH, st);
-		sprint(self, #PRINT_HIGH, "\n");
+		sprint(self, PRINT_HIGH, st);
+		sprint(self, PRINT_HIGH, "\n");
 	}
 	else if (inp == 3)
 	{
@@ -1713,25 +1660,25 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 	}
 	else if (inp == 5)
 	{
-		if (CheckEnemyDismantle()==#FALSE) return;
+		if (CheckEnemyDismantle()==FALSE) return;
         
-        sprint(self, #PRINT_HIGH, "You dismantle the Sentry Gun.\n");
+        sprint(self, PRINT_HIGH, "You dismantle the Sentry Gun.\n");
 //CH give .5 of build cost====give 25*level
-		self.ammo_cells = self.ammo_cells + (#BUILD_COST_SENTRYGUN / 2) + (self.building.weapon * 25);
+		self.ammo_cells = self.ammo_cells + (BUILD_COST_SENTRYGUN / 2) + (self.building.weapon * 25);
 
 #ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "sentry gun");
 		}
 #endif
-		self.building.real_owner.has_sentry = #FALSE;
+		self.building.real_owner.has_sentry = FALSE;
 		dremove(self.building.trigger_field);
         self.building.health=0; // - OfN aborts hacks on it
 		dremove(self.building);
 	}
 	else if (inp == 6) //WK
 	{
-		sprint(self, #PRINT_HIGH, "You rotate it clockwise 45 degrees\n");
+		sprint(self, PRINT_HIGH, "You rotate it clockwise 45 degrees\n");
 		self.building.angles_y = anglemod(self.building.angles_y - 45);
 			self.building.angles_y = ((ceil(self.building.angles_y / 10)) * 10); //CH set last int to 0
 		self.building.waitmin = anglemod(self.building.angles_y - 50);
@@ -1740,7 +1687,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 	}
 	else if (inp == 7) //WK
 	{
-		sprint(self, #PRINT_HIGH, "You rotate it counter-clockwise 45 degrees\n");
+		sprint(self, PRINT_HIGH, "You rotate it counter-clockwise 45 degrees\n");
 		self.building.angles_y = anglemod(self.building.angles_y + 45);
 			self.building.angles_y = ((ceil(self.building.angles_y / 10)) * 10); //CH set last int to 0
 		self.building.waitmin = anglemod(self.building.angles_y - 50);
@@ -1750,35 +1697,35 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 	//Detachable sentry!
 	else if (inp == 8)
 	{
-		if (self.building.tf_items & #NIT_TURRET) {
-			sprint(self, #PRINT_HIGH, "Gun is already deployed\n");
+		if (self.building.tf_items & NIT_TURRET) {
+			sprint(self, PRINT_HIGH, "Gun is already deployed\n");
 		}
-		else if (!(self.tf_items & #NIT_TURRET)) {
-			sprint(self, #PRINT_HIGH, "You need to purchase the turret upgrade\n");
+		else if (!(self.tf_items & NIT_TURRET)) {
+			sprint(self, PRINT_HIGH, "You need to purchase the turret upgrade\n");
 		}
-		else if (self.ammo_cells < #BUILD_COST_TURRET)
+		else if (self.ammo_cells < BUILD_COST_TURRET)
 		{
-			sprint(self, #PRINT_HIGH, "Creating a turret costs #BUILD_COST_TURRET metal\n");
+			sprint(self, PRINT_HIGH, "Creating a turret costs BUILD_COST_TURRET metal\n");
 		}
 		else {
 			self.building.origin_z = self.building.origin_z + 15; //Elevate for the check
 			//Make sure the launch area is clear
-			if (CheckArea(self.building,self) == #FALSE) {
-				sprint(self, #PRINT_HIGH, "You need a clear area to launch\n");		
+			if (CheckArea(self.building,self) == FALSE) {
+				sprint(self, PRINT_HIGH, "You need a clear area to launch\n");		
 				self.building.origin_z = self.building.origin_z - 15; //Set back down
 			}
 			else {
 				self.building.origin_z = self.building.origin_z + 25; //Finish liftoff
-				sprint(self, #PRINT_HIGH, "You launch the sentrygun\n");
-				self.ammo_cells = self.ammo_cells - #BUILD_COST_TURRET;
+				sprint(self, PRINT_HIGH, "You launch the sentrygun\n");
+				self.ammo_cells = self.ammo_cells - BUILD_COST_TURRET;
 				self.building.angles_z = 180;
 			 	setmodel(self.building.trigger_field,string_null);
-				self.building.trigger_field.solid = #SOLID_NOT;
-				self.building.flags = self.building.flags - (self.building.flags & #FL_ONGROUND);
-				self.building.movetype = #MOVETYPE_FLY;
+				self.building.trigger_field.solid = SOLID_NOT;
+				self.building.flags = self.building.flags - (self.building.flags & FL_ONGROUND);
+				self.building.movetype = MOVETYPE_FLY;
 				self.building.velocity_z = 200;
 				setsize (self.building, '-16 -16 -40', '16 16 -10'); //WK -40, -10
-				self.building.tf_items = self.building.tf_items | #NIT_TURRET;
+				self.building.tf_items = self.building.tf_items | NIT_TURRET;
 			}
 		}
 	}
@@ -1793,7 +1740,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -1825,12 +1772,12 @@ void(float inp) Menu_EngineerFix_Sensor_Input =
 	}
 	else if (inp == 3)
 	{
-        if (CheckEnemyDismantle() == #FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
+        if (CheckEnemyDismantle() == FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
         
-        sprint(self, #PRINT_HIGH, "You dismantle the Motion Sensor.\n");
+        sprint(self, PRINT_HIGH, "You dismantle the Motion Sensor.\n");
 //CH will give you half of cost + max of 20
-		self.ammo_cells = self.ammo_cells + (#BUILD_COST_SENSOR * 0.5) + floor(self.building.health / 40);
-		self.building.real_owner.has_sensor = #FALSE;
+		self.ammo_cells = self.ammo_cells + (BUILD_COST_SENSOR * 0.5) + floor(self.building.health / 40);
+		self.building.real_owner.has_sensor = FALSE;
 
 #ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
@@ -1852,7 +1799,7 @@ void(float inp) Menu_EngineerFix_Sensor_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -1884,12 +1831,12 @@ void(float inp) Menu_EngineerFix_Camera_Input =
 	}
 	else if (inp == 3)
 	{
-        if (CheckEnemyDismantle() == #FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
+        if (CheckEnemyDismantle() == FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
 
-        sprint(self, #PRINT_HIGH, "You dismantle the Security Camera.\n");
+        sprint(self, PRINT_HIGH, "You dismantle the Security Camera.\n");
 //CH will give you half of cost + max of 20
-		self.ammo_cells = self.ammo_cells + (#BUILD_COST_CAMERA * 0.5) + floor(self.building.health / 40);
-		self.building.real_owner.has_camera = #FALSE;
+		self.ammo_cells = self.ammo_cells + (BUILD_COST_CAMERA * 0.5) + floor(self.building.health / 40);
+		self.building.real_owner.has_camera = FALSE;
 
 #ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
@@ -1911,7 +1858,7 @@ void(float inp) Menu_EngineerFix_Camera_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -1954,11 +1901,11 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 	}
 	else if (inp == 4)
 	{
-        if (CheckEnemyDismantle() == #FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
+        if (CheckEnemyDismantle() == FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
 
-        sprint(self, #PRINT_HIGH, "You dismantle the Teleporter Pad.\n");
+        sprint(self, PRINT_HIGH, "You dismantle the Teleporter Pad.\n");
 //CH will give you half of cost + max of 20
-		self.ammo_cells = self.ammo_cells + (#BUILD_COST_TELEPORTER * 0.5) + floor(self.building.health / 15);
+		self.ammo_cells = self.ammo_cells + (BUILD_COST_TELEPORTER * 0.5) + floor(self.building.health / 15);
 		self.building.real_owner.has_teleporter = (self.building.real_owner.has_teleporter - 1);
 
 #ifdef QUAKE_WORLD
@@ -1981,7 +1928,7 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -2026,11 +1973,11 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 	}
 	else if (inp == 4)
 	{
-        if (CheckEnemyDismantle() == #FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
+        if (CheckEnemyDismantle() == FALSE) return; //- OfN - ICE avoids enemy dismantle (see often.qc)
 
-        sprint(self, #PRINT_HIGH, "You dismantle the Field Generator.\n");
+        sprint(self, PRINT_HIGH, "You dismantle the Field Generator.\n");
 //CH will give you half of cost + max of 20
-		self.ammo_cells = self.ammo_cells + (#BUILD_COST_FIELDGEN * 0.5) + floor(self.building.health / 15);
+		self.ammo_cells = self.ammo_cells + (BUILD_COST_FIELDGEN * 0.5) + floor(self.building.health / 15);
 		self.building.real_owner.has_fieldgen = (self.building.real_owner.has_fieldgen - 1);
 
 #ifdef QUAKE_WORLD
@@ -2053,7 +2000,7 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -2091,15 +2038,6 @@ string(float num) Return_Colored_Num =
 //menu 0=normal 1=misc
 float(float ups, entity person, entity sent, float type, float menu) Check_Tesla_Ups =
 {
-#define UPGRADE 125 //Cells per upgrade
-//#define MAXUPGRADES 6
-#define MAXCELLS0 50
-#define MAXCELLS1 120
-#define MAXCELLS2 200
-#define MAXCELLS3 300
-#define ADDCELLS1 70 //how much to add with upgrade
-#define ADDCELLS2 80
-#define ADDCELLS3 100
 	local float upgrades;
 
 	if (menu == 1)
@@ -2107,158 +2045,158 @@ float(float ups, entity person, entity sent, float type, float menu) Check_Tesla
 	else
 		upgrades = sent.has_sentry; //normal
 	if (ups > upgrades) {//not enough upgrades
-		sprint(person,#PRINT_HIGH,"You do not have enough upgrades to improve the tesla\n");
-		return #FALSE;
+		sprint(person,PRINT_HIGH,"You do not have enough upgrades to improve the tesla\n");
+		return FALSE;
 	}
 	if (type == 4 || type == 5) { //Spy detector and frag to upgrade
-		if (person.ammo_cells < (ups / 2) * #UPGRADE) {//not enough cells
-			sprint(person,#PRINT_HIGH,"You need more cells to upgrade the tesla\n");
-			return #FALSE;
+		if (person.ammo_cells < (ups / 2) * UPGRADE) {//not enough cells
+			sprint(person,PRINT_HIGH,"You need more cells to upgrade the tesla\n");
+			return FALSE;
 		}
 	}
 	else
 	{
-		if (person.ammo_cells < ups * #UPGRADE) {//not enough cells
-			sprint(person,#PRINT_HIGH,"You need more cells to upgrade the tesla\n");
-			return #FALSE;
+		if (person.ammo_cells < ups * UPGRADE) {//not enough cells
+			sprint(person,PRINT_HIGH,"You need more cells to upgrade the tesla\n");
+			return FALSE;
 		}
 	}
 	if (type ==1)
 	{
 		if (sent.ammo_shells >= 3) {
-			sprint(self,#PRINT_HIGH,"You can only upgrade voltage 3 times\n");
-			return #FALSE;
+			sprint(self,PRINT_HIGH,"You can only upgrade voltage 3 times\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_sentry = sent.has_sentry - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==2)
 	{
 		if (sent.ammo_nails >= 3) {
-			sprint(person,#PRINT_HIGH,"You can only upgrade amperage 3 times\n");
-			return #FALSE;
+			sprint(person,PRINT_HIGH,"You can only upgrade amperage 3 times\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_sentry = sent.has_sentry - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==3)
 	{
 		if (sent.ammo_rockets >= 3) {
-			sprint(person,#PRINT_HIGH,"You can only upgrade the capacitor 3 times\n");
-			return #FALSE;
+			sprint(person,PRINT_HIGH,"You can only upgrade the capacitor 3 times\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_sentry = sent.has_sentry - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==4)
 	{
-		if (sent.tf_items & #NIT_AUTOID) {
-			sprint(person,#PRINT_HIGH,"You already built a spy detector\n");
-			return #FALSE;
+		if (sent.tf_items & NIT_AUTOID) {
+			sprint(person,PRINT_HIGH,"You already built a spy detector\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_sentry = sent.has_sentry - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==5)
 	{
-		if (sent.tf_items & #NIT_TELEPORTER) {
-			sprint(person,#PRINT_HIGH,"You already have the upgrade\n");
-			return #FALSE;
+		if (sent.tf_items & NIT_TELEPORTER) {
+			sprint(person,PRINT_HIGH,"You already have the upgrade\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_sentry = sent.has_sentry - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==6)
 	{
-		if (sent.tf_items & #NIT_KEVLAR) {
-			sprint(person,#PRINT_HIGH,"The Tesla already has Kevlar Armor\n");
-			return #FALSE;
+		if (sent.tf_items & NIT_KEVLAR) {
+			sprint(person,PRINT_HIGH,"The Tesla already has Kevlar Armor\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_tesla = sent.has_tesla - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==7)
 	{
-		if (sent.tf_items & #NIT_BLAST) {
-			sprint(person,#PRINT_HIGH,"The Tesla already has Blast Armor\n");
-			return #FALSE;
+		if (sent.tf_items & NIT_BLAST) {
+			sprint(person,PRINT_HIGH,"The Tesla already has Blast Armor\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_tesla = sent.has_tesla - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==8)
 	{
-		if (sent.tf_items & #NIT_ASBESTOS) {
-			sprint(person,#PRINT_HIGH,"The Tesla already has Asbestos Armor\n");
-			return #FALSE;
+		if (sent.tf_items & NIT_ASBESTOS) {
+			sprint(person,PRINT_HIGH,"The Tesla already has Asbestos Armor\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_tesla = sent.has_tesla - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==9)
 	{
-		if (sent.tf_items & #NIT_TURRET) {
-			sprint(person,#PRINT_HIGH,"The Tesla is already a turret!\n");
-			return #FALSE;
+		if (sent.tf_items & NIT_TURRET) {
+			sprint(person,PRINT_HIGH,"The Tesla is already a turret!\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_tesla = sent.has_tesla - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==10)
 	{
-		if (sent.tf_items & #NIT_SCANNER) {
-			sprint(person,#PRINT_HIGH,"The Tesla already has an improved targeter\n");
-			return #FALSE;
+		if (sent.tf_items & NIT_SCANNER) {
+			sprint(person,PRINT_HIGH,"The Tesla already has an improved targeter\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_tesla = sent.has_tesla - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
 	if (type ==11)
 	{
 		
-		//sprint(person,#PRINT_HIGH,"Not implemented yet!\n");
-		//	return #FALSE;
-		if (sent.tf_items & #NIT_TESLA_CLOAKING) {
-			sprint(person,#PRINT_HIGH,"The Tesla already has a cloaking device\n");
-			return #FALSE;
+		//sprint(person,PRINT_HIGH,"Not implemented yet!\n");
+		//	return FALSE;
+		if (sent.tf_items & NIT_TESLA_CLOAKING) {
+			sprint(person,PRINT_HIGH,"The Tesla already has a cloaking device\n");
+			return FALSE;
 		}
 		else {
-			self.ammo_cells = self.ammo_cells - (ups * #UPGRADE);
+			self.ammo_cells = self.ammo_cells - (ups * UPGRADE);
 			sent.has_tesla = sent.has_tesla - ups;
-			return #TRUE;
+			return TRUE;
 		}
 	}
-	return #FALSE; //Should not happen
+	return FALSE; //Should not happen
 	
 };
 //Cause its used 2x
@@ -2292,17 +2230,17 @@ void() Menu_EngineerDismantle_Tesla =
 	if (!self.building)
 		return;
 
-	if (self.building.tf_items & #NIT_SECURITY_CAMERA) {
-		sprint(self, #PRINT_HIGH, "You can't dismantle it. It's not that easy!\n");
+	if (self.building.tf_items & NIT_SECURITY_CAMERA) {
+		sprint(self, PRINT_HIGH, "You can't dismantle it. It's not that easy!\n");
 		return;
 	}
 
-    if (CheckEnemyDismantle() == #FALSE) return;
+    if (CheckEnemyDismantle() == FALSE) return;
 
-	sprint(self, #PRINT_HIGH, "You dismantle the Tesla Gun.\n");
+	sprint(self, PRINT_HIGH, "You dismantle the Tesla Gun.\n");
 //CH give .5 of ammount of build====give 25*health level (0-3)====give .5 of cells
-	self.ammo_cells = self.ammo_cells + (#BUILD_COST_TESLA / 2) + (self.building.ammo_rockets * 25) + (self.building.ammo_cells / 2);
-	self.building.real_owner.has_tesla = #FALSE;
+	self.ammo_cells = self.ammo_cells + (BUILD_COST_TESLA / 2) + (self.building.ammo_rockets * 25) + (self.building.ammo_cells / 2);
+	self.building.real_owner.has_tesla = FALSE;
 
 #ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
@@ -2318,12 +2256,12 @@ void(entity sent, entity who) Tesla_Add_Rand_Upgrade =
 	num = random();
 	if (num <= 0.8) //give them a normal upgrade
 	{
-		sprint(who,#PRINT_HIGH,"The tesla got a normal upgrade!\n");
+		sprint(who,PRINT_HIGH,"The tesla got a normal upgrade!\n");
 		sent.has_sentry = sent.has_sentry + 1;
 	}
 	else
 	{
-		sprint(who,#PRINT_HIGH,"The tesla got a misc upgrade!\n");
+		sprint(who,PRINT_HIGH,"The tesla got a misc upgrade!\n");
 		sent.has_tesla = sent.has_tesla + 1;
 	}
 };
@@ -2348,7 +2286,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 	if (inp <= 10 && inp >= 1)
 	{
 	if (self.building.real_owner != self && (inp < 7 || inp == 10) ) {
-		sprint(self,#PRINT_HIGH,"Sorry, only the owner can do that\n");
+		sprint(self,PRINT_HIGH,"Sorry, only the owner can do that\n");
 		return;
 	}
 		
@@ -2370,12 +2308,12 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 		if (Check_Tesla_Ups(1, self, self.building, 3, 0))
 		{
 			local float HPfactor,num,AMMOfactor;
-            if (self.building.num_mines & #IMPROVED_THREE)
+            if (self.building.num_mines & IMPROVED_THREE)
                 HPfactor=2;
             else
                 HPfactor=1;
             
-            if (self.building.num_mines & #IMPROVED_ONE)
+            if (self.building.num_mines & IMPROVED_ONE)
                 AMMOfactor=2;
             else
                 AMMOfactor=1;            
@@ -2388,22 +2326,22 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 				//self.building.max_health = self.building.max_health + 75; // 225
                 self.building.max_health = 225*HPfactor;
 				//self.building.health = self.building.health + 75;
-				self.building.maxammo_cells = (#MAXCELLS0 + #ADDCELLS1) * AMMOfactor;
+				self.building.maxammo_cells = (MAXCELLS0 + ADDCELLS1) * AMMOfactor;
 				self.building.ammo_cells = self.building.maxammo_cells;
 			}
 			else if (self.building.ammo_rockets == 2) {
 				//self.building.max_health = self.building.max_health + 100;// 325
                 self.building.max_health = 325*HPfactor;// 325
 				//self.building.health = self.building.health + 100;
-				//self.building.maxammo_cells = self.building.maxammo_cells + #ADDCELLS2; //Add
-                self.building.maxammo_cells = (#MAXCELLS0 + #ADDCELLS1 + #ADDCELLS2)*AMMOfactor;
+				//self.building.maxammo_cells = self.building.maxammo_cells + ADDCELLS2; //Add
+                self.building.maxammo_cells = (MAXCELLS0 + ADDCELLS1 + ADDCELLS2)*AMMOfactor;
 				self.building.ammo_cells = self.building.maxammo_cells;
 			}
 			else if (self.building.ammo_rockets == 3) {
 				//self.building.max_health = self.building.max_health + 75; // 400
    				self.building.max_health = 400*HPfactor; // 400
 				//self.building.health = self.building.health + 75;
-				self.building.maxammo_cells = (#MAXCELLS0 + #ADDCELLS1 + #ADDCELLS2 + #ADDCELLS3)*AMMOfactor; //Add
+				self.building.maxammo_cells = (MAXCELLS0 + ADDCELLS1 + ADDCELLS2 + ADDCELLS3)*AMMOfactor; //Add
 				self.building.ammo_cells = self.building.maxammo_cells;
 			}
 
@@ -2413,19 +2351,19 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 	if (inp == 4) { //Spy Detector
 		if (Check_Tesla_Ups(4, self, self.building, 4, 0))
 		{
-			self.building.tf_items = self.building.tf_items | #NIT_AUTOID;
+			self.building.tf_items = self.building.tf_items | NIT_AUTOID;
 		}
 	}
 	if (inp == 5) { //CH Get frags for upgrades
 		if (Check_Tesla_Ups(3, self, self.building, 5, 0))
 		{
-			self.building.tf_items = self.building.tf_items | #NIT_TELEPORTER;
+			self.building.tf_items = self.building.tf_items | NIT_TELEPORTER;
 		}
 	}
 	if (inp == 6){ // Tinker by Cyt0  Remade by CH to fit with new code
-		if (self.building.tf_items & #NIT_TELEPORTER) //- ofn - workaround to solve the HP/cells increase by tinker combined with the hack
+		if (self.building.tf_items & NIT_TELEPORTER) //- ofn - workaround to solve the HP/cells increase by tinker combined with the hack
         {
-       		sprint(self,#PRINT_HIGH,"You can't tinker a tesla in upgrade from frags mode!\n");            
+       		sprint(self,PRINT_HIGH,"You can't tinker a tesla in upgrade from frags mode!\n");            
         }
         else
         {
@@ -2443,7 +2381,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 	if (inp == 10) {
 		self.impulse = 0;
 		Menu_EngineerFix_Tesla2();
-		self.current_menu = #MENU_ENGINEER_FIX_TESLA2;
+		self.current_menu = MENU_ENGINEER_FIX_TESLA2;
 	}
 
 	if (inp >= 1 && inp <= 9)
@@ -2459,7 +2397,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -2489,44 +2427,44 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 	if (inp == 1) { //Kevlar
 		if (Check_Tesla_Ups(1, self, self.building, 6, 1))
 		{
-			self.building.tf_items = self.building.tf_items | #NIT_KEVLAR;
-			self.building.armorclass = self.building.armorclass | #AT_SAVESHOT;
+			self.building.tf_items = self.building.tf_items | NIT_KEVLAR;
+			self.building.armorclass = self.building.armorclass | AT_SAVESHOT;
 		}
 	}
 	if (inp == 2) { //Blast
 		if (Check_Tesla_Ups(1, self, self.building, 7, 1))
 		{
-			self.building.tf_items = self.building.tf_items | #NIT_BLAST;
-			self.building.armorclass = self.building.armorclass | #AT_SAVEEXPLOSION;
+			self.building.tf_items = self.building.tf_items | NIT_BLAST;
+			self.building.armorclass = self.building.armorclass | AT_SAVEEXPLOSION;
 		}
 	}
 	if (inp == 3) { //Blast
 		if (Check_Tesla_Ups(1, self, self.building, 8, 1))
 		{
-			self.building.tf_items = self.building.tf_items | #NIT_ASBESTOS;
-			self.building.armorclass = self.building.armorclass | #AT_SAVEFIRE;
+			self.building.tf_items = self.building.tf_items | NIT_ASBESTOS;
+			self.building.armorclass = self.building.armorclass | AT_SAVEFIRE;
 		}
 	}
 	if (inp == 4) { //Tesla Turret(tm)
 		if (Check_Tesla_Ups(1, self, self.building, 9, 1))
 		{
-			if (self.building.tf_items & #NIT_TURRET) {
-				sprint(self, #PRINT_HIGH, "Gun is already deployed\n");
+			if (self.building.tf_items & NIT_TURRET) {
+				sprint(self, PRINT_HIGH, "Gun is already deployed\n");
 			}
 			else {
 				self.building.origin_z = self.building.origin_z + 15; // +15//Elevate for the check
 				//Make sure the launch area is clear
-				if (#FALSE) {
-				//if (CheckArea(self.building,self) == #FALSE) {
-					sprint(self, #PRINT_HIGH, "You need a clear area to launch\n");		
+				if (FALSE) {
+				//if (CheckArea(self.building,self) == FALSE) {
+					sprint(self, PRINT_HIGH, "You need a clear area to launch\n");		
 					self.building.origin_z = self.building.origin_z - 15; //-15//Set back down
 				}
 				else {
 					//self.building.origin_z = self.building.origin_z + 25; //+ 25 //Finish liftoff
                     self.building.origin_z = self.building.origin_z - 25; //often fixes tesla not touchin ceiling//+ 25 //Finish liftoff
-					sprint(self, #PRINT_HIGH, "You turretize the tesla\n");
+					sprint(self, PRINT_HIGH, "You turretize the tesla\n");
 
-                    if (self.building.job == 1 && self.building.tf_items & #NIT_TESLA_CLOAKING)
+                    if (self.building.job == 1 && self.building.tf_items & NIT_TESLA_CLOAKING)
                     {    
                         local entity TSelf, OSelfB;
                         OSelfB=self.building;
@@ -2535,15 +2473,15 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
                         self.building=TSelf; // NEEDED? teslaclone should have updated this pointer anyway..                        
  
                         spawnFOG(self.building.origin);
-                        sound (self.building, #CHAN_MISC, "misc/r_tele4.wav", 1, #ATTN_NORM);
+                        sound (self.building, CHAN_MISC, "misc/r_tele4.wav", 1, ATTN_NORM);
                     }    
                     
                     self.building.angles_z = 180;
-					self.building.flags = self.building.flags - (self.building.flags & #FL_ONGROUND);
-					self.building.movetype = #MOVETYPE_FLY;
+					self.building.flags = self.building.flags - (self.building.flags & FL_ONGROUND);
+					self.building.movetype = MOVETYPE_FLY;
 					self.building.velocity_z = 200;
 					setsize (self.building, '-16 -16 10', '16 16 40');//35');//'-16 -16 -40', '16 16 -10'); //WK -40, -10
-					self.building.tf_items = self.building.tf_items | #NIT_TURRET;
+					self.building.tf_items = self.building.tf_items | NIT_TURRET;
                     self.building.is_haxxxoring=1; //flag determines if flying and it's used for cloaking teslas, set to 0 when landed
                     
 				}
@@ -2553,14 +2491,14 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 	if (inp == 5) { //Improved Targeter
 		if (Check_Tesla_Ups(1, self, self.building, 10, 1))
 		{
-			self.building.tf_items = self.building.tf_items | #NIT_SCANNER;
+			self.building.tf_items = self.building.tf_items | NIT_SCANNER;
 		}
 	}
 //CH its commented out here and in the centerprint - OfN nomore!
 	if (inp == 6) { //Cloaking tesla
 		if (Check_Tesla_Ups(1, self, self.building, 11, 1))
 		{
-			self.building.tf_items = self.building.tf_items | #NIT_TESLA_CLOAKING;
+			self.building.tf_items = self.building.tf_items | NIT_TESLA_CLOAKING;
             if (self.building.job == 1)
             {
                 local entity oself;
@@ -2584,7 +2522,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 	if (inp == 10) {
 		self.impulse = 0;
 		Menu_EngineerFix_Tesla();
-		self.current_menu = #MENU_ENGINEER_FIX_TESLA;
+		self.current_menu = MENU_ENGINEER_FIX_TESLA;
 	}
 
 	if (inp >= 1 && inp <= 9)
@@ -2600,7 +2538,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -2622,13 +2560,13 @@ void(float inp) Menu_Dispenser_Input =
     
     local float am, empty;
 
-	empty = #FALSE;
+	empty = FALSE;
 	if (inp == 1)
 	{
 		if (self.building.ammo_shells == 0 && self.building.ammo_nails == 0 && 
 			self.building.ammo_rockets == 0 && self.building.ammo_cells == 0)
 		{
-			empty = #TRUE;
+			empty = TRUE;
 		}
 		else
 		{
@@ -2662,7 +2600,7 @@ void(float inp) Menu_Dispenser_Input =
 			
 			// SB gren1s
 			local float grenammo;
-			/*if (self.tf_items & #NIT_AMMO_BANDOLIER)
+			/*if (self.tf_items & NIT_AMMO_BANDOLIER)
 				grenammo = 5;
 			else
 				grenammo = 4;*/
@@ -2688,16 +2626,16 @@ void(float inp) Menu_Dispenser_Input =
 	}
 	else if (inp == 2)
 	{
-		if (self.building.is_malfunctioning & #SCREWUP_FOUR)
+		if (self.building.is_malfunctioning & SCREWUP_FOUR)
 		{	
-            sprint(self,#PRINT_HIGH,"Trapped dispenser, have a nice day!\n");
-            TF_T_Damage(self.building, self.building, self.building, 500, 0, #TF_TD_OTHER);
+            sprint(self,PRINT_HIGH,"Trapped dispenser, have a nice day!\n");
+            TF_T_Damage(self.building, self.building, self.building, 500, 0, TF_TD_OTHER);
             return;
         }
 			
 		if (self.building.armorvalue == 0)
 		{
-			empty = #TRUE;
+			empty = TRUE;
 		}
 		else
 		{
@@ -2709,7 +2647,7 @@ void(float inp) Menu_Dispenser_Input =
 			if (self.armortype == 0)
 			{
 				self.armortype = self.armor_allowed;
-				//self.items = self.items | #IT_ARMOR1;
+				//self.items = self.items | IT_ARMOR1;
 				W_SetCurrentAmmo();
 			}
 
@@ -2721,7 +2659,7 @@ void(float inp) Menu_Dispenser_Input =
 	if (inp >= 1 && inp <= 3)
 	{
 		if (empty)
-			sprint(self, #PRINT_HIGH, "The dispenser is empty.\n");
+			sprint(self, PRINT_HIGH, "The dispenser is empty.\n");
 		ResetMenu();		
 		self.impulse = 0;
 		self.building = world;
@@ -2733,7 +2671,7 @@ void(float inp) Menu_Dispenser_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3));
+			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		}
 
 		W_SetCurrentAmmo();
@@ -2793,19 +2731,19 @@ void() Menu_PrimaryWeapon =
 	local string msg_upgrade;
 	local string l1,l2,l3,l4;
 
-		l1 = mstr(self.weapons_carried, #WEAP_SNIPER_RIFLE, #WEAP_ASSAULT_CANNON,
+		l1 = mstr(self.weapons_carried, WEAP_SNIPER_RIFLE, WEAP_ASSAULT_CANNON,
 			"  .. Sniper Rifle    ≠ 4000\n  .. Assault Cannon  ≠ 3000\n",
 			"* .. Sniper Rifle    ≠ 4000\n  .. Assault Cannon  ≠ 3000\n",
 			"  .. Sniper Rifle    ≠ 4000\n* .. Assault Cannon  ≠ 3000\n",
 			"* .. Sniper Rifle    ≠ 4000\n* .. Assault Cannon  ≠ 3000\n");
 		
-		l2 = mstr(self.weapons_carried, #WEAP_ROCKET_LAUNCHER, #WEAP_INCENDIARY,
+		l2 = mstr(self.weapons_carried, WEAP_ROCKET_LAUNCHER, WEAP_INCENDIARY,
 			"  ï.. Rocket Launcher ≠ 3000\n  ñ.. Pyro Toys       ≠ 3000\n",
 			"* ï.. Rocket Launcher ≠ 3000\n  ñ.. Pyro Toys       ≠ 3000\n",
 			"  ï.. Rocket Launcher ≠ 3000\n* ñ.. Pyro Toys       ≠ 3000\n",
 			"* ï.. Rocket Launcher ≠ 3000\n* ñ.. Pyro Toys       ≠ 3000\n");
 
-		l3 = mstr(self.weapons_carried, #WEAP_GRENADE_LAUNCHER, #WEAP_LIGHTNING,
+		l3 = mstr(self.weapons_carried, WEAP_GRENADE_LAUNCHER, WEAP_LIGHTNING,
 			"  ó.. Grenade Set     ≠ 2200\n  ò.. Lightning Gun   ≠ 2200\n",
 			"* ó.. Grenade Set     ≠ 2200\n  ò.. Lightning Gun   ≠ 2200\n",
 			"  ó.. Grenade Set     ≠ 2200\n* ò.. Lightning Gun   ≠ 2200\n",
@@ -2813,10 +2751,10 @@ void() Menu_PrimaryWeapon =
 
 		l4 = 	"  ô.. Light Assault   ≠ 1800\nö..         \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-		if (self.weapons_carried & #WEAP_LIGHT_ASSAULT)
+		if (self.weapons_carried & WEAP_LIGHT_ASSAULT)
 			l4 = 	"* ô.. Light Assault   ≠ 1800\nö..         \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-    if (self.done_custom & #CUSTOM_SELLING)
+    if (self.done_custom & CUSTOM_SELLING)
 		msg_custom  = " dollars left\n\n*CURRENTLY SELLING FRAGS*\nTyping √’”‘œÕ again will waste your cash\n";
 	else
 		msg_custom =  " dollars left\n\nUse the √’”‘œÕ command to start over\nUse the ’–«“¡ƒ≈ command to sell frags\n";
@@ -2831,62 +2769,64 @@ void(float inp) Menu_PrimaryWeapon_Input =
 	if (inp <= 10 && inp >= 1)
 	{
 //Snipe
+#undef PRICE
 #define PRICE 4000
 		if (inp == 1)
-				if (self.weapons_carried & #WEAP_SNIPER_RIFLE) //Already have it
+				if (self.weapons_carried & WEAP_SNIPER_RIFLE) //Already have it
 				{
-					PrintRefund(#PRICE);
-					self.weapons_carried = self.weapons_carried - #WEAP_SNIPER_RIFLE;
-					self.weapons_carried = self.weapons_carried - #WEAP_AUTO_RIFLE;
+					PrintRefund(PRICE);
+					self.weapons_carried = self.weapons_carried - WEAP_SNIPER_RIFLE;
+					self.weapons_carried = self.weapons_carried - WEAP_AUTO_RIFLE;
 					self.maxammo_shells = self.maxammo_shells - 75;
 				}
-				else if (self.money >= #PRICE) {
-					self.money = self.money - #PRICE;
-					self.weapons_carried = self.weapons_carried | #WEAP_SNIPER_RIFLE | #WEAP_AUTO_RIFLE;
+				else if (self.money >= PRICE) {
+					self.money = self.money - PRICE;
+					self.weapons_carried = self.weapons_carried | WEAP_SNIPER_RIFLE | WEAP_AUTO_RIFLE;
 					self.maxammo_shells = self.maxammo_shells + 75;
 					PrintMoney();
 				}
 				else
-					PrintNotEnoughMoney(#PRICE);
+					PrintNotEnoughMoney(PRICE);
 			
 		if (inp == 2)
 		{
 			if (st == "on") //If admin disable it
 			{
-				sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+				sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
                         return;
 			}
-				BuyWeapon(3000,#WEAP_ASSAULT_CANNON);
+				BuyWeapon(3000,WEAP_ASSAULT_CANNON);
 		}
 		if (inp == 3)
 		{
-				BuyWeapon(3000,#WEAP_ROCKET_LAUNCHER);			
+				BuyWeapon(3000,WEAP_ROCKET_LAUNCHER);			
 		}
 //IC
+#undef PRICE
 #define PRICE 3000
 		if (inp == 4)
 		{
-				if (self.weapons_carried & #WEAP_INCENDIARY) //Already have it
+				if (self.weapons_carried & WEAP_INCENDIARY) //Already have it
 				{
 					//Clean up asbestos armor
-					if (!(self.tf_items & #NIT_ASBESTOS))
+					if (!(self.tf_items & NIT_ASBESTOS))
 						self.money = self.money - 750; //Sync this with asbestos
-					self.tf_items = self.tf_items - (self.tf_items & #NIT_ASBESTOS);
+					self.tf_items = self.tf_items - (self.tf_items & NIT_ASBESTOS);
 	
-					PrintRefund(#PRICE);
-					self.weapons_carried = self.weapons_carried - #WEAP_INCENDIARY;
-					self.weapons_carried = self.weapons_carried - #WEAP_FLAMETHROWER;
+					PrintRefund(PRICE);
+					self.weapons_carried = self.weapons_carried - WEAP_INCENDIARY;
+					self.weapons_carried = self.weapons_carried - WEAP_FLAMETHROWER;
 					self.maxammo_cells = self.maxammo_cells - 200;
 					self.maxammo_rockets = self.maxammo_rockets - 60;
 				}
-				else if (self.money >= #PRICE)
+				else if (self.money >= PRICE)
 				{
-					self.money = self.money - #PRICE;
-					self.weapons_carried = self.weapons_carried | #WEAP_INCENDIARY | #WEAP_FLAMETHROWER;
+					self.money = self.money - PRICE;
+					self.weapons_carried = self.weapons_carried | WEAP_INCENDIARY | WEAP_FLAMETHROWER;
 					//Give em asbestos armor, and a refund if they have it
-					if (self.tf_items & #NIT_ASBESTOS)
+					if (self.tf_items & NIT_ASBESTOS)
 						self.money = self.money + 750; //Sync this with asbestos price
-					self.tf_items = self.tf_items | #NIT_ASBESTOS;
+					self.tf_items = self.tf_items | NIT_ASBESTOS;
 	
 					
 					self.maxammo_cells = self.maxammo_cells + 200;
@@ -2894,20 +2834,20 @@ void(float inp) Menu_PrimaryWeapon_Input =
 					PrintMoney();
 				}
 				else
-					PrintNotEnoughMoney(#PRICE);
+					PrintNotEnoughMoney(PRICE);
 			//}
 		}
 		if (inp == 5)
 		{
-				BuyWeapon(2200,#WEAP_GRENADE_LAUNCHER);
+				BuyWeapon(2200,WEAP_GRENADE_LAUNCHER);
 		}
 		if (inp == 6)
 		{
-				BuyWeapon(2200,#WEAP_LIGHTNING);
+				BuyWeapon(2200,WEAP_LIGHTNING);
 		}
 		if (inp == 7)
 		{
-				BuyWeapon(1800,#WEAP_LIGHT_ASSAULT);
+				BuyWeapon(1800,WEAP_LIGHT_ASSAULT);
 		}
 //		if (inp == 8) {
 //			centerprint(self, "No previous menu\n");
@@ -2915,7 +2855,7 @@ void(float inp) Menu_PrimaryWeapon_Input =
 		if (inp == 9)
 		{
 			Menu_SecondaryWeapon();
-			self.current_menu = #MENU_SECONDARY_WEAPON;
+			self.current_menu = MENU_SECONDARY_WEAPON;
 		}
 		if (inp == 10)
 		{
@@ -2938,26 +2878,26 @@ void() Menu_SecondaryWeapon =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
     
-/*l1 = mstr2(self.weapons_carried,self.cutf_items, #WEAP_DAEDALUS, #CUTF_KNIFE,
+/*l1 = mstr2(self.weapons_carried,self.cutf_items, WEAP_DAEDALUS, CUTF_KNIFE,
 	"  .. Impulse Rifle   ≠ 1400\n  .. Knife           ≠  650\n",
 	"* .. Impulse Rifle   ≠ 1400\n  .. Knife           ≠  650\n",
 	"  .. Impulse Rifle   ≠ 1400\n* .. Knife           ≠  650\n",
 	"* .. Impulse Rifle   ≠ 1400\n* .. Knife           ≠  650\n");*/
 
-l1 = mstr2(self.weapons_carried,self.cutf_items, #WEAP_SNG, #CUTF_KNIFE,
+l1 = mstr2(self.weapons_carried,self.cutf_items, WEAP_SNG, CUTF_KNIFE,
 	"  .. Super Nailgun   ≠  800\n  .. Knife           ≠  650\n",
 	"* .. Super Nailgun   ≠  800\n  .. Knife           ≠  650\n",
 	"  .. Super Nailgun   ≠  800\n* .. Knife           ≠  650\n",
 	"* .. Super Nailgun   ≠  800\n* .. Knife           ≠  650\n");
 
 
-l2 = mstr(self.weapons_carried, #WEAP_SUPER_SHOTGUN, #WEAP_LASER,
+l2 = mstr(self.weapons_carried, WEAP_SUPER_SHOTGUN, WEAP_LASER,
 	"  ï.. Double Barrel   ≠  575\n  ñ.. Rail Gun        ≠  500\n",
 	"* ï.. Double Barrel   ≠  575\n  ñ.. Rail Gun        ≠  500\n",
 	"  ï.. Double Barrel   ≠  575\n* ñ.. Rail Gun        ≠  500\n",
 	"* ï.. Double Barrel   ≠  575\n* ñ.. Rail Gun        ≠  500\n");
 
-l3 = mstr(self.weapons_carried, #WEAP_NAILGUN, #WEAP_TRANQ,
+l3 = mstr(self.weapons_carried, WEAP_NAILGUN, WEAP_TRANQ,
 	"  ó.. Nail Gun        ≠  400\n  ò.. Tranquilizer    ≠  300\n",
 	"* ó.. Nail Gun        ≠  400\n  ò.. Tranquilizer    ≠  300\n",
 	"  ó.. Nail Gun        ≠  400\n* ò.. Tranquilizer    ≠  300\n",
@@ -2965,7 +2905,7 @@ l3 = mstr(self.weapons_carried, #WEAP_NAILGUN, #WEAP_TRANQ,
 
 l4 =	"  ô.. Single Barrel   ≠   50\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.weapons_carried & #WEAP_SHOTGUN)
+if (self.weapons_carried & WEAP_SHOTGUN)
 l4 =	"* ô.. Single Barrel   ≠   50\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãúê Secondary Weapons  úã\n\n",l1,l2,l3,l4,temp," dollars left\n");
@@ -2976,57 +2916,58 @@ void(float inp) Menu_SecondaryWeapon_Input =
   if (inp <= 10 && inp >= 1)
   {
     if (inp == 1) {
-        //BuyWeapon(1400, #WEAP_DAEDALUS);
-        BuyWeapon(800,#WEAP_SNG);
+        //BuyWeapon(1400, WEAP_DAEDALUS);
+        BuyWeapon(800,WEAP_SNG);
         //self.maxammo_        
     }
 
 //Knife
+#undef PRICE
 #define PRICE 650
     if (inp == 2) {
-        if (self.cutf_items & #CUTF_KNIFE) //Already have it
+        if (self.cutf_items & CUTF_KNIFE) //Already have it
         {
             //Clean up knife-less warlocks (sync this with Custom.qc)
-            if (self.job & #JOB_WARLOCK) { // OfN Fix getting extra money with demon lore
-               sprint(self, #PRINT_HIGH, "You will need this knife being a warlock!\n");
+            if (self.job & JOB_WARLOCK) { // OfN Fix getting extra money with demon lore
+               sprint(self, PRINT_HIGH, "You will need this knife being a warlock!\n");
                self.impulse=0;
                return;
             }
 
-            PrintRefund(#PRICE);
-            self.cutf_items = self.cutf_items - #CUTF_KNIFE;
+            PrintRefund(PRICE);
+            self.cutf_items = self.cutf_items - CUTF_KNIFE;
         }
-        else if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
-            self.cutf_items = self.cutf_items | #CUTF_KNIFE;
+        else if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
+            self.cutf_items = self.cutf_items | CUTF_KNIFE;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
     if (inp == 3) {
-        BuyWeapon(575,#WEAP_SUPER_SHOTGUN);
+        BuyWeapon(575,WEAP_SUPER_SHOTGUN);
     }
     if (inp == 4) {
-        BuyWeapon(500,#WEAP_LASER);
+        BuyWeapon(500,WEAP_LASER);
     }
     if (inp == 5) {
-        BuyWeapon(400,#WEAP_NAILGUN);
+        BuyWeapon(400,WEAP_NAILGUN);
     }
     if (inp == 6) {
-        BuyWeapon(300,#WEAP_TRANQ);
+        BuyWeapon(300,WEAP_TRANQ);
     }
     if (inp == 7) {
-        BuyWeapon(50,#WEAP_SHOTGUN);
+        BuyWeapon(50,WEAP_SHOTGUN);
     }
     if (inp == 8) {
         Menu_PrimaryWeapon();
-        self.current_menu = #MENU_PRIMARY_WEAPON;
+        self.current_menu = MENU_PRIMARY_WEAPON;
     }
     if (inp == 9)
     {
             Menu_MiscWeapon();
-            self.current_menu = #MENU_MISC_WEAPON;
+            self.current_menu = MENU_MISC_WEAPON;
     }
     if (inp == 10)
     {
@@ -3049,13 +2990,13 @@ void() Menu_MiscWeapon =
     
 
 
-l1 = mstr(self.weapons_carried, #WEAP_MAUSER, #WEAP_AIRF,
+l1 = mstr(self.weapons_carried, WEAP_MAUSER, WEAP_AIRF,
 	"  .. Mauser          ≠ 2400\n  .. Air-Fist        ≠ 1600\n",
 	"* .. Mauser          ≠ 2400\n  .. Air-Fist        ≠ 1600\n",
 	"  .. Mauser          ≠ 2400\n* .. Air-Fist        ≠ 1600\n",
 	"* .. Mauser          ≠ 2400\n* .. Air-Fist        ≠ 1600\n");
 
-l2 = mstr2(self.weapons_carried, self.weapons_carried, #WEAP_DAEDALUS, #WEAP_LASERCANNON, 
+l2 = mstr2(self.weapons_carried, self.weapons_carried, WEAP_DAEDALUS, WEAP_LASERCANNON, 
 	"  ï.. Impulse Rifle   ≠ 1500\n  ñ.. Laser Cannon    ≠ 1200\n",
 	"* ï.. Impulse Rifle   ≠ 1500\n  ñ.. Laser Cannon    ≠ 1200\n",
 	"  ï.. Impulse Rifle   ≠ 1500\n* ñ.. Laser Cannon    ≠ 1200\n",
@@ -3063,7 +3004,7 @@ l2 = mstr2(self.weapons_carried, self.weapons_carried, #WEAP_DAEDALUS, #WEAP_LAS
 
 l3="\n\n"; l4="\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-/*l3 = mstr(self.weapons_carried, #WEAP_LASER, #WEAP_NAILGUN,
+/*l3 = mstr(self.weapons_carried, WEAP_LASER, WEAP_NAILGUN,
 	"  ó.. Railgun         ≠  500\n  ò.. Nailgun         ≠  800\n",
 	"* ó.. Railgun         ≠  500\n  ò.. Nailgun         ≠  800\n",
 	"  ó.. Railgun         ≠  500\n* ò.. Nailgun         ≠  800\n",
@@ -3073,7 +3014,7 @@ l3="\n\n"; l4="\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
 l2 =	"  ï.. Impulse Rifle   ≠ 1500\n\n\n\n\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.weapons_carried & #WEAP_DAEDALUS)
+if (self.weapons_carried & WEAP_DAEDALUS)
 l2 =	"* ï.. Impulse Rifle   ≠ 1500\n\n\n\n\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";*/
 
 
@@ -3086,46 +3027,46 @@ void(float inp) Menu_MiscWeapon_Input =
   {
 
         if (inp == 1) {
-			BuyWeapon(2400, #WEAP_MAUSER);
-			//sprint(self, #PRINT_HIGH, "Unfortunately all stocks of this item have been requisitioned to increase the glory of the Queen. God save the Queen!\n");
+			BuyWeapon(2400, WEAP_MAUSER);
+			//sprint(self, PRINT_HIGH, "Unfortunately all stocks of this item have been requisitioned to increase the glory of the Queen. God save the Queen!\n");
 		}
 		if (inp == 2) {
 
-			BuyWeapon(1600,#WEAP_AIRF);            
-			//sprint(self, #PRINT_HIGH, "Unfortunately all stocks of this item have been requisitioned to increase the glory of the Queen. God save the Queen!\n");
+			BuyWeapon(1600,WEAP_AIRF);            
+			//sprint(self, PRINT_HIGH, "Unfortunately all stocks of this item have been requisitioned to increase the glory of the Queen. God save the Queen!\n");
 		}
 
 		if (inp == 3) {
 
-			BuyWeapon(1500,#WEAP_DAEDALUS);
+			BuyWeapon(1500,WEAP_DAEDALUS);
         }
 		if (inp == 4) {
 			if (no_laser)
             {
-                sprint(self,#PRINT_HIGH,"Laser cannon is disabled, sorry.\n");
+                sprint(self,PRINT_HIGH,"Laser cannon is disabled, sorry.\n");
                 self.impulse = 0;
                 return;
             }
-            BuyWeapon(1200,#WEAP_LASERCANNON);
+            BuyWeapon(1200,WEAP_LASERCANNON);
             
 		}/*
 		if (inp == 5) {
-			BuyWeapon(500,#WEAP_LASER);
+			BuyWeapon(500,WEAP_LASER);
 		}
 		if (inp == 6) {
-			BuyWeapon(800,#WEAP_NAILGUN);
+			BuyWeapon(800,WEAP_NAILGUN);
 		}
 		if (inp == 7) {
-			BuyWeapon(300,#WEAP_TRANQ);
+			BuyWeapon(300,WEAP_TRANQ);
 		}*/
 		if (inp == 8) {
 			Menu_SecondaryWeapon();
-			self.current_menu = #MENU_SECONDARY_WEAPON;
+			self.current_menu = MENU_SECONDARY_WEAPON;
 		}
 		if (inp == 9)
 		{
 				Menu_Legs();
-				self.current_menu = #MENU_LEGS;
+				self.current_menu = MENU_LEGS;
 		}
 		if (inp == 10)
 		{
@@ -3182,9 +3123,9 @@ void(float inp) Menu_Legs_Input =
 {
 
     //First, prevent them from getting high speed while upgraded
-    if (inp < 3 && self.done_custom & #CUSTOM_SELLING)
+    if (inp < 3 && self.done_custom & CUSTOM_SELLING)
     {
-        sprint(self,#PRINT_HIGH,"The upgraded CustomTF soldier is a fighting machine. He doesn't have access to fast legs\n");
+        sprint(self,PRINT_HIGH,"The upgraded CustomTF soldier is a fighting machine. He doesn't have access to fast legs\n");
         self.impulse = 0;
         return;
     }
@@ -3223,84 +3164,91 @@ void(float inp) Menu_Legs_Input =
     }
     }
     
+#undef PRICE
 #define PRICE 9000	
     if (inp == 1) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.custom_speed = 650;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 6000	
     if (inp == 2) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.custom_speed = 420;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 3250	
     if (inp == 3) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.custom_speed = 330;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 2500	
     if (inp == 4) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.custom_speed = 310;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 1250	
     if (inp == 5) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.custom_speed = 290;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 500	
     if (inp == 6) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.custom_speed = 270;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 0	
     if (inp == 7) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.custom_speed = 250;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
     if (inp == 8) {
         Menu_MiscWeapon();
-        self.current_menu = #MENU_MISC_WEAPON;
+        self.current_menu = MENU_MISC_WEAPON;
     }
     if (inp == 9)
     {
             Menu_Health();
-            self.current_menu = #MENU_HEALTH;
+            self.current_menu = MENU_HEALTH;
     }
     if (inp == 10) {
         DropFromCustomClassGen();
@@ -3390,10 +3338,11 @@ void(float inp) Menu_Health_Input =
         }
         self.armor_allowed = self.armorvalue = self.maxarmor = 0;
     }
+#undef PRICE
 #define PRICE 200	
     if (inp == 1) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.maxarmor = 75;
             self.armorvalue = self.maxarmor;
             self.armortype = 0.3;	// Green
@@ -3401,12 +3350,13 @@ void(float inp) Menu_Health_Input =
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 700
     if (inp == 2) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.maxarmor = 100;
             self.armorvalue = self.maxarmor;
             self.armortype = 0.6;	// Yellow
@@ -3414,12 +3364,13 @@ void(float inp) Menu_Health_Input =
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 1400
     if (inp == 3) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.maxarmor = 150;
             self.armorvalue = self.maxarmor;
             self.armortype = 0.8; //Red armor
@@ -3427,12 +3378,13 @@ void(float inp) Menu_Health_Input =
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 2200
     if (inp == 4) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.maxarmor = 200;
             self.armorvalue = self.maxarmor;
             self.armortype = 0.8; //Red armor
@@ -3440,12 +3392,13 @@ void(float inp) Menu_Health_Input =
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 3600
     if (inp == 5) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.maxarmor = 300;
             self.armorvalue = self.maxarmor;
             self.armortype = 0.8; //Red armor (used to be 0.9)
@@ -3454,12 +3407,13 @@ void(float inp) Menu_Health_Input =
             W_SetCurrentAmmo ();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 1000
     if (inp == 6) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.max_health = self.max_health + 50;
             self.health = self.max_health;
             PrintMoney();
@@ -3476,28 +3430,29 @@ void(float inp) Menu_Health_Input =
                 PrintMoney();
             }
             else
-                PrintNotEnoughMoney(#PRICE);
+                PrintNotEnoughMoney(PRICE);
         }
     }
+#undef PRICE
 #define PRICE 100
     if (inp == 7) {
-        if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
+        if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
             self.max_health = self.max_health + 5;
             self.health = self.max_health;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
     if (inp == 8)
     {
         Menu_Legs();
-        self.current_menu = #MENU_LEGS;
+        self.current_menu = MENU_LEGS;
     }
     if (inp == 9) {
         Menu_Armor();
-        self.current_menu = #MENU_ARMOR;
+        self.current_menu = MENU_ARMOR;
     }
     if (inp == 10) {
         DropFromCustomClassGen();
@@ -3516,19 +3471,19 @@ void() Menu_Armor  =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = mstr(self.tf_items, #NIT_CERAMIC, #NIT_GEL,
+l1 = mstr(self.tf_items, NIT_CERAMIC, NIT_GEL,
 	"  .. Ceramic Armor   ≠  575\n  .. Impact Armor    ≠  625\n",
 	"* .. Ceramic Armor   ≠  575\n  .. Impact Armor    ≠  625\n",
 	"  .. Ceramic Armor   ≠  575\n* .. Impact Armor    ≠  625\n",
 	"* .. Ceramic Armor   ≠  575\n* .. Impact Armor    ≠  625\n");
 
-l2 = mstr(self.tf_items, #NIT_ASBESTOS, #NIT_KEVLAR,
+l2 = mstr(self.tf_items, NIT_ASBESTOS, NIT_KEVLAR,
 	"  ï.. Asbestos Armor  ≠  750\n  ñ.. Kevlar Armor    ≠ 1200\n",
 	"* ï.. Asbestos Armor  ≠  750\n  ñ.. Kevlar Armor    ≠ 1200\n",
 	"  ï.. Asbestos Armor  ≠  750\n* ñ.. Kevlar Armor    ≠ 1200\n",
 	"* ï.. Asbestos Armor  ≠  750\n* ñ.. Kevlar Armor    ≠ 1200\n");
 
-l3 = mstr(self.tf_items, #NIT_BLAST, #NIT_AMMO_BACKPACK,
+l3 = mstr(self.tf_items, NIT_BLAST, NIT_AMMO_BACKPACK,
 	"  ó.. Blast Armor     ≠ 1500\n  ò.. Ammo Backpack   ≠  300\n",
 	"* ó.. Blast Armor     ≠ 1500\n  ò.. Ammo Backpack   ≠  300\n",
 	"  ó.. Blast Armor     ≠ 1500\n* ò.. Ammo Backpack   ≠  300\n",
@@ -3536,7 +3491,7 @@ l3 = mstr(self.tf_items, #NIT_BLAST, #NIT_AMMO_BACKPACK,
 
 l4 =	"  ô.. Ammo Bandolier  ≠  200\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.tf_items & #NIT_AMMO_BANDOLIER)
+if (self.tf_items & NIT_AMMO_BANDOLIER)
 l4 =	"* ô.. Ammo Bandolier  ≠  200\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Special ArmorØAmmo úã\n\n", l1,l2,l3,l4, temp," dollars left\n");
 };
@@ -3544,34 +3499,34 @@ l4 =	"* ô.. Ammo Bandolier  ≠  200\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 void(float inp) Menu_Armor_Input =
 {
     if (inp == 1) {
-        BuyItem(575,#NIT_CERAMIC);
+        BuyItem(575,NIT_CERAMIC);
     }
     if (inp == 2) {
-        BuyItem(625, #NIT_GEL);
+        BuyItem(625, NIT_GEL);
     }
     if (inp == 3) {
-        BuyItem(750,#NIT_ASBESTOS);
+        BuyItem(750,NIT_ASBESTOS);
     }
     if (inp == 4) {
-        BuyItem(1200,#NIT_KEVLAR);
+        BuyItem(1200,NIT_KEVLAR);
     }
     if (inp == 5) {
-        BuyItem(1500,#NIT_BLAST);
+        BuyItem(1500,NIT_BLAST);
     }
     if (inp == 6) {
-        BuyItem(300,#NIT_AMMO_BACKPACK);
+        BuyItem(300,NIT_AMMO_BACKPACK);
     }
     if (inp == 7) {
-        BuyItem(200,#NIT_AMMO_BANDOLIER);
+        BuyItem(200,NIT_AMMO_BANDOLIER);
     }
     if (inp == 8)
     {
             Menu_Health();
-            self.current_menu = #MENU_HEALTH;
+            self.current_menu = MENU_HEALTH;
     }
     if (inp == 9) {
         Menu_Special();
-        self.current_menu = #MENU_SPECIAL;
+        self.current_menu = MENU_SPECIAL;
     }
     if (inp == 10) {
         DropFromCustomClassGen();
@@ -3591,19 +3546,19 @@ void() Menu_Special =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = mstr(self.tf_items, #NIT_SCANNER, #NIT_AUTOSCANNER,
+l1 = mstr(self.tf_items, NIT_SCANNER, NIT_AUTOSCANNER,
 	"  .. Scanner         ≠  650\n  ..   Auto-Scanner  ≠  250\n",
 	"* .. Scanner         ≠  650\n  ..   Auto-Scanner  ≠  250\n",
 	"  .. Scanner         ≠  650\n* ..   Auto-Scanner  ≠  250\n",
 	"* .. Scanner         ≠  650\n* ..   Auto-Scanner  ≠  250\n");
 
-l2 = mstr2(self.cutf_items, self.weapons_carried, #CUTF_DETPACK, #WEAP_MEDIKIT,
+l2 = mstr2(self.cutf_items, self.weapons_carried, CUTF_DETPACK, WEAP_MEDIKIT,
 	"  ï.. Detpack         ≠  800\n  ñ.. Medikit         ≠ 1550\n",
 	"* ï.. Detpack         ≠  800\n  ñ.. Medikit         ≠ 1550\n",
 	"  ï.. Detpack         ≠  800\n* ñ.. Medikit         ≠ 1550\n",
 	"* ï.. Detpack         ≠  800\n* ñ.. Medikit         ≠ 1550\n");
 
-l3 = mstr2(self.cutf_items, self.tf_items, #CUTF_SPY_KIT, #NIT_SCUBA,
+l3 = mstr2(self.cutf_items, self.tf_items, CUTF_SPY_KIT, NIT_SCUBA,
 	"  ó.. Spy Kit         ≠ 2000\n  ò.. Scuba Gear      ≠ 1000\n",
 	"* ó.. Spy Kit         ≠ 2000\n  ò.. Scuba Gear      ≠ 1000\n",
 	"  ó.. Spy Kit         ≠ 2000\n* ò.. Scuba Gear      ≠ 1000\n",
@@ -3611,7 +3566,7 @@ l3 = mstr2(self.cutf_items, self.tf_items, #CUTF_SPY_KIT, #NIT_SCUBA,
 
 l4 =	"  ô.. Grapple         ≠ 3000\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.weapons_carried & #WEAP_HOOK)
+if (self.weapons_carried & WEAP_HOOK)
 l4 =	"* ô.. Grapple         ≠ 3000\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Special Items      úã\n\n",l1,l2,l3,l4, temp," dollars left\n");
 };
@@ -3621,100 +3576,103 @@ void(float inp) Menu_Special_Input =
 	local string st2;
 
 //Scanner
+#undef PRICE
 #define PRICE 650
 		
     //st = infokey(world, "no_grapple");
     st2 = infokey(world, "no_spam");
     if (inp == 1) {
-        if (self.tf_items & #NIT_SCANNER)
+        if (self.tf_items & NIT_SCANNER)
         {
             //Clean up auto-medic (sync this with Custom.qc)
-            if (self.tf_items & #NIT_AUTOSCANNER)
+            if (self.tf_items & NIT_AUTOSCANNER)
                 self.money = self.money + 250; //Sync this with price below
-            self.tf_items = self.tf_items - (self.tf_items & #NIT_AUTOSCANNER);
+            self.tf_items = self.tf_items - (self.tf_items & NIT_AUTOSCANNER);
 
-            PrintRefund(#PRICE);
-            self.tf_items = self.tf_items - #NIT_SCANNER;
-            self.tf_items_flags = self.tf_items_flags - (self.tf_items & #NIT_SCANNER_ENEMY);
+            PrintRefund(PRICE);
+            self.tf_items = self.tf_items - NIT_SCANNER;
+            self.tf_items_flags = self.tf_items_flags - (self.tf_items & NIT_SCANNER_ENEMY);
         }
-        else if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
-            self.tf_items = self.tf_items | #NIT_SCANNER;
-            self.tf_items_flags = self.tf_items_flags | #NIT_SCANNER_ENEMY;
+        else if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
+            self.tf_items = self.tf_items | NIT_SCANNER;
+            self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_ENEMY;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
     if (inp == 2) { //Sync this with scanner above
-        BuyItem(250,#NIT_AUTOSCANNER); 
+        BuyItem(250,NIT_AUTOSCANNER); 
     }
 //Detpack
+#undef PRICE
 #define PRICE 800
     if (inp == 3) {
         if (st2 == "on") {//If admin disable it
-            sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+            sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
 //                self.impulse=0;
             return;
         }
-        if (self.cutf_items & #CUTF_DETPACK) //Already have it
+        if (self.cutf_items & CUTF_DETPACK) //Already have it
         {
-            PrintRefund(#PRICE);
-            self.cutf_items = self.cutf_items - #CUTF_DETPACK;
+            PrintRefund(PRICE);
+            self.cutf_items = self.cutf_items - CUTF_DETPACK;
             self.maxammo_detpack = self.maxammo_detpack - 1;
         }
-        else if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
-            self.cutf_items = self.cutf_items | #CUTF_DETPACK;
+        else if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
+            self.cutf_items = self.cutf_items | CUTF_DETPACK;
             self.maxammo_detpack = self.maxammo_detpack + 1;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
+#undef PRICE
 #define PRICE 1550
     if (inp == 4) {
-        if (self.weapons_carried & #WEAP_MEDIKIT)
+        if (self.weapons_carried & WEAP_MEDIKIT)
         {
-            PrintRefund(#PRICE);
-            self.weapons_carried = self.weapons_carried - #WEAP_MEDIKIT;
+            PrintRefund(PRICE);
+            self.weapons_carried = self.weapons_carried - WEAP_MEDIKIT;
             self.maxammo_medikit = self.maxammo_medikit - 80;
         }
-        else if (self.money >= #PRICE) {
-            self.money = self.money - #PRICE;
-            self.weapons_carried = self.weapons_carried | #WEAP_MEDIKIT;
+        else if (self.money >= PRICE) {
+            self.money = self.money - PRICE;
+            self.weapons_carried = self.weapons_carried | WEAP_MEDIKIT;
             self.maxammo_medikit = self.maxammo_medikit + 80;
             PrintMoney();
         }
         else
-            PrintNotEnoughMoney(#PRICE);
+            PrintNotEnoughMoney(PRICE);
     }
     if (inp == 5) {
-        BuyCuTF(2000,#CUTF_SPY_KIT);
+        BuyCuTF(2000,CUTF_SPY_KIT);
     }
     //Self-Contained Underwater Breathing Apparatus
     if (inp == 6) {
-        BuyItem(1000,#NIT_SCUBA);
+        BuyItem(1000,NIT_SCUBA);
     }
     if (inp == 7) {
         if (no_grapple == 1) //If admin disable it
         {
-            sprint(self,#PRINT_HIGH,"The admin has disabled the grapple on this map.\n");
+            sprint(self,PRINT_HIGH,"The admin has disabled the grapple on this map.\n");
             self.impulse = 0;
             return;
         }
         else if (allow_hook) //If map allows it...
-           sprint(self,#PRINT_HIGH,"You can't sell your grapple on this map!\n");
+           sprint(self,PRINT_HIGH,"You can't sell your grapple on this map!\n");
         else
-           BuyWeapon(3000,#WEAP_HOOK);
+           BuyWeapon(3000,WEAP_HOOK);
     }
     if (inp == 8) {
         Menu_Armor();
-        self.current_menu = #MENU_ARMOR;
+        self.current_menu = MENU_ARMOR;
     }
     if (inp == 9) {
         Menu_Special2();
-        self.current_menu = #MENU_SPECIAL2;
+        self.current_menu = MENU_SPECIAL2;
     }
     if (inp == 10) {
         DropFromCustomClassGen();
@@ -3732,27 +3690,27 @@ void() Menu_Special2 =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = mstr(self.cutf_items, #CUTF_JAMMER, #CUTF_CYBERAUG,
+l1 = mstr(self.cutf_items, CUTF_JAMMER, CUTF_CYBERAUG,
 	"  .. Scanner Jammer  ≠ 1000\n  .. CyberAug Unit   ≠  800\n",
 	"* .. Scanner Jammer  ≠ 1000\n  .. CyberAug Unit   ≠  800\n",
 	"  .. Scanner Jammer  ≠ 1000\n* .. CyberAug Unit   ≠  800\n",
 	"* .. Scanner Jammer  ≠ 1000\n* .. CyberAug Unit   ≠  800\n");
 
 /*
-l2 = mstr(self.cutf_items, #CUTF_SENSOR, #CUTF_HOLO,
+l2 = mstr(self.cutf_items, CUTF_SENSOR, CUTF_HOLO,
 	"  ï.. Motion sensor   ≠  450\n  ñ.. Holo device     ≠  600\n",
 	"* ï.. Motion sensor   ≠  450\n  ñ.. Holo device     ≠  600\n",
 	"  ï.. Motion sensor   ≠  450\n* ñ.. Holo device     ≠  600\n",
 	"* ï.. Motion sensor   ≠  450\n* ñ.. Holo device     ≠  600\n");
     */
 
-l2 = mstr(self.cutf_items, #CUTF_SENSOR, #CUTF_FIELDGEN,
+l2 = mstr(self.cutf_items, CUTF_SENSOR, CUTF_FIELDGEN,
 	"  ï.. Motion Sensor   ≠  450\n  ñ.. Field Generator ≠ 1600\n",
 	"* ï.. Motion Sensor   ≠  450\n  ñ.. Field Generator ≠ 1600\n",
 	"  ï.. Motion Sensor   ≠  450\n* ñ.. Field Generator ≠ 1600\n",
 	"* ï.. Motion Sensor   ≠  450\n* ñ.. Field Generator ≠ 1600\n");
 
-l3 = mstr(self.cutf_items, #CUTF_FULLARMOUR, #CUTF_TOSSABLEDET,
+l3 = mstr(self.cutf_items, CUTF_FULLARMOUR, CUTF_TOSSABLEDET,
 	"  ó.. Full Armour     ≠  250\n  ò.. C4 Tossable Det ≠ 1200\n",
 	"* ó.. Full Armour     ≠  250\n  ò.. C4 Tossable Det ≠ 1200\n",
 	"  ó.. Full Armour     ≠  250\n* ò.. C4 Tossable Det ≠ 1200\n",
@@ -3760,7 +3718,7 @@ l3 = mstr(self.cutf_items, #CUTF_FULLARMOUR, #CUTF_TOSSABLEDET,
 
 l4 =	"  ô.. Dispenser       ≠  600\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.cutf_items & #CUTF_DISPENSER)
+if (self.cutf_items & CUTF_DISPENSER)
 l4 =	"* ô.. Dispenser       ≠  600\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú More Special Items úã\n\n",l1,l2,l3,l4, temp," dollars left\n");
 };
@@ -3771,10 +3729,10 @@ void(float inp) Menu_Special2_Input =
 	st = infokey(world, "no_spam");	
 
     if (inp == 1)//SB Jammer
-		BuyCuTF(1000, #CUTF_JAMMER);
+		BuyCuTF(1000, CUTF_JAMMER);
 	else if (inp == 2)//SB cybernetic augmentation
 	{
-		if (self.cutf_items & #CUTF_CYBERAUG)
+		if (self.cutf_items & CUTF_CYBERAUG)
 		{
 			self.maxammo_medikit = self.maxammo_medikit - 80;
 			self.maxammo_cells = self.maxammo_cells - 80;
@@ -3784,45 +3742,45 @@ void(float inp) Menu_Special2_Input =
 			self.maxammo_medikit = self.maxammo_medikit + 80;
 			self.maxammo_cells = self.maxammo_cells + 80;
 		}
-		BuyCuTF(800,#CUTF_CYBERAUG); 
+		BuyCuTF(800,CUTF_CYBERAUG); 
 	}
 	else if (inp == 3)//SB motion sensor
 	{
-		BuyCuTF(450,#CUTF_SENSOR);
+		BuyCuTF(450,CUTF_SENSOR);
 	}
 	else if (inp == 4)//SB hax0r tool
 	{
-        BuyCuTF(1600,#CUTF_FIELDGEN);
-		//BuyCuTF(600,#CUTF_HOLO);
-		//sprint(self, #PRINT_HIGH, "Activate the holograph with the 'holo' command.\n");
+        BuyCuTF(1600,CUTF_FIELDGEN);
+		//BuyCuTF(600,CUTF_HOLO);
+		//sprint(self, PRINT_HIGH, "Activate the holograph with the 'holo' command.\n");
 	}
 	else if (inp == 5)//SB full armour
 	{
-		BuyCuTF(250,#CUTF_FULLARMOUR);
+		BuyCuTF(250,CUTF_FULLARMOUR);
 	}
 	else if (inp == 6)//SB C4 tossable detpack
 	{
         if (no_c4==1)
         {
-            sprint(self,#PRINT_HIGH,"The C4 is disabled, sorry\n");
+            sprint(self,PRINT_HIGH,"The C4 is disabled, sorry\n");
             self.impulse=0;
             return;
         }
         else
         {
-            BuyCuTF(1200,#CUTF_TOSSABLEDET);
-		    sprint(self, #PRINT_HIGH, "Type 'throwdet' to throw the detpack.\n");
+            BuyCuTF(1200,CUTF_TOSSABLEDET);
+		    sprint(self, PRINT_HIGH, "Type 'throwdet' to throw the detpack.\n");
         }
 	}
 	else if (inp == 7)
-		BuyCuTF(600,#CUTF_DISPENSER);
+		BuyCuTF(600,CUTF_DISPENSER);
 	else if (inp == 8) {
 		Menu_Special();
-		self.current_menu = #MENU_SPECIAL;
+		self.current_menu = MENU_SPECIAL;
 	}
 	else if (inp == 9) {
 		Menu_Gren1();
-		self.current_menu = #MENU_GREN1;
+		self.current_menu = MENU_GREN1;
 	}
 	else if (inp == 10) {
 		DropFromCustomClassGen();
@@ -3869,7 +3827,7 @@ void() Menu_Gren1 =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = grenstr(#GR_TYPE_NORMAL, #GR_TYPE_FLAME,
+l1 = grenstr(GR_TYPE_NORMAL, GR_TYPE_FLAME,
 	"  .. Normal          ≠  500\n  .. Flame           ≠  750\n",
 	"1 .. Normal          ≠  500\n  .. Flame           ≠  750\n",
 	"  .. Normal          ≠  500\n1 .. Flame           ≠  750\n",
@@ -3877,7 +3835,7 @@ l1 = grenstr(#GR_TYPE_NORMAL, #GR_TYPE_FLAME,
 	"2 .. Normal          ≠  500\n  .. Flame           ≠  750\n",
 	"  .. Normal          ≠  500\n2 .. Flame           ≠  750\n");
 
-l2 = grenstr(#GR_TYPE_GAS, #GR_TYPE_EMP,
+l2 = grenstr(GR_TYPE_GAS, GR_TYPE_EMP,
 	"  ï.. Gas             ≠ 1200\n  ñ.. EMP             ≠ 1200\n",
 	"1 ï.. Gas             ≠ 1200\n  ñ.. EMP             ≠ 1200\n",
 	"  ï.. Gas             ≠ 1200\n1 ñ.. EMP             ≠ 1200\n",
@@ -3885,7 +3843,7 @@ l2 = grenstr(#GR_TYPE_GAS, #GR_TYPE_EMP,
 	"2 ï.. Gas             ≠ 1200\n  ñ.. EMP             ≠ 1200\n",
 	"  ï.. Gas             ≠ 1200\n2 ñ.. EMP             ≠ 1200\n");
 
-l3 = grenstr(#GR_TYPE_FRAG, #GR_TYPE_NAIL,
+l3 = grenstr(GR_TYPE_FRAG, GR_TYPE_NAIL,
 	"  ó.. Frag            ≠ 1300\n  ò.. Nail            ≠ 1400\n",
 	"1 ó.. Frag            ≠ 1300\n  ò.. Nail            ≠ 1400\n",
 	"  ó.. Frag            ≠ 1300\n1 ò.. Nail            ≠ 1400\n",
@@ -3894,9 +3852,9 @@ l3 = grenstr(#GR_TYPE_FRAG, #GR_TYPE_NAIL,
 	"  ó.. Frag            ≠ 1300\n2 ò.. Nail            ≠ 1400\n");
 
 l4 =	"  ô.. MIRV            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
-if (self.tp_grenades_1 == #GR_TYPE_MIRV && self.tp_grenades_2 == #GR_TYPE_MIRV)
+if (self.tp_grenades_1 == GR_TYPE_MIRV && self.tp_grenades_2 == GR_TYPE_MIRV)
 l4 =	"2 ô.. MIRV            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
-else if (self.tp_grenades_2 == #GR_TYPE_MIRV || self.tp_grenades_1 == #GR_TYPE_MIRV)
+else if (self.tp_grenades_2 == GR_TYPE_MIRV || self.tp_grenades_1 == GR_TYPE_MIRV)
 l4 =	"1 ô.. MIRV            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
 //l4 =	"\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
@@ -3912,64 +3870,64 @@ void(float inp) Menu_Gren1_Input =
 	st2 = infokey (world, "no_spam");
 
     if (inp == 1)
-        BuyGren(500,#GR_TYPE_NORMAL);
+        BuyGren(500,GR_TYPE_NORMAL);
     else if (inp == 2)
-        BuyGren(750,#GR_TYPE_FLAME);
+        BuyGren(750,GR_TYPE_FLAME);
     else if (inp == 3)
     {
         if (st == "on")
         {
-            sprint(self, #PRINT_HIGH, "The admin has disabled gas grens on this map.\n");
+            sprint(self, PRINT_HIGH, "The admin has disabled gas grens on this map.\n");
             return;
         }
         if (st2 == "on") //If admin disable it
         {
-            sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+            sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
             return;
         }
-        BuyGren(1200,#GR_TYPE_GAS);
+        BuyGren(1200,GR_TYPE_GAS);
     }
     else if (inp == 4)
     {
         if (st2 == "on") //If admin disable it
         {
-            sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+            sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
             return;
         }
-        BuyGren(1200,#GR_TYPE_EMP);
+        BuyGren(1200,GR_TYPE_EMP);
     }
     else if (inp == 5)
     {
         if (st2 == "on") //If admin disable it
         {
-            sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+            sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
             return;
         }
-        BuyGren(1300,#GR_TYPE_FRAG);
+        BuyGren(1300,GR_TYPE_FRAG);
     }
     else if (inp == 6)
     {
-        BuyGren(1400,#GR_TYPE_NAIL);
+        BuyGren(1400,GR_TYPE_NAIL);
     }
     if (inp == 7)
     {
         if (st2 == "on") //If admin disable it
         {
-            sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+            sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
                 return;
         }
-        BuyGren(1500,#GR_TYPE_MIRV);
+        BuyGren(1500,GR_TYPE_MIRV);
     }
     
     if (inp == 8)
     {
         Menu_Special2();
-        self.current_menu = #MENU_SPECIAL2;
+        self.current_menu = MENU_SPECIAL2;
     }
     if (inp == 9)
     {
         Menu_Gren2();
-        self.current_menu = #MENU_GREN2;
+        self.current_menu = MENU_GREN2;
     }
     else if (inp == 10)
         DropFromCustomClassGen();
@@ -3987,7 +3945,7 @@ void() Menu_Gren2 =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = grenstr(#GR_TYPE_FLARE, #GR_TYPE_CALTROP,
+l1 = grenstr(GR_TYPE_FLARE, GR_TYPE_CALTROP,
 	"  .. Flare           ≠  300\n  .. Caltrop         ≠  500\n",
 	"1 .. Flare           ≠  300\n  .. Caltrop         ≠  500\n",
 	"  .. Flare           ≠  300\n1 .. Caltrop         ≠  500\n",
@@ -3995,7 +3953,7 @@ l1 = grenstr(#GR_TYPE_FLARE, #GR_TYPE_CALTROP,
 	"2 .. Flare           ≠  300\n  .. Caltrop         ≠  500\n",
 	"  .. Flare           ≠  300\n2 .. Caltrop         ≠  500\n");
 
-l2 = grenstr(#GR_TYPE_CONCUSSION, #GR_TYPE_FLASH,
+l2 = grenstr(GR_TYPE_CONCUSSION, GR_TYPE_FLASH,
 	"  ï.. Concussion      ≠ 1000\n  ñ.. Flash           ≠ 1000\n",
 	"1 ï.. Concussion      ≠ 1000\n  ñ.. Flash           ≠ 1000\n",
 	"  ï.. Concussion      ≠ 1000\n1 ñ.. Flash           ≠ 1000\n",
@@ -4003,7 +3961,7 @@ l2 = grenstr(#GR_TYPE_CONCUSSION, #GR_TYPE_FLASH,
 	"2 ï.. Concussion      ≠ 1000\n  ñ.. Flash           ≠ 1000\n",
 	"  ï.. Concussion      ≠ 1000\n2 ñ.. Flash           ≠ 1000\n");
 
-l3 = grenstr(#GR_TYPE_ANTIGRAV, #GR_TYPE_BIO,
+l3 = grenstr(GR_TYPE_ANTIGRAV, GR_TYPE_BIO,
 	"  ó.. AntiGrav        ≠ 1000\n  ò.. Bio-Infection   ≠ 1450\n",
 	"1 ó.. AntiGrav        ≠ 1000\n  ò.. Bio-Infection   ≠ 1450\n",
 	"  ó.. AntiGrav        ≠ 1000\n1 ò.. Bio-Infection   ≠ 1450\n",
@@ -4016,9 +3974,9 @@ l3 = grenstr(#GR_TYPE_ANTIGRAV, #GR_TYPE_BIO,
 
 l4 = 	"  ô.. Krac            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.tp_grenades_1 == #GR_TYPE_KRAC && self.tp_grenades_2 == #GR_TYPE_KRAC)
+if (self.tp_grenades_1 == GR_TYPE_KRAC && self.tp_grenades_2 == GR_TYPE_KRAC)
 l4 =	"2 ô.. Krac            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
-else if (self.tp_grenades_1 == #GR_TYPE_KRAC || self.tp_grenades_2 == #GR_TYPE_KRAC)
+else if (self.tp_grenades_1 == GR_TYPE_KRAC || self.tp_grenades_2 == GR_TYPE_KRAC)
 l4 =	"1 ô.. Krac            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
 //l4 =	"\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
@@ -4035,47 +3993,47 @@ void(float inp) Menu_Gren2_Input =
     //SB I reckon - this one actually looks nice and makes sense
     if (inp == 1)
     {
-        BuyGren(300, #GR_TYPE_FLARE);
+        BuyGren(300, GR_TYPE_FLARE);
     }
     if (inp == 2)
     {
         if (st2 == "on")
-            sprint(self, #PRINT_HIGH, "The admin has disabled spam devices on this map.\n");
+            sprint(self, PRINT_HIGH, "The admin has disabled spam devices on this map.\n");
         else
-            BuyGren(500, #GR_TYPE_CALTROP);
+            BuyGren(500, GR_TYPE_CALTROP);
     }
     if (inp == 3)
     {
-        BuyGren(1000, #GR_TYPE_CONCUSSION);
+        BuyGren(1000, GR_TYPE_CONCUSSION);
     }
     if (inp == 4)
     {
-        BuyGren(1000,#GR_TYPE_FLASH);
+        BuyGren(1000,GR_TYPE_FLASH);
     }
     if (inp == 5)
     {	
         if (st == "on")
-            sprint(self, #PRINT_HIGH, "The admin has disabled anti-grav grens on this map.\n");
+            sprint(self, PRINT_HIGH, "The admin has disabled anti-grav grens on this map.\n");
         else	
-            BuyGren(1000, #GR_TYPE_ANTIGRAV);
+            BuyGren(1000, GR_TYPE_ANTIGRAV);
     }
     if (inp == 6)
     {
-        BuyGren(1450, #GR_TYPE_BIO);
+        BuyGren(1450, GR_TYPE_BIO);
     }
     if (inp == 7)
     {
-        BuyGren(1500, #GR_TYPE_KRAC);
+        BuyGren(1500, GR_TYPE_KRAC);
     }
     else if (inp == 8)
     {
         Menu_Gren1();
-        self.current_menu = #MENU_GREN1;
+        self.current_menu = MENU_GREN1;
     }
     else if (inp == 9)
     {
         Menu_Engineering();
-        self.current_menu = #MENU_ENGINEERING;
+        self.current_menu = MENU_ENGINEERING;
     }
     if (inp == 10)
     {
@@ -4096,31 +4054,31 @@ void(float inp) Menu_Gren2_Input =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = eqstr(self.tp_grenades_1, #GR_TYPE_NORMAL, #GR_TYPE_FLASH,
+l1 = eqstr(self.tp_grenades_1, GR_TYPE_NORMAL, GR_TYPE_FLASH,
 	"  .. Normal          ≠  500\n  .. Flash           ≠ 1000\n",
 	"* .. Normal          ≠  500\n  .. Flash           ≠ 1000\n",
 	"  .. Normal          ≠  500\n* .. Flash           ≠ 1000\n");
 
-l2 = eqstr(self.tp_grenades_1, #GR_TYPE_ANTIGRAV, #GR_TYPE_EMP,
+l2 = eqstr(self.tp_grenades_1, GR_TYPE_ANTIGRAV, GR_TYPE_EMP,
 	"  ï.. AntiGrav        ≠ 1200\n  ñ.. EMP             ≠ 1200\n",
 	"* ï.. AntiGrav        ≠ 1200\n  ñ.. EMP             ≠ 1200\n",
 	"  ï.. AntiGrav        ≠ 1200\n* ñ.. EMP             ≠ 1200\n");
 
     if (allow_antigrav==0) {
-l2 = eqstr(self.tp_grenades_1, #GR_TYPE_CONCUSSION, #GR_TYPE_EMP,
+l2 = eqstr(self.tp_grenades_1, GR_TYPE_CONCUSSION, GR_TYPE_EMP,
 	"  ï.. Concussion      ≠ 1000\n  ñ.. EMP             ≠ 1200\n",
 	"* ï.. Concussion      ≠ 1000\n  ñ.. EMP             ≠ 1200\n",
 	"  ï.. Concussion      ≠ 1000\n* ñ.. EMP             ≠ 1200\n");
     }
 
-l3 = eqstr(self.tp_grenades_1, #GR_TYPE_FRAG, #GR_TYPE_FLAME,
+l3 = eqstr(self.tp_grenades_1, GR_TYPE_FRAG, GR_TYPE_FLAME,
 	"  ó.. Frag            ≠ 1425\n  ò.. Flame           ≠ 1425\n",
 	"* ó.. Frag            ≠ 1425\n  ò.. Flame           ≠ 1425\n",
 	"  ó.. Frag            ≠ 1425\n* ò.. Flame           ≠ 1425\n");
 
 l4 = 	"  ô.. Krac            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.tp_grenades_1 == #GR_TYPE_KRAC)
+if (self.tp_grenades_1 == GR_TYPE_KRAC)
 l4 =	"* ô.. Krac            ≠ 1500\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Grenades - 1st Slotúã\n\n",l1,l2,l3,l4, temp," dollars left\n");
 };
@@ -4135,41 +4093,41 @@ void(float inp) Menu_Gren1_Input =
 		//WK I should have done all the buy menus like this
 		//SB I reckon - this one actually looks nice and makes sense
 		if (inp == 1) {
-			BuyGren1(500,#GR_TYPE_NORMAL);
+			BuyGren1(500,GR_TYPE_NORMAL);
 		}
 		if (inp == 2) {
-			BuyGren1(1000,#GR_TYPE_FLASH);
+			BuyGren1(1000,GR_TYPE_FLASH);
 		}
 		if (inp == 3) {
 			if (allow_antigrav == 0)
-				//sprint(self,#PRINT_HIGH,"The admin has disabled anti-grav grens on this map.\n");
-                BuyGren1(1000,#GR_TYPE_CONCUSSION);
+				//sprint(self,PRINT_HIGH,"The admin has disabled anti-grav grens on this map.\n");
+                BuyGren1(1000,GR_TYPE_CONCUSSION);
 			else	
-				BuyGren1(1200,#GR_TYPE_ANTIGRAV);
+				BuyGren1(1200,GR_TYPE_ANTIGRAV);
 		}
 		if (inp == 4) {
-			BuyGren1(1200,#GR_TYPE_EMP);
+			BuyGren1(1200,GR_TYPE_EMP);
 		}
 		if (inp == 5) {	
 			if (st2 == "on") {//If admin disable it
-				sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+				sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
                         return;
 			}
-			BuyGren1(1425,#GR_TYPE_FRAG);
+			BuyGren1(1425,GR_TYPE_FRAG);
 		}
 		if (inp == 6) {
-			BuyGren1(1425,#GR_TYPE_FLAME);
+			BuyGren1(1425,GR_TYPE_FLAME);
 		}
 		if (inp == 7) {
-			BuyGren1(1500,#GR_TYPE_KRAC);
+			BuyGren1(1500,GR_TYPE_KRAC);
 		}
 		if (inp == 8) {
 			Menu_Special2();
-			self.current_menu = #MENU_SPECIAL2;
+			self.current_menu = MENU_SPECIAL2;
 		}
 		if (inp == 9) {
 			Menu_Gren2();
-			self.current_menu = #MENU_GREN2;
+			self.current_menu = MENU_GREN2;
 		}
 		if (inp == 10) {
 			DropFromCustomClassGen();
@@ -4190,32 +4148,32 @@ void() Menu_Gren2 =
 	st = infokey(world, "no_flare");
     local string l1,l2,l3,l4;
 
-l1 = eqstr(self.tp_grenades_2, #GR_TYPE_FLARE, #GR_TYPE_CONCUSSION,
+l1 = eqstr(self.tp_grenades_2, GR_TYPE_FLARE, GR_TYPE_CONCUSSION,
 	"  .. Flare           ≠  400\n  .. Concussion      ≠ 1000\n",
 	"* .. Flare           ≠  400\n  .. Concussion      ≠ 1000\n",
 	"  .. Flare           ≠  400\n* .. Concussion      ≠ 1000\n");
 
     if (st == "on" || st == "1") {
 
-l1 = eqstr(self.tp_grenades_2, #GR_TYPE_NORMAL, #GR_TYPE_CONCUSSION,
+l1 = eqstr(self.tp_grenades_2, GR_TYPE_NORMAL, GR_TYPE_CONCUSSION,
 	"  .. Normal          ≠  500\n  .. Concussion      ≠ 1000\n",
 	"* .. Normal          ≠  500\n  .. Concussion      ≠ 1000\n",
 	"  .. Normal          ≠  500\n* .. Concussion      ≠ 1000\n");
     }
 
-l2 = eqstr(self.tp_grenades_2, #GR_TYPE_GAS, #GR_TYPE_EMP,
+l2 = eqstr(self.tp_grenades_2, GR_TYPE_GAS, GR_TYPE_EMP,
 	"  ï.. Gas             ≠ 1200\n  ñ.. EMP             ≠ 1200\n",
 	"* ï.. Gas             ≠ 1200\n  ñ.. EMP             ≠ 1200\n",
 	"  ï.. Gas             ≠ 1200\n* ñ.. EMP             ≠ 1200\n");
 
-l3 = eqstr(self.tp_grenades_2, #GR_TYPE_MIRV, #GR_TYPE_FLAME,
+l3 = eqstr(self.tp_grenades_2, GR_TYPE_MIRV, GR_TYPE_FLAME,
 	"  ó.. MIRV            ≠ 1200\n  ò.. Flame           ≠ 1425\n",
 	"* ó.. MIRV            ≠ 1200\n  ò.. Flame           ≠ 1425\n",
 	"  ó.. MIRV            ≠ 1200\n* ò.. Flame           ≠ 1425\n");
 
 l4 =	"  ô.. Nail            ≠ 2000\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.tp_grenades_2 == #GR_TYPE_NAIL)
+if (self.tp_grenades_2 == GR_TYPE_NAIL)
 l4 =	"* ô.. Nail            ≠ 2000\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Grenades - 2nd Slotúã\n\n", l1,l2,l3,l4, temp," dollars left\n");
@@ -4230,51 +4188,51 @@ void(float inp) Menu_Gren2_Input =
 	{
 		if (inp == 1) {
 			if (st3 == "on" || st3 == "1") 
-              BuyGren2(500,#GR_TYPE_NORMAL);
+              BuyGren2(500,GR_TYPE_NORMAL);
             else
-              BuyGren2(400,#GR_TYPE_FLARE);
+              BuyGren2(400,GR_TYPE_FLARE);
 		}
 		if (inp == 2) {
-			BuyGren2(1000,#GR_TYPE_CONCUSSION);
+			BuyGren2(1000,GR_TYPE_CONCUSSION);
 		}
 		if (inp == 3) {
 			if (st == "on"){
-				sprint(self,#PRINT_HIGH,"The admin has disabled gas grens on this map.\n");
+				sprint(self,PRINT_HIGH,"The admin has disabled gas grens on this map.\n");
 				return;
 			}
 			if (st2 == "on") {//If admin disable it
-				sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+				sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
                         return;
 				}
-			BuyGren2(1200,#GR_TYPE_GAS);
+			BuyGren2(1200,GR_TYPE_GAS);
 		}
 		if (inp == 4) {
-			BuyGren2(1200,#GR_TYPE_EMP);
+			BuyGren2(1200,GR_TYPE_EMP);
 		}
 		if (inp == 5) {
 			if (st2 == "on") {//If admin disable it
-				sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+				sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
                         return;
 				}
-			BuyGren2(1200,#GR_TYPE_MIRV);
+			BuyGren2(1200,GR_TYPE_MIRV);
 		}
 		if (inp == 6) {
-			BuyGren2(1425,#GR_TYPE_FLAME);
+			BuyGren2(1425,GR_TYPE_FLAME);
 		}
 		if (inp == 7) {
 			if (st2 == "on") {//If admin disable it
-				sprint(self,#PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+				sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
                         return;
 				}
-			BuyGren2(2000,#GR_TYPE_NAIL);
+			BuyGren2(2000,GR_TYPE_NAIL);
 		}
 		if (inp == 8) {
 			Menu_Gren1();
-			self.current_menu = #MENU_GREN1;
+			self.current_menu = MENU_GREN1;
 		}
 		if (inp == 9) {
 			Menu_Engineering();
-			self.current_menu = #MENU_ENGINEERING;
+			self.current_menu = MENU_ENGINEERING;
 		}
 		if (inp == 10) {
 			DropFromCustomClassGen();
@@ -4294,19 +4252,19 @@ void() Menu_Engineering =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = mstr2(self.weapons_carried,self.cutf_items,#WEAP_SPANNER,#CUTF_SENTRYGUN,
+l1 = mstr2(self.weapons_carried,self.cutf_items,WEAP_SPANNER,CUTF_SENTRYGUN,
 	"  .. Spanner         ≠ 1200\n  .. Build Sentrygun ≠ 1500\n",
 	"* .. Spanner         ≠ 1200\n  .. Build Sentrygun ≠ 1500\n",
 	"  .. Spanner         ≠ 1200\n* .. Build Sentrygun ≠ 1500\n",
 	"* .. Spanner         ≠ 1200\n* .. Build Sentrygun ≠ 1500\n");
 
-l2 = mstr(self.tf_items,#NIT_TURRET,#NIT_TESLA,
+l2 = mstr(self.tf_items,NIT_TURRET,NIT_TESLA,
 	"  ï..  Turret Upgrade ≠  700\n  ñ.. Build Tesla     ≠ 1350\n",
 	"* ï..  Turret Upgrade ≠  700\n  ñ.. Build Tesla     ≠ 1350\n",
 	"  ï..  Turret Upgrade ≠  700\n* ñ.. Build Tesla     ≠ 1350\n",
 	"* ï..  Turret Upgrade ≠  700\n* ñ.. Build Tesla     ≠ 1350\n");
 
-l3 = mstr(self.tf_items, #NIT_TESLA_UPGRADE, #NIT_SECURITY_CAMERA,
+l3 = mstr(self.tf_items, NIT_TESLA_UPGRADE, NIT_SECURITY_CAMERA,
 	"  ó..   Tesla Upgrade ≠ 1650\n  ò.. Build Camera    ≠  350\n",
 	"* ó..   Tesla Upgrade ≠ 1650\n  ò.. Build Camera    ≠  350\n",
 	"  ó..   Tesla Upgrade ≠ 1650\n* ò.. Build Camera    ≠  350\n",
@@ -4314,47 +4272,47 @@ l3 = mstr(self.tf_items, #NIT_TESLA_UPGRADE, #NIT_SECURITY_CAMERA,
 
 l4 =	"  ô.. BuildTeleporter ≠ 1100\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.tf_items & #NIT_TELEPORTER)
+if (self.tf_items & NIT_TELEPORTER)
 l4 =	"* ô.. BuildTeleporter ≠ 1100\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Engineering Items  úã\n\n", l1,l2,l3,l4, temp," dollars left\n");
 };
 void(float inp) Menu_Engineering_Input =
 {
     if (inp == 1) {
-        BuyWeapon(1200,#WEAP_SPANNER);
+        BuyWeapon(1200,WEAP_SPANNER);
     }
     if (inp == 2) {
-        BuyCuTF(1500,#CUTF_SENTRYGUN);
+        BuyCuTF(1500,CUTF_SENTRYGUN);
     }
     if (inp == 3) {
-        BuyItem(700,#NIT_TURRET); 
+        BuyItem(700,NIT_TURRET); 
     }
     if (inp == 4) {
-        BuyItem(1350,#NIT_TESLA);
+        BuyItem(1350,NIT_TESLA);
     }
     if (inp == 5) {
-        BuyItem(1650,#NIT_TESLA_UPGRADE);
+        BuyItem(1650,NIT_TESLA_UPGRADE);
     }
     if (inp == 6) {
-        BuyItem(350,#NIT_SECURITY_CAMERA);
+        BuyItem(350,NIT_SECURITY_CAMERA);
     }
     if (inp == 7) {
-        BuyItem(1100,#NIT_TELEPORTER);
+        BuyItem(1100,NIT_TELEPORTER);
     }
     if (inp == 8) {
         Menu_Gren2();
-        self.current_menu = #MENU_GREN2;
+        self.current_menu = MENU_GREN2;
     }
     if (inp == 9) {
         if (custom_mode!=1)
         {
             Menu_Profession();
-            self.current_menu = #MENU_PROFESSION;
+            self.current_menu = MENU_PROFESSION;
         }
         else
         {
             Menu_Proficiency();
-            self.current_menu = #MENU_PROFICIENCY;
+            self.current_menu = MENU_PROFICIENCY;
         }
     }
     if (inp == 10) {
@@ -4373,24 +4331,24 @@ void() Menu_Profession =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = eqstr(self.job, #JOB_THIEF, #JOB_RUNNER,
+l1 = eqstr(self.job, JOB_THIEF, JOB_RUNNER,
 	"  .. Thief     ®Hide©≠  950\n  .. Runner  ®Sprint©≠  400\n",
 	"* .. Thief     ®Hide©≠  950\n  .. Runner  ®Sprint©≠  400\n",
 	"  .. Thief     ®Hide©≠  950\n* .. Runner  ®Sprint©≠  400\n");
 
-l2 = eqstr(self.job, #JOB_WARLOCK, #JOB_CHAPLAN,
+l2 = eqstr(self.job, JOB_WARLOCK, JOB_CHAPLAN,
 	"  ï.. Warlock ®Summon©≠ 1350\n  ñ.. Chaplan®Inspire©≠ 1200\n",
 	"* ï.. Warlock ®Summon©≠ 1350\n  ñ.. Chaplan®Inspire©≠ 1200\n",
 	"  ï.. Warlock ®Summon©≠ 1350\n* ñ.. Chaplan®Inspire©≠ 1200\n");
 
-l3 = eqstr(self.job, #JOB_BERSERKER, #JOB_GUERILLA,
+l3 = eqstr(self.job, JOB_BERSERKER, JOB_GUERILLA,
 	"  ó.. Berserker ®Fury©≠ 1200\n  ò.. Guerilla ®Mines©≠ 1500\n",
 	"* ó.. Berserker ®Fury©≠ 1200\n  ò.. Guerilla ®Mines©≠ 1500\n",
 	"  ó.. Berserker ®Fury©≠ 1200\n* ò.. Guerilla ®Mines©≠ 1500\n");
 
 l4 =	"  ô.. Judoka  ®Disarm©≠  700\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.job == #JOB_JUDOKA)
+if (self.job == JOB_JUDOKA)
 l4 =	"* ô.. Judoka  ®Disarm©≠  700\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Skilled Profession úã\n\n", l1,l2,l3,l4, temp," dollars left\n\nUse ”À…ÃÃ to trigger ability\n");
@@ -4399,40 +4357,40 @@ l4 =	"* ô.. Judoka  ®Disarm©≠  700\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 void(float inp) Menu_Profession_Input =
 {
     if (inp == 1) {
-        BuyJob( 950,#JOB_THIEF);
+        BuyJob( 950,JOB_THIEF);
     }
     if (inp == 2) {
-        BuyJob( 400,#JOB_RUNNER);
+        BuyJob( 400,JOB_RUNNER);
     }
     if (inp == 3) { //Sync this with price in knife
-        BuyJob( 1350,#JOB_WARLOCK);
+        BuyJob( 1350,JOB_WARLOCK);
     }
     if (inp == 4) {
         if (no_chaplan)
         {
-            sprint(self,#PRINT_HIGH,"Chaplan is disabled, sorry.\n");
+            sprint(self,PRINT_HIGH,"Chaplan is disabled, sorry.\n");
             self.impulse=0;
             return;
         }
 
-        BuyJob(1200,#JOB_CHAPLAN);
+        BuyJob(1200,JOB_CHAPLAN);
     }
     if (inp == 5) {
-        BuyJob(1200,#JOB_BERSERKER);
+        BuyJob(1200,JOB_BERSERKER);
     }
     if (inp == 6) {
-        BuyJob(1500,#JOB_GUERILLA);
+        BuyJob(1500,JOB_GUERILLA);
     }
     if (inp == 7) {
-        BuyJob( 700,#JOB_JUDOKA);
+        BuyJob( 700,JOB_JUDOKA);
     }
     if (inp == 8) {
         Menu_Engineering();
-        self.current_menu = #MENU_ENGINEERING;
+        self.current_menu = MENU_ENGINEERING;
     }
     if (inp == 9) {
         Menu_Profession2();
-        self.current_menu = #MENU_PROFESSION2;
+        self.current_menu = MENU_PROFESSION2;
     }
     if (inp == 10) {
         DropFromCustomClassGen();
@@ -4452,23 +4410,23 @@ void() Menu_Profession2 =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = eqstr(self.job, #JOB_ARMY, #JOB_HACKER,
+l1 = eqstr(self.job, JOB_ARMY, JOB_HACKER,
       "  .. Army   ®Soldier©≠ 1250\n  .. CyberNet  ®Hack©≠ 1200\n",
       "* .. Army   ®Soldier©≠ 1250\n  .. CyberNet  ®Hack©≠ 1200\n",
       "  .. Army   ®Soldier©≠ 1250\n* .. CyberNet  ®Hack©≠ 1200\n");
 
-l2 = eqstr(self.job, #JOB_MARTYR, #JOB_CRUSADER,
+l2 = eqstr(self.job, JOB_MARTYR, JOB_CRUSADER,
 	"  ï.. Martyr ®Suicide©≠ 1000\n  ñ.. Crusader ®Auras©≠ 1600\n",
 	"* ï.. Martyr ®Suicide©≠ 1000\n  ñ.. Crusader ®Auras©≠ 1600\n",
 	"  ï.. Martyr ®Suicide©≠ 1000\n* ñ.. Crusader ®Auras©≠ 1600\n");
 
 
-/*l2 = eqstr(self.job, #JOB_MARTYR, JOB_MYSTIC,
+/*l2 = eqstr(self.job, JOB_MARTYR, JOB_MYSTIC,
 	"  ï.. Martyr ®Suicide©≠ 1000\n  ñ.. Mystic   ®Regen©≠ 1000\n",
 	"* ï.. Martyr ®Suicide©≠ 1000\n  ñ.. Mystic   ®Regen©≠ 1000\n",
 	"  ï.. Martyr ®Suicide©≠ 1000\n* ñ.. Mystic   ®Regen©≠ 1000\n");*/
 
-/*l3 = eqstr(self.job, #JOB_BERSERKER, #JOB_GUERILLA,
+/*l3 = eqstr(self.job, JOB_BERSERKER, JOB_GUERILLA,
 	"  -.. Berserker ®Fury©- 1200\n  ò.. Guerilla ®Mines©- 1500\n",
 	"* -.. Berserker ®Fury©- 1200\n  ò.. Guerilla ®Mines©- 1500\n",
 	"  -.. Berserker ®Fury©- 1200\n* ò.. Guerilla ®Mines©- 1500\n");*/
@@ -4479,7 +4437,7 @@ l3 = "\n\n";
 
 /*l2 =	"  ï.. Martyr ®Suicide©≠ 1000";
 
-if (self.job == #JOB_MARTYR)
+if (self.job == JOB_MARTYR)
 l2 =	"* ï.. Martyr ®Suicide©≠ 1000";*/
 
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú More Professions   úã\n\n", l1,l2,l3,l4, temp," dollars left\n\nUse ”À…ÃÃ to trigger ability\n");
@@ -4490,39 +4448,39 @@ void(float inp) Menu_Profession2_Input =
     if (inp == 1) {
         if (no_army==1)
         {
-            sprint(self,#PRINT_HIGH,"Army job is disabled\n");
+            sprint(self,PRINT_HIGH,"Army job is disabled\n");
             self.impulse=0;
             return;
         }
         else
-           BuyJob( 1250,#JOB_ARMY);
+           BuyJob( 1250,JOB_ARMY);
     }
     if (inp == 2) {
-        BuyJob( 1200,#JOB_HACKER);
+        BuyJob( 1200,JOB_HACKER);
     }
     if (inp == 3) { 
-        BuyJob( 1000,#JOB_MARTYR);
+        BuyJob( 1000,JOB_MARTYR);
     }
     if (inp == 4) {
-        BuyJob(1600,#JOB_CRUSADER);
+        BuyJob(1600,JOB_CRUSADER);
     }
     /*
     if (inp == 5) {
-        BuyJob(1200,#JOB_BERSERKER);
+        BuyJob(1200,JOB_BERSERKER);
     }
     if (inp == 6) {
-        BuyJob(1500,#JOB_GUERILLA);
+        BuyJob(1500,JOB_GUERILLA);
     }
     if (inp == 7) {
-        BuyJob( 700,#JOB_JUDOKA);
+        BuyJob( 700,JOB_JUDOKA);
     }*/
     if (inp == 8) {
         Menu_Profession();
-        self.current_menu = #MENU_PROFESSION;
+        self.current_menu = MENU_PROFESSION;
     }
     if (inp == 9) {
         Menu_Proficiency();
-        self.current_menu = #MENU_PROFICIENCY;
+        self.current_menu = MENU_PROFICIENCY;
     }
     if (inp == 10) {
         DropFromCustomClassGen();
@@ -4541,19 +4499,19 @@ void() Menu_Proficiency =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = mstr(self.cutf_items, #CUTF_STEALTH, #CUTF_HIGHJUMP,
+l1 = mstr(self.cutf_items, CUTF_STEALTH, CUTF_HIGHJUMP,
 	"  .. Stealth         ≠  400\n  .. Highjump        ≠  200\n",
 	"* .. Stealth         ≠  400\n  .. Highjump        ≠  200\n",
 	"  .. Stealth         ≠  400\n* .. Highjump        ≠  200\n",
 	"* .. Stealth         ≠  400\n* .. Highjump        ≠  200\n");
 
-l2 = mstr(self.cutf_items, #CUTF_HWGUY, #CUTF_EXPBODY,
+l2 = mstr(self.cutf_items, CUTF_HWGUY, CUTF_EXPBODY,
 	"  ï.. Aspect of HWGuy ≠  450\n  ñ.. Exp. Body       ≠ 1200\n",
 	"* ï.. Aspect of HWGuy ≠  450\n  ñ.. Exp. Body       ≠ 1200\n",
 	"  ï.. Aspect of HWGuy ≠  450\n* ñ.. Exp. Body       ≠ 1200\n",
 	"* ï.. Aspect of HWGuy ≠  450\n* ñ.. Exp. Body       ≠ 1200\n");
 
-l3 = mstr(self.cutf_items, #CUTF_GYMNAST, #CUTF_DEMONLORE,
+l3 = mstr(self.cutf_items, CUTF_GYMNAST, CUTF_DEMONLORE,
 	"  ó.. Gymnast         ≠  450\n  ò.. Demon Lore      ≠  300\n",
 	"* ó.. Gymnast         ≠  450\n  ò.. Demon Lore      ≠  300\n",
 	"  ó.. Gymnast         ≠  450\n* ò.. Demon Lore      ≠  300\n",
@@ -4561,54 +4519,54 @@ l3 = mstr(self.cutf_items, #CUTF_GYMNAST, #CUTF_DEMONLORE,
 
 l4 =	"  ô.. Close Combat    ≠  600\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 
-if (self.cutf_items & #CUTF_CLOSECOMBAT)
+if (self.cutf_items & CUTF_CLOSECOMBAT)
 l4 =	"* ô.. Close Combat    ≠  600\nö.. –ÚÂˆ    \nõ.. ŒÂ¯Ù    \n.. ƒÔÓÂ!   \n";
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Proficiency        úã\n\n", l1,l2,l3,l4, temp," dollars left\n");
 }; 
 void(float inp) Menu_Proficiency_Input =
 {
     if (inp == 1) {
-        BuyCuTF( 400,#CUTF_STEALTH);
+        BuyCuTF( 400,CUTF_STEALTH);
     }
     if (inp == 2) {
-        BuyCuTF( 200,#CUTF_HIGHJUMP);
+        BuyCuTF( 200,CUTF_HIGHJUMP);
     }
     if (inp == 3) {
-        if (self.cutf_items & #CUTF_GYMNAST)
-            sprint(self, #PRINT_HIGH, "Having Gymnast and Aspect of HWGuy proficiencies is illogical.\n");
+        if (self.cutf_items & CUTF_GYMNAST)
+            sprint(self, PRINT_HIGH, "Having Gymnast and Aspect of HWGuy proficiencies is illogical.\n");
         else
-            BuyCuTF( 450,#CUTF_HWGUY);
+            BuyCuTF( 450,CUTF_HWGUY);
     }
     if (inp == 4) {
-        BuyCuTF(1200,#CUTF_EXPBODY);
+        BuyCuTF(1200,CUTF_EXPBODY);
     }
     if (inp == 5) {
-        if (self.cutf_items & #CUTF_HWGUY)
-            sprint(self, #PRINT_HIGH, "Trust me, you don't want Aspect of HWGuy AND Gymnast.\n");
+        if (self.cutf_items & CUTF_HWGUY)
+            sprint(self, PRINT_HIGH, "Trust me, you don't want Aspect of HWGuy AND Gymnast.\n");
         else
-            BuyCuTF( 450,#CUTF_GYMNAST);
+            BuyCuTF( 450,CUTF_GYMNAST);
     }
     if (inp == 6) {
-        BuyCuTF( 300,#CUTF_DEMONLORE);
+        BuyCuTF( 300,CUTF_DEMONLORE);
     }
     if (inp == 7) {
-        BuyCuTF( 600,#CUTF_CLOSECOMBAT);
+        BuyCuTF( 600,CUTF_CLOSECOMBAT);
     }
     if (inp == 8) {
         if (custom_mode!=1)
         {
             Menu_Profession2();
-            self.current_menu = #MENU_PROFESSION2;
+            self.current_menu = MENU_PROFESSION2;
         }
         else
         {
             Menu_Engineering();
-            self.current_menu = #MENU_ENGINEERING;
+            self.current_menu = MENU_ENGINEERING;
         }             
     }
     if (inp == 9) {
         Menu_Option();
-        self.current_menu = #MENU_OPTION;
+        self.current_menu = MENU_OPTION;
     }
     if (inp == 10) {
         DropFromCustomClassGen();
@@ -4626,20 +4584,20 @@ void() Menu_Option =
 	temp = ftos(self.money);
 	local string l1,l2,l3,l4;
 
-l1 = mstr(self.tf_items, #NIT_AUTOID, #NIT_RESPAWN_GUARD,
+l1 = mstr(self.tf_items, NIT_AUTOID, NIT_RESPAWN_GUARD,
 	"  .. Auto-ID         ≠   25\n  .. Respawn Guard   ≠   25\n",
 	"* .. Auto-ID         ≠   25\n  .. Respawn Guard   ≠   25\n",
 	"  .. Auto-ID         ≠   25\n* .. Respawn Guard   ≠   25\n",
 	"* .. Auto-ID         ≠   25\n* .. Respawn Guard   ≠   25\n");
 
-//l2 = mstr2(self.cutf_items,self.tf_items,#CUTF_OTR,#NIT_HOVER_BOOTS,
-l2 = mstr(self.tf_items,#NIT_HOVER_BOOTS, #NIT_HOVER_BOOTS_UPGRADE,
+//l2 = mstr2(self.cutf_items,self.tf_items,CUTF_OTR,NIT_HOVER_BOOTS,
+l2 = mstr(self.tf_items,NIT_HOVER_BOOTS, NIT_HOVER_BOOTS_UPGRADE,
 	"  ï.. Hover Boots     ≠  850\n  ñ..   Boot Upgrade  ≠  350\n",
 	"* ï.. Hover Boots     ≠  850\n  ñ..   Boot Upgrade  ≠  350\n",
 	"  ï.. Hover Boots     ≠  850\n* ñ..   Boot Upgrade  ≠  350\n",
 	"* ï.. Hover Boots     ≠  850\n* ñ..   Boot Upgrade  ≠  350\n");
 
-l3 = mstr2(self.tf_items, self.cutf_items, #NIT_RL_LASER_SIGHT, #CUTF_OTR,
+l3 = mstr2(self.tf_items, self.cutf_items, NIT_RL_LASER_SIGHT, CUTF_OTR,
 	"  ó.. Laser Guided RL ≠ 1000\n  ò.. OTR Bullets     ≠ 1850\n",
 	"* ó.. Laser Guided RL ≠ 1000\n  ò.. OTR Bullets     ≠ 1850\n",  //..   Boot Upgrade  ≠  350
 	"  ó.. Laser Guided RL ≠ 1000\n* ò.. OTR Bullets     ≠ 1850\n",
@@ -4647,50 +4605,50 @@ l3 = mstr2(self.tf_items, self.cutf_items, #NIT_RL_LASER_SIGHT, #CUTF_OTR,
 
 l4 =	"  ô.. Cluster Rockets ≠ 3250\nö.. –ÚÂˆ    \nõ..         \n.. ƒÔÓÂ!   \n";
 
-if (self.tf_items & #NIT_CLUSTER_ROCKETS )
+if (self.tf_items & NIT_CLUSTER_ROCKETS )
 l4 =	"* ô.. Cluster Rockets ≠ 3250\nö.. –ÚÂˆ    \nõ..         \n.. ƒÔÓÂ!   \n";
 	centerprint(self, "úãê CısÙoÌi˙e ŸÔıÚÛÂÏÊ ãú\nãú Optional Equipment úã\n\n", l1,l2,l3,l4, temp," dollars left\n");
 };
 void(float inp) Menu_Option_Input =
 {
     if (inp == 1) {
-        BuyItem(25,#NIT_AUTOID);
+        BuyItem(25,NIT_AUTOID);
     }
     if (inp == 2) { 
-        BuyItem(25,#NIT_RESPAWN_GUARD);
+        BuyItem(25,NIT_RESPAWN_GUARD);
     }
     if (inp == 6) { 
         if (no_otr==1)
         {
-            sprint(self,#PRINT_HIGH,"OTR bullets are disabled\n");
+            sprint(self,PRINT_HIGH,"OTR bullets are disabled\n");
             self.impulse=0;
             return;
         }
         else
-          BuyCuTF(1850,#CUTF_OTR);
+          BuyCuTF(1850,CUTF_OTR);
     }
     if (inp == 3) {
-        BuyItem(850,#NIT_HOVER_BOOTS);
+        BuyItem(850,NIT_HOVER_BOOTS);
     }
     if (inp == 4) {
-        BuyItem(350, #NIT_HOVER_BOOTS_UPGRADE); //sync price with buyitem
+        BuyItem(350, NIT_HOVER_BOOTS_UPGRADE); //sync price with buyitem
     }
     if (inp == 5) {
-        BuyItem(1000, #NIT_RL_LASER_SIGHT); //sync with RL
+        BuyItem(1000, NIT_RL_LASER_SIGHT); //sync with RL
     }
     if (inp == 7) {
         if (no_clusters==1)
         {
-            sprint(self,#PRINT_HIGH,"Cluster rockets are disabled\n");
+            sprint(self,PRINT_HIGH,"Cluster rockets are disabled\n");
             self.impulse=0;
             return;
         }
         else
-          BuyItem(3250, #NIT_CLUSTER_ROCKETS); //sync with RL
+          BuyItem(3250, NIT_CLUSTER_ROCKETS); //sync with RL
     }
     if (inp == 8) {
         Menu_Proficiency();
-        self.current_menu = #MENU_PROFICIENCY;
+        self.current_menu = MENU_PROFICIENCY;
     }
 //		if (inp == 9) {
 //			centerprint(self, "No next menu\n");
@@ -4729,7 +4687,7 @@ void() Menu_Crusader =
 	
 	str1 = ftos(floor(amount));
 
-	if (self.weapons_carried & #WEAP_MEDIKIT)
+	if (self.weapons_carried & WEAP_MEDIKIT)
 		CenterPrint3(self, " ¡„ÙÈÔÓ:                  \n\n.. Aura of Power         €15 mana›\n.. Aura of Resistance    €15 mana›\nï.. Aura of Haste         €15 mana›\nñ.. Aura of Invisibility  €45 mana›\nó.. Dispel Evil           €30 mana›\nò.. Mass healing          €20 mana›\nô.. Mass cure             €20 mana›\nö.. Sing                  € 0 mana›\n\nÕ·Ó· ÏÂÊÙ: ", str1,"\n\ní.. ŒÔÙËÈÓÁ                        ");
 	else
 		CenterPrint3(self, " ¡„ÙÈÔÓ:                  \n\n.. Aura of Power         €15 mana›\n.. Aura of Resistance    €15 mana›\nï.. Aura of Haste         €15 mana›\nñ.. Aura of Invisibility  €45 mana›\nó.. Dispel Evil           €30 mana›\nö.. Sing                  € 0 mana›\n\nÕ·Ó· ÏÂÊÙ: ", str1,"\n\ní.. ŒÔÙËÈÓÁ                        ");
@@ -4742,11 +4700,11 @@ void(float inp) Menu_Crusader_Input =
 	// are reading it so that'll have to do.
 	
 	if (inp == 1)
-		AddAura(#AURA_POWER);
+		AddAura(AURA_POWER);
 	else if (inp == 2)
-		AddAura(#AURA_RESISTANCE);
+		AddAura(AURA_RESISTANCE);
 	else if (inp == 3)
-		AddAura(#AURA_HASTE);
+		AddAura(AURA_HASTE);
 	else if (inp == 4)
 		CrusaderAddInvisibility();
 	else if (inp == 5)
@@ -4756,7 +4714,7 @@ void(float inp) Menu_Crusader_Input =
 	else if (inp == 7)
 		CrusaderMassCure();
 	else if (inp == 8)
-		sound (self, #CHAN_MUSIC, "ambience/orff.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_MUSIC, "ambience/orff.wav", 1, ATTN_NORM);
     else if (inp == 10)
 		inp = 0;
 	else

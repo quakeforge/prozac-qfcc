@@ -1,0 +1,69 @@
+/*======================================================
+	JOBS.QC			Custom TeamFortress v3.2SB1	
+
+	(c) William Kerney			2/9/00
+	(c) SB-1 Tech				25/10/00
+========================================================
+Functions for handling the custom class professions
+======================================================*/
+
+
+/*
+** Chaplan Profession -
+** Dispels demons, inspires teammates to do x2 damage, but can't attack himself
+** Timer triggers every so often, checking to see if you want to resume inspire
+*/
+#define GUIDE_TIME 1 //Period of how often lightning guides are shown. Must be less than...
+#define CHAPLAN_TIME 1 //Period of seconds how often it fires
+#define INSPIRE_TIME 6 //How long someone stays inspired
+#define CHAPLAN_RADIUS 320 //About the radius of brightglow
+#define CHAPLAN_HEAL 50    //If you have a medikit you'll heal friends this much
+#define CHAPLAN_HEAL_DELAY 3 //You can't have been shot in last three seconds to be healed
+
+
+/*
+** Martyr Proficiency -
+** Becomes invincible, but dies after a few seconds
+*/
+#define MARTYR_TIME 3.5
+
+/* Berserker Profession -
+** A simple soul that just likes killing things
+** Takes 50 self inflicted damage and gets Quad for 5 seconds
+** If he can't pay up with the 50 health he gets reduced to 1 and dies after his 5 seconds
+*/
+
+// now takes BERSERKER_HP_COST hp
+
+#define BERSERK_TIME 4
+
+/*
+** Judoka Profession -
+** Disarms opponents so they cannot attack
+*/
+//This is guaranteed to be removed if either target or owner dies or disconnects
+//So we don't have to do error checking on those situations
+//Four special cases, Rifle, Medikit, AC and Grapple, have side effects
+// when you remove them. Need special cases to handle their theft
+#define DISARM_TIME 10
+#define CANT_ATTACK_TIME 5
+#define HIT_DELAY 8
+#define MISS_DELAY 1
+
+/*
+** Guerilla Profession -
+** Can set self-detonating land mines
+*/
+#define ACTIVATE_TIME 8 //Time until it turns on //- it was 3? prolly 10
+#define BEEP_RATE 4 //Delay between beeps //- it was 3
+#define MINE_DURATION 360 //Time it lasts after being activated //- it was 60 ofn 
+#define JOB_DELAY 4 //Time between mine placements //- it was 10
+#define GUERILLA_RADIUS 135 //-it was 150 without define
+#define MINE_COST 4 // OfN number of rockets a mine needs
+//#define MAX_MINES 4 // OfN Maximum number of mines for player NOW A LOCALINFO
+
+
+#define NOHIDE_TIME 8
+#define EXPOSURE_NOHIDE_TIME 20
+#define EXPOSURE_NORELOAD_TIME 7
+#define FULLH_NORELOAD_TIME 1.5

@@ -1,3 +1,4 @@
+#include "defs.qh"
 
 #pragma DONT_COMPILE_THIS_FILE
 

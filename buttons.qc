@@ -1,4 +1,5 @@
 // button and multiple button
+#include "defs.qh"
 
 #define BUTTON_START_OUT	32 
 
@@ -7,7 +8,7 @@ void() button_return;
 
 void() button_wait =
 {
-	self.state = #STATE_TOP;
+	self.state = STATE_TOP;
 	self.nextthink = self.ltime + self.wait;
 	self.think = button_return;
 	activator = self.enemy;
@@ -17,18 +18,18 @@ void() button_wait =
 
 void() button_done =
 {
-	self.state = #STATE_BOTTOM;
+	self.state = STATE_BOTTOM;
 };
 
 void() button_return =
 {
-	self.goal_state = #TFGS_INACTIVE;
+	self.goal_state = TFGS_INACTIVE;
 
-	self.state = #STATE_DOWN;
+	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos1, self.speed, button_done);
 	self.frame = 0;			// use normal textures
 	if (self.health)
-		self.takedamage = #DAMAGE_YES;	// can be shot again
+		self.takedamage = DAMAGE_YES;	// can be shot again
 };
 
 
@@ -39,12 +40,12 @@ void() button_blocked =
 
 void() button_fire =
 {
-	if (self.state == #STATE_UP || self.state == #STATE_TOP)
+	if (self.state == STATE_UP || self.state == STATE_TOP)
 		return;
 
-	sound (self, #CHAN_VOICE, self.noise, 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
-	self.state = #STATE_UP;
+	self.state = STATE_UP;
 	SUB_CalcMove (self.pos2, self.speed, button_wait);
 };
 
@@ -62,7 +63,7 @@ void() button_use =
 	if (other.classname != "player")
 		return;
 
-	if (self.goal_activation & #TFGA_SPANNER)
+	if (self.goal_activation & TFGA_SPANNER)
 		return;
 
 	if (!Activated(self,other))
@@ -72,7 +73,7 @@ void() button_use =
 		{
 			te = Findgoal(self.else_goal);
 			if (te)
-				DoResults(te, other, (self.goal_result & #TFGR_ADD_BONUSES));
+				DoResults(te, other, (self.goal_result & TFGR_ADD_BONUSES));
 		}
 
 		return;
@@ -91,11 +92,11 @@ void() button_touch =
 
     // OfN --------------------------------------//
     //- BUGFIX Avoid observers touching buttons  //
-	if (other.playerclass == #PC_UNDEFINED)
+	if (other.playerclass == PC_UNDEFINED)
 		return;
     //------------------------------------------//
 
-	if (self.goal_activation & #TFGA_SPANNER)
+	if (self.goal_activation & TFGA_SPANNER)
 		return;
 
 	if (!Activated(self,other))
@@ -105,7 +106,7 @@ void() button_touch =
 		{
 			te = Findgoal(self.else_goal);
 			if (te)
-				DoResults(te, other, (self.goal_result & #TFGR_ADD_BONUSES));
+				DoResults(te, other, (self.goal_result & TFGR_ADD_BONUSES));
 		}
 
 		return;
@@ -118,12 +119,12 @@ void() button_touch =
 
 void() button_killed =
 {
-	if (self.goal_activation & #TFGA_SPANNER)
+	if (self.goal_activation & TFGA_SPANNER)
 		return;
 
 	self.enemy = damage_attacker;
 	self.health = self.max_health;
-	self.takedamage = #DAMAGE_NO;	// wil be reset upon return
+	self.takedamage = DAMAGE_NO;	// wil be reset upon return
 	button_fire ();
 };
 
@@ -144,7 +145,7 @@ When a button is touched, it moves some distance in the direction of it's angle,
 3) in-out
 
 TF Note:
-If the spawnflags has the #BUTTON_START_OUT (32), then the button
+If the spawnflags has the BUTTON_START_OUT (32), then the button
 will automatically fire at the start of the level, allowing you
 to light in the out position.
 
@@ -153,7 +154,7 @@ void() func_button =
 {
 	local float		gtemp, ftemp;
 
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -182,8 +183,8 @@ void() func_button =
 	
 	SetMovedir ();
 
-	self.movetype = #MOVETYPE_PUSH;
-	self.solid = #SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
+	self.solid = SOLID_BSP;
 	setmodel (self, self.model);
 
 	self.blocked = button_blocked;
@@ -193,7 +194,7 @@ void() func_button =
 	{
 		self.max_health = self.health;
 		self.th_die = button_killed;
-		self.takedamage = #DAMAGE_YES;
+		self.takedamage = DAMAGE_YES;
 	}
 	else
 		self.touch = button_touch;
@@ -205,12 +206,12 @@ void() func_button =
 	if (!self.lip)
 		self.lip = 4;
 
-	self.state = #STATE_BOTTOM;
+	self.state = STATE_BOTTOM;
 
 	self.pos1 = self.origin;
 	self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
 
-	if (self.spawnflags & #BUTTON_START_OUT)
+	if (self.spawnflags & BUTTON_START_OUT)
 		button_fire ();
 };
 

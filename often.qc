@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*=======================================================//
 // OfteN.QC - CustomTF 3.2.OfN             - 30/1/2001 - //
 // by Sergio Fumaña Grunwaldt  - OfteN aka superCOCK2000 //
@@ -193,7 +194,7 @@ void(float tno, entity ignore) teamprefixsprint =
 	{
 		if (Teammate(te.team_no,tno) && te != ignore)
 		{
-            sprint(te, #PRINT_HIGH, "Team ");
+            sprint(te, PRINT_HIGH, "Team ");
 		}
 
 		te = find(te, classname, "player");
@@ -219,7 +220,7 @@ void(float tno, entity ignore, entity ignore2) teamprefixsprintbi =
 	{
 		if (Teammate(te.team_no,tno) && te != ignore && te != ignore2)
 		{
-            sprint(te, #PRINT_HIGH, "Team ");
+            sprint(te, PRINT_HIGH, "Team ");
 		}
 
 		te = find(te, classname, "player");
@@ -236,12 +237,12 @@ void(entity ignore, string st, string st2, string st3, string st4, string st5, s
 	{
 		if (Teammate(te.team_no,ignore.team_no) && te != ignore)
 		{
-            sprint(te, #PRINT_HIGH, st);
-            sprint(te, #PRINT_HIGH, st2);
-            sprint(te, #PRINT_HIGH, st3);
-            sprint(te, #PRINT_HIGH, st4);
-            sprint(te, #PRINT_HIGH, st5);
-            sprint(te, #PRINT_HIGH, st6);
+            sprint(te, PRINT_HIGH, st);
+            sprint(te, PRINT_HIGH, st2);
+            sprint(te, PRINT_HIGH, st3);
+            sprint(te, PRINT_HIGH, st4);
+            sprint(te, PRINT_HIGH, st5);
+            sprint(te, PRINT_HIGH, st6);
 		}
 
 		te = find(te, classname, "player");
@@ -260,12 +261,12 @@ void(entity ignore, entity ignore2, string st, string st2, string st3, string st
 	{
 		if (Teammate(te.team_no,ignore.team_no) && te != ignore && te != ignore2)
 		{
-            sprint(te, #PRINT_HIGH, st);
-            sprint(te, #PRINT_HIGH, st2);
-            sprint(te, #PRINT_HIGH, st3);
-            sprint(te, #PRINT_HIGH, st4);
-            sprint(te, #PRINT_HIGH, st5);
-            sprint(te, #PRINT_HIGH, st6);
+            sprint(te, PRINT_HIGH, st);
+            sprint(te, PRINT_HIGH, st2);
+            sprint(te, PRINT_HIGH, st3);
+            sprint(te, PRINT_HIGH, st4);
+            sprint(te, PRINT_HIGH, st5);
+            sprint(te, PRINT_HIGH, st6);
 		}
 
 		te = find(te, classname, "player");
@@ -279,7 +280,7 @@ void(entity ignore, entity ignore2, string st, string st2, string st3, string st
 float (string skin_str) Is_TF_Skin =
 {
    // if relax_cheatcheck is "on" return its a valid skin
-   if (relax_cheatcheck==1) return #TRUE;
+   if (relax_cheatcheck==1) return TRUE;
    
    if ( skin_str != "tf_scout"
     && skin_str != "tf_snipe"
@@ -290,9 +291,9 @@ float (string skin_str) Is_TF_Skin =
     && skin_str != "tf_pyro"
     && skin_str != "tf_spy"
     && skin_str != "tf_eng")
-        return #FALSE;
+        return FALSE;
    else
-        return #TRUE;
+        return TRUE;
 };
 
 //============================================================================//
@@ -321,55 +322,55 @@ float (float tno, float theColor ) IsValidTopColor =
     if (relax_cheatcheck==1)
     {
         if (theColor > 13 || theColor < 0)
-            return #FALSE;
+            return FALSE;
         
         if (tno == 1)
         {
             if (theColor == 4)
-                return #FALSE;
+                return FALSE;
             
             if (number_of_teams > 2 && theColor == 12)
-                return #FALSE;
+                return FALSE;
             if (number_of_teams > 3 && theColor == 11)
-                return #FALSE;
+                return FALSE;
         }
         
         if (tno == 2)
         {
             if (theColor == 13)
-                return #FALSE;
+                return FALSE;
         
             if (number_of_teams > 2 && theColor == 12)
-                return #FALSE;
+                return FALSE;
             if (number_of_teams > 3 && theColor == 11)
-                return #FALSE;
+                return FALSE;
         }
         
         if (tno == 3)
         {
             if (theColor==4||theColor==13)
-                return #FALSE;
+                return FALSE;
 
             if (number_of_teams > 3 && theColor == 11)
-                return #FALSE;
+                return FALSE;
         }
 
         if (tno == 4 && (theColor==4||theColor==13||theColor==12))
-            return #FALSE;
+            return FALSE;
 
-        return #TRUE;
+        return TRUE;
     }
 
     if (tno == 1 && (theColor==2||theColor==13))
-		return #TRUE;
+		return TRUE;
 	if (tno == 2 && (theColor==9||theColor==4))
-		return #TRUE;
+		return TRUE;
 	if (tno == 3 && (theColor==12||theColor==5))
-		return #TRUE;
+		return TRUE;
 	if (tno == 4 && (theColor==11||theColor==3))
-		return #TRUE;
+		return TRUE;
 
-	return #FALSE;
+	return FALSE;
 };
 
 
@@ -378,22 +379,22 @@ float (float tno, float theColor ) IsValidTopColor =
 //==========================//
 void(entity player) UpdateCells =
 {
-    if (player.current_weapon == #WEAP_SPANNER 
-    || player.current_weapon == #WEAP_LIGHTNING
-    || player.current_weapon == #WEAP_FLAMETHROWER
-    || player.current_weapon == #WEAP_DAEDALUS
-    || player.current_weapon == #WEAP_LASERCANNON)
+    if (player.current_weapon == WEAP_SPANNER 
+    || player.current_weapon == WEAP_LIGHTNING
+    || player.current_weapon == WEAP_FLAMETHROWER
+    || player.current_weapon == WEAP_DAEDALUS
+    || player.current_weapon == WEAP_LASERCANNON)
     {
         player.currentammo = player.ammo_cells;
-        player.items = player.items | #IT_CELLS;
+        player.items = player.items | IT_CELLS;
     }
 };
 
 void(entity player) ActivateHolo =
 {
-    if (!(player.cutf_items & #CUTF_HOLO))
+    if (!(player.cutf_items & CUTF_HOLO))
     {
-		//sprint(player, #PRINT_MEDIUM, "You do not have the holograph!\n");
+		//sprint(player, PRINT_MEDIUM, "You do not have the holograph!\n");
 		return;
 	}
 
@@ -402,23 +403,23 @@ void(entity player) ActivateHolo =
     if (player.ammo_cells < 10 && player.has_holo == 0)
     {
 		local string st;
-        sprint(player, #PRINT_HIGH, "Your holograph needs "); 
-        st=ftos(#HOLO_POWER_COST);
-        sprint(player, #PRINT_HIGH, st);
-        sprint(player, #PRINT_HIGH," cells at least!\n");
+        sprint(player, PRINT_HIGH, "Your holograph needs "); 
+        st=ftos(HOLO_POWER_COST);
+        sprint(player, PRINT_HIGH, st);
+        sprint(player, PRINT_HIGH," cells at least!\n");
 		return;
 	}
 
     if (player.has_holo == 1)
     {
-		sprint(player, #PRINT_HIGH, "You turn off the holograph device\n");
+		sprint(player, PRINT_HIGH, "You turn off the holograph device\n");
 		RemoveHolo(player);
         return;
 	}
 
 	newmis = spawn();
-	newmis.solid = #SOLID_NOT;
-	newmis.movetype = #MOVETYPE_NOCLIP;
+	newmis.solid = SOLID_NOT;
+	newmis.movetype = MOVETYPE_NOCLIP;
 	newmis.origin = player.origin;
 	newmis.angles = player.angles;
 	newmis.colormap = player.colormap;
@@ -427,16 +428,16 @@ void(entity player) ActivateHolo =
 	newmis.classname = "holo";
 	newmis.owner=player;
 	newmis.frame=player.frame;
-	newmis.nextthink = time + #HOLO_CYCLE_TIME;	
+	newmis.nextthink = time + HOLO_CYCLE_TIME;	
 	newmis.think = HoloThink;
-    newmis.effects = #EF_DIMLIGHT;
-	player.ammo_cells = player.ammo_cells - #HOLO_POWER_COST;
+    newmis.effects = EF_DIMLIGHT;
+	player.ammo_cells = player.ammo_cells - HOLO_POWER_COST;
 
     UpdateCells(player);
 
 	stuffcmd (player, "bf\nbf\n");
-	sprint(player,#PRINT_HIGH,"you turn on your holograph...\n");
-    sound (newmis, #CHAN_MISC, "effects/bodyhit2.wav", 0.5, #ATTN_NORM);
+	sprint(player,PRINT_HIGH,"you turn on your holograph...\n");
+    sound (newmis, CHAN_MISC, "effects/bodyhit2.wav", 0.5, ATTN_NORM);
     player.has_holo = 2; // 2 makes it wait until first think for turning off the holo 
 };
 
@@ -446,15 +447,15 @@ void() HoloThink =
 
     if (self.owner.ammo_cells < 1)
     {
-		sprint(self.owner, #PRINT_MEDIUM, "your hologram runs out of energy\n");
-        sound (self, #CHAN_MISC, "effects/bodyhit1.wav", 0.6, #ATTN_NORM);
+		sprint(self.owner, PRINT_MEDIUM, "your hologram runs out of energy\n");
+        sound (self, CHAN_MISC, "effects/bodyhit1.wav", 0.6, ATTN_NORM);
         spawnFOG(self.origin);
         self.owner.has_holo = 0;
         dremove(self);
         return;
 	}
 
-	self.owner.ammo_cells = self.owner.ammo_cells - #HOLO_CYCLE_COST;
+	self.owner.ammo_cells = self.owner.ammo_cells - HOLO_CYCLE_COST;
 
     /*oldself = self;
 	self = self.owner;
@@ -463,7 +464,7 @@ void() HoloThink =
 
     UpdateCells(self.owner);
     
-    self.nextthink = time + #HOLO_CYCLE_TIME;	
+    self.nextthink = time + HOLO_CYCLE_TIME;	
     self.owner.has_holo = 1; // ready to be turned off
 };
 
@@ -475,7 +476,7 @@ void (entity player) RemoveHolo =
 	{
 		if (te.owner == player) {
           te.owner.has_holo = 0;
-          sound (te, #CHAN_MISC, "effects/bodyhit1.wav", 0.6, #ATTN_NORM);
+          sound (te, CHAN_MISC, "effects/bodyhit1.wav", 0.6, ATTN_NORM);
           spawnFOG(te.origin);
           dremove(te);
           return;
@@ -499,7 +500,7 @@ void() FlareGrenadeTouch =
 	if (other == self.owner)
 		return;		// don't bounce on owner
 
-    if (pointcontents(self.origin) == #CONTENT_SKY || pointcontents(self.origin) == #CONTENT_SOLID) // if in wall or sky
+    if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID) // if in wall or sky
 	{
        dremove(self);
        return;
@@ -511,22 +512,22 @@ void() FlareGrenadeTouch =
         //setmodel (self, "progs/flare.mdl");
     }
 
-    if (other == world && self.movetype != #MOVETYPE_BOUNCE)
+    if (other == world && self.movetype != MOVETYPE_BOUNCE)
     {
         self.velocity = '0 0 0';
         
         if (random()<0.6)
         {
-           sound (self, #CHAN_MISC, "effects/bodyhit2.wav", 0.7, #ATTN_NORM);	// bounce sound
+           sound (self, CHAN_MISC, "effects/bodyhit2.wav", 0.7, ATTN_NORM);	// bounce sound
         }
         else
         {
-           sound (self, #CHAN_MISC, "effects/bodyhit1.wav", 0.6, #ATTN_NORM);	// bounce sound
+           sound (self, CHAN_MISC, "effects/bodyhit1.wav", 0.6, ATTN_NORM);	// bounce sound
         }
     }
     else
     {
-        self.movetype = #MOVETYPE_BOUNCE;
+        self.movetype = MOVETYPE_BOUNCE;
         self.avelocity = '1000 200 850';
         self.touch = FlareBounce;
 
@@ -552,7 +553,7 @@ void() FlareBounce =
 
 void() FlareGrenadeExplode =
 {
-    sound (self, #CHAN_MISC, "items/flare1.wav", 1, #ATTN_NORM);
+    sound (self, CHAN_MISC, "items/flare1.wav", 1, ATTN_NORM);
 
     //setmodel (self, "progs/flare.mdl");
     self.skin=0;
@@ -561,22 +562,22 @@ void() FlareGrenadeExplode =
     local vector org;
     org=self.origin;
 
-        WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-		WriteByte (#MSG_BROADCAST, #TE_GUNSHOT);
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
 		#ifdef QUAKE_WORLD
-			WriteByte (#MSG_MULTICAST, 3);
+			WriteByte (MSG_MULTICAST, 3);
 		#endif
-		WriteCoord (#MSG_BROADCAST, org_x);
-		WriteCoord (#MSG_BROADCAST, org_y);
-		WriteCoord (#MSG_BROADCAST, org_z);
+		WriteCoord (MSG_BROADCAST, org_x);
+		WriteCoord (MSG_BROADCAST, org_y);
+		WriteCoord (MSG_BROADCAST, org_z);
 		#ifdef QUAKE_WORLD
-			multicast (org, #MULTICAST_PVS);
+			multicast (org, MULTICAST_PVS);
 		#endif
 
-    self.effects = self.effects | #EF_DIMLIGHT;
+    self.effects = self.effects | EF_DIMLIGHT;
 
     self.think = SUB_Remove;
-    self.nextthink = time + #FLARE_DURATION;
+    self.nextthink = time + FLARE_DURATION;
 };
 
 //========================================================//
@@ -586,47 +587,47 @@ void() FlareGrenadeExplode =
 float(entity thing) IsMonster =
 {
     if (thing.classname=="monster_shambler")
-        return #TRUE;
+        return TRUE;
     if (thing.classname=="monster_demon1")
-        return #TRUE;
+        return TRUE;
     if (thing.classname=="monster_wizard")
-        return #TRUE;
+        return TRUE;
     if (thing.classname=="monster_army")
-        return #TRUE;
+        return TRUE;
 
     if (thing.classname=="monster_knight")
-        return #TRUE;
+        return TRUE;
     if (thing.classname=="monster_hknight")
-        return #TRUE;
+        return TRUE;
     
-    return #FALSE;
+    return FALSE;
 };
 
 float(entity thing) IsMonsterNonArmy =
 {
     if (thing.classname=="monster_shambler")
-        return #TRUE;
+        return TRUE;
     if (thing.classname=="monster_demon1")
-        return #TRUE;
+        return TRUE;
     if (thing.classname=="monster_wizard")
-        return #TRUE;
+        return TRUE;
 
     if (thing.classname=="monster_knight")
-        return #TRUE;
+        return TRUE;
     if (thing.classname=="monster_hknight")
-        return #TRUE;
+        return TRUE;
 
     
-    return #FALSE;
+    return FALSE;
 };
 
 float(entity player) HasMonster =
 {
-   if ((player.job & #JOB_WARLOCK && player.job & #JOB_DEMON_OUT)
-     ||(player.job & #JOB_ARMY && player.job & #JOB_DEMON_OUT))
-     return #TRUE;
+   if ((player.job & JOB_WARLOCK && player.job & JOB_DEMON_OUT)
+     ||(player.job & JOB_ARMY && player.job & JOB_DEMON_OUT))
+     return TRUE;
    
-   return #FALSE;
+   return FALSE;
 };
 
 string(entity themonster) GetMonsterName =
@@ -695,25 +696,25 @@ string(entity thebuilding) GetBuildingName =
 float(entity thebuilding) IsOffenseBuilding =
 {
     if (!IsBuilding(thebuilding))
-        return #FALSE;
+        return FALSE;
 
     if (thebuilding.classname == "building_sentrygun") 
-        return #TRUE;
+        return TRUE;
 
     if (thebuilding.classname == "building_tesla")
     {
-        if (thebuilding.tf_items & #NIT_TESLA_CLOAKING)  
+        if (thebuilding.tf_items & NIT_TESLA_CLOAKING)  
         {
             if (thebuilding.job == 2)
-                return #TRUE; // tesla is uncloaked, so soldier can see it
+                return TRUE; // tesla is uncloaked, so soldier can see it
         }
         else
         {
-            return #TRUE;
+            return TRUE;
         }
     }
 
-    return #FALSE;
+    return FALSE;
 };
 
 string(entity thething) GetEnemyName =
@@ -750,22 +751,22 @@ void(entity body) ExpBody =
 
 void() ExpBodyThink =
 {
-    //deathmsg = #DMSG_EXPBODY;
-    TF_T_Damage(self.owner, self.owner, self.owner.martyr_enemy, self.owner.health + 60, #TF_TD_IGNOREARMOUR, #TF_TD_OTHER);// #TF_TD_OTHER);
+    //deathmsg = DMSG_EXPBODY;
+    TF_T_Damage(self.owner, self.owner, self.owner.martyr_enemy, self.owner.health + 60, TF_TD_IGNOREARMOUR, TF_TD_OTHER);// TF_TD_OTHER);
 
-    WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-    WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-    WriteCoord (#MSG_BROADCAST, self.origin_x);
-    WriteCoord (#MSG_BROADCAST, self.origin_y);
-    WriteCoord (#MSG_BROADCAST, self.origin_z);
+    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+    WriteCoord (MSG_BROADCAST, self.origin_x);
+    WriteCoord (MSG_BROADCAST, self.origin_y);
+    WriteCoord (MSG_BROADCAST, self.origin_z);
   #ifdef QUAKE_WORLD
-   	multicast (self.origin, #MULTICAST_PHS);
+   	multicast (self.origin, MULTICAST_PHS);
   #endif
 
-    deathmsg = #DMSG_EXPBODY;
-    T_RadiusDamage (self.owner, self.owner, #EXPBODY_DMG, self.owner);
+    deathmsg = DMSG_EXPBODY;
+    T_RadiusDamage (self.owner, self.owner, EXPBODY_DMG, self.owner);
 
-//    self.owner.is_abouttodie = #TRUE;
+//    self.owner.is_abouttodie = TRUE;
 
     dremove(self);
 };
@@ -774,13 +775,13 @@ void() ExpBodyThink =
 
 void(vector where) spawnFOG =
 {
-    WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_TELEPORT);
-	WriteCoord (#MSG_BROADCAST, where_x);
-	WriteCoord (#MSG_BROADCAST, where_y);
-	WriteCoord (#MSG_BROADCAST, where_z);
+    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_TELEPORT);
+	WriteCoord (MSG_BROADCAST, where_x);
+	WriteCoord (MSG_BROADCAST, where_y);
+	WriteCoord (MSG_BROADCAST, where_z);
 #ifdef QUAKE_WORLD
-	multicast (where, #MULTICAST_PHS);
+	multicast (where, MULTICAST_PHS);
 #endif
 };
 
@@ -789,80 +790,80 @@ void(vector where) spawnFOG =
 // returns true if the thing should be dismantled
 float() CheckEnemyDismantle =
 {
-    if (Teammate(self.building.real_owner.team_no,self.team_no)) return #TRUE;
+    if (Teammate(self.building.real_owner.team_no,self.team_no)) return TRUE;
 
     local string st;
     st=GetBuildingName(self.building); 
     
     if (GetICELevel(self.building) == 1 && random() > 0.5)
     {
-        sprint(self, #PRINT_HIGH, "This ");
-        sprint(self, #PRINT_HIGH, st);
-        sprint(self, #PRINT_HIGH, " isn't easy to dismantle, it has a level 1 ICE!\n");
+        sprint(self, PRINT_HIGH, "This ");
+        sprint(self, PRINT_HIGH, st);
+        sprint(self, PRINT_HIGH, " isn't easy to dismantle, it has a level 1 ICE!\n");
 
-        sprint(self.building.real_owner, #PRINT_HIGH, "Somebody is trying to dismantle your ");
-        sprint(self.building.real_owner, #PRINT_HIGH,st);
-        sprint(self.building.real_owner, #PRINT_HIGH, "!\n");
+        sprint(self.building.real_owner, PRINT_HIGH, "Somebody is trying to dismantle your ");
+        sprint(self.building.real_owner, PRINT_HIGH,st);
+        sprint(self.building.real_owner, PRINT_HIGH, "!\n");
 
-        return #FALSE;
+        return FALSE;
     } 
     else if (GetICELevel(self.building) == 2)
     {
-        sprint(self, #PRINT_HIGH, "You can't dismantle this ");
-        sprint(self, #PRINT_HIGH, st);
-        sprint(self, #PRINT_HIGH, ", it's protected with a level 2 ICE!\n");
+        sprint(self, PRINT_HIGH, "You can't dismantle this ");
+        sprint(self, PRINT_HIGH, st);
+        sprint(self, PRINT_HIGH, ", it's protected with a level 2 ICE!\n");
 
-        sprint(self.building.real_owner, #PRINT_HIGH, "Somebody tried to dismantle your ");
-        sprint(self.building.real_owner, #PRINT_HIGH,st);
-        sprint(self.building.real_owner, #PRINT_HIGH, "!\n");
+        sprint(self.building.real_owner, PRINT_HIGH, "Somebody tried to dismantle your ");
+        sprint(self.building.real_owner, PRINT_HIGH,st);
+        sprint(self.building.real_owner, PRINT_HIGH, "!\n");
 
-        return #FALSE;
+        return FALSE;
     } 
     else if (GetICELevel(self.building) == 3)
     {
-        sprint(self, #PRINT_HIGH, "This ");
-        sprint(self, #PRINT_HIGH, st);
-        sprint(self, #PRINT_HIGH, " is protected with a level 3 ICE!\n");
-        deathmsg=#DMSG_ANTIDISM;
-        TF_T_Damage(self, self, self.building, self.health + 50, #TF_TD_IGNOREARMOUR, #TF_TD_OTHER);
-        sound (self, #CHAN_MISC, "effects/crunch.wav", 1, #ATTN_NONE);
+        sprint(self, PRINT_HIGH, "This ");
+        sprint(self, PRINT_HIGH, st);
+        sprint(self, PRINT_HIGH, " is protected with a level 3 ICE!\n");
+        deathmsg=DMSG_ANTIDISM;
+        TF_T_Damage(self, self, self.building, self.health + 50, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+        sound (self, CHAN_MISC, "effects/crunch.wav", 1, ATTN_NONE);
 
-        return #FALSE;
+        return FALSE;
     }
     
-    bprint(#PRINT_MEDIUM, self.building.real_owner.netname);
-    bprint(#PRINT_MEDIUM, "'s ");
-    bprint(#PRINT_MEDIUM, st);
-    bprint(#PRINT_MEDIUM, " has been dismantled by ");
-    bprint(#PRINT_MEDIUM, self.netname);
-    bprint(#PRINT_MEDIUM, "\n");
+    bprint(PRINT_MEDIUM, self.building.real_owner.netname);
+    bprint(PRINT_MEDIUM, "'s ");
+    bprint(PRINT_MEDIUM, st);
+    bprint(PRINT_MEDIUM, " has been dismantled by ");
+    bprint(PRINT_MEDIUM, self.netname);
+    bprint(PRINT_MEDIUM, "\n");
 
-    sprint(self.building.real_owner, #PRINT_HIGH, "The enemy has dismantled your ");
-    sprint(self.building.real_owner, #PRINT_HIGH, st);
-    sprint(self.building.real_owner, #PRINT_HIGH, "!\n");
+    sprint(self.building.real_owner, PRINT_HIGH, "The enemy has dismantled your ");
+    sprint(self.building.real_owner, PRINT_HIGH, st);
+    sprint(self.building.real_owner, PRINT_HIGH, "!\n");
 
 #ifdef QUAKE_WORLD
     logfrag(self, self.building.real_owner);
 #endif
 	
     self.real_frags = self.real_frags + 1; 
-	if (!(toggleflags & #TFLAG_TEAMFRAGS))
+	if (!(toggleflags & TFLAG_TEAMFRAGS))
     	self.frags = self.real_frags;
 
-    return #TRUE;
+    return TRUE;
 };
 
 //- OfN - Checks spots are visible between them
 float (vector spot1, vector spot2) vis2orig =
 {
-	traceline (spot1, spot2, #TRUE, world);	// see through other monsters
+	traceline (spot1, spot2, TRUE, world);	// see through other monsters
 	
 	if (trace_inopen && trace_inwater)
-		return #FALSE;			// sight line crossed contents
+		return FALSE;			// sight line crossed contents
 
 	if (trace_fraction == 1 && trace_endpos == spot2) //CH just extra check
-		return #TRUE;
-	return #FALSE;
+		return TRUE;
+	return FALSE;
 };
 
 //=========================================================================
@@ -935,7 +936,7 @@ entity() GetBestKiller =
 
 void() bprintline =
 {
-    bprint(#PRINT_HIGH,"\nŸ\n\n");
+    bprint(PRINT_HIGH,"\nŸ\n\n");
 };
 
 void() PrintResults =
@@ -947,57 +948,57 @@ void() PrintResults =
 
     if (time >= timelimit)
     {
-        bprint(#PRINT_HIGH,"Time limit reached!\n");
+        bprint(PRINT_HIGH,"Time limit reached!\n");
     }
 
-    bprint(#PRINT_HIGH,"Map ");
-    bprint(#PRINT_HIGH,mapname);
-    bprint(#PRINT_HIGH," was played for ");
-    bprint(#PRINT_HIGH,ftos(floor(time/60)));
-    bprint(#PRINT_HIGH," minutes.\n");
+    bprint(PRINT_HIGH,"Map ");
+    bprint(PRINT_HIGH,mapname);
+    bprint(PRINT_HIGH," was played for ");
+    bprint(PRINT_HIGH,ftos(floor(time/60)));
+    bprint(PRINT_HIGH," minutes.\n");
 
-    bprint(#PRINT_HIGH,"\nŸ Òåóõìôó: Ÿ\n\n");
+    bprint(PRINT_HIGH,"\nŸ Òåóõìôó: Ÿ\n\n");
     
     winteam = GetTrueTeamName(TeamFortress_TeamGetWinner());
 
     if (winteam != "ERROR")
     {
 
-        bprint(#PRINT_HIGH,winteam);
-        bprint(#PRINT_HIGH," team ×ÉÎÓ the game!!\n\n");
+        bprint(PRINT_HIGH,winteam);
+        bprint(PRINT_HIGH," team ×ÉÎÓ the game!!\n\n");
     }
 
-    bprint(#PRINT_HIGH,"Âåóô Ğìáùåò: ");
+    bprint(PRINT_HIGH,"Âåóô Ğìáùåò: ");
     theplayer = GetBestPlayer();
     
     if (theplayer != world)
     {
-        bprint(#PRINT_HIGH,theplayer.netname);
-        bprint(#PRINT_HIGH," (");
-        bprint(#PRINT_HIGH,GetTrueTeamName(theplayer.team_no));
-        bprint(#PRINT_HIGH,") with ");
-        bprint(#PRINT_HIGH,ftos(floor(theplayer.frags)));
-        bprint(#PRINT_HIGH," frags.");
+        bprint(PRINT_HIGH,theplayer.netname);
+        bprint(PRINT_HIGH," (");
+        bprint(PRINT_HIGH,GetTrueTeamName(theplayer.team_no));
+        bprint(PRINT_HIGH,") with ");
+        bprint(PRINT_HIGH,ftos(floor(theplayer.frags)));
+        bprint(PRINT_HIGH," frags.");
     }
     else
-        bprint(#PRINT_HIGH,"None.");
+        bprint(PRINT_HIGH,"None.");
     
-    bprint(#PRINT_HIGH,"\nËéììéîç Íáãèéîå: ");
+    bprint(PRINT_HIGH,"\nËéììéîç Íáãèéîå: ");
     theplayer = GetBestKiller();
     
     if (theplayer != world)
     {
-        bprint(#PRINT_HIGH,theplayer.netname);
-        bprint(#PRINT_HIGH," (");
-        bprint(#PRINT_HIGH,GetTrueTeamName(theplayer.team_no));
-        bprint(#PRINT_HIGH,") with ");
-        bprint(#PRINT_HIGH,ftos(floor(theplayer.frags - TeamFortress_TeamGetScore(theplayer.team_no))));
-        bprint(#PRINT_HIGH," kills.");
+        bprint(PRINT_HIGH,theplayer.netname);
+        bprint(PRINT_HIGH," (");
+        bprint(PRINT_HIGH,GetTrueTeamName(theplayer.team_no));
+        bprint(PRINT_HIGH,") with ");
+        bprint(PRINT_HIGH,ftos(floor(theplayer.frags - TeamFortress_TeamGetScore(theplayer.team_no))));
+        bprint(PRINT_HIGH," kills.");
     }
     else
-        bprint(#PRINT_HIGH,"None.");
+        bprint(PRINT_HIGH,"None.");
 
-    bprint(#PRINT_HIGH,"\n");
+    bprint(PRINT_HIGH,"\n");
     bprintline();
 };
 
@@ -1006,9 +1007,9 @@ void() PrintResults =
 
 void(entity attacker) MonsterKill =
 {
-    if (attacker.job & #JOB_WARLOCK)
-    if (deathmsg == #DMSG_AXE || deathmsg == #DMSG_BACKSTAB)
-    if (attacker.demon_blood < #MAX_KNIFE_BLOOD)
+    if (attacker.job & JOB_WARLOCK)
+    if (deathmsg == DMSG_AXE || deathmsg == DMSG_BACKSTAB)
+    if (attacker.demon_blood < MAX_KNIFE_BLOOD)
     	attacker.demon_blood = attacker.demon_blood + 1;    
 };
 
@@ -1017,22 +1018,22 @@ void(entity attacker) MonsterKill =
 
 float(entity theplayer, float grenslot) GetMaxGrens =
 {
-    if (theplayer.tf_items & #NIT_AMMO_BANDOLIER) // player can carry more grens cause he got bandolier
+    if (theplayer.tf_items & NIT_AMMO_BANDOLIER) // player can carry more grens cause he got bandolier
 	{
         if (grenslot == 2) //2nd slot
         {
             if (theplayer.tp_grenades_2 == 0)
                 return 0;
             
-            if (theplayer.tp_grenades_2 == #GR_TYPE_NAIL)
+            if (theplayer.tp_grenades_2 == GR_TYPE_NAIL)
                 return 3;// was 1
-            if (theplayer.tp_grenades_2 == #GR_TYPE_FRAG)
+            if (theplayer.tp_grenades_2 == GR_TYPE_FRAG)
                 return 4;// was 1
-            if (theplayer.tp_grenades_2 == #GR_TYPE_CALTROP)
+            if (theplayer.tp_grenades_2 == GR_TYPE_CALTROP)
                 return 4;// was 1
-            if (theplayer.tp_grenades_2 == #GR_TYPE_MIRV)
+            if (theplayer.tp_grenades_2 == GR_TYPE_MIRV)
                 return 3;// was 1
-            if (theplayer.tp_grenades_2 == #GR_TYPE_FLARE)
+            if (theplayer.tp_grenades_2 == GR_TYPE_FLARE)
                 return 8;            
 
             return 5;
@@ -1042,15 +1043,15 @@ float(entity theplayer, float grenslot) GetMaxGrens =
             if (theplayer.tp_grenades_1 == 0)
                 return 0;
 
-            if (theplayer.tp_grenades_1 == #GR_TYPE_NAIL)
+            if (theplayer.tp_grenades_1 == GR_TYPE_NAIL)
                 return 3;// was 1
-            if (theplayer.tp_grenades_1 == #GR_TYPE_FRAG)
+            if (theplayer.tp_grenades_1 == GR_TYPE_FRAG)
                 return 4;// was 1
-            if (theplayer.tp_grenades_1 == #GR_TYPE_CALTROP)
+            if (theplayer.tp_grenades_1 == GR_TYPE_CALTROP)
                 return 4;// was 1
-            if (theplayer.tp_grenades_1 == #GR_TYPE_MIRV)
+            if (theplayer.tp_grenades_1 == GR_TYPE_MIRV)
                 return 3;// was 1
-            if (theplayer.tp_grenades_1 == #GR_TYPE_FLARE)
+            if (theplayer.tp_grenades_1 == GR_TYPE_FLARE)
                 return 8;
             
             return 5;
@@ -1062,15 +1063,15 @@ float(entity theplayer, float grenslot) GetMaxGrens =
         if (theplayer.tp_grenades_2 == 0)
             return 0;
 
-        if (theplayer.tp_grenades_2 == #GR_TYPE_NAIL)
+        if (theplayer.tp_grenades_2 == GR_TYPE_NAIL)
             return 2;// was 1
-        if (theplayer.tp_grenades_2 == #GR_TYPE_FRAG)
+        if (theplayer.tp_grenades_2 == GR_TYPE_FRAG)
             return 3;// was 1
-        if (theplayer.tp_grenades_2 == #GR_TYPE_CALTROP)
+        if (theplayer.tp_grenades_2 == GR_TYPE_CALTROP)
             return 3;// was 1
-        if (theplayer.tp_grenades_2 == #GR_TYPE_MIRV)
+        if (theplayer.tp_grenades_2 == GR_TYPE_MIRV)
             return 2;// was 1
-        if (theplayer.tp_grenades_2 == #GR_TYPE_FLARE)
+        if (theplayer.tp_grenades_2 == GR_TYPE_FLARE)
             return 6;
 
         return 4;
@@ -1080,15 +1081,15 @@ float(entity theplayer, float grenslot) GetMaxGrens =
         if (theplayer.tp_grenades_1 == 0)
             return 0;
 
-        if (theplayer.tp_grenades_1 == #GR_TYPE_NAIL)
+        if (theplayer.tp_grenades_1 == GR_TYPE_NAIL)
             return 2;// was 1
-        if (theplayer.tp_grenades_1 == #GR_TYPE_FRAG)
+        if (theplayer.tp_grenades_1 == GR_TYPE_FRAG)
             return 3;// was 1
-        if (theplayer.tp_grenades_2 == #GR_TYPE_CALTROP)
+        if (theplayer.tp_grenades_2 == GR_TYPE_CALTROP)
             return 3;// was 1
-        if (theplayer.tp_grenades_1 == #GR_TYPE_MIRV)
+        if (theplayer.tp_grenades_1 == GR_TYPE_MIRV)
             return 2;// was 1
-        if (theplayer.tp_grenades_1 == #GR_TYPE_FLARE)
+        if (theplayer.tp_grenades_1 == GR_TYPE_FLARE)
             return 6;
         
         return 4;
@@ -1147,14 +1148,14 @@ void(entity player) SwitchToCamera =
 	
 	camera = find(world, classname, "building_camera");
 	if (camera.real_owner == player)
-		done = #TRUE;
+		done = TRUE;
 	while (!done)
 	{
 		camera = find(camera, classname, "building_camera");
 		if (camera.real_owner == player)
-			done = #TRUE;
+			done = TRUE;
 		if (camera == world)
-			done = #TRUE;
+			done = TRUE;
 	}
 	
 	if (camera == world)
@@ -1163,12 +1164,12 @@ void(entity player) SwitchToCamera =
 	/*
     
     msg_entity = player;
-	WriteByte(#MSG_ONE, #SVC_SETVIEWPORT);
-	WriteEntity(#MSG_ONE, camera);
-	WriteByte(#MSG_ONE, #SVC_SETANGLES);
-	WriteAngle(#MSG_ONE, camera.angles_x);
-	WriteAngle(#MSG_ONE, camera.angles_y);
-	WriteAngle(#MSG_ONE, camera.angles_z);
+	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
+	WriteEntity(MSG_ONE, camera);
+	WriteByte(MSG_ONE, SVC_SETANGLES);
+	WriteAngle(MSG_ONE, camera.angles_x);
+	WriteAngle(MSG_ONE, camera.angles_y);
+	WriteAngle(MSG_ONE, camera.angles_z);
     
     */
 
@@ -1176,9 +1177,9 @@ void(entity player) SwitchToCamera =
 
     //- OfN create the "fake" player image
     newmis=spawn();
-    newmis.solid = #SOLID_BBOX; //#SOLID_BSP
-	newmis.movetype = #MOVETYPE_NONE;
-    newmis.takedamage = #DAMAGE_AIM;
+    newmis.solid = SOLID_BBOX; //SOLID_BSP
+	newmis.movetype = MOVETYPE_NONE;
+    newmis.takedamage = DAMAGE_AIM;
 	newmis.origin = player.origin;
 	newmis.angles = player.angles;
 	newmis.colormap = player.colormap;
@@ -1196,20 +1197,20 @@ void(entity player) SwitchToCamera =
     newmis.max_health = 9999;
     newmis.health = 9999;
 
-    //newmis.nextthink = time + #HOLO_CYCLE_TIME;	
+    //newmis.nextthink = time + HOLO_CYCLE_TIME;	
 	//newmis.think = HoloThink;
-    //newmis.effects = #EF_DIMLIGHT;
-	//player.ammo_cells = player.ammo_cells - #HOLO_POWER_COST;
+    //newmis.effects = EF_DIMLIGHT;
+	//player.ammo_cells = player.ammo_cells - HOLO_POWER_COST;
 
-	player.fixangle = #TRUE;
-	player.is_cameraviewing = #TRUE;
+	player.fixangle = TRUE;
+	player.is_cameraviewing = TRUE;
 	player.t_s_h = player.weaponmodel; // FIXME: reloading¿?
 	player.weaponmodel= ""; // FIXME: reloading¿?
 	player.view_ofs = '0 0 0';
 
     setorigin (player, camera.origin);
 
-	sprint(player, #PRINT_HIGH, "Camera view activated.\n");
+	sprint(player, PRINT_HIGH, "Camera view activated.\n");
 };
 
 void(entity player) SwitchFromCamera =
@@ -1230,23 +1231,23 @@ void(entity player) SwitchFromCamera =
     /*
     
     msg_entity = player;
-	WriteByte(#MSG_ONE, #SVC_SETVIEWPORT);
-	WriteEntity(#MSG_ONE, player);
-	WriteByte(#MSG_ONE, #SVC_SETANGLES);
-	WriteAngle(#MSG_ONE, player.angles_x);
-	WriteAngle(#MSG_ONE, player.angles_y);
-	WriteAngle(#MSG_ONE, player.angles_z);
+	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
+	WriteEntity(MSG_ONE, player);
+	WriteByte(MSG_ONE, SVC_SETANGLES);
+	WriteAngle(MSG_ONE, player.angles_x);
+	WriteAngle(MSG_ONE, player.angles_y);
+	WriteAngle(MSG_ONE, player.angles_z);
     
     */
 
     /*
 
-	player.fixangle = #FALSE;
+	player.fixangle = FALSE;
 
 	player.weaponmodel = player.t_s_h; // FIXME: reloading¿?
 	player.view_ofs = '0 0 22';
 	
-	player.is_cameraviewing = #FALSE;
+	player.is_cameraviewing = FALSE;
 };
 
 */

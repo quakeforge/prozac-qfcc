@@ -1,3 +1,6 @@
+#include "defs.qh"
+#include "menu.qh"
+#include "monsters.qh"
 
 /*=======================================================//
 // ARMY.QC - CustomTF 3.2.OfN              - 30/1/2001 - //
@@ -18,14 +21,14 @@ $frame stand10 stand11 stand12 stand13
 
 void() JobArmy =
 {
-	if (self.current_menu == #MENU_ARMY && self.job & #JOB_DEMON_OUT)
+	if (self.current_menu == MENU_ARMY && self.job & JOB_DEMON_OUT)
     {
         if (self.demon_one.is_haxxxoring == 0) self.demon_one.is_haxxxoring = 1;
         else self.demon_one.is_haxxxoring = 0;
     }
     
-    self.current_menu = #MENU_ARMY;
-	self.menu_count = #MENU_REFRESH_RATE;   
+    self.current_menu = MENU_ARMY;
+	self.menu_count = MENU_REFRESH_RATE;   
 };
 
 void() Menu_Army1;
@@ -33,7 +36,7 @@ void() Menu_Army2;
 
 void() Menu_Army =
 {
-    if (self.job & #JOB_DEMON_OUT)
+    if (self.job & JOB_DEMON_OUT)
     {
         if (self.demon_one.is_haxxxoring == 1) Menu_Army2();
         else Menu_Army1();        
@@ -46,7 +49,7 @@ void() Menu_Army1 =
 	local float readytime,temp;
     local string st,st2,st3;
 
-    if (self.army_ready==#FALSE)
+    if (self.army_ready==FALSE)
     {           
         local entity ArmyTimer;
         ArmyTimer=GetArmyTimer(self);
@@ -69,7 +72,7 @@ void() Menu_Army1 =
         }
     }
    
-    if (self.job & #JOB_DEMON_OUT)
+    if (self.job & JOB_DEMON_OUT)
     {
 /*        if (self.demon_one.goalentity==self)
             st="ó.. Stay there!           ";
@@ -100,7 +103,7 @@ void() Menu_Army1 =
 
         st2=" ¡„ÙÈÔÓ:                  \n\n";
         
-        if (self.army_ready == #TRUE)
+        if (self.army_ready == TRUE)
             st2=" ¡„ÙÈÔÓ: ºsoldier waitingæ\n\n";
 
         custom_demon_name(self.demon_one);
@@ -130,7 +133,7 @@ st3,st4,"\n\nöÆÆ Detonate soldier brain\n\ní.. ŒÔÙËÈÓÁ               \n");
     }
     else
     {
-        if (self.army_ready==#TRUE)
+        if (self.army_ready==TRUE)
         {
             CenterPrint(self, " ¡„ÙÈÔÓ:                  \n\nì.. Teleport soldier      \n\ní.. ŒÔÙËÈÓÁ               \n\n\nReady for teleporting!");
         }
@@ -276,7 +279,7 @@ void(float inp) Menu_Army_Input2;
 
 void(float inp) Menu_Army_Input =
 {
-    if (self.job & #JOB_DEMON_OUT)
+    if (self.job & JOB_DEMON_OUT)
     {
         if (self.demon_one.is_haxxxoring == 1) Menu_Army_Input2(inp);
         else Menu_Army_Input1(inp);        
@@ -315,7 +318,7 @@ void(float inp) Menu_Army_Input2 =
         {
             self.demon_one.is_detpacking=0;
             self.demon_one.has_teleporter = 0;
-			self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & #EF_DIMLIGHT);
+			self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
 
             if (self.demon_one.enemy!=world)//self.demon_one.goalentity)
             {
@@ -384,11 +387,11 @@ void(float inp) Menu_Army_Input1 =
 		ResetMenu();
 		self.impulse = 0;
      
-        if (self.army_ready == #FALSE && !(self.job & #JOB_DEMON_OUT))
+        if (self.army_ready == FALSE && !(self.job & JOB_DEMON_OUT))
         {
-            sprint(self,#PRINT_HIGH,"Still ");
+            sprint(self,PRINT_HIGH,"Still ");
             PrintArmyTime(self);
-            sprint(self,#PRINT_HIGH," time left until next teleporting\n");
+            sprint(self,PRINT_HIGH," time left until next teleporting\n");
             self.job_finished=time+0.5;
         }
         
@@ -396,16 +399,16 @@ void(float inp) Menu_Army_Input1 =
 	}
     else if (inp == 1 && self.demon_one == world) // Teleport it!
 	{	
-		if (self.army_ready == #TRUE && self.demon_one==world && !(self.job & #JOB_DEMON_OUT))
+		if (self.army_ready == TRUE && self.demon_one==world && !(self.job & JOB_DEMON_OUT))
         {
            ResetMenu();
            //StartTeleArmy();
            
            if (TeleSoldier())
            {
-               self.army_ready=#FALSE; // needed for setarmytimer
+               self.army_ready=FALSE; // needed for setarmytimer
                SetArmyTimer(); // prepare reserve soldier
-               self.job = self.job | #JOB_DEMON_OUT; 
+               self.job = self.job | JOB_DEMON_OUT; 
            }
 
            self.impulse = 0;
@@ -418,7 +421,7 @@ void(float inp) Menu_Army_Input1 =
 		if (self.demon_one!=world)
         {            
             ResetMenu();
-            sprint(self,#PRINT_HIGH,"You detonate the micro-explosive implanted in his brain!\n");
+            sprint(self,PRINT_HIGH,"You detonate the micro-explosive implanted in his brain!\n");
             //PrintFromSoldier(self.demon_one,self,"(head): aw! what happens?!\n");
             kill_my_demon();
             teamprefixsprint(self.team_no, self);
@@ -427,7 +430,7 @@ void(float inp) Menu_Army_Input1 =
             self.impulse = 0;
 		} 
         
-          //  sprint(self,#PRINT_HIGH,"You do not have a soldier in-battle currently\n");
+          //  sprint(self,PRINT_HIGH,"You do not have a soldier in-battle currently\n");
 		
 		return;
 	}
@@ -445,7 +448,7 @@ void(float inp) Menu_Army_Input1 =
         /*if (self.demon_one.demon_two != world)
 			dremove(self.demon_one.demon_two);*/ // OfN - prova
 
-    	self.demon_one.martyr_enemy = CreateWaypoint(self.origin, #WAYPOINT_LIFE, #WAYPOINT_TYPE_PRIMARY);
+    	self.demon_one.martyr_enemy = CreateWaypoint(self.origin, WAYPOINT_LIFE, WAYPOINT_TYPE_PRIMARY);
 		self.demon_one.martyr_enemy.goalentity = world;
 		
         self.demon_one.penance_time=3;
@@ -474,7 +477,7 @@ void(float inp) Menu_Army_Input1 =
 
             //dremove(self.demon_one.demon_two);
 
-		self.demon_one.demon_two = CreateWaypoint(self.origin, #WAYPOINT_LIFE, #WAYPOINT_TYPE_SECONDARY);
+		self.demon_one.demon_two = CreateWaypoint(self.origin, WAYPOINT_LIFE, WAYPOINT_TYPE_SECONDARY);
 		self.demon_one.demon_two.goalentity = self.demon_one.martyr_enemy;
 		//self.demon_one.goalentity = self.demon_one.demon_two; 
         self.demon_one.job = 2;
@@ -505,7 +508,7 @@ void(float inp) Menu_Army_Input1 =
         }
 
         self.demon_one.has_teleporter = 0;
-      	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & #EF_DIMLIGHT);
+      	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
         self.demon_one.penance_time = 1;
 
         if (self.demon_one.goalentity != self)
@@ -537,7 +540,7 @@ void(float inp) Menu_Army_Input1 =
             }
 
             self.demon_one.has_teleporter = 0;
-        	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & #EF_DIMLIGHT);
+        	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
         }
 
 		self.demon_one.goalentity = world;
@@ -563,7 +566,7 @@ void(float inp) Menu_Army_Input1 =
                 return;
             }
             self.demon_one.has_teleporter = 0;
-        	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & #EF_DIMLIGHT);
+        	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
         }
 
         self.demon_one.penance_time = 3;
@@ -579,7 +582,7 @@ void(float inp) Menu_Army_Input1 =
         }*/
 
         self.demon_one.has_teleporter = 0;
-    	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & #EF_DIMLIGHT);
+    	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
 
         ResetMenu();
 		self.impulse = 0;
@@ -607,10 +610,10 @@ float() TeleSoldier =
 	custom_demon_name(newmis); 
  
     if (!CheckArea(newmis,self)) { //No room for el diablo
-		sprint(self,#PRINT_HIGH,"Not enough room to teleport soldier!\n");
+		sprint(self,PRINT_HIGH,"Not enough room to teleport soldier!\n");
 		newmis.think = SUB_Remove;
 		newmis.nextthink = time + 0.1;
-		return #FALSE;
+		return FALSE;
 	}
 
     spawn_tfog(newmis.origin);
@@ -640,14 +643,14 @@ float() TeleSoldier =
 	//newmis.velocity = v_forward * 10 + '0 0 250';
 	newmis.velocity = v_forward * 10;
 	newmis.angles = vectoangles(newmis.velocity);
-	if (newmis.flags & #FL_ONGROUND)
-		newmis.flags = newmis.flags - #FL_ONGROUND;
+	if (newmis.flags & FL_ONGROUND)
+		newmis.flags = newmis.flags - FL_ONGROUND;
 
-	newmis.movetype = #MOVETYPE_TOSS;
-    newmis.solid = #SOLID_SLIDEBOX;
-	newmis.takedamage = #DAMAGE_AIM;
+	newmis.movetype = MOVETYPE_TOSS;
+    newmis.solid = SOLID_SLIDEBOX;
+	newmis.takedamage = DAMAGE_AIM;
     
-    newmis.health = #GRUNTY_HP;
+    newmis.health = GRUNTY_HP;
 	newmis.has_tesla = 1; // SB level multiplier
 	newmis.has_sensor = 1; // SB level
 	newmis.has_sentry = 2; // SB frags to level
@@ -662,9 +665,9 @@ float() TeleSoldier =
 	newmis.yaw_speed = 55;
 	
     //#ifdef GRUNTY_EXTRA_WEAPONS
-    //newmis.weapons_carried = #WEAP_AXE + #WEAP_SHOTGUN + #WEAP_NAILGUN + #GRUNTY_EXTRA_WEAPONS;
+    //newmis.weapons_carried = WEAP_AXE + WEAP_SHOTGUN + WEAP_NAILGUN + GRUNTY_EXTRA_WEAPONS;
     //#else
-    newmis.weapons_carried = #WEAP_AXE + #WEAP_SHOTGUN + #WEAP_NAILGUN;
+    newmis.weapons_carried = WEAP_AXE + WEAP_SHOTGUN + WEAP_NAILGUN;
     //#endif
     
     newmis.tf_items = 0;
@@ -680,11 +683,11 @@ float() TeleSoldier =
 	newmis.maxammo_nails = 200;//was 200;
 	newmis.maxammo_rockets = 20;
 	newmis.maxammo_cells = 100;
-	newmis.current_weapon = #WEAP_SHOTGUN;
+	newmis.current_weapon = WEAP_SHOTGUN;
 	newmis.th_die = custom_grunt_die;
 	newmis.think = walkmonster_start;
 	newmis.nextthink = time + 1;
-	newmis.armorclass = 0; //- OfN none // #AT_SAVESHOT; // kevlar
+	newmis.armorclass = 0; //- OfN none // AT_SAVESHOT; // kevlar
 	newmis.last_saveme_sound = 0; // ? oh that
 	
     //newmis.touch = SUB_Null;
@@ -701,7 +704,7 @@ float() TeleSoldier =
     newmis.demon_one=world;
     newmis.demon_two=world;
     
-    sprint(self,#PRINT_HIGH,"You teleport your soldier.\n");
+    sprint(self,PRINT_HIGH,"You teleport your soldier.\n");
     //PrintFromSoldier(self.demon_one,self,"Your orders?\n");
 
     newmis.message = "XX"; // flag to identify monsters/army for sentry targetting
@@ -710,7 +713,7 @@ float() TeleSoldier =
 
     GetRank(newmis); // needed for army menu first update
 
-    return #TRUE;
+    return TRUE;
 
 };
 
@@ -721,7 +724,7 @@ void() ArmyTimerThink;
 
 void() SetArmyTimer =
 {
-    if (self.army_ready!=#FALSE || self.job & #JOB_DEMON_OUT) return;
+    if (self.army_ready!=FALSE || self.job & JOB_DEMON_OUT) return;
 
     if (GetArmyTimer(self)!=world) return;
     
@@ -736,7 +739,7 @@ void() SetArmyTimer =
     newmis.nextthink = time + 5; 
 #endif
 
-    self.army_ready=#FALSE;    
+    self.army_ready=FALSE;    
 };
 
 
@@ -745,7 +748,7 @@ void() ArmyTimerThink =
     //if (self.classname!="army_timer") return; not needed
 
                                       //FIXME: This shouldnt be needed
-    if (self.owner.has_disconnected || !(self.owner.job & #JOB_ARMY))
+    if (self.owner.has_disconnected || !(self.owner.job & JOB_ARMY))
 	{
         dremove(self);
         return;
@@ -753,14 +756,14 @@ void() ArmyTimerThink =
 
     if (self.owner.demon_one!=world)
     {
-        sprint(self.owner,#PRINT_HIGH,"You have another soldier waiting!\n");
-        self.owner.army_ready = #TRUE;
+        sprint(self.owner,PRINT_HIGH,"You have another soldier waiting!\n");
+        self.owner.army_ready = TRUE;
         dremove(self);
     }
     else
     {
-        sprint(self.owner,#PRINT_HIGH,"Soldier is ready for teleporting!\n");
-        self.owner.army_ready = #TRUE;
+        sprint(self.owner,PRINT_HIGH,"Soldier is ready for teleporting!\n");
+        self.owner.army_ready = TRUE;
         dremove(self);                
 //        self.nextthink = time + (60*army_delay)+60-(120*random());
 
@@ -798,7 +801,7 @@ string (float num) Digitize;
 
 void(entity player) PrintArmyTime =
 {
-    if (player.army_ready==#TRUE || player.classname!="player") return;
+    if (player.army_ready==TRUE || player.classname!="player") return;
 
     local string st;
     local float fl,fl2,fl3;
@@ -814,12 +817,12 @@ void(entity player) PrintArmyTime =
     
     st=ftos(fl3);
    
-    sprint(player,#PRINT_HIGH,st);
-    sprint(player,#PRINT_HIGH,":");
+    sprint(player,PRINT_HIGH,st);
+    sprint(player,PRINT_HIGH,":");
 
     fl2=fabs(fl-fl3*60);
     st=Digitize(fl2);
-    sprint(player,#PRINT_HIGH,st);
+    sprint(player,PRINT_HIGH,st);
 };
 
 string (float num) Digitize =
@@ -858,9 +861,9 @@ void(entity sld, entity player, string msg) PrintFromSoldier =
     if (sld.classname!="monster_army" || player.classname!="player") return;
     
     custom_demon_name(sld);
-    sprint(player,#PRINT_HIGH,sld.netname);
-    sprint(player,#PRINT_HIGH,"ç ");
-    sprint(player,#PRINT_HIGH,msg);
+    sprint(player,PRINT_HIGH,sld.netname);
+    sprint(player,PRINT_HIGH,"ç ");
+    sprint(player,PRINT_HIGH,msg);
 };
 
 string(entity sld) GetOwnerMessage =

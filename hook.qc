@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*
 	TeamFortress 1.38	-	29/11/96
 
@@ -38,10 +39,10 @@ float() crandom;
 //
 void (entity rhook) Reset_Grapple =
 {
-	sound (rhook.owner, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NONE);
-	rhook.owner.on_hook = #FALSE;
-	rhook.owner.hook_out = #FALSE;
-	rhook.owner.fire_held_down = #FALSE;
+	sound (rhook.owner, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NONE);
+	rhook.owner.on_hook = FALSE;
+	rhook.owner.hook_out = FALSE;
+	rhook.owner.fire_held_down = FALSE;
 	rhook.owner.weaponframe = 0;
 
 	rhook.think = SUB_Remove;
@@ -88,7 +89,7 @@ void () Grapple_Track =
 		return;
 	  }
 
-	  deathmsg = #DMSG_HOOK;
+	  deathmsg = DMSG_HOOK;
 	  if (self.enemy.classname == "player") {
         	    T_Damage (self.enemy, self, self.owner, 2);
 	  	    if (self.enemy.health <= 0) {
@@ -112,8 +113,8 @@ entity () MakeLink =
 {
         newmis = spawn ();
 
-        newmis.movetype = #MOVETYPE_FLYMISSILE;
-        newmis.solid = #SOLID_NOT;
+        newmis.movetype = MOVETYPE_FLYMISSILE;
+        newmis.solid = SOLID_NOT;
         newmis.owner = self;// SELF is the hook!
 
         newmis.avelocity = '200 200 200';
@@ -234,35 +235,35 @@ float () Check_Overhead =
         // quick check right above head
         src = self.owner.origin - '0 0 24';
         end = self.owner.origin - '0 0 24';
-        traceline (src, end, #FALSE, self.owner);
+        traceline (src, end, FALSE, self.owner);
         if (trace_fraction != 1.0)
-                return #FALSE;
+                return FALSE;
 
         src = self.owner.origin - '0 0 24' - v_forward * 16;
         end = self.owner.origin - '0 0 24' - v_forward * 16 + '0 0 58';
-        traceline (src, end, #FALSE, self.owner);
+        traceline (src, end, FALSE, self.owner);
         if (trace_fraction != 1.0)
-                return #FALSE;
+                return FALSE;
 
         src = self.owner.origin - '0 0 24' + v_forward * 16;
         end = self.owner.origin - '0 0 24' + v_forward * 16 + '0 0 58';
-        traceline (src, end, #FALSE, self.owner);
+        traceline (src, end, FALSE, self.owner);
         if (trace_fraction != 1.0)
-                return #FALSE;
+                return FALSE;
 
         src = self.owner.origin - '0 0 24' - v_right * 16;
         end = self.owner.origin - '0 0 24' - v_right * 16 + '0 0 58';
-        traceline (src, end, #FALSE, self.owner);
+        traceline (src, end, FALSE, self.owner);
         if (trace_fraction != 1.0)
-                return #FALSE;
+                return FALSE;
 
         src = self.owner.origin - '0 0 24' + v_right * 16;
         end = self.owner.origin - '0 0 24' + v_right * 16 + '0 0 58';
-        traceline (src, end, #FALSE, self.owner);
+        traceline (src, end, FALSE, self.owner);
         if (trace_fraction != 1.0)
-                return #FALSE;
+                return FALSE;
 
-        return #TRUE;
+        return TRUE;
 };
 
 
@@ -287,13 +288,13 @@ void () Anchor_Grapple =
 	//	return;
 
 	// Don't stick the the sky.
-	if (pointcontents(self.origin) == #CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		Reset_Grapple (self);
 		return;
 	}
 
-	sound (self, #CHAN_WEAPON, "player/axhit2.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
 	//WK Only deal the initial damage to buttons so we can open stuff
 	if (other.takedamage)
 		if (other.classname == "func_button")
@@ -306,7 +307,7 @@ void () Anchor_Grapple =
 	// which is a looping sample and would continue to play. Tink1 is
 	// the least offensive choice, as NULL.WAV loops and clogs the
 	// channel with silence
-	sound (self.owner, #CHAN_WEAPON, "weapons/tink1.wav", 1, #ATTN_NORM);
+	sound (self.owner, CHAN_WEAPON, "weapons/tink1.wav", 1, ATTN_NORM);
 
 	if (!self.owner.button0)
 	{
@@ -324,11 +325,11 @@ void () Anchor_Grapple =
 		return;
 	}
 
-	self.owner.on_hook = #TRUE;
+	self.owner.on_hook = TRUE;
 
-	if (self.owner.flags & #FL_ONGROUND)
+	if (self.owner.flags & FL_ONGROUND)
 	{
-		self.owner.flags = self.owner.flags - #FL_ONGROUND;
+		self.owner.flags = self.owner.flags - FL_ONGROUND;
 		setorigin(self.owner,self.owner.origin + '0 0 1');
 	}
 
@@ -336,12 +337,12 @@ void () Anchor_Grapple =
 	// will know to only play the tink sound ONCE to clear the weapons
 	// sound channel. (Lefty is a leftover from AI.QC, so I reused it to
 	// avoid adding a field)
-	self.owner.lefty = #TRUE;
+	self.owner.lefty = TRUE;
 
 	self.enemy = other;// remember this guy!
 	self.think = Grapple_Track;
 	self.nextthink = time;
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 	self.touch = SUB_Null;
 };
 
@@ -359,8 +360,8 @@ void () Throw_Grapple =
         // chain out sound (loops)
 
         newmis = spawn();
-        newmis.movetype = #MOVETYPE_FLYMISSILE;
-        newmis.solid = #SOLID_BBOX;
+        newmis.movetype = MOVETYPE_FLYMISSILE;
+        newmis.solid = SOLID_BBOX;
         newmis.owner = self;// newmis belongs to me
         self.hook = newmis;// This is my newmis
         newmis.classname = "hook";
@@ -380,8 +381,8 @@ void () Throw_Grapple =
         setorigin (newmis, self.origin + v_forward * 16 + '0 0 16');
         setsize(newmis, '0 0 0' , '0 0 0 ');
 
-        self.hook_out = #TRUE;
-        self.fire_held_down = #TRUE;
+        self.hook_out = TRUE;
+        self.fire_held_down = TRUE;
 };
 
 //
@@ -394,9 +395,9 @@ void () Service_Grapple =
         // drop the hook if player lets go of button
         if (!self.button0)
         {
-                self.fire_held_down = #FALSE;
+                self.fire_held_down = FALSE;
                 
-                if (self.current_weapon == #WEAP_HOOK)
+                if (self.current_weapon == WEAP_HOOK)
 	                Reset_Grapple (self.hook);
         }
         // If hooked to a player, track them directly!
@@ -421,6 +422,6 @@ void () Service_Grapple =
                         self.hook.goalentity.nextthink = time;
                 }
 
-        		self.lefty = #FALSE;	// we've reset the sound channel.
+        		self.lefty = FALSE;	// we've reset the sound channel.
         }
 };

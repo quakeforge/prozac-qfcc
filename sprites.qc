@@ -1,3 +1,4 @@
+#include "defs.qh"
 
 // these are the only sprites still in the game...
 

@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*=======================================================//
 // mtfents.QC - CustomTF 3.2.OfN           - 30/1/2001 - //
 // by Sergio Fumaña Grunwaldt - OfteN aka superCOCK2000  //
@@ -10,7 +11,7 @@
 
 void() ambient_sound =
 {
-	/*if (CheckExistence() == #FALSE)
+	/*if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -24,7 +25,7 @@ void() ambient_sound =
         precache_sound(self.noise);
 	    precache_sound2(self.noise);
 
-    	ambientsound (self.origin, self.noise, self.volume, #ATTN_NORM);
+    	ambientsound (self.origin, self.noise, self.volume, ATTN_NORM);
     }
     else
         dremove(self);
@@ -54,15 +55,15 @@ void() ers_think =
         else
             thesound="effects/rocket.wav";
         
-      	sound(self, #CHAN_MISC, thesound, self.volume, #ATTN_NORM);
+      	sound(self, CHAN_MISC, thesound, self.volume, ATTN_NORM);
     }
     else
-      	sound(self, #CHAN_MISC, self.noise, self.volume, #ATTN_NORM);
+      	sound(self, CHAN_MISC, self.noise, self.volume, ATTN_NORM);
 };
 
 void() effect_random_sound =
 {
-	/*if (CheckExistence() == #FALSE)
+	/*if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -89,7 +90,7 @@ void() effect_random_sound =
         self.think = ers_think;
         self.nextthink = time + nextsound;
 
-    	//sound(self, #CHAN_MISC, self.noise, self.volume, #ATTN_NORM);
+    	//sound(self, CHAN_MISC, self.noise, self.volume, ATTN_NORM);
     }
     else
         dremove(self);
@@ -98,7 +99,7 @@ void() effect_random_sound =
 
 void() ambient_jungle =
 {
-	/*if (CheckExistence() == #FALSE)
+	/*if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -107,7 +108,7 @@ void() ambient_jungle =
       self.volume = 1;
 
 	precache_sound ("ambience/jungle.wav");
-	ambientsound (self.origin, "ambience/jungle.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/jungle.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_diesel =
@@ -116,7 +117,7 @@ void() ambient_diesel =
       self.volume = 1;
 
 	precache_sound ("ambience/diesel.wav");
-	ambientsound (self.origin, "ambience/diesel.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/diesel.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_chopper =
@@ -125,7 +126,7 @@ void() ambient_chopper =
       self.volume = 1;
 
 	precache_sound ("ambience/chopper.wav");
-	ambientsound (self.origin, "ambience/chopper.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/chopper.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_eerie =
@@ -134,7 +135,7 @@ void() ambient_eerie =
       self.volume = 1;
 
 	precache_sound ("ambience/eerie.wav");
-	ambientsound (self.origin, "ambience/eerie.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/eerie.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_ocean =
@@ -143,7 +144,7 @@ void() ambient_ocean =
       self.volume = 1;
 
 	precache_sound ("ambience/ocean.wav");
-	ambientsound (self.origin, "ambience/ocean.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/ocean.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_peakwind =
@@ -152,7 +153,7 @@ void() ambient_peakwind =
       self.volume = 1;
 
 	precache_sound ("ambience/peakwind.wav");
-	ambientsound (self.origin, "ambience/peakwind.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/peakwind.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_lavapit =
@@ -161,7 +162,7 @@ void() ambient_lavapit =
       self.volume = 1;
 
 	precache_sound ("ambience/lavapit.wav");
-	ambientsound (self.origin, "ambience/lavapit.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/lavapit.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_unholy =
@@ -170,7 +171,7 @@ void() ambient_unholy =
       self.volume = 1;
 
 	precache_sound ("ambience/unholy.wav");
-	ambientsound (self.origin, "ambience/unholy.wav", self.volume, #ATTN_NONE);
+	ambientsound (self.origin, "ambience/unholy.wav", self.volume, ATTN_NONE);
 };
 
 void() ambient_flagflap =
@@ -182,10 +183,10 @@ void() ambient_flagflap =
 
     /*local float attn_value;
     if (self.option == 0)
-        attn_value = #ATTN_STATIC; // default is ATTN_STATIC
-    else attn_value = #ATTN_NORM; // used in ditch2*/
+        attn_value = ATTN_STATIC; // default is ATTN_STATIC
+    else attn_value = ATTN_NORM; // used in ditch2*/
 
-	ambientsound (self.origin, "ambience/flagflap.wav", self.volume, #ATTN_NORM); // 
+	ambientsound (self.origin, "ambience/flagflap.wav", self.volume, ATTN_NORM); // 
 };
 
 void() ambient_high_wind =
@@ -194,7 +195,7 @@ void() ambient_high_wind =
       self.volume = 1;
 
 	precache_sound ("ambience/2windy.wav");
-	ambientsound (self.origin, "ambience/2windy.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/2windy.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_meadow =
@@ -203,7 +204,7 @@ void() ambient_meadow =
       self.volume = 1;
 
 	precache_sound ("ambience/meadow.wav");
-	ambientsound (self.origin, "ambience/meadow.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/meadow.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_brook =
@@ -213,8 +214,8 @@ void() ambient_brook =
 
     local float attn_value;
     if (self.option == 0)
-        attn_value = #ATTN_NORM; // default is ATTN_NORM
-    else attn_value = #ATTN_IDLE; // used in ditch2
+        attn_value = ATTN_NORM; // default is ATTN_NORM
+    else attn_value = ATTN_IDLE; // used in ditch2
 
 	precache_sound ("ambience/brook.wav");
 	ambientsound (self.origin, "ambience/brook.wav", self.volume, attn_value);
@@ -226,7 +227,7 @@ void() ambient_ice_moving =
       self.volume = 1;
 
 	precache_sound ("ambience/icemove.wav");
-	ambientsound (self.origin, "ambience/icemove.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/icemove.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_nightpond =
@@ -235,7 +236,7 @@ void() ambient_nightpond =
       self.volume = 1;
 
 	precache_sound ("ambience/nitepond.wav");
-	ambientsound (self.origin, "ambience/nitepond.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/nitepond.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_alert =
@@ -244,7 +245,7 @@ void() ambient_alert =
       self.volume = 1;
 
 	precache_sound ("ambience/redalert.wav");
-	ambientsound (self.origin, "ambience/redalert.wav", self.volume, #ATTN_NONE);
+	ambientsound (self.origin, "ambience/redalert.wav", self.volume, ATTN_NONE);
 };
 
 void() ambient_chant =
@@ -253,7 +254,7 @@ void() ambient_chant =
       self.volume = 1;
 
 	precache_sound ("ambience/chant.wav");
-	ambientsound (self.origin, "ambience/chant.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/chant.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_onboard =
@@ -262,7 +263,7 @@ void() ambient_onboard =
       self.volume = 1;
 
 	precache_sound ("ambience/onboard.wav");
-	ambientsound (self.origin, "ambience/onboard.wav", self.volume, #ATTN_NONE);
+	ambientsound (self.origin, "ambience/onboard.wav", self.volume, ATTN_NONE);
 };
 
 void() ambient_rocket_engine =
@@ -271,7 +272,7 @@ void() ambient_rocket_engine =
       self.volume = 1;
 
 	precache_sound ("ambience/onboard.wav");
-	ambientsound (self.origin, "ambience/onboard.wav", self.volume, #ATTN_NORM);
+	ambientsound (self.origin, "ambience/onboard.wav", self.volume, ATTN_NORM);
 };
 
 void() ambient_weaponfire =
@@ -314,15 +315,15 @@ void() rf_touch =
 {
     if (other.classname!="player" || self.pain_finished > time) return;
 
-    if (other.cutf_items & #CUTF_STEALTH) return; // if we got stealth doesnt make the sound
+    if (other.cutf_items & CUTF_STEALTH) return; // if we got stealth doesnt make the sound
 
     self.pain_finished = time + 6 + 6*random();
-    self.solid = #SOLID_TRIGGER;  
+    self.solid = SOLID_TRIGGER;  
 
     if (other.velocity == '0 0 0')
         return;
 
-    sound (self, #CHAN_MISC, "effects/rockfall.wav", 0.5, #ATTN_NORM);
+    sound (self, CHAN_MISC, "effects/rockfall.wav", 0.5, ATTN_NORM);
 };
 
 void() effect_rockfall =
@@ -330,7 +331,7 @@ void() effect_rockfall =
     precache_sound("effects/rockfall.wav");
     setsize (self, '-20 -20 -20', '20 20 20');
     self.touch = rf_touch;
-    self.solid = #SOLID_TRIGGER;
+    self.solid = SOLID_TRIGGER;
     setorigin (self, self.origin);
 };
 
@@ -342,7 +343,7 @@ void()	ab_exp1	=[	0,		ab_exp2	]
        thesound="effects/explode1.wav";
     else thesound="effects/explode2.wav";
 
-    sound(self, #CHAN_MISC, thesound, self.owner.volume, #ATTN_NONE);
+    sound(self, CHAN_MISC, thesound, self.owner.volume, ATTN_NONE);
 
 };
 void()	ab_exp2	=[	1,		ab_exp3	] {};
@@ -366,15 +367,15 @@ void() ab_think =
     newmis.origin_x = self.origin_x - 300 + random()*600;
     newmis.origin_y = self.origin_y - 300 + random()*600;
     setorigin(newmis,newmis.origin);
-    newmis.solid = #SOLID_NOT; // NEEDED?
+    newmis.solid = SOLID_NOT; // NEEDED?
     newmis.nextthink = time;
     newmis.think = ab_exp1;
     newmis.owner = self;        
     newmis.touch = SUB_Null;
 
-    newmis.movetype = #MOVETYPE_FLY;
+    newmis.movetype = MOVETYPE_FLY;
     newmis.velocity = '0 0 300';
-    newmis.effects = #EF_BRIGHTLIGHT;
+    newmis.effects = EF_BRIGHTLIGHT;
  	
 };
 
@@ -430,8 +431,8 @@ void() bobbingwater_think =
 void() func_bobbingwater =
 {
    self.angles = '0 0 0';
-   self.movetype = #MOVETYPE_STEP;
-   self.solid = #SOLID_NOT;
+   self.movetype = MOVETYPE_STEP;
+   self.solid = SOLID_NOT;
    
    setmodel (self,self.model);
    

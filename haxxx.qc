@@ -1,3 +1,5 @@
+#include "defs.qh"
+#include "menu.qh"
 
 /*=======================================================//
 // haxxx.QC - CustomTF 3.2.OfN             - 30/1/2001 - //
@@ -17,7 +19,7 @@ void () Menu_Friend_Hax =
 {
 	if (self.demon_two == world) // safety
     {
-        sprint(self,#PRINT_HIGH,"You have lost the connection!\n");
+        sprint(self,PRINT_HIGH,"You have lost the connection!\n");
         ResetMenu();
         return;
     }
@@ -35,7 +37,7 @@ void () Menu_Friend_Hax =
     {
         local float dist;
         dist = vlen(self.origin - self.demon_two.origin);
-        if (dist > #HAX_UNSTABLEDIST)
+        if (dist > HAX_UNSTABLEDIST)
         {
             st6="\n\nUnstable connection with target!\n";
         }
@@ -92,39 +94,39 @@ void () Menu_Friend_Hax =
         }
     }
 
-    if (self.demon_two.num_mines & #IMPROVED_ONE)
+    if (self.demon_two.num_mines & IMPROVED_ONE)
     {
         st="";
     }
-    if (self.demon_two.num_mines & #IMPROVED_TWO)
+    if (self.demon_two.num_mines & IMPROVED_TWO)
     {
         st2="\n.. Add μεφεμ ” ICE  Ϋ25 secέ";
-        if (self.demon_two.num_mines & #IMPROVED_FIVE)
+        if (self.demon_two.num_mines & IMPROVED_FIVE)
         {
             st2="\n.. Add μεφεμ • ICE  Ϋ30 secέ";
 
-            if (self.demon_two.num_mines & #IMPROVED_SIX)
+            if (self.demon_two.num_mines & IMPROVED_SIX)
                st2="\n";
         }
         
     }
-    if (self.demon_two.num_mines & #IMPROVED_THREE)
+    if (self.demon_two.num_mines & IMPROVED_THREE)
     {
         st3="\n";
     }
     
     if (self.demon_two.classname != "building_sensor")
     {
-        if (self.demon_two.num_mines & #IMPROVED_FOUR)
+        if (self.demon_two.num_mines & IMPROVED_FOUR)
         {
          st4="\n";
         }
     }
     else
     {
-        if (self.demon_two.num_mines & #IMPROVED_FOUR)
+        if (self.demon_two.num_mines & IMPROVED_FOUR)
         {
-            if (self.demon_two.num_mines & #IMPROVED_SEVEN)
+            if (self.demon_two.num_mines & IMPROVED_SEVEN)
                 st4="\n";
             else
                 st4="\n–.. Thief revealer   Ϋ25 secέ";
@@ -161,7 +163,7 @@ void(float inp) Menu_FriendHax_Inp =
         {
             if (self.demon_two.classname == "building_sensor")
             {
-                if (self.demon_two.num_mines & #IMPROVED_FOUR)
+                if (self.demon_two.num_mines & IMPROVED_FOUR)
                     inp = 7; // already has spy revealer so go for thief, check if it already has thief revealer below..
             }
             else if (self.demon_two.classname == "building_dispenser" || self.demon_two.classname == "building_camera")
@@ -171,7 +173,7 @@ void(float inp) Menu_FriendHax_Inp =
                 self.demon_two.classname != "building_tesla")*/
                 return;
         }
-        if (inp == 2 && self.demon_two.num_mines & #IMPROVED_SIX)
+        if (inp == 2 && self.demon_two.num_mines & IMPROVED_SIX)
             return; // device completelly iced, so do nothing
         
         if (self.demon_two.num_mines & IntToExp(inp) && inp != 2) // exclude ICE's
@@ -212,7 +214,7 @@ void () Menu_Enemy_Hax =
 {
 	if (self.demon_two == world) // safety
     {
-        sprint(self,#PRINT_HIGH,"You have lost the connection!\n");
+        sprint(self,PRINT_HIGH,"You have lost the connection!\n");
         ResetMenu();
         return;
     }
@@ -228,7 +230,7 @@ void () Menu_Enemy_Hax =
     {
         local float dist;
         dist = vlen(self.origin - self.demon_two.origin);
-        if (dist > #HAX_UNSTABLEDIST)
+        if (dist > HAX_UNSTABLEDIST)
         {
             st6="\n\nUnstable connection with target!\n";
         }
@@ -295,19 +297,19 @@ void () Menu_Enemy_Hax =
 
 	}
 
-    if (self.demon_two.is_malfunctioning & #SCREWUP_ONE)
+    if (self.demon_two.is_malfunctioning & SCREWUP_ONE)
     {
         st="";
     }
-    if (self.demon_two.is_malfunctioning & #SCREWUP_TWO)
+    if (self.demon_two.is_malfunctioning & SCREWUP_TWO)
     {
         st2="\n";
     }
-    if (self.demon_two.is_malfunctioning & #SCREWUP_THREE)
+    if (self.demon_two.is_malfunctioning & SCREWUP_THREE)
     {
         st3="\n";
     }
-    if (self.demon_two.is_malfunctioning & #SCREWUP_FOUR)
+    if (self.demon_two.is_malfunctioning & SCREWUP_FOUR)
     {
         st4="\n";
     }
@@ -327,7 +329,7 @@ OfN - Rewritten
 
 void() SBFireInterface =
 {
-	if (CheckHaxxx() == #FALSE) return;
+	if (CheckHaxxx() == FALSE) return;
     
     local entity oself;
 	local entity targ;
@@ -346,134 +348,134 @@ void() SBFireInterface =
 	
 	self.is_haxxxoring = 0;
 
-	self.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 	TeamFortress_SetSpeed(self);
 
     if (hackThis == -2)
     {
-		sprint(self, #PRINT_HIGH, "Hack aborted.\n");
+		sprint(self, PRINT_HIGH, "Hack aborted.\n");
         return;
     }
 
-	if (targ.classname == "player" && (targ.cutf_items & #CUTF_CYBERAUG))
+	if (targ.classname == "player" && (targ.cutf_items & CUTF_CYBERAUG))
 	{
 		if (!Teammate(targ.team_no, self.team_no))
 		{
 			targ.is_malfunctioning = 1;
-			sprint(targ, #PRINT_HIGH, "Oh no! Your cybernetic augmentations are malfunctioning!\n");
-			sprint(self, #PRINT_HIGH, "You tamper with ", targ.netname, "'s cybernetic augmentations.\n");
+			sprint(targ, PRINT_HIGH, "Oh no! Your cybernetic augmentations are malfunctioning!\n");
+			sprint(self, PRINT_HIGH, "You tamper with ", targ.netname, "'s cybernetic augmentations.\n");
 		}
 		else if (Teammate(targ.team_no,self.team_no) && targ.is_malfunctioning)
 		{
 			targ.is_malfunctioning = 0;
-			sprint(targ, #PRINT_HIGH, self.netname, " adjusts your cybernetics to work properly again.\n");
-			sprint(self, #PRINT_HIGH, "You readjust ", targ.netname, "'s CyberAugs to work properly again.\n");
+			sprint(targ, PRINT_HIGH, self.netname, " adjusts your cybernetics to work properly again.\n");
+			sprint(self, PRINT_HIGH, "You readjust ", targ.netname, "'s CyberAugs to work properly again.\n");
 		}
 	}
 	else if (IsBuilding(targ))
 	{
 		if (!Teammate(targ.real_owner.team_no, self.team_no) && GetICELevel(targ)==1 && random() < 0.2)
         {
-            sprint(self, #PRINT_HIGH, "This device has a level 1 ICE, it's not easy to hack!\n");
-            //sprint(targ.real_owner, #PRINT_HIGH,"Somebody tried to hack your stuff...\n");
+            sprint(self, PRINT_HIGH, "This device has a level 1 ICE, it's not easy to hack!\n");
+            //sprint(targ.real_owner, PRINT_HIGH,"Somebody tried to hack your stuff...\n");
             return;
         }
         if (!Teammate(targ.real_owner.team_no, self.team_no) && GetICELevel(targ)==2)
         {
-            sprint(self, #PRINT_HIGH, "This device is hack-protected.\n");
-            sprint(targ.real_owner, #PRINT_HIGH,"Somebody just tried to hack your stuff...\n");
+            sprint(self, PRINT_HIGH, "This device is hack-protected.\n");
+            sprint(targ.real_owner, PRINT_HIGH,"Somebody just tried to hack your stuff...\n");
             return;
         }
         if (!Teammate(targ.real_owner.team_no, self.team_no) && GetICELevel(targ)==3)
         {
-            sprint(self, #PRINT_HIGH, "This device is hack-protected with a level 3 ICE!\n");
-            deathmsg=#DMSG_ANTIHACK;
-            TF_T_Damage(self, self, targ, self.health + 50, #TF_TD_IGNOREARMOUR, #TF_TD_OTHER);
+            sprint(self, PRINT_HIGH, "This device is hack-protected with a level 3 ICE!\n");
+            deathmsg=DMSG_ANTIHACK;
+            TF_T_Damage(self, self, targ, self.health + 50, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
             
-            sound (self, #CHAN_MISC, "effects/crunch.wav", 1, #ATTN_NONE);
+            sound (self, CHAN_MISC, "effects/crunch.wav", 1, ATTN_NONE);
 
             return;
         }
         else if (!Teammate(targ.real_owner.team_no, self.team_no))
 		{
-			sprint(self, #PRINT_HIGH, "You make a few adjustments...\n");
-			if (hackThis == #SCREWUP_ONE)
+			sprint(self, PRINT_HIGH, "You make a few adjustments...\n");
+			if (hackThis == SCREWUP_ONE)
 			{
-				targ.is_malfunctioning = targ.is_malfunctioning | #SCREWUP_ONE;
+				targ.is_malfunctioning = targ.is_malfunctioning | SCREWUP_ONE;
 				if (targ.classname == "building_sentrygun") // 
-					sprint(self, #PRINT_HIGH, "The sentrygun is now incapacitated.\n");
+					sprint(self, PRINT_HIGH, "The sentrygun is now incapacitated.\n");
 				else if (targ.classname == "building_tesla")
-					sprint(self, #PRINT_HIGH, "The tesla won't shoot any more.\n");
+					sprint(self, PRINT_HIGH, "The tesla won't shoot any more.\n");
 				else if (targ.classname == "building_sensor")
-					sprint(self, #PRINT_HIGH, "Better when it doesn't make so much noise.\n");
+					sprint(self, PRINT_HIGH, "Better when it doesn't make so much noise.\n");
 				else if (targ.classname == "building_dispenser")
-					sprint(self, #PRINT_HIGH, "This is one dispenser that won't dispense any more.\n");
+					sprint(self, PRINT_HIGH, "This is one dispenser that won't dispense any more.\n");
 				else if (targ.classname == "building_camera")
-					sprint(self, #PRINT_HIGH, "The camera won't be reporting to its owner any longer, but to all outward appearances remains the same.\n");
+					sprint(self, PRINT_HIGH, "The camera won't be reporting to its owner any longer, but to all outward appearances remains the same.\n");
 				else if (targ.classname == "building_teleporter")
-					sprint(self, #PRINT_HIGH, "The teleporter will now strip the items off all who enter...\n");
+					sprint(self, PRINT_HIGH, "The teleporter will now strip the items off all who enter...\n");
 				else if (targ.classname == "building_fieldgen")
-					sprint(self, #PRINT_HIGH, "The field generator is now rigged to hurt teammates...\n");
+					sprint(self, PRINT_HIGH, "The field generator is now rigged to hurt teammates...\n");
 			}
-			else if (hackThis == #SCREWUP_TWO)
+			else if (hackThis == SCREWUP_TWO)
 			{
-				targ.is_malfunctioning = targ.is_malfunctioning | #SCREWUP_TWO;
+				targ.is_malfunctioning = targ.is_malfunctioning | SCREWUP_TWO;
 				if (targ.classname == "building_sentrygun")
-					sprint(self, #PRINT_HIGH, "The sentrygun's accuracy is now reduced.\n");
+					sprint(self, PRINT_HIGH, "The sentrygun's accuracy is now reduced.\n");
 				else if (targ.classname == "building_tesla")
-					sprint(self, #PRINT_HIGH, "This tesla won't put out enough amperage to hurt a fly.\n");
+					sprint(self, PRINT_HIGH, "This tesla won't put out enough amperage to hurt a fly.\n");
 				else if (targ.classname == "building_camera")
-					sprint(self, #PRINT_HIGH, "The camera is silenced.\n");
+					sprint(self, PRINT_HIGH, "The camera is silenced.\n");
 				else if (targ.classname == "building_sensor")
-					sprint(self, #PRINT_HIGH, "That glow was always pretty annoying anyway.\n");
+					sprint(self, PRINT_HIGH, "That glow was always pretty annoying anyway.\n");
 				else if (targ.classname == "building_dispenser")
 				{
-					sprint(self, #PRINT_HIGH, "The dispenser is now rigged to explode!\n");
+					sprint(self, PRINT_HIGH, "The dispenser is now rigged to explode!\n");
 					targ.martyr_enemy = self;
 				}
 				else if (targ.classname == "building_teleporter")
 				{
-					sprint(self, #PRINT_HIGH, "Entering this teleporter could be unhealthy...\n");
+					sprint(self, PRINT_HIGH, "Entering this teleporter could be unhealthy...\n");
 					targ.martyr_enemy = self;
 				}
                 else if (targ.classname == "building_fieldgen")
 				{
-					sprint(self, #PRINT_HIGH, "Better not use spanner on this one...\n");
+					sprint(self, PRINT_HIGH, "Better not use spanner on this one...\n");
 					targ.martyr_enemy = self;
 				}
 			}
-			else if (hackThis == #SCREWUP_THREE)
+			else if (hackThis == SCREWUP_THREE)
 			{
-				targ.is_malfunctioning = targ.is_malfunctioning | #SCREWUP_THREE;
+				targ.is_malfunctioning = targ.is_malfunctioning | SCREWUP_THREE;
 				if (targ.classname == "building_sentrygun")
-					sprint(self, #PRINT_HIGH, "The sentrygun rocket launcher will now malfunction...\n");
+					sprint(self, PRINT_HIGH, "The sentrygun rocket launcher will now malfunction...\n");
 				else if (targ.classname == "building_tesla")
-					sprint(self, #PRINT_HIGH, "The tesla may experience some technical difficulties the next time it fires...\n");
+					sprint(self, PRINT_HIGH, "The tesla may experience some technical difficulties the next time it fires...\n");
 				else if (targ.classname == "building_camera")
-					sprint(self, #PRINT_HIGH, "This camera will be reading ghosts now...\n");
+					sprint(self, PRINT_HIGH, "This camera will be reading ghosts now...\n");
 				else if (targ.classname == "building_dispenser")
-					sprint(self, #PRINT_HIGH, "The dispenser will no longer regenerate ammo.\n");
+					sprint(self, PRINT_HIGH, "The dispenser will no longer regenerate ammo.\n");
 				else if (targ.classname == "building_teleporter")
-					sprint(self, #PRINT_HIGH, "The teleporter will now teleport directly to its builder!\n");
+					sprint(self, PRINT_HIGH, "The teleporter will now teleport directly to its builder!\n");
 				else if (targ.classname == "building_sensor")
-					sprint(self, #PRINT_HIGH, "The sensor is now off.\n");
+					sprint(self, PRINT_HIGH, "The sensor is now off.\n");
 				else if (targ.classname == "building_fieldgen")
-					sprint(self, #PRINT_HIGH, "The field generator won't hurt too much now.\n");
+					sprint(self, PRINT_HIGH, "The field generator won't hurt too much now.\n");
 			}
-			else if (hackThis == #SCREWUP_FOUR)
+			else if (hackThis == SCREWUP_FOUR)
 			{
                 if (targ.classname != "building_dispenser" && targ.classname != "building_teleporter" && targ.classname != "building_fieldgen")
                 {
                     local string st;
                     st=GetBuildingName(targ);
 
-                    sprint(targ.real_owner, #PRINT_HIGH,"You've lost the control of your ");
-                    sprint(targ.real_owner, #PRINT_HIGH, st);
-                    sprint(targ.real_owner, #PRINT_HIGH, "!!\n");
+                    sprint(targ.real_owner, PRINT_HIGH,"You've lost the control of your ");
+                    sprint(targ.real_owner, PRINT_HIGH, st);
+                    sprint(targ.real_owner, PRINT_HIGH, "!!\n");
 
-					sprint (self, #PRINT_HIGH, "The ");
-                    sprint (self, #PRINT_HIGH, st);
-                    sprint (self,#PRINT_HIGH," is now yours!\n");	
+					sprint (self, PRINT_HIGH, "The ");
+                    sprint (self, PRINT_HIGH, st);
+                    sprint (self,PRINT_HIGH," is now yours!\n");	
 
                     teamprefixsprint(self.team_no,self);
                     teamsprint6(self,self.netname," hacked ",targ.real_owner.netname,"'s ",st,", now it's ours!\n");
@@ -483,23 +485,23 @@ void() SBFireInterface =
 
                     if (targ.classname == "building_sentrygun")
     				{
-    					targ.real_owner.has_sentry = #FALSE;
-    					self.has_sentry = #TRUE;
+    					targ.real_owner.has_sentry = FALSE;
+    					self.has_sentry = TRUE;
     				}
                     else if (targ.classname == "building_tesla")
     				{
-                        targ.real_owner.has_tesla = #FALSE;
-    					self.has_tesla = #TRUE;
+                        targ.real_owner.has_tesla = FALSE;
+    					self.has_tesla = TRUE;
     				}
                     else if (targ.classname == "building_camera")
     				{
-                        targ.real_owner.has_camera = #FALSE;
-    					self.has_camera = #TRUE;
+                        targ.real_owner.has_camera = FALSE;
+    					self.has_camera = TRUE;
     				}
                     else if (targ.classname == "building_sensor")
     				{
-                        targ.real_owner.has_sensor = #FALSE;
-    					self.has_sensor = #TRUE;
+                        targ.real_owner.has_sensor = FALSE;
+    					self.has_sensor = TRUE;
                     }
 
    					targ.real_owner = self;
@@ -507,24 +509,24 @@ void() SBFireInterface =
                 }        
 				else if (targ.classname == "building_fieldgen")
 				{
-					sprint(self, #PRINT_HIGH, "The field generator is now disabled.\n");
-					targ.is_malfunctioning = #SCREWUP_FOUR;
+					sprint(self, PRINT_HIGH, "The field generator is now disabled.\n");
+					targ.is_malfunctioning = SCREWUP_FOUR;
 				}
                 else if (targ.classname == "building_teleporter")
 				{
-					sprint(self, #PRINT_HIGH, "The teleporter is now broken.\n");
-					targ.is_malfunctioning = #SCREWUP_FOUR;
+					sprint(self, PRINT_HIGH, "The teleporter is now broken.\n");
+					targ.is_malfunctioning = SCREWUP_FOUR;
 				}
 				else if (targ.classname == "building_dispenser")
 				{
-					sprint(self, #PRINT_HIGH, "The dispenser will explode when someone attempts to withdraw armour!\n");
+					sprint(self, PRINT_HIGH, "The dispenser will explode when someone attempts to withdraw armour!\n");
 					targ.martyr_enemy = self;
-					targ.is_malfunctioning = #SCREWUP_FOUR;
+					targ.is_malfunctioning = SCREWUP_FOUR;
 				}
 			}
 			else
 			{
-				sprint(self, #PRINT_HIGH, "Your attempt at hacking fails.\n");
+				sprint(self, PRINT_HIGH, "Your attempt at hacking fails.\n");
 			}
 		}
 		else if (Teammate(targ.team_no,self.team_no) && hackThis == -1)
@@ -533,18 +535,18 @@ void() SBFireInterface =
             {
                 targ.is_malfunctioning = 0;
 
-			    sprint(self, #PRINT_HIGH, "You correct the machine's malfunction.\n");
+			    sprint(self, PRINT_HIGH, "You correct the machine's malfunction.\n");
     			
                 local string st;
                 st=GetBuildingName(targ);
 
                 if (self!=targ.real_owner)
                 {                    
-                    sprint(targ.real_owner, #PRINT_HIGH, "your ");
-                    sprint(targ.real_owner, #PRINT_HIGH, st);
-                    sprint(targ.real_owner, #PRINT_HIGH," has been fixed by ");
-                    sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                    sprint(targ.real_owner, #PRINT_HIGH, "\n");
+                    sprint(targ.real_owner, PRINT_HIGH, "your ");
+                    sprint(targ.real_owner, PRINT_HIGH, st);
+                    sprint(targ.real_owner, PRINT_HIGH," has been fixed by ");
+                    sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                    sprint(targ.real_owner, PRINT_HIGH, "\n");
 
                     teamprefixsprintbi(self.team_no,self,targ.real_owner);
                     teamsprintbi(self,targ.real_owner,targ.real_owner.netname,"'s malfunctioning ",st," has been fixed by ",self.netname,"\n");
@@ -557,7 +559,7 @@ void() SBFireInterface =
             }
             else
             {
-                sprint(self, #PRINT_HIGH, "There is nothing wrong with this machine.\n");
+                sprint(self, PRINT_HIGH, "There is nothing wrong with this machine.\n");
             }
 		}
 		else if (Teammate(targ.team_no,self.team_no))
@@ -568,41 +570,41 @@ void() SBFireInterface =
             local string st;
             st=GetBuildingName(targ);
 
-            sprint(self, #PRINT_HIGH, "You make a few adjustments...\n");
+            sprint(self, PRINT_HIGH, "You make a few adjustments...\n");
 			
-            if (hackThis == #IMPROVED_ONE)
+            if (hackThis == IMPROVED_ONE)
             {
                 if (targ.classname=="building_sensor")
                 {
-                    sprint(self, #PRINT_HIGH, "The sensor has greater detection range now.\n");
+                    sprint(self, PRINT_HIGH, "The sensor has greater detection range now.\n");
                     
                     if (self != targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH,"your motion sensor has greater detection range thanks to ");
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH, ".\n");
+                        sprint(targ.real_owner, PRINT_HIGH,"your motion sensor has greater detection range thanks to ");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH, ".\n");
                     }
                 }
                 else if (targ.classname=="building_camera")
                 {
-                    sprint(self, #PRINT_HIGH, "The camera has greater range of view now.\n");
+                    sprint(self, PRINT_HIGH, "The camera has greater range of view now.\n");
                     
                     if (self != targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH," hacked your camera, it has better sensors now.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH," hacked your camera, it has better sensors now.\n");
                     }
 
                 }
                 else if (targ.classname=="building_tesla") 
                 {
                     targ.maxammo_cells=targ.maxammo_cells*2;
-                    sprint(self, #PRINT_HIGH, "The tesla has extra cells capacity now.\n");
+                    sprint(self, PRINT_HIGH, "The tesla has extra cells capacity now.\n");
                     
                     if (self != targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH," hacked your tesla, it has extra capacity for cells now.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH," hacked your tesla, it has extra capacity for cells now.\n");
                     }
 
 
@@ -610,23 +612,23 @@ void() SBFireInterface =
                 else if (targ.classname=="building_sentrygun")
                 {                
                     targ.maxammo_shells=targ.maxammo_shells*2;
-                    sprint(self, #PRINT_HIGH, "The sentry gun has greater ammo capacity for shells now.\n");
+                    sprint(self, PRINT_HIGH, "The sentry gun has greater ammo capacity for shells now.\n");
                     
                     if (self != targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH," hacked your sentry gun, it has extra capacity for shells now.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH," hacked your sentry gun, it has extra capacity for shells now.\n");
                     }
 
                 }
                 else if (targ.classname=="building_dispenser")
                 {                
-                    sprint(self, #PRINT_HIGH, "The dispenser capacity was increased.\n");
+                    sprint(self, PRINT_HIGH, "The dispenser capacity was increased.\n");
                     
                     if (self != targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH," hacked your dispenser to increase its capacity.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH," hacked your dispenser to increase its capacity.\n");
                     }
 
                 }
@@ -634,12 +636,12 @@ void() SBFireInterface =
                 {                
                     targ.maxammo_cells=targ.maxammo_cells*2;
 
-                    sprint(self, #PRINT_HIGH, "The teleporter cells capacity was increased.\n");
+                    sprint(self, PRINT_HIGH, "The teleporter cells capacity was increased.\n");
                     
                     if (self != targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH," hacked your teleporter to increase its cells capacity.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH," hacked your teleporter to increase its cells capacity.\n");
                     }
 
                 }
@@ -647,75 +649,75 @@ void() SBFireInterface =
                 {                
                     targ.maxammo_cells=targ.maxammo_cells*2;
 
-                    sprint(self, #PRINT_HIGH, "The field generator cells capacity was increased.\n");
+                    sprint(self, PRINT_HIGH, "The field generator cells capacity was increased.\n");
                     
                     if (self != targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH," hacked your field generator to increase its cells capacity.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH," hacked your field generator to increase its cells capacity.\n");
                     }
 
                 }
 
 
             }
-            else if (hackThis == #IMPROVED_TWO) //- ICE level 1
+            else if (hackThis == IMPROVED_TWO) //- ICE level 1
             {
-                sprint(self, #PRINT_HIGH, "You add a μεφεμ “ ICE to the ");
-                sprint(self, #PRINT_HIGH, st);
-                sprint(self, #PRINT_HIGH,".\n");
+                sprint(self, PRINT_HIGH, "You add a μεφεμ “ ICE to the ");
+                sprint(self, PRINT_HIGH, st);
+                sprint(self, PRINT_HIGH,".\n");
 
                 if (self!=targ.real_owner)
                 {
-                    sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                    sprint(targ.real_owner, #PRINT_HIGH," adds a μεφεμ “ ICE to your ");
-                    sprint(targ.real_owner, #PRINT_HIGH, st);
-                    sprint(targ.real_owner, #PRINT_HIGH, ".\n");
+                    sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                    sprint(targ.real_owner, PRINT_HIGH," adds a μεφεμ “ ICE to your ");
+                    sprint(targ.real_owner, PRINT_HIGH, st);
+                    sprint(targ.real_owner, PRINT_HIGH, ".\n");
                 }
 
             }
-            else if (hackThis == #IMPROVED_FIVE) //- ICE level 2
+            else if (hackThis == IMPROVED_FIVE) //- ICE level 2
             {
-                sprint(self, #PRINT_HIGH, "You add a μεφεμ ” ICE to the ");
-                sprint(self, #PRINT_HIGH, st);
-                sprint(self, #PRINT_HIGH,".\n");
+                sprint(self, PRINT_HIGH, "You add a μεφεμ ” ICE to the ");
+                sprint(self, PRINT_HIGH, st);
+                sprint(self, PRINT_HIGH,".\n");
 
                 if (self!=targ.real_owner)
                 {
-                    sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                    sprint(targ.real_owner, #PRINT_HIGH," adds a μεφεμ ” ICE to your ");
-                    sprint(targ.real_owner, #PRINT_HIGH, st);
-                    sprint(targ.real_owner, #PRINT_HIGH, ".\n");
+                    sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                    sprint(targ.real_owner, PRINT_HIGH," adds a μεφεμ ” ICE to your ");
+                    sprint(targ.real_owner, PRINT_HIGH, st);
+                    sprint(targ.real_owner, PRINT_HIGH, ".\n");
                 }
 
             }
-            else if (hackThis == #IMPROVED_SIX) //- ICE level 3
+            else if (hackThis == IMPROVED_SIX) //- ICE level 3
             {
-                sprint(self, #PRINT_HIGH, "You add a μεφεμ • ICE to the ");
-                sprint(self, #PRINT_HIGH, st);
-                sprint(self, #PRINT_HIGH,".\n");
+                sprint(self, PRINT_HIGH, "You add a μεφεμ • ICE to the ");
+                sprint(self, PRINT_HIGH, st);
+                sprint(self, PRINT_HIGH,".\n");
 
                 if (self!=targ.real_owner)
                 {
-                    sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                    sprint(targ.real_owner, #PRINT_HIGH," adds a μεφεμ • ICE to your ");
-                    sprint(targ.real_owner, #PRINT_HIGH, st);
-                    sprint(targ.real_owner, #PRINT_HIGH, ".\n");
+                    sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                    sprint(targ.real_owner, PRINT_HIGH," adds a μεφεμ • ICE to your ");
+                    sprint(targ.real_owner, PRINT_HIGH, st);
+                    sprint(targ.real_owner, PRINT_HIGH, ".\n");
                 }
 
             }
-            else if (hackThis == #IMPROVED_THREE)
+            else if (hackThis == IMPROVED_THREE)
             {
-                sprint(self, #PRINT_HIGH, "You enhance the armour of the ");
-                sprint(self, #PRINT_HIGH, st);
-                sprint(self, #PRINT_HIGH,".\n");
+                sprint(self, PRINT_HIGH, "You enhance the armour of the ");
+                sprint(self, PRINT_HIGH, st);
+                sprint(self, PRINT_HIGH,".\n");
                     
                 if (self!=targ.real_owner)
                 {
-                    sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                    sprint(targ.real_owner, #PRINT_HIGH," enhances the armour of your ");
-                    sprint(targ.real_owner, #PRINT_HIGH, st);
-                    sprint(targ.real_owner, #PRINT_HIGH, ".\n");
+                    sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                    sprint(targ.real_owner, PRINT_HIGH," enhances the armour of your ");
+                    sprint(targ.real_owner, PRINT_HIGH, st);
+                    sprint(targ.real_owner, PRINT_HIGH, ".\n");
                 }
                 
                 local float num;                
@@ -725,79 +727,79 @@ void() SBFireInterface =
                 targ.health=num*targ.max_health;
                 
             }
-            else if (hackThis == #IMPROVED_SEVEN)
+            else if (hackThis == IMPROVED_SEVEN)
             {
                 if (targ.classname=="building_sensor")
                 {
-                    sprint(self, #PRINT_HIGH, "The sensor will be able to uncover thieves now.\n");
+                    sprint(self, PRINT_HIGH, "The sensor will be able to uncover thieves now.\n");
                     
                     if (self!=targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, "your motion sensor can now uncover thieves after ");
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH, "'s hack.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, "your motion sensor can now uncover thieves after ");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH, "'s hack.\n");
                     }
                 }
             }
-            else if (hackThis == #IMPROVED_FOUR)
+            else if (hackThis == IMPROVED_FOUR)
             {
                 if (targ.classname=="building_sensor")
                 {
-                    sprint(self, #PRINT_HIGH, "The sensor will be able to uncover spies now.\n");
+                    sprint(self, PRINT_HIGH, "The sensor will be able to uncover spies now.\n");
                     
                     if (self!=targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, "your motion sensor can now detect spies after ");
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH, "'s hack.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, "your motion sensor can now detect spies after ");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH, "'s hack.\n");
                     }
                 }
                 else if (targ.classname=="building_teleporter")
                 {
-                    sprint(self, #PRINT_HIGH, "The teleporter had its range increased.\n");
+                    sprint(self, PRINT_HIGH, "The teleporter had its range increased.\n");
                     
                     if (self!=targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, "your teleporter had its range increased by ");
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH, "'s hack.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, "your teleporter had its range increased by ");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH, "'s hack.\n");
                     }
                 }
                 else if (targ.classname=="building_fieldgen")
                 {
-                    sprint(self, #PRINT_HIGH, "The field generator had its range increased.\n");
+                    sprint(self, PRINT_HIGH, "The field generator had its range increased.\n");
                     
                     if (self!=targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, "your field generator had its range increased by ");
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH, "'s hack.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, "your field generator had its range increased by ");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH, "'s hack.\n");
                     }
                 }
                 else if (targ.classname=="building_tesla")
                 {
-                    sprint(self, #PRINT_HIGH, "The tesla has a better chip-set now.\n");
+                    sprint(self, PRINT_HIGH, "The tesla has a better chip-set now.\n");
                     
                     if (self!=targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH, " enhances your tesla main circuits.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH, " enhances your tesla main circuits.\n");
                     }
                 }
                 else if (targ.classname=="building_sentrygun")
                 {
-                    sprint(self, #PRINT_HIGH, "The sentry gun has a better chip-set now.\n");
+                    sprint(self, PRINT_HIGH, "The sentry gun has a better chip-set now.\n");
                     
                     if (self!=targ.real_owner)
                     {
-                        sprint(targ.real_owner, #PRINT_HIGH, self.netname);
-                        sprint(targ.real_owner, #PRINT_HIGH, " enhances your sentry gun main circuits.\n");
+                        sprint(targ.real_owner, PRINT_HIGH, self.netname);
+                        sprint(targ.real_owner, PRINT_HIGH, " enhances your sentry gun main circuits.\n");
                     }
                 }
             }
             else
             {
-                sprint(self, #PRINT_HIGH, "OfteN: BUG! unknown hack value BUG! (wtf u hacked)\n");
+                sprint(self, PRINT_HIGH, "OfteN: BUG! unknown hack value BUG! (wtf u hacked)\n");
                 RPrint(self.netname);
                 RPrint(" just made an unknown hack. (bug)");
             }
@@ -805,7 +807,7 @@ void() SBFireInterface =
 	}
 	
 	//else
-	//	sprint(self, #PRINT_HIGH, "There is nothing there to hack!\n");
+	//	sprint(self, PRINT_HIGH, "There is nothing there to hack!\n");
 };
 
 float(float input) IntToExp =
@@ -832,7 +834,7 @@ void(float input) SBInitiateInterface =
 
     if (!visible2x(self,self.demon_two))
     {
-        sprint(self, #PRINT_HIGH, "You are not connected to the target.\n");
+        sprint(self, PRINT_HIGH, "You are not connected to the target.\n");
         self.demon_two=world;
         return;
     }
@@ -840,17 +842,17 @@ void(float input) SBInitiateInterface =
     // DOUBLE CHECK, THIS ONE AFTER MENU, THE OTHER ON JOB_HACKER //
     if (self.is_feigning)
 	{
-		sprint(self, #PRINT_HIGH, "You cannot hack while feigning.\n");
+		sprint(self, PRINT_HIGH, "You cannot hack while feigning.\n");
 		return;
 	}
 	if (self.is_detpacking || self.is_toffingadet)
 	{
-		sprint(self, #PRINT_HIGH, "You can't hack something while setting a detpack.\n");
+		sprint(self, PRINT_HIGH, "You can't hack something while setting a detpack.\n");
 		return;
 	}
     if (self.is_building)
 	{
-		sprint(self, #PRINT_HIGH, "You can't hack while building!\n");
+		sprint(self, PRINT_HIGH, "You can't hack while building!\n");
 		return;
 	}
     // DOUBLE CHECK, THIS ONE AFTER MENU, THE OTHER ON JOB_HACKER //
@@ -882,20 +884,20 @@ void(float input) SBInitiateInterface =
 
         local float dist;
         dist = vlen(self.origin - self.demon_two.origin);
-        if (dist > #HAX_UNSTABLEDIST)
+        if (dist > HAX_UNSTABLEDIST)
         {
-            sprint(self,#PRINT_HIGH,"Connection unstable, it will take longer...");
+            sprint(self,PRINT_HIGH,"Connection unstable, it will take longer...");
             te.heat=te.heat*2;
         }
     }
     else
     {    
         te.heat = ReturnFHackDelay(self.demon_two, input);
-        if (input==2 && self.demon_two.num_mines & #IMPROVED_TWO)
+        if (input==2 && self.demon_two.num_mines & IMPROVED_TWO)
         {
-            te.has_camera=#IMPROVED_FIVE;
-            if (self.demon_two.num_mines & #IMPROVED_FIVE)
-                te.has_camera=#IMPROVED_SIX;
+            te.has_camera=IMPROVED_FIVE;
+            if (self.demon_two.num_mines & IMPROVED_FIVE)
+                te.has_camera=IMPROVED_SIX;
         }
 
         if (input==8) te.has_camera=-1;
@@ -905,9 +907,9 @@ void(float input) SBInitiateInterface =
     te.martyr_enemy = self.demon_two;
     te.think = SBHackDotTimerThink;
     
-    self.tfstate = self.tfstate | #TFSTATE_CANT_MOVE;
+    self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
     TeamFortress_SetSpeed(self);
-    sprint (self, #PRINT_HIGH, "You immerse yourself in the cybernet...\n");
+    sprint (self, PRINT_HIGH, "You immerse yourself in the cybernet...\n");
     makeImmune(self,time + te.heat); //- OfN - WORKS? yup
 
     te.ltime = te.heat;
@@ -919,11 +921,11 @@ float (entity hacked) GetICELevel =
     local float retval;
     retval=0;
 
-    if (hacked.num_mines & #IMPROVED_TWO)
+    if (hacked.num_mines & IMPROVED_TWO)
         retval=1;
-    if (hacked.num_mines & #IMPROVED_FIVE)
+    if (hacked.num_mines & IMPROVED_FIVE)
         retval=2;
-    if (hacked.num_mines & #IMPROVED_SIX)
+    if (hacked.num_mines & IMPROVED_SIX)
         retval=3;
     
     return retval;
@@ -1011,11 +1013,11 @@ float(entity hacked, float r) ReturnFHackDelay =
     else if (r == 8) return 8; // repairing..
 	else if (r == 2 && IsBuilding(hacked))
     {
-        if (!(hacked.num_mines & #IMPROVED_TWO))
+        if (!(hacked.num_mines & IMPROVED_TWO))
             return 20; // level 1 ICE lasts for 20 seconds always
-        if (!(hacked.num_mines & #IMPROVED_FIVE))
+        if (!(hacked.num_mines & IMPROVED_FIVE))
             return 25; // level 2 ICE lasts for 25 seconds always
-        if (!(hacked.num_mines & #IMPROVED_SIX))
+        if (!(hacked.num_mines & IMPROVED_SIX))
             return 30;    
     }
     else if (hacked.classname == "building_dispenser")
@@ -1110,49 +1112,49 @@ float(entity hacked, float r) ReturnFHackDelay =
 float() CheckHaxxx =
 {
     local float retval;
-    retval = #TRUE;
+    retval = TRUE;
         
     if (self.martyr_enemy == world) // BUG!
-        retval = #FALSE;
+        retval = FALSE;
     else if (!(IsBuilding(self.martyr_enemy))) // BUG! 2
-        retval = #FALSE;
+        retval = FALSE;
     else if (self.martyr_enemy.health <= 0)
     {
-        sprint (self.owner, #PRINT_HIGH, "Your target has been destroyed!\n");
+        sprint (self.owner, PRINT_HIGH, "Your target has been destroyed!\n");
         
         if (self.has_camera != -2)
         {
-            deathmsg=#DMSG_CYBERNET;
-            TF_T_Damage(self.owner, self.owner, self.martyr_enemy, self.owner.health + 10, #TF_TD_IGNOREARMOUR, #TF_TD_OTHER);
-            sound (self.owner, #CHAN_MISC, "effects/crunch.wav", 1, #ATTN_NONE);
+            deathmsg=DMSG_CYBERNET;
+            TF_T_Damage(self.owner, self.owner, self.martyr_enemy, self.owner.health + 10, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+            sound (self.owner, CHAN_MISC, "effects/crunch.wav", 1, ATTN_NONE);
         }
 
-        retval = #FALSE;
+        retval = FALSE;
     }
     else if (self.martyr_enemy.team_no != self.has_holo) // target switched team? if so.. abort
     {
-		sprint (self.owner, #PRINT_HIGH, "The communication has been lost!\n");
-        retval = #FALSE;
+		sprint (self.owner, PRINT_HIGH, "The communication has been lost!\n");
+        retval = FALSE;
     }
     else if (self.has_camera == -2)
     {
-        retval = #TRUE;
+        retval = TRUE;
     }
     else if (Teammate(self.martyr_enemy.team_no,self.owner.team_no) && self.martyr_enemy.num_mines & self.has_camera && self.has_camera != -1)
     {
-		sprint (self.owner, #PRINT_HIGH, "Somebody improved that first.\n");
-        retval = #FALSE;
+		sprint (self.owner, PRINT_HIGH, "Somebody improved that first.\n");
+        retval = FALSE;
     }
     else if (!Teammate(self.martyr_enemy.team_no,self.owner.team_no) && self.martyr_enemy.is_malfunctioning & self.has_camera)
     {
-		sprint (self.owner, #PRINT_HIGH, "Somebody screwed that up first! heh\n");
-        retval = #FALSE;
+		sprint (self.owner, PRINT_HIGH, "Somebody screwed that up first! heh\n");
+        retval = FALSE;
     }
 
     if (!retval)
     {
 		self.owner.is_haxxxoring = 0;
-		self.owner.tfstate = self.tfstate - (self.tfstate & #TFSTATE_CANT_MOVE);
+		self.owner.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
         TeamFortress_SetSpeed(self.owner);
 		self.think = SUB_Remove;
 		self.nextthink = time + 0.1;
@@ -1164,18 +1166,18 @@ float() CheckHaxxx =
 
 void() SBHackDotTimerThink =
 {
-	if (CheckHaxxx() == #FALSE) return;
+	if (CheckHaxxx() == FALSE) return;
 
     local vector org;    
   
     if (random() < 0.4) //-ofn was 0.3
 	{
 		org = self.martyr_enemy.origin;
-		if (self.martyr_enemy.classname == "building_tesla" && self.martyr_enemy.tf_items & #NIT_TURRET)
+		if (self.martyr_enemy.classname == "building_tesla" && self.martyr_enemy.tf_items & NIT_TURRET)
 			org_z = org_z - 7; // - 32;
 		else if (self.martyr_enemy.classname == "building_tesla")
 			org_z = org_z + 7; // + 32;
-		else if (self.martyr_enemy.classname == "building_sentrygun" && self.martyr_enemy.tf_items & #NIT_TURRET)
+		else if (self.martyr_enemy.classname == "building_sentrygun" && self.martyr_enemy.tf_items & NIT_TURRET)
 			org_z = org_z - 16;
 		else if (self.martyr_enemy.classname == "building_sentrygun")
 			org_z = org_z + 16;
@@ -1184,16 +1186,16 @@ void() SBHackDotTimerThink =
 	    else if (self.martyr_enemy.classname == "building_fieldgen")
 			org_z = org_z + 32;
 
-		WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-		WriteByte (#MSG_BROADCAST, #TE_GUNSHOT);
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
 		#ifdef QUAKE_WORLD
-			WriteByte (#MSG_MULTICAST, 3);
+			WriteByte (MSG_MULTICAST, 3);
 		#endif
-		WriteCoord (#MSG_BROADCAST, org_x);
-		WriteCoord (#MSG_BROADCAST, org_y);
-		WriteCoord (#MSG_BROADCAST, org_z);
+		WriteCoord (MSG_BROADCAST, org_x);
+		WriteCoord (MSG_BROADCAST, org_y);
+		WriteCoord (MSG_BROADCAST, org_z);
 		#ifdef QUAKE_WORLD
-			multicast (org, #MULTICAST_PVS);
+			multicast (org, MULTICAST_PVS);
 		#endif
 	}
 	
@@ -1217,51 +1219,51 @@ void() JobHacker =
 	if (self.is_haxxxoring)
 	{		
         if (self.demon_two.has_camera == -2) return; // if we ralready aborting a hack...
-        sprint(self, #PRINT_HIGH, "Aborting hack...\n");
+        sprint(self, PRINT_HIGH, "Aborting hack...\n");
         self.demon_two.heat = 1 + 2 * random();
         self.demon_two.has_camera = -2;
 		return;
 	}
 	if (self.is_feigning)
 	{
-		sprint(self, #PRINT_HIGH, "You cannot hack while feigning.\n");
+		sprint(self, PRINT_HIGH, "You cannot hack while feigning.\n");
 		return;
 	}
 	if (self.is_detpacking || self.is_toffingadet)
 	{
-		sprint(self, #PRINT_HIGH, "You can't hack something while setting a detpack.\n");
+		sprint(self, PRINT_HIGH, "You can't hack something while setting a detpack.\n");
 		return;
 	}
     if (self.is_building)
 	{
-		sprint(self, #PRINT_HIGH, "You can't hack while building!\n");
+		sprint(self, PRINT_HIGH, "You can't hack while building!\n");
 		return;
 	}
 	
 	source = self.origin + '0 0 16';
 
-	traceline (source, source + v_forward*500, #FALSE, self);
+	traceline (source, source + v_forward*500, FALSE, self);
 	
 	if ( (IsBuilding(trace_ent) && trace_ent.classname != "building_sentrygun_base") || trace_ent.classname == "player")
 	{
 		
 		if (!Teammate(trace_ent.team_no,self.team_no))
 		{
-		    if (trace_ent.is_malfunctioning == #SCREWUP_ONE + #SCREWUP_TWO + #SCREWUP_THREE + #SCREWUP_FOUR)
+		    if (trace_ent.is_malfunctioning == SCREWUP_ONE + SCREWUP_TWO + SCREWUP_THREE + SCREWUP_FOUR)
             {
-                sprint(self, #PRINT_HIGH, "You couldn't possibly screw that up more than it already is.\n");
+                sprint(self, PRINT_HIGH, "You couldn't possibly screw that up more than it already is.\n");
                 return;
             }
             else if (IsBuilding(trace_ent) && trace_ent.classname != "building_sentrygun_base")
             {
-                self.current_menu = #MENU_E_HACK;
-                self.menu_count = #MENU_REFRESH_RATE;
+                self.current_menu = MENU_E_HACK;
+                self.menu_count = MENU_REFRESH_RATE;
             }               
 		}
         else if (IsBuilding(trace_ent) && trace_ent.classname != "building_sentrygun_base")
         {
-            self.current_menu = #MENU_F_HACK;
-            self.menu_count = #MENU_REFRESH_RATE;
+            self.current_menu = MENU_F_HACK;
+            self.menu_count = MENU_REFRESH_RATE;
         }
 
 
@@ -1269,40 +1271,40 @@ void() JobHacker =
 
         if (trace_ent.classname=="player")
         {
-            if (!(trace_ent.cutf_items & #CUTF_CYBERAUG))
+            if (!(trace_ent.cutf_items & CUTF_CYBERAUG))
         	{
-                sprint(self, #PRINT_HIGH, "You can't hack him.\n");
+                sprint(self, PRINT_HIGH, "You can't hack him.\n");
                 ResetMenu();
                 self.demon_two=world;
                 return;
             }
         
-            sprint (self, #PRINT_HIGH, "\nScanning for cyberaug equipment...\n");
+            sprint (self, PRINT_HIGH, "\nScanning for cyberaug equipment...\n");
             SBInitiateInterface(0);
             ResetMenu();
         }
         else
         {
-            sprint (self, #PRINT_HIGH, "\nEstablishing connection...\n");
+            sprint (self, PRINT_HIGH, "\nEstablishing connection...\n");
             
             local string st;
 
             st=GetBuildingName(self.demon_two);
             
-            sprint (self, #PRINT_HIGH, "Target τωπε: ");
-            sprint (self, #PRINT_HIGH, st);
-            sprint (self, #PRINT_HIGH, "\nTarget οχξες: ");        
-            sprint (self, #PRINT_HIGH, self.demon_two.real_owner.netname);
+            sprint (self, PRINT_HIGH, "Target τωπε: ");
+            sprint (self, PRINT_HIGH, st);
+            sprint (self, PRINT_HIGH, "\nTarget οχξες: ");        
+            sprint (self, PRINT_HIGH, self.demon_two.real_owner.netname);
             
             if (Teammate(self.team_no,self.demon_two.team_no))
-                sprint (self, #PRINT_HIGH, "\nFriendly device.\n");
+                sprint (self, PRINT_HIGH, "\nFriendly device.\n");
             else
-                sprint (self, #PRINT_HIGH, "\nΕξενω device!\n");
+                sprint (self, PRINT_HIGH, "\nΕξενω device!\n");
         }
 	}
     else
 	{
-		sprint (self, #PRINT_HIGH, "There is nothing there to hack!\n");
+		sprint (self, PRINT_HIGH, "There is nothing there to hack!\n");
 		return;
 	}
 	
@@ -1324,18 +1326,18 @@ void(entity thebuilding) UpdateBuildingMenus =
     te = find(world, classname, "player");
     while (te)
 	{
-        if (te.job & #JOB_HACKER) // a hacker?
+        if (te.job & JOB_HACKER) // a hacker?
         if (!te.is_haxxxoring) // currently hacking? if so.. do nothing, he could be killed by building
         if (te.demon_two == thebuilding) // this is our target?
-        if (te.current_menu == #MENU_E_HACK || te.current_menu == #MENU_F_HACK) // and we have the hack menu?
+        if (te.current_menu == MENU_E_HACK || te.current_menu == MENU_F_HACK) // and we have the hack menu?
         { // then reset his menu
             te.demon_two = world;
             if (te.StatusBarSize == 0)
                 CenterPrint(te, "\n");
             else
                 te.StatusRefreshTime = time + 0.1;
-            te.menu_count = #MENU_REFRESH_RATE;
-            te.current_menu = #MENU_DEFAULT;
+            te.menu_count = MENU_REFRESH_RATE;
+            te.current_menu = MENU_DEFAULT;
         }
         
         if (te.building == thebuilding) // put the eng building to wolrd, and player_menu will reset it

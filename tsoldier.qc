@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*======================================================
 	TSOLDIER.QC
 
@@ -23,7 +24,7 @@ void() NailGrenadeTouch =
 
 	// If the Nail Grenade hits a player, it just bounces off
 
-	sound (self, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -33,7 +34,7 @@ void() NailGrenadeTouch =
 void() NailGrenadeExplode =
 {
 	// Raise into the air
-	self.movetype = #MOVETYPE_FLY;
+	self.movetype = MOVETYPE_FLY;
 
 	setorigin(self, self.origin + '0 0 32');
 	self.avelocity = '0 500 0';
@@ -75,10 +76,10 @@ void() NailGrenadeLaunchNail =
 		self.angles_z = 0;
 		makevectors(self.angles);
 
-		deathmsg = #DMSG_GREN_NAIL;
+		deathmsg = DMSG_GREN_NAIL;
 		launch_spike(self.origin, v_forward);
 		newmis.touch = spike_touch;
-		newmis.weapon = #DMSG_GREN_NAIL;
+		newmis.weapon = DMSG_GREN_NAIL;
 
 		i = i + 1;
 	}
@@ -89,7 +90,7 @@ void() NailGrenadeLaunchNail =
 	// Explode 
 	if (self.playerclass > 50)
 	{
-		self.weapon = #DMSG_GREN_NAIL;
+		self.weapon = DMSG_GREN_NAIL;
 		self.think = GrenadeExplode;
 	}
 };

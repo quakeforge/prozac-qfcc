@@ -1,3 +1,5 @@
+#include "defs.qh"
+#include "menu.qh"
 /*=======================================================//
 // field.QC - CustomTF 3.2.OfN             - 30/1/2001 - //
 // by Sergio Fumaña Grunwaldt - OfteN aka superCOCK2000  //
@@ -109,20 +111,20 @@ void() Field_think =
         return;
     }
 
-    self.has_camera = #FALSE;
+    self.has_camera = FALSE;
 
     // checks for removal...
     if (!IsValidFieldGen(self.demon_one) || !IsValidFieldGen(self.demon_two))
     {
         if (IsValidFieldGen(self.demon_one))
         {
-            self.demon_one.fieldgen_hasfield = #FALSE;
+            self.demon_one.fieldgen_hasfield = FALSE;
             self.demon_one.fieldgen_field = world;
         }
 
         if (IsValidFieldGen(self.demon_two))
         {
-            self.demon_two.fieldgen_hasfield = #FALSE;
+            self.demon_two.fieldgen_hasfield = FALSE;
             self.demon_two.fieldgen_field = world;
         }
 
@@ -137,17 +139,17 @@ void() Field_think =
         self.nextthink = time + 0.25; // 4hz check
 
     if (IsValidFieldGen(self.demon_one))
-    if (self.demon_one.fieldgen_status == #FIELDGEN_ISWORKING)
+    if (self.demon_one.fieldgen_status == FIELDGEN_ISWORKING)
         Field_MakeVisual(self);        
    
     // checks for anything stuck in field :)
     local entity te;
     local float frange;
 
-    frange = #FIELDGEN_RANGE;
+    frange = FIELDGEN_RANGE;
 
-    if (FieldIsImproved(self) & #IMPROVED_FOUR)
-        frange = #FIELDGEN_HACKEDRANGE;
+    if (FieldIsImproved(self) & IMPROVED_FOUR)
+        frange = FIELDGEN_HACKEDRANGE;
 
     te = findradius(self.origin,frange);
     while (te)
@@ -161,8 +163,8 @@ void() Field_think =
         if (EntsTouching2(te,self))
         {
             other = te;
-            deathmsg = #DMSG_STUCK_FORCEFIELD; 
-            self.dmg = #FIELDGEN_DMGINSIDE; // this gonna hurt
+            deathmsg = DMSG_STUCK_FORCEFIELD; 
+            self.dmg = FIELDGEN_DMGINSIDE; // this gonna hurt
             Field_touch_SUB();
 		}
 
@@ -176,20 +178,20 @@ void() Field_think =
 float(entity e1, entity e2) EntsTouching2 =
 {
     if (e1.absmin_x > e2.absmax_x)
-        return #FALSE;
+        return FALSE;
     if (e1.absmin_y > e2.absmax_y)
-        return #FALSE;
+        return FALSE;
     if (e1.absmin_z > e2.absmax_z)
-        return #FALSE;
+        return FALSE;
 
     if (e1.absmax_x < e2.absmin_x)
-        return #FALSE;
+        return FALSE;
     if (e1.absmax_y < e2.absmin_y)
-        return #FALSE;
+        return FALSE;
     if (e1.absmax_z < e2.absmin_z)
-        return #FALSE;
+        return FALSE;
 
-    return #TRUE;
+    return TRUE;
 };
 
 //=================================================================================
@@ -230,17 +232,17 @@ void() DisableField =
 {
     if (IsValidFieldGen(self.demon_one))
     {
-        self.demon_one.fieldgen_status = #FIELDGEN_ISDISABLED;
-        self.demon_one.no_grenades_2 = time + #FIELDGEN_TIMEDISABLED;            
+        self.demon_one.fieldgen_status = FIELDGEN_ISDISABLED;
+        self.demon_one.no_grenades_2 = time + FIELDGEN_TIMEDISABLED;            
     }
             
     if (IsValidFieldGen(self.demon_two))
     {
-        self.demon_two.fieldgen_status = #FIELDGEN_ISDISABLED;
-        self.demon_two.no_grenades_2 = time + #FIELDGEN_TIMEDISABLED;
+        self.demon_two.fieldgen_status = FIELDGEN_ISDISABLED;
+        self.demon_two.no_grenades_2 = time + FIELDGEN_TIMEDISABLED;
     }
 
-    sound (self, #CHAN_VOICE, "misc/ffbeep.wav", 0.4, #ATTN_IDLE);
+    sound (self, CHAN_VOICE, "misc/ffbeep.wav", 0.4, ATTN_IDLE);
 };
 
 //=========================================================================================
@@ -249,14 +251,14 @@ void() DisableField =
 void() Field_touch_SUB =
 {
     local float doFX;
-    doFX = #TRUE;
+    doFX = TRUE;
 
-    if (FieldIsMalfunctioning(self) & #SCREWUP_THREE) // reduce output
+    if (FieldIsMalfunctioning(self) & SCREWUP_THREE) // reduce output
         self.dmg = 1;
 
     if (other.classname == "player") // PLAYERS
     {
-    	if (other.playerclass == #PC_UNDEFINED) // Observers
+    	if (other.playerclass == PC_UNDEFINED) // Observers
 	    	return;
         
         if (Field_ItCanPass(self, other))  
@@ -269,7 +271,7 @@ void() Field_touch_SUB =
             self.velocity = self.velocity - (self.velocity*4) + '0 0 1';
             
             if (Field_ShouldDamage(self,other))
-                TF_T_Damage (other, self, self.real_owner, self.dmg, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+                TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
         }
 
     }
@@ -283,13 +285,13 @@ void() Field_touch_SUB =
                 return;
             }
             else if (Field_ShouldDamage(self,other))
-                TF_T_Damage (other, self, self.real_owner, self.dmg, #TF_TD_NOTTEAM, #TF_TD_ELECTRICITY);
+                TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
         }
         
         // excludes entities that shouldnt be moved, doors plats etc..
-        if(other.movetype == #MOVETYPE_NONE 
-            || other.movetype == #MOVETYPE_PUSH)
-            //|| other.movetype == #MOVETYPE_NOCLIP
+        if(other.movetype == MOVETYPE_NONE 
+            || other.movetype == MOVETYPE_PUSH)
+            //|| other.movetype == MOVETYPE_NOCLIP
             return;
 		if (IsBuilding(other))
 			return;
@@ -320,15 +322,15 @@ entity(entity myself) GetMyFieldGen =
     local entity te;
     local float foundit;
     te = world;
-    foundit = #FALSE;
+    foundit = FALSE;
 
     te = find(world, classname, "building_fieldgen");
-    while (te != world && foundit == #FALSE)
+    while (te != world && foundit == FALSE)
     {
         if (te.real_owner == myself) // is it ours?
-            foundit = #TRUE; // yeah, found it
+            foundit = TRUE; // yeah, found it
         
-        if (foundit == #FALSE) // our search must continue...
+        if (foundit == FALSE) // our search must continue...
             te = find(te, classname, "building_fieldgen");
     }
 
@@ -344,20 +346,20 @@ float(entity tfield) Field_GetForcedStatus =
     if (IsValidFieldGen(tfield.demon_one) && IsValidFieldGen(tfield.demon_two))
     {
         if (tfield.demon_two.has_tesla || tfield.demon_one.has_tesla)
-            return #TRUE;
+            return TRUE;
     }
     else if (IsValidFieldGen(tfield.demon_one))
     {
         if (tfield.demon_one.has_tesla)
-            return #TRUE;
+            return TRUE;
     }
     else if (IsValidFieldGen(tfield.demon_two))
     {
         if (tfield.demon_two.has_tesla)
-            return #TRUE;
+            return TRUE;
     }
 
-    return #FALSE;
+    return FALSE;
 };
 
 //==============================================================================
@@ -393,14 +395,14 @@ float() GetFieldForcedStatus =
     if (IsValidFieldGen(gen1) && IsValidFieldGen(gen2))
     {
         if (gen1.has_tesla || gen2.has_tesla)
-            return #TRUE;
+            return TRUE;
     }
     else if (IsValidFieldGen(gen1))
         return gen1.has_tesla;
     else if (IsValidFieldGen(gen2))
         return gen2.has_tesla;
 
-    return #FALSE;
+    return FALSE;
 
 };
 
@@ -411,32 +413,32 @@ float() GetFieldForcedStatus =
 
 float(entity tfield, entity who) Field_ItCanPass =
 {
-    if (FieldIsMalfunctioning(tfield) & #SCREWUP_ONE)
-        return #FALSE;
+    if (FieldIsMalfunctioning(tfield) & SCREWUP_ONE)
+        return FALSE;
 
     if (who == tfield.real_owner) // field owner - always pass
-        return #TRUE;
+        return TRUE;
 
 /*
     if (Field_GetForcedStatus(tfield)) 
-        return #FALSE;
+        return FALSE;
 */
 
     if (who.classname == "player") // PLAYERS
     {
         if (Teammate(who.team_no, tfield.real_owner.team_no)) // teammate
-            return #TRUE;
+            return TRUE;
 
         if (Teammate(who.undercover_team, tfield.real_owner.team_no)) // spies disguised as our team
-            return #TRUE;
+            return TRUE;
     }
     else if (IsMonster(who))  // MONSTERS/ARMY
     {
         if (Teammate(who.real_owner.team_no, tfield.real_owner.team_no)) // team monster
-            return #TRUE;
+            return TRUE;
     }
 
-    return #FALSE;
+    return FALSE;
 };
 
 //=========================================================================
@@ -444,27 +446,27 @@ float(entity tfield, entity who) Field_ItCanPass =
 
 float(entity tfield, entity who) Field_ShouldDamage =
 {
-    if (FieldIsMalfunctioning(tfield) & #SCREWUP_ONE)
-        return #TRUE;
+    if (FieldIsMalfunctioning(tfield) & SCREWUP_ONE)
+        return TRUE;
 
     if (who.classname == "player") // PLAYERS
     {
         if (who == tfield.real_owner) // field owner
-            return #FALSE;
+            return FALSE;
 
         if (Teammate(who.team_no, tfield.real_owner.team_no)) // teammate
-            return #FALSE;
+            return FALSE;
 
         if (Teammate(who.undercover_team, tfield.real_owner.team_no)) // spies disguised as our team
-            return #FALSE;
+            return FALSE;
     }
     else if (IsMonster(who))  // MONSTERS/ARMY
     {
         if (Teammate(who.real_owner.team_no, tfield.real_owner.team_no)) // team monster
-            return #FALSE;
+            return FALSE;
     }
 
-    return #TRUE;
+    return TRUE;
 };
 
 //=============================================================================
@@ -481,27 +483,27 @@ void(entity tfield, vector where, entity thing) FieldExplosion =
         whereFX_z = tfield.origin_z;
 
         spawnFOG(whereFX);
-        sound(tfield,#CHAN_BODY,"effects/crunch.wav",0.5,#ATTN_NORM);
+        sound(tfield,CHAN_BODY,"effects/crunch.wav",0.5,ATTN_NORM);
 
-        tfield.has_camera = #TRUE; // cya soon
+        tfield.has_camera = TRUE; // cya soon
     }
 };
 
 void(entity field) PutFieldWork =
 {
     if (IsValidFieldGen(field.demon_one))
-        field.demon_one.tp_grenades_1 = time + #FIELDGEN_SHOCKTIME;        
+        field.demon_one.tp_grenades_1 = time + FIELDGEN_SHOCKTIME;        
     if (IsValidFieldGen(field.demon_two))
-        field.demon_two.tp_grenades_1 = time + #FIELDGEN_SHOCKTIME;
+        field.demon_two.tp_grenades_1 = time + FIELDGEN_SHOCKTIME;
 };
 
 void() Field_touch =
 {
     if (other.classname == "force_field") return; //avoid weird loops with other fields
 
-    self.dmg = #FIELDGEN_DMG;
+    self.dmg = FIELDGEN_DMG;
 
-    deathmsg = #DMSG_FORCEFIELD;
+    deathmsg = DMSG_FORCEFIELD;
     Field_touch_SUB();
 };
 
@@ -526,11 +528,11 @@ void(entity gen1, entity gen2) Create_Field =
     /*if (!IsValidFieldGen(gen1) || !IsValidFieldGen(gen2))
         return;*/
         
-    gen1.fieldgen_status = #FIELDGEN_ISENABLED;
-    gen2.fieldgen_status = #FIELDGEN_ISENABLED;
+    gen1.fieldgen_status = FIELDGEN_ISENABLED;
+    gen2.fieldgen_status = FIELDGEN_ISENABLED;
 
-    gen1.fieldgen_hasfield = #TRUE;
-    gen2.fieldgen_hasfield = #TRUE;
+    gen1.fieldgen_hasfield = TRUE;
+    gen2.fieldgen_hasfield = TRUE;
 
     local entity tfield;
 
@@ -632,8 +634,8 @@ void(entity gen1, entity gen2) Create_Field =
     }    
 
     // apply stuff
-    tfield.movetype = #MOVETYPE_NONE;
-    tfield.solid = #SOLID_BBOX;
+    tfield.movetype = MOVETYPE_NONE;
+    tfield.solid = SOLID_BBOX;
     setsize(tfield, tfield.mins, tfield.maxs);
     setorigin(tfield, tfield.origin);
 
@@ -646,14 +648,14 @@ void(entity gen1, entity gen2) Create_Field =
     tfield.demon_two = gen2;
 
     //make activating sound
-    sound (tfield, #CHAN_VOICE, "misc/ffact.wav", 0.2, #ATTN_NORM);
+    sound (tfield, CHAN_VOICE, "misc/ffact.wav", 0.2, ATTN_NORM);
 
     // flash generators
-    gen1.effects = #EF_DIMLIGHT;
-    gen1.has_teleporter = #TRUE;
+    gen1.effects = EF_DIMLIGHT;
+    gen1.has_teleporter = TRUE;
     gen1.skin = 2;
-    gen2.effects = #EF_DIMLIGHT;
-    gen2.has_teleporter = #TRUE;
+    gen2.effects = EF_DIMLIGHT;
+    gen2.has_teleporter = TRUE;
     gen2.skin = 2;
 };
 
@@ -668,11 +670,11 @@ void(entity gen1, entity gen2) Remove_Field =
         {
             dremove(gen1.fieldgen_field);
 	}
-	gen1.fieldgen_hasfield = #FALSE;
+	gen1.fieldgen_hasfield = FALSE;
         gen1.fieldgen_field = world;
 	if (IsValidFieldGen(gen2))
 	{
-            gen2.fieldgen_hasfield = #FALSE;
+            gen2.fieldgen_hasfield = FALSE;
             gen2.fieldgen_field = world;
 	}
     }
@@ -682,7 +684,7 @@ void(entity gen1, entity gen2) Remove_Field =
         {
             dremove(gen2.fieldgen_field);
 	}
-        gen2.fieldgen_hasfield = #FALSE;
+        gen2.fieldgen_hasfield = FALSE;
         gen2.fieldgen_field = world;
     }
 };
@@ -690,23 +692,23 @@ void(entity gen1, entity gen2) Remove_Field =
 float(entity field) IsValidField =
 {
     if (field == world)
-        return #FALSE;
+        return FALSE;
     
     if (field.classname != "force_field")
-        return #FALSE;
+        return FALSE;
 
-    return #TRUE;
+    return TRUE;
 };
 
 float(entity field) IsValidFieldGen =
 {
     if (field == world)
-        return #FALSE;
+        return FALSE;
     
     if (field.classname != "building_fieldgen")
-        return #FALSE;
+        return FALSE;
   
-    return #TRUE;
+    return TRUE;
 };
 
 //========================================================
@@ -720,34 +722,34 @@ void(entity tfield, entity gen1) Field_UpdateSounds =
     if (IsValidField(tfield)) // only if there is a field currently
     {
         local float playhum, playshield;
-        playhum = #FALSE; playshield = #FALSE;
+        playhum = FALSE; playshield = FALSE;
 
-        /*if (gen1.fieldgen_status == #FIELDGEN_ISOFF) // for some reason we r not working
+        /*if (gen1.fieldgen_status == FIELDGEN_ISOFF) // for some reason we r not working
         {
-            playhum = #FALSE;
-            playshield = #FALSE;
+            playhum = FALSE;
+            playshield = FALSE;
         }
-        else if (gen1.fieldgen_status == #FIELDGEN_ISIDLE) // awaiting for link
+        else if (gen1.fieldgen_status == FIELDGEN_ISIDLE) // awaiting for link
         {
-            playhum = #FALSE;
-            playshield = #FALSE;
+            playhum = FALSE;
+            playshield = FALSE;
         }
-        else if (gen1.fieldgen_status == #FIELDGEN_ISDISABLED) // teammate passing thru the field?
+        else if (gen1.fieldgen_status == FIELDGEN_ISDISABLED) // teammate passing thru the field?
         {
-            playhum = #FALSE;
-            playshield = #FALSE;            
+            playhum = FALSE;
+            playshield = FALSE;            
         }
         else*/
         
-        if (gen1.fieldgen_status == #FIELDGEN_ISENABLED)
+        if (gen1.fieldgen_status == FIELDGEN_ISENABLED)
         {
-            playhum = #TRUE;
-            playshield = #FALSE;
+            playhum = TRUE;
+            playshield = FALSE;
         }
-        else if (gen1.fieldgen_status == #FIELDGEN_ISWORKING)
+        else if (gen1.fieldgen_status == FIELDGEN_ISWORKING)
         {
-            playhum = #TRUE;
-            playshield = #TRUE;        
+            playhum = TRUE;
+            playshield = TRUE;        
         }
 
         // MAKE THE SHIT SOUND !
@@ -755,17 +757,17 @@ void(entity tfield, entity gen1) Field_UpdateSounds =
         {
             if (tfield.fieldgen_status)
             {
-                sound(tfield,#CHAN_MISC,"misc/null.wav",0.5,#ATTN_NORM);
-                tfield.fieldgen_status = #FALSE;
+                sound(tfield,CHAN_MISC,"misc/null.wav",0.5,ATTN_NORM);
+                tfield.fieldgen_status = FALSE;
             }
         }
         else
         {
             if (!tfield.fieldgen_status || tfield.has_tesla < time)
             {
-                sound(tfield,#CHAN_MISC,"misc/ffhum.wav",0.3,#ATTN_NORM);
+                sound(tfield,CHAN_MISC,"misc/ffhum.wav",0.3,ATTN_NORM);
                 tfield.has_tesla = time + 1;
-                tfield.fieldgen_status = #TRUE;
+                tfield.fieldgen_status = TRUE;
             }
         }
 
@@ -773,8 +775,8 @@ void(entity tfield, entity gen1) Field_UpdateSounds =
         {
             if (tfield.fieldgen_hasfield)
             {
-                sound(tfield,#CHAN_ITEM,"misc/null.wav",0.2,#ATTN_NORM);
-                tfield.fieldgen_hasfield = #FALSE;
+                sound(tfield,CHAN_ITEM,"misc/null.wav",0.2,ATTN_NORM);
+                tfield.fieldgen_hasfield = FALSE;
             }
         }
         else
@@ -783,9 +785,9 @@ void(entity tfield, entity gen1) Field_UpdateSounds =
             {
                 //TODO?: lower volume as (FIELDGEN_SHOCKTIME - time) decreases
                 
-                sound(tfield,#CHAN_ITEM,"misc/ffield.wav",0.4,#ATTN_NORM);
+                sound(tfield,CHAN_ITEM,"misc/ffield.wav",0.4,ATTN_NORM);
                 tfield.has_sentry = time + 1;
-                tfield.fieldgen_hasfield = #TRUE;
+                tfield.fieldgen_hasfield = TRUE;
             }
         }
     
@@ -814,18 +816,18 @@ void(entity tfield) Field_MakeVisual =
             fy = tfield.origin_y + (tfield.size_y/2 - tfield.size_y * random());
         }
 
-        WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
         if (random() > 0.5)
-            WriteByte (#MSG_BROADCAST, #TE_LIGHTNING2);
+            WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
         else
-            WriteByte (#MSG_BROADCAST, #TE_LIGHTNING1);
-	    WriteEntity (#MSG_BROADCAST, tfield);
-	    WriteCoord (#MSG_BROADCAST, fx);
-	    WriteCoord (#MSG_BROADCAST, fy);
-	    WriteCoord (#MSG_BROADCAST, tfield.origin_z - 12);
-	    WriteCoord (#MSG_BROADCAST, fx);
-	    WriteCoord (#MSG_BROADCAST, fy);
-	    WriteCoord (#MSG_BROADCAST, tfield.origin_z + 12);
+            WriteByte (MSG_BROADCAST, TE_LIGHTNING1);
+	    WriteEntity (MSG_BROADCAST, tfield);
+	    WriteCoord (MSG_BROADCAST, fx);
+	    WriteCoord (MSG_BROADCAST, fy);
+	    WriteCoord (MSG_BROADCAST, tfield.origin_z - 12);
+	    WriteCoord (MSG_BROADCAST, fx);
+	    WriteCoord (MSG_BROADCAST, fy);
+	    WriteCoord (MSG_BROADCAST, tfield.origin_z + 12);
     }
 };
 
@@ -843,30 +845,30 @@ void() FieldGen_think =
         Remove_Field(self,othergen); // checks redundancy itself
 
     // field main loop (ai? heh.. my cat is smarter than these force fields)
-    if (self.fieldgen_status == #FIELDGEN_ISOFF) // for some reason we r not working
+    if (self.fieldgen_status == FIELDGEN_ISOFF) // for some reason we r not working
     {
         self.effects = 0;
         self.skin = 0;
 
         if (FieldGen_CanIdle(self)) // can we go idle?
-            self.fieldgen_status = #FIELDGEN_ISIDLE;
+            self.fieldgen_status = FIELDGEN_ISIDLE;
 
     }
-    else if (self.fieldgen_status == #FIELDGEN_ISIDLE) // awaiting for link
+    else if (self.fieldgen_status == FIELDGEN_ISIDLE) // awaiting for link
     {
         self.effects = 0;
         self.skin = 0;
         
         if (self.no_grenades_1 < time) // trying to link sound/flash time
         {
-            sound (self, #CHAN_WEAPON, "misc/fffail.wav", 0.5, #ATTN_IDLE);
+            sound (self, CHAN_WEAPON, "misc/fffail.wav", 0.5, ATTN_IDLE);
             self.skin = 1;
-            self.effects = #EF_DIMLIGHT;
-            self.no_grenades_1 = time + #FIELDGEN_LINKTIME;
+            self.effects = EF_DIMLIGHT;
+            self.no_grenades_1 = time + FIELDGEN_LINKTIME;
         }
 
     }
-    else if (self.fieldgen_status == #FIELDGEN_ISDISABLED) // teammate passing thru the field?
+    else if (self.fieldgen_status == FIELDGEN_ISDISABLED) // teammate passing thru the field?
     {
         self.effects = 0;
         self.skin = 0;
@@ -874,12 +876,12 @@ void() FieldGen_think =
         // time check
         if (self.no_grenades_2 < time) // can we go idle?
         {    
-            self.fieldgen_status = #FIELDGEN_ISIDLE;
+            self.fieldgen_status = FIELDGEN_ISIDLE;
             self.tp_grenades_1 = 0;
         }
         
     }
-    else if (self.fieldgen_status == #FIELDGEN_ISENABLED)
+    else if (self.fieldgen_status == FIELDGEN_ISENABLED)
     {
         if (!self.has_teleporter)
         {
@@ -887,35 +889,35 @@ void() FieldGen_think =
             self.skin = 1;
         }
 
-        if (self.fieldgen_hasfield == #FALSE)
-            self.fieldgen_status = #FIELDGEN_ISIDLE;
+        if (self.fieldgen_hasfield == FALSE)
+            self.fieldgen_status = FIELDGEN_ISIDLE;
         
         if (self.tp_grenades_1 >= time)
-            self.fieldgen_status = #FIELDGEN_ISWORKING;
+            self.fieldgen_status = FIELDGEN_ISWORKING;
     }
-    else if (self.fieldgen_status == #FIELDGEN_ISWORKING)
+    else if (self.fieldgen_status == FIELDGEN_ISWORKING)
     {
-        self.effects = #EF_DIMLIGHT;
+        self.effects = EF_DIMLIGHT;
         self.skin = 2;        
 
         if (self.has_camera <= time)
         {
-            self.ammo_cells = self.ammo_cells - #FIELDGEN_CELLSCOST;
+            self.ammo_cells = self.ammo_cells - FIELDGEN_CELLSCOST;
             self.has_camera = time + 1;
         }
 
-        if (self.fieldgen_hasfield == #FALSE)
-            self.fieldgen_status = #FIELDGEN_ISIDLE;
+        if (self.fieldgen_hasfield == FALSE)
+            self.fieldgen_status = FIELDGEN_ISIDLE;
         else if (self.tp_grenades_1 <= time)
-            self.fieldgen_status = #FIELDGEN_ISENABLED;
+            self.fieldgen_status = FIELDGEN_ISENABLED;
     }
 
     Field_UpdateSounds(self.fieldgen_field, self); // update force field sounds
 
     if (!FieldGen_CanIdle(self)) // turn us off if needed
-        self.fieldgen_status = #FIELDGEN_ISOFF;
+        self.fieldgen_status = FIELDGEN_ISOFF;
    
-    self.has_teleporter = #FALSE; // resets 'flash' status bypass
+    self.has_teleporter = FALSE; // resets 'flash' status bypass
     self.nextthink = time + 0.1;
 };
 
@@ -925,14 +927,14 @@ void() FieldGen_think =
 float(entity fieldgen) FieldGen_CanIdle =
 {
     if (!(IsValidFieldGen(fieldgen)))
-        return #FALSE;
+        return FALSE;
 
-    if (fieldgen.ammo_cells >= #FIELDGEN_CELLSCOST &&
-        !(fieldgen.is_malfunctioning & #SCREWUP_FOUR)
+    if (fieldgen.ammo_cells >= FIELDGEN_CELLSCOST &&
+        !(fieldgen.is_malfunctioning & SCREWUP_FOUR)
         && fieldgen.health > 0)
-        return #TRUE;
+        return TRUE;
 
-    return #FALSE;
+    return FALSE;
 };
 
 //=======================================================================
@@ -941,48 +943,48 @@ float(entity fieldgen) FieldGen_CanIdle =
 float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
 {
     if (!(IsValidFieldGen(fieldgen1)) || !(IsValidFieldGen(fieldgen2)))
-        return #FALSE;
+        return FALSE;
 
     if (!visible2(fieldgen1,fieldgen2))
-        return #FALSE;
+        return FALSE;
     
     local float r;
     r = vlen(fieldgen1.origin - fieldgen2.origin); // get distance between generators
 
-//    if ((fieldgen1.num_mines & #IMPROVED_FOUR && fieldgen2.num_mines & #IMPROVED_FOUR) && r > #FIELDGEN_HACKEDRANGE2)
-//        return #FALSE;
+//    if ((fieldgen1.num_mines & IMPROVED_FOUR && fieldgen2.num_mines & IMPROVED_FOUR) && r > FIELDGEN_HACKEDRANGE2)
+//        return FALSE;
   
-    /*if (fieldgen1.num_mines & #IMPROVED_FOUR || fieldgen2.num_mines & #IMPROVED_FOUR)
+    /*if (fieldgen1.num_mines & IMPROVED_FOUR || fieldgen2.num_mines & IMPROVED_FOUR)
     {
-        if ((fieldgen1.num_mines & #IMPROVED_FOUR && fieldgen2.num_mines & #IMPROVED_FOUR) && r > #FIELDGEN_HACKEDRANGE2)
-            return #FALSE;
+        if ((fieldgen1.num_mines & IMPROVED_FOUR && fieldgen2.num_mines & IMPROVED_FOUR) && r > FIELDGEN_HACKEDRANGE2)
+            return FALSE;
         else
-        if ((fieldgen1.num_mines & #IMPROVED_FOUR || fieldgen2.num_mines & #IMPROVED_FOUR) && r > #FIELDGEN_HACKEDRANGE)
-            return #FALSE;                 
+        if ((fieldgen1.num_mines & IMPROVED_FOUR || fieldgen2.num_mines & IMPROVED_FOUR) && r > FIELDGEN_HACKEDRANGE)
+            return FALSE;                 
     }*/
 
-    if ((fieldgen1.num_mines & #IMPROVED_FOUR || fieldgen2.num_mines & #IMPROVED_FOUR) && r > #FIELDGEN_HACKEDRANGE)
-        return #FALSE;
+    if ((fieldgen1.num_mines & IMPROVED_FOUR || fieldgen2.num_mines & IMPROVED_FOUR) && r > FIELDGEN_HACKEDRANGE)
+        return FALSE;
 
-    if (r > #FIELDGEN_RANGE && !(fieldgen1.num_mines & #IMPROVED_FOUR || fieldgen2.num_mines & #IMPROVED_FOUR))
-        return #FALSE;
+    if (r > FIELDGEN_RANGE && !(fieldgen1.num_mines & IMPROVED_FOUR || fieldgen2.num_mines & IMPROVED_FOUR))
+        return FALSE;
 
     if (fieldgen1.origin_z != fieldgen2.origin_z)
-        return #FALSE;
+        return FALSE;
 
     if (fieldgen1.origin_x != fieldgen2.origin_x && fieldgen1.origin_y != fieldgen2.origin_y)
-        return #FALSE;
+        return FALSE;
     
-    if (fieldgen1.fieldgen_status == #FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == #FIELDGEN_ISDISABLED)
-        return #FALSE;
+    if (fieldgen1.fieldgen_status == FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == FIELDGEN_ISDISABLED)
+        return FALSE;
 
-    if (fieldgen1.fieldgen_status == #FIELDGEN_ISOFF || fieldgen2.fieldgen_status == #FIELDGEN_ISOFF)
-        return #FALSE;
+    if (fieldgen1.fieldgen_status == FIELDGEN_ISOFF || fieldgen2.fieldgen_status == FIELDGEN_ISOFF)
+        return FALSE;
 
     if (FieldGen_CanIdle(fieldgen1) && FieldGen_CanIdle(fieldgen2))
-        return #TRUE;
+        return TRUE;
     
-    return #FALSE;
+    return FALSE;
 };
 
 //=============================================================================================
@@ -993,8 +995,8 @@ void(entity field) Field_Built =
     field.touch = SUB_Null;
     field.think = FieldGen_think;
     field.nextthink = time + 0.1;
-    field.fieldgen_status = #FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)
-    field.fieldgen_hasfield = #FALSE;
+    field.fieldgen_status = FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)
+    field.fieldgen_hasfield = FALSE;
     field.no_grenades_1 = time + 3;
     field.fieldgen_field = world;
 };
@@ -1007,16 +1009,16 @@ entity(entity fieldgen) Find_OtherGen =
     local entity te;
     local float foundit;
     te = world;
-    foundit = #FALSE;
+    foundit = FALSE;
 
     te = find(world, classname, "building_fieldgen");
-    while (te != world && foundit == #FALSE)
+    while (te != world && foundit == FALSE)
     {
         if (te.real_owner == fieldgen.real_owner) // is it ours?
         if (te != fieldgen)                       // and not the same generator..
-            foundit = #TRUE; // yeah, found it
+            foundit = TRUE; // yeah, found it
         
-        if (foundit == #FALSE) // our search must continue...
+        if (foundit == FALSE) // our search must continue...
             te = find(te, classname, "building_fieldgen");
     }
 
@@ -1036,21 +1038,21 @@ vector(vector place) WhereGen =
     local float r, distx, disty, foundit;
     local entity te;
 
-    foundit = #FALSE;
+    foundit = FALSE;
 
     // find the other generator
     te = find(world, classname, "building_fieldgen");
-    while (te != world && foundit == #FALSE)
+    while (te != world && foundit == FALSE)
     {
         if (te.real_owner == self) // is it ours?
-            foundit = #TRUE; // yeah, found it
+            foundit = TRUE; // yeah, found it
         
-        if (foundit == #FALSE) // our search must continue...
+        if (foundit == FALSE) // our search must continue...
             te = find(te, classname, "building_fieldgen");
     }
 
     // check for error getting the other gen
-    if (te == world || te.classname != "building_fieldgen" || foundit == #FALSE)
+    if (te == world || te.classname != "building_fieldgen" || foundit == FALSE)
     {
         RPrint("BUG: Error on field generator placement routine. 'WhereGen()'\n");
         return place;
@@ -1080,19 +1082,19 @@ vector(vector place) WhereGen =
     
     // print message if they wont link
     if (!vis2orig(te.origin,retval))
-        sprint(self, #PRINT_HIGH, "Your field generators won't link, there are obstacles between them!\n");
+        sprint(self, PRINT_HIGH, "Your field generators won't link, there are obstacles between them!\n");
     
     r = vlen(te.origin - retval); // get distance between generators
-    if (te.num_mines & #IMPROVED_FOUR && r > #FIELDGEN_HACKEDRANGE)
-        sprint(self, #PRINT_HIGH, "Your field generators are too far away to link, even hacked\n");
+    if (te.num_mines & IMPROVED_FOUR && r > FIELDGEN_HACKEDRANGE)
+        sprint(self, PRINT_HIGH, "Your field generators are too far away to link, even hacked\n");
     
-    if (r > #FIELDGEN_RANGE && !(te.num_mines & #IMPROVED_FOUR))
-        sprint(self, #PRINT_HIGH, "Your field generators are too far away to link\n");
+    if (r > FIELDGEN_RANGE && !(te.num_mines & IMPROVED_FOUR))
+        sprint(self, PRINT_HIGH, "Your field generators are too far away to link\n");
     /*else if (retval_z != te.origin_z)
-        sprint(self, #PRINT_HIGH, "Your field generators are at different heights, they won't link\n");*/
+        sprint(self, PRINT_HIGH, "Your field generators are at different heights, they won't link\n");*/
     
     if (retval_x != te.origin_x && retval_y != te.origin_y)
-        sprint(self, #PRINT_HIGH, "Your field generators are not lined up, they won't link\n");
+        sprint(self, PRINT_HIGH, "Your field generators are not lined up, they won't link\n");
 
     // return the final building place
     return retval;
@@ -1106,13 +1108,13 @@ void() FieldGen_Die =
     self.real_owner.has_fieldgen = self.real_owner.has_fieldgen - 1;
     if (self.real_owner.has_fieldgen < 0) self.real_owner.has_fieldgen = 0;
 
-    WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-    WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 #endif
 
     // check if field should be removed..
@@ -1127,7 +1129,7 @@ void() FieldGen_Die =
        Remove_Field(self, world); // extra removal, not needed i think...
     }
 
-    sprint(self.real_owner, #PRINT_HIGH, "Your field generator was destroyed.\n");
+    sprint(self.real_owner, PRINT_HIGH, "Your field generator was destroyed.\n");
 
     //TODO: gibs, one of the tesla, one custom
 
@@ -1141,15 +1143,15 @@ void(entity field) Engineer_UseFieldGen =
 {
 	self.building = field;
     
-    if (Teammate(self.building.real_owner.team_no,self.team_no) && self.building.is_malfunctioning & #SCREWUP_THREE)
+    if (Teammate(self.building.real_owner.team_no,self.team_no) && self.building.is_malfunctioning & SCREWUP_THREE)
     {        
-        //if (self.building.is_malfunctioning & #SCREWUP_FOUR)
+        //if (self.building.is_malfunctioning & SCREWUP_FOUR)
 		//{         
-        sprint(self,#PRINT_HIGH,"Trapped field generator, have a nice day!\n");
+        sprint(self,PRINT_HIGH,"Trapped field generator, have a nice day!\n");
             
-        deathmsg = #DMSG_FGTRAP;
-        T_RadiusDamage (self.building, self.building, #FGTRAP_DMG, world);
-//            TF_T_Damage(self.building, self.building, self.building, 2000, 0, #TF_TD_OTHER);
+        deathmsg = DMSG_FGTRAP;
+        T_RadiusDamage (self.building, self.building, FGTRAP_DMG, world);
+//            TF_T_Damage(self.building, self.building, self.building, 2000, 0, TF_TD_OTHER);
         return;
         //}
     }
@@ -1157,23 +1159,23 @@ void(entity field) Engineer_UseFieldGen =
     local entity dist_checker;
 	local string st;
 
-	sprint(self, #PRINT_HIGH, "Field Generator has ");
+	sprint(self, PRINT_HIGH, "Field Generator has ");
 	st = ftos(field.health);
-	sprint(self, #PRINT_HIGH, st);
-    sprint(self, #PRINT_HIGH, "¯");
+	sprint(self, PRINT_HIGH, st);
+    sprint(self, PRINT_HIGH, "¯");
 	st = ftos(field.max_health);
-    sprint(self, #PRINT_HIGH, st);
-	sprint(self, #PRINT_HIGH, " èåáìôè, ");
+    sprint(self, PRINT_HIGH, st);
+	sprint(self, PRINT_HIGH, " èåáìôè, ");
 	st = ftos(field.ammo_cells);
-	sprint(self, #PRINT_HIGH, st);
-	sprint(self, #PRINT_HIGH, "¯");
+	sprint(self, PRINT_HIGH, st);
+	sprint(self, PRINT_HIGH, "¯");
 	st = ftos(field.maxammo_cells);
-    sprint(self, #PRINT_HIGH, st);
-	sprint(self, #PRINT_HIGH, " ãåììó\n");
+    sprint(self, PRINT_HIGH, st);
+	sprint(self, PRINT_HIGH, " ãåììó\n");
 
     // Pop up the menu
-	self.current_menu = #MENU_ENGINEER_FIX_FIELDGEN;
-	self.menu_count = #MENU_REFRESH_RATE;
+	self.current_menu = MENU_ENGINEER_FIX_FIELDGEN;
+	self.menu_count = MENU_REFRESH_RATE;
 
 	//dodgy
 	if (teamplay != 0 && !Teammate(self.building.real_owner.team_no,self.team_no)) {

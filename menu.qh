@@ -1,0 +1,77 @@
+/*======================================================
+	MENU.QC			Custom TeamFortress v2.3	
+
+	(c) TeamFortress Software Pty Ltd 	29/2/97
+	(c) William Kerney			         4/4/00
+	(c) Craig Hauser				    19/3/00
+========================================================
+This file handles all menu functions and displays.
+======================================================*/
+
+#define MENU_DEFAULT					1
+#define MENU_TEAM 						2
+#define MENU_CLASS 						3
+#define MENU_DROP  						4
+#define MENU_INTRO 						5
+#define MENU_CLASSHELP					6
+#define MENU_CLASSHELP2 				7
+#define MENU_REPEATHELP 				8
+#define MENU_PICKBINDS  				9
+#define MENU_SHOWBINDS1 				10
+#define MENU_SHOWBINDS2 				11
+#define MENU_SPY						12
+#define MENU_SPY_SKIN					13
+#define MENU_SPY_COLOR					14
+
+#define MENU_ENGINEER					15
+
+#define MENU_ENGINEER_FIX_DISPENSER		16
+#define MENU_ENGINEER_FIX_SENTRYGUN		17
+#define MENU_ENGINEER_FIX_TESLA			18
+#define MENU_ENGINEER_FIX_TESLA2		19
+#define MENU_DISPENSER					20
+#define MENU_ENGINEER_FIX_CAMERA		21
+#define MENU_ENGINEER_FIX_TELEPORTER	22
+#define MENU_ENGINEER_FIX_SENSOR		23
+#define MENU_ENGINEER_FIX_FIELDGEN      24
+
+#define MENU_DEMON				        26 	// SB menu for demon summon, I use 26 in the hope that nobody
+									        // has made anything conflicting with this for future vers.
+									        // Not that I expect anyone else to ever do anything...
+#define MENU_ARMY				        27
+#define MENU_F_HACK				        28
+#define MENU_E_HACK				        29
+
+#define MENU_CRUSADER                   30
+
+//WK - Menus for making a custom class
+#define MENU_PRIMARY_WEAPON			    31
+#define MENU_SECONDARY_WEAPON		    32
+#define MENU_MISC_WEAPON                33
+#define MENU_LEGS					    34
+#define MENU_HEALTH					    35
+#define MENU_ARMOR					    36
+#define MENU_SPECIAL				    37
+#define MENU_SPECIAL2				    38
+#define MENU_GREN1					    39
+#define MENU_GREN2					    40
+#define MENU_ENGINEERING			    41
+#define MENU_PROFESSION				    42
+#define MENU_PROFESSION2			    43
+#define MENU_PROFICIENCY			    44
+#define MENU_OPTION					    45
+
+//If we extend this, search for "MENU_OPTION" below
+//WK ------------------------------------
+
+#define MENU_REFRESH_RATE 			25
+
+#define UPGRADE 125 //Cells per upgrade
+//#define MAXUPGRADES 6
+#define MAXCELLS0 50
+#define MAXCELLS1 120
+#define MAXCELLS2 200
+#define MAXCELLS3 300
+#define ADDCELLS1 70 //how much to add with upgrade
+#define ADDCELLS2 80
+#define ADDCELLS3 100

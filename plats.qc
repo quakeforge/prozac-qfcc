@@ -1,4 +1,5 @@
 //WK
+#include "defs.qh"
 float(entity foo) IsBuilding;
 
 void() plat_center_touch;
@@ -19,8 +20,8 @@ void() plat_spawn_inside_trigger =
 	//	
 	trigger = spawn();
 	trigger.touch = plat_center_touch;
-	trigger.movetype = #MOVETYPE_NONE;
-	trigger.solid = #SOLID_TRIGGER;
+	trigger.movetype = MOVETYPE_NONE;
+	trigger.solid = SOLID_TRIGGER;
 	trigger.enemy = self;
 
 	// TeamFortress goal code
@@ -43,7 +44,7 @@ void() plat_spawn_inside_trigger =
 	tmin = self.mins + '25 25 0';
 	tmax = self.maxs - '25 25 -8';
 	tmin_z = tmax_z - (self.pos1_z - self.pos2_z + 8);
-	if (self.spawnflags & #PLAT_LOW_TRIGGER)
+	if (self.spawnflags & PLAT_LOW_TRIGGER)
 		tmax_z = tmin_z + 8;
 	
 	if (self.size_x <= 50)
@@ -62,29 +63,29 @@ void() plat_spawn_inside_trigger =
 
 void() plat_hit_top =
 {
-	sound (self, #CHAN_VOICE, self.noise1, 1, #ATTN_NORM);
-	self.state = #STATE_TOP;
+	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	self.state = STATE_TOP;
 	self.think = plat_go_down;
 	self.nextthink = self.ltime + 3;
 };
 
 void() plat_hit_bottom =
 {
-	sound (self, #CHAN_VOICE, self.noise1, 1, #ATTN_NORM);
-	self.state = #STATE_BOTTOM;
+	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	self.state = STATE_BOTTOM;
 };
 
 void() plat_go_down =
 {
-	sound (self, #CHAN_VOICE, self.noise, 1, #ATTN_NORM);
-	self.state = #STATE_DOWN;
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos2, self.speed, plat_hit_bottom);
 };
 
 void() plat_go_up =
 {
-	sound (self, #CHAN_VOICE, self.noise, 1, #ATTN_NORM);
-	self.state = #STATE_UP;
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	self.state = STATE_UP;
 	SUB_CalcMove (self.pos1, self.speed, plat_hit_top);
 };
 
@@ -102,7 +103,7 @@ void() plat_center_touch =
 		{
 			te = Findgoal(self.else_goal);
 			if (te)
-				DoResults(te, other, (self.goal_result & #TFGR_ADD_BONUSES));
+				DoResults(te, other, (self.goal_result & TFGR_ADD_BONUSES));
 		}
 
 		return;
@@ -112,9 +113,9 @@ void() plat_center_touch =
 		return;
 
 	self = self.enemy;
-	if (self.state == #STATE_BOTTOM)
+	if (self.state == STATE_BOTTOM)
 		plat_go_up ();
-	else if (self.state == #STATE_TOP)
+	else if (self.state == STATE_TOP)
 		self.nextthink = self.ltime + 1;	// delay going down
 };
 
@@ -132,7 +133,7 @@ void() plat_outside_touch =
 		{
 			te = Findgoal(self.else_goal);
 			if (te)
-				DoResults(te, other, (self.goal_result & #TFGR_ADD_BONUSES));
+				DoResults(te, other, (self.goal_result & TFGR_ADD_BONUSES));
 		}
 
 		return;
@@ -143,7 +144,7 @@ void() plat_outside_touch =
 		
 //RPrint ("plat_outside_touch\n");
 	self = self.enemy;
-	if (self.state == #STATE_TOP)
+	if (self.state == STATE_TOP)
 		plat_go_down ();
 };
 
@@ -168,9 +169,9 @@ void() plat_crush =
 		dremove(other.oldenemy);	// remove count down
 		dremove(other);        	// remove detpack
 	}
-	if (self.state == #STATE_UP)
+	if (self.state == STATE_UP)
 		plat_go_down ();
-	else if (self.state == #STATE_DOWN)
+	else if (self.state == STATE_DOWN)
 		plat_go_up ();
 	else
 		objerror ("plat_crush: bad self.state\n");
@@ -179,13 +180,13 @@ void() plat_crush =
 void() plat_use =
 {
 	self.use = SUB_Null;
-	if (self.state != #STATE_UP)
+	if (self.state != STATE_UP)
 		objerror ("plat_use: not in up state");
 	plat_go_down();
 };
 
 
-/*QUAKED func_plat (0 .5 .8) ? #PLAT_LOW_TRIGGER
+/*QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
 speed	default 150
 
 Plats are always drawn in the extended position, so they will light correctly.
@@ -204,7 +205,7 @@ void() func_plat =
 {
 local entity t;
 
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -240,8 +241,8 @@ local entity t;
 	self.angles = '0 0 0';
 
 	self.classname = "plat";
-	self.solid = #SOLID_BSP;
-	self.movetype = #MOVETYPE_PUSH;
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
 	setorigin (self, self.origin);	
 	setmodel (self, self.model);
 	setsize (self, self.mins , self.maxs);
@@ -264,13 +265,13 @@ local entity t;
 
 	if (self.targetname)
 	{
-		self.state = #STATE_UP;
+		self.state = STATE_UP;
 		self.use = plat_use;
 	}
 	else
 	{
 		setorigin (self, self.pos2);
-		self.state = #STATE_BOTTOM;
+		self.state = STATE_BOTTOM;
 	}
 };
 
@@ -298,7 +299,7 @@ void() train_wait =
 	if (self.wait)
 	{
 		self.nextthink = self.ltime + self.wait;
-		sound (self, #CHAN_VOICE, self.noise, 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	}
 	else
 		self.nextthink = self.ltime + 0.1;
@@ -318,7 +319,7 @@ void() train_next =
 		self.wait = targ.wait;
 	else
 		self.wait = 0;
-	sound (self, #CHAN_VOICE, self.noise1, 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	SUB_CalcMove (targ.origin - self.mins, self.speed, train_wait);
 };
 
@@ -349,7 +350,7 @@ sounds
 */
 void() func_train =
 {	
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -379,8 +380,8 @@ void() func_train =
 	}
 
 	self.cnt = 1;
-	self.solid = #SOLID_BSP;
-	self.movetype = #MOVETYPE_PUSH;
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
 	self.blocked = train_blocked;
 	self.use = train_use;
 	self.classname = "train";
@@ -400,7 +401,7 @@ This is used for the final bos
 */
 void() misc_teleporttrain =
 {	
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -412,8 +413,8 @@ void() misc_teleporttrain =
 		objerror ("func_train without a target");
 
 	self.cnt = 1;
-	self.solid = #SOLID_NOT;
-	self.movetype = #MOVETYPE_PUSH;
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_PUSH;
 	self.blocked = train_blocked;
 	self.use = train_use;
 	self.avelocity = '100 200 300';

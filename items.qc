@@ -1,3 +1,5 @@
+#include "defs.qh"
+
 void() W_SetCurrentAmmo;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
@@ -18,8 +20,8 @@ void(entity sld) grunty_boundammo;
 void() SUB_regen =
 {
 	self.model = self.mdl;		// restore original model
-	self.solid = #SOLID_TRIGGER;	// allow it to be touched again
-	sound (self, #CHAN_VOICE, "items/itembk2.wav", 1, #ATTN_NORM);	// play respawn sound
+	self.solid = SOLID_TRIGGER;	// allow it to be touched again
+	sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);	// play respawn sound
 	setorigin (self, self.origin);
 };
 
@@ -48,9 +50,9 @@ void() PlaceItem =
 	local float	oldz;
 
 	self.mdl = self.model;		// so it can be restored on respawn
-	self.flags = #FL_ITEM;		// make extra wide
-	self.solid = #SOLID_TRIGGER;
-	self.movetype = #MOVETYPE_TOSS;	
+	self.flags = FL_ITEM;		// make extra wide
+	self.solid = SOLID_TRIGGER;
+	self.movetype = MOVETYPE_TOSS;	
 	self.velocity = '0 0 0';
 	self.origin_z = self.origin_z + 6;
 	oldz = self.origin_z;
@@ -128,7 +130,7 @@ void() item_megahealth_rot;
 
 void() item_health =
 {	
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -136,7 +138,7 @@ void() item_health =
 
 	self.touch = health_touch;
 
-	if (self.spawnflags & #H_ROTTEN)
+	if (self.spawnflags & H_ROTTEN)
 	{
 		precache_model("maps/b_bh10.bsp");
 
@@ -147,7 +149,7 @@ void() item_health =
 		self.healtype = 0;
 	}
 	else
-	if (self.spawnflags & #H_MEGA)
+	if (self.spawnflags & H_MEGA)
 	{
 		precache_model("maps/b_bh100.bsp");
 		precache_sound("items/r_item2.wav");
@@ -182,7 +184,7 @@ void() health_touch =
 		return;
 	if (prematch >= time)
 		return;
-	if (other.tfstate & #TFSTATE_CANT_MOVE)
+	if (other.tfstate & TFSTATE_CANT_MOVE)
 		return;
     
     //- OfN team_no is now used for items!
@@ -198,7 +200,7 @@ void() health_touch =
 	if (self.healtype == 2) // Megahealth?  Ignore max_health...
 	{
 		// only heal the player if they are not infected
-		if (!(other.tfstate & #TFSTATE_INFECTED))
+		if (!(other.tfstate & TFSTATE_INFECTED))
 		{
 			if (other.health >= other.max_health + 150) //WK 250
 				return;
@@ -210,7 +212,7 @@ void() health_touch =
 	{
 		if (!T_Heal(other, self.healamount, 0))
 		{
-			if (other.weapons_carried & #WEAP_MEDIKIT)
+			if (other.weapons_carried & WEAP_MEDIKIT)
 			{
 				if (other.ammo_medikit < other.maxammo_medikit)
 				{
@@ -220,17 +222,17 @@ void() health_touch =
 
 					s = ftos(self.healamount);
 				
-					sprint(other, #PRINT_LOW, "You gather ");
-					sprint(other, #PRINT_LOW, s);
-					sprint(other, #PRINT_LOW, " medikit ammo\n");
+					sprint(other, PRINT_LOW, "You gather ");
+					sprint(other, PRINT_LOW, s);
+					sprint(other, PRINT_LOW, " medikit ammo\n");
 					
 					// health touch sound
-					sound(other, #CHAN_ITEM, self.noise, 1, #ATTN_NORM);
+					sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
 					stuffcmd (other, "bf\n");
 					
 					self.model = string_null;
-					self.solid = #SOLID_NOT;
+					self.solid = SOLID_NOT;
 
 					if (deathmatch != 2)		// deathmatch 2 is the silly old rules
 					{
@@ -247,33 +249,33 @@ void() health_touch =
 		}
 	}
 
-	if ((other.tfstate & #TFSTATE_INFECTED) && (self.healamount > 80))
+	if ((other.tfstate & TFSTATE_INFECTED) && (self.healamount > 80))
 	{
-		sprint(other, #PRINT_MEDIUM, "You have been healed of your infection!");
+		sprint(other, PRINT_MEDIUM, "You have been healed of your infection!");
 
-        other.tfstate = other.tfstate - (other.tfstate & #TFSTATE_INFECTED);
+        other.tfstate = other.tfstate - (other.tfstate & TFSTATE_INFECTED);
 	}
 	else
 	{
 		s = ftos(self.healamount);
 		
-		sprint(other, #PRINT_LOW, "You receive ");
-		sprint(other, #PRINT_LOW, s);
-		sprint(other, #PRINT_LOW, " health\n");
+		sprint(other, PRINT_LOW, "You receive ");
+		sprint(other, PRINT_LOW, s);
+		sprint(other, PRINT_LOW, " health\n");
 	}
 	
 // health touch sound
-	sound(other, #CHAN_ITEM, self.noise, 1, #ATTN_NORM);
+	sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
 	stuffcmd (other, "bf\n");
 	
 	self.model = string_null;
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
 	if (self.healtype == 2)
 	{
-		other.items = other.items | #IT_SUPERHEALTH;
+		other.items = other.items | IT_SUPERHEALTH;
 		self.nextthink = time + 5;
 		self.think = item_megahealth_rot;
 		self.owner = other;
@@ -305,7 +307,7 @@ void() item_megahealth_rot =
 
 	// it is possible for a player to die and respawn between rots, so don't
 	// just blindly subtract the flag off
-	other.items = other.items - (other.items & #IT_SUPERHEALTH);
+	other.items = other.items - (other.items & IT_SUPERHEALTH);
 	
 	if (self.classname == "medikit_rot")
 	{
@@ -343,7 +345,7 @@ void() armor_touch =
 	
 	if (other.is_feigning)
 		return;
-	if (other.tfstate & #TFSTATE_CANT_MOVE)
+	if (other.tfstate & TFSTATE_CANT_MOVE)
 		return;
 
     //- OfN team_no is now used for items!
@@ -358,26 +360,26 @@ void() armor_touch =
 	{
 		type = 0.3;
 		value = 100;
-		bit = #IT_ARMOR1;
+		bit = IT_ARMOR1;
 	}
 	else if (self.classname == "item_armor2")
 	{
 		type = 0.6;
 		value = 150;
-		bit = #IT_ARMOR2;
+		bit = IT_ARMOR2;
 	}
 	else if (self.classname == "item_armorInv")
 	{
 		type = 0.8;
 		value = 300; //CH was 200, 300 allows for high armor
-		bit = #IT_ARMOR3;
+		bit = IT_ARMOR3;
 	}
 
 	if (other.armortype * other.armorvalue >= type*value)
 	{
 		// Engineers can still grab the metal
 		//WK - My 'Engineers' can too
-		if (other.weapons_carried & #WEAP_SPANNER || other.tf_items & #NIT_TESLA || other.cutf_items & #CUTF_SENTRYGUN)
+		if (other.weapons_carried & WEAP_SPANNER || other.tf_items & NIT_TESLA || other.cutf_items & CUTF_SENTRYGUN)
 		{
 			if (other.ammo_cells >= other.maxammo_cells)
 				return;
@@ -394,7 +396,7 @@ void() armor_touch =
 		{
 			if (other.maxarmor == other.armorvalue)
 			{
-				if (other.weapons_carried & #WEAP_SPANNER || other.tf_items & #NIT_TESLA || other.cutf_items & #CUTF_SENTRYGUN)
+				if (other.weapons_carried & WEAP_SPANNER || other.tf_items & NIT_TESLA || other.cutf_items & CUTF_SENTRYGUN)
 				{
 					if (other.ammo_cells >= other.maxammo_cells)
 						return;
@@ -414,24 +416,24 @@ void() armor_touch =
 
 		// recalculate bit
 		if (type == 0.3)
-			bit = #IT_ARMOR1;
+			bit = IT_ARMOR1;
 		else if (type == 0.6)
-			bit = #IT_ARMOR2;
+			bit = IT_ARMOR2;
 		else if (type == 0.8)
-			bit = #IT_ARMOR3;
+			bit = IT_ARMOR3;
 	}
 
-	sprint(other, #PRINT_LOW, "You got armor\n");
+	sprint(other, PRINT_LOW, "You got armor\n");
 
 	// ENGINEER can use extra armor for metal
 	// WK, this used to be within the if block below
-	if ((other.weapons_carried & #WEAP_SPANNER || other.tf_items & #NIT_TESLA || other.cutf_items & #CUTF_SENTRYGUN) && other.ammo_cells < other.maxammo_cells)
+	if ((other.weapons_carried & WEAP_SPANNER || other.tf_items & NIT_TESLA || other.cutf_items & CUTF_SENTRYGUN) && other.ammo_cells < other.maxammo_cells)
 	{
 		//WK Used to be other.maxarmor. This makes it possible to build with large armorvalues
 		s = ftos(value - 50); 
 
-		sprint (other, #PRINT_LOW, s);
-		sprint (other, #PRINT_LOW, " metal\n");
+		sprint (other, PRINT_LOW, s);
+		sprint (other, PRINT_LOW, " metal\n");
 
 		other.ammo_cells = other.ammo_cells + (value - 50); //WK other.maxarmor
 		if (other.ammo_cells > other.maxammo_cells)
@@ -454,10 +456,10 @@ void() armor_touch =
 		other.armortype = type;
 		other.armorvalue = value;
 
-		other.items = other.items - (other.items & (#IT_ARMOR1 | #IT_ARMOR2 | #IT_ARMOR3)) + bit;
+		other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
 	}
 
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 	self.model = string_null;
 	if (deathmatch != 2)
 		self.nextthink = time + 20;
@@ -467,7 +469,7 @@ void() armor_touch =
 	self.think = SUB_regen;
 
 	// armor touch sound
-	sound(other, #CHAN_ITEM, "items/armor1.wav", 1, #ATTN_NORM);
+	sound(other, CHAN_ITEM, "items/armor1.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 	
 	activator = other;
@@ -480,7 +482,7 @@ void() armor_touch =
 
 void() item_armor1 =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -499,7 +501,7 @@ void() item_armor1 =
 
 void() item_armor2 =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -518,7 +520,7 @@ void() item_armor2 =
 
 void() item_armorInv =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -542,14 +544,14 @@ WEAPONS
 
 void(entity p) bound_other_ammo =
 {
-	if (p.ammo_shells > TeamFortress_GetMaxAmmo(p,#IT_SHELLS))
-		p.ammo_shells = TeamFortress_GetMaxAmmo(p,#IT_SHELLS);
-	if (p.ammo_nails > TeamFortress_GetMaxAmmo(p,#IT_NAILS))
-		p.ammo_nails = TeamFortress_GetMaxAmmo(p,#IT_NAILS);
-	if (p.ammo_rockets > TeamFortress_GetMaxAmmo(p,#IT_ROCKETS))
-		p.ammo_rockets = TeamFortress_GetMaxAmmo(p,#IT_ROCKETS);		
-	if (p.ammo_cells > TeamFortress_GetMaxAmmo(p,#IT_CELLS))
-		p.ammo_cells = TeamFortress_GetMaxAmmo(p,#IT_CELLS);		
+	if (p.ammo_shells > TeamFortress_GetMaxAmmo(p,IT_SHELLS))
+		p.ammo_shells = TeamFortress_GetMaxAmmo(p,IT_SHELLS);
+	if (p.ammo_nails > TeamFortress_GetMaxAmmo(p,IT_NAILS))
+		p.ammo_nails = TeamFortress_GetMaxAmmo(p,IT_NAILS);
+	if (p.ammo_rockets > TeamFortress_GetMaxAmmo(p,IT_ROCKETS))
+		p.ammo_rockets = TeamFortress_GetMaxAmmo(p,IT_ROCKETS);		
+	if (p.ammo_cells > TeamFortress_GetMaxAmmo(p,IT_CELLS))
+		p.ammo_cells = TeamFortress_GetMaxAmmo(p,IT_CELLS);		
 	if (p.ammo_medikit > p.maxammo_medikit)
 		p.ammo_medikit = p.maxammo_medikit;
 	if (p.armorvalue > p.maxarmor)
@@ -560,24 +562,24 @@ void(entity p) bound_other_ammo =
     if (p.no_grenades_2 > GetMaxGrens(p,2))
         p.no_grenades_2 = GetMaxGrens(p,2);
     
-    /*if (p.tf_items & #NIT_AMMO_BANDOLIER) {
+    /*if (p.tf_items & NIT_AMMO_BANDOLIER) {
 		if (p.no_grenades_1 > 5)
 			p.no_grenades_1 = 5;
-		if (p.tp_grenades_1 == #GR_TYPE_NAIL && p.no_grenades_1 > 3)
+		if (p.tp_grenades_1 == GR_TYPE_NAIL && p.no_grenades_1 > 3)
 			p.no_grenades_1 = 3;
 		if (p.no_grenades_2 > 5)
 			p.no_grenades_2 = 5;
-		if (p.tp_grenades_2 == #GR_TYPE_NAIL && p.no_grenades_2 > 3)
+		if (p.tp_grenades_2 == GR_TYPE_NAIL && p.no_grenades_2 > 3)
 			p.no_grenades_2 = 3;
 	}
 	else {
 		if (p.no_grenades_1 > 4)
 			p.no_grenades_1 = 4;
-		if (p.tp_grenades_1 == #GR_TYPE_NAIL && p.no_grenades_1 > 2)
+		if (p.tp_grenades_1 == GR_TYPE_NAIL && p.no_grenades_1 > 2)
 			p.no_grenades_1 = 2;
 		if (p.no_grenades_2 > 4)
 			p.no_grenades_2 = 4;
-		if (p.tp_grenades_2 == #GR_TYPE_NAIL && p.no_grenades_2 > 2)
+		if (p.tp_grenades_2 == GR_TYPE_NAIL && p.no_grenades_2 > 2)
 			p.no_grenades_2 = 2;
 	}*/
 };
@@ -585,17 +587,17 @@ void(entity p) bound_other_ammo =
 
 float(float w) RankForWeapon =
 {
-	if (w == #WEAP_LIGHTNING)
+	if (w == WEAP_LIGHTNING)
 		return 1;
-	if (w == #WEAP_ROCKET_LAUNCHER)
+	if (w == WEAP_ROCKET_LAUNCHER)
 		return 2;
-	if (w == #WEAP_LIGHT_ASSAULT)
+	if (w == WEAP_LIGHT_ASSAULT)
 		return 3;
-	if (w == #WEAP_GRENADE_LAUNCHER)
+	if (w == WEAP_GRENADE_LAUNCHER)
 		return 4;
-	if (w == #WEAP_SUPER_SHOTGUN)
+	if (w == WEAP_SUPER_SHOTGUN)
 		return 5;
-	if (w == #WEAP_NAILGUN)
+	if (w == WEAP_NAILGUN)
 		return 6;
 	return 7;
 };
@@ -637,7 +639,7 @@ void(entity ritem, entity act) Respawn_Item =
 
 	// remove it in single player, or setup for respawning in deathmatch
 	self.model = string_null;
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 	if (deathmatch != 2)
 		self.nextthink = time + 30;
 	else if (coop && ritem.touch == ammo_touch)
@@ -664,13 +666,13 @@ void() weapon_touch =
 	local	entity	stemp;
 	local	float	leave;
 
-	if (!(other.flags & #FL_CLIENT))
+	if (!(other.flags & FL_CLIENT))
 		return;
 
 	if (other.is_feigning)
 		return;
 
-	if (other.tfstate & #TFSTATE_CANT_MOVE)
+	if (other.tfstate & TFSTATE_CANT_MOVE)
 		return;
 		
 	if (prematch >= time)
@@ -689,73 +691,73 @@ void() weapon_touch =
 	
 	if (self.classname == "weapon_nailgun")
 	{
-		if (leave && (other.weapons_carried & #WEAP_NAILGUN) )
+		if (leave && (other.weapons_carried & WEAP_NAILGUN) )
 			return;
-		if (!TeamFortress_CanGetWeapon(other,#WEAP_NAILGUN))
+		if (!TeamFortress_CanGetWeapon(other,WEAP_NAILGUN))
 			return;
 		hadammo = other.ammo_nails;			
-		new = #WEAP_NAILGUN;
+		new = WEAP_NAILGUN;
 		other.ammo_nails = other.ammo_nails + 30;
 	}
 	else if (self.classname == "weapon_supernailgun")
 	{
-		if (leave && (other.weapons_carried & #WEAP_LIGHT_ASSAULT) )
+		if (leave && (other.weapons_carried & WEAP_LIGHT_ASSAULT) )
 			return;
-		if (!TeamFortress_CanGetWeapon(other,#WEAP_LIGHT_ASSAULT))
+		if (!TeamFortress_CanGetWeapon(other,WEAP_LIGHT_ASSAULT))
 			return;
 		hadammo = other.ammo_rockets;			
-		new = #WEAP_LIGHT_ASSAULT;
+		new = WEAP_LIGHT_ASSAULT;
 		other.ammo_nails = other.ammo_nails + 90;
 	}
 	else if (self.classname == "weapon_supershotgun")
 	{
-		if (leave && (other.weapons_carried & #WEAP_SUPER_SHOTGUN) )
+		if (leave && (other.weapons_carried & WEAP_SUPER_SHOTGUN) )
 			return;
-		if (!TeamFortress_CanGetWeapon(other,#WEAP_SUPER_SHOTGUN))
+		if (!TeamFortress_CanGetWeapon(other,WEAP_SUPER_SHOTGUN))
 			return;
 		hadammo = other.ammo_rockets;
-		new = #WEAP_SUPER_SHOTGUN;
+		new = WEAP_SUPER_SHOTGUN;
 		other.ammo_shells = other.ammo_shells + 5;
 	}
 	else if (self.classname == "weapon_rocketlauncher")
 	{
-		if (leave && (other.weapons_carried & #WEAP_ROCKET_LAUNCHER) )
+		if (leave && (other.weapons_carried & WEAP_ROCKET_LAUNCHER) )
 			return;
-		if (!TeamFortress_CanGetWeapon(other,#WEAP_ROCKET_LAUNCHER))
+		if (!TeamFortress_CanGetWeapon(other,WEAP_ROCKET_LAUNCHER))
 			return;
 		hadammo = other.ammo_rockets;			
-		new = #WEAP_ROCKET_LAUNCHER;
+		new = WEAP_ROCKET_LAUNCHER;
 		other.ammo_rockets = other.ammo_rockets + 5;
 	}
 	else if (self.classname == "weapon_grenadelauncher")
 	{
-		if (leave && (other.weapons_carried & #WEAP_GRENADE_LAUNCHER) )
+		if (leave && (other.weapons_carried & WEAP_GRENADE_LAUNCHER) )
 			return;
-		if (!TeamFortress_CanGetWeapon(other,#WEAP_GRENADE_LAUNCHER))
+		if (!TeamFortress_CanGetWeapon(other,WEAP_GRENADE_LAUNCHER))
 			return;
 		hadammo = other.ammo_rockets;			
-		new = #WEAP_GRENADE_LAUNCHER;
+		new = WEAP_GRENADE_LAUNCHER;
 		other.ammo_rockets = other.ammo_rockets + 5;
 	}
 	else if (self.classname == "weapon_lightning")
 	{
-		if (leave && (other.weapons_carried & #WEAP_LIGHTNING) )
+		if (leave && (other.weapons_carried & WEAP_LIGHTNING) )
 			return;
-		if (!TeamFortress_CanGetWeapon(other,#WEAP_LIGHTNING))
+		if (!TeamFortress_CanGetWeapon(other,WEAP_LIGHTNING))
 			return;
 		hadammo = other.ammo_rockets;			
-		new = #WEAP_LIGHTNING;
+		new = WEAP_LIGHTNING;
 		other.ammo_cells = other.ammo_cells + 15;
 	}
 	else
 		objerror ("weapon_touch: unknown classname");
 
-	sprint (other, #PRINT_LOW, "You got the ");
-	sprint (other, #PRINT_LOW, self.netname);
-	sprint (other, #PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "You got the ");
+	sprint (other, PRINT_LOW, self.netname);
+	sprint (other, PRINT_LOW, "\n");
 
 // weapon touch sound
-	sound (other, #CHAN_ITEM, "weapons/pkup.wav", 1, #ATTN_NORM);
+	sound (other, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 
 	bound_other_ammo (other);
@@ -786,7 +788,7 @@ void() weapon_touch =
 
 void() weapon_supershotgun =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -794,7 +796,7 @@ void() weapon_supershotgun =
 
 	precache_model ("progs/g_shot.mdl");
 	setmodel (self, "progs/g_shot.mdl");
-	self.weapon = #WEAP_SUPER_SHOTGUN;
+	self.weapon = WEAP_SUPER_SHOTGUN;
 	self.netname = "Double-barrelled Shotgun";
 	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
@@ -806,7 +808,7 @@ void() weapon_supershotgun =
 
 void() weapon_nailgun =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -814,7 +816,7 @@ void() weapon_nailgun =
 
 	precache_model ("progs/g_nail.mdl");
 	setmodel (self, "progs/g_nail.mdl");
-	self.weapon = #WEAP_NAILGUN;
+	self.weapon = WEAP_NAILGUN;
 	self.netname = "nailgun";
 	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
@@ -826,7 +828,7 @@ void() weapon_nailgun =
 
 void() weapon_supernailgun =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -834,7 +836,7 @@ void() weapon_supernailgun =
 
 	precache_model ("progs/g_nail2.mdl");
 	setmodel (self, "progs/g_nail2.mdl");
-	self.weapon = #WEAP_LIGHT_ASSAULT;
+	self.weapon = WEAP_LIGHT_ASSAULT;
 	self.netname = "Super Nailgun";
 	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
@@ -846,7 +848,7 @@ void() weapon_supernailgun =
 
 void() weapon_grenadelauncher =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -866,7 +868,7 @@ void() weapon_grenadelauncher =
 
 void() weapon_rocketlauncher =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -888,7 +890,7 @@ void() weapon_rocketlauncher =
 
 void() weapon_lightning =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -915,45 +917,45 @@ void(entity pl, float typ) PrintGrenadeType =
 {
 	local string st;
 
-	if (typ == #GR_TYPE_NORMAL)
+	if (typ == GR_TYPE_NORMAL)
 		st = "Normal";
-	else if (typ == #GR_TYPE_CONCUSSION)
+	else if (typ == GR_TYPE_CONCUSSION)
 		st = "Concussion";
-	else if (typ == #GR_TYPE_NAIL)
+	else if (typ == GR_TYPE_NAIL)
 		st = "Nail";
-	else if (typ == #GR_TYPE_MIRV)
+	else if (typ == GR_TYPE_MIRV)
 		st = "Mirv";
-	else if (typ == #GR_TYPE_NAPALM)
+	else if (typ == GR_TYPE_NAPALM)
 		st = "Napalm";
-	else if (typ == #GR_TYPE_FLARE)
+	else if (typ == GR_TYPE_FLARE)
 		st = "Flare";
-	else if (typ == #GR_TYPE_GAS)
+	else if (typ == GR_TYPE_GAS)
 		st = "Gas";
-	else if (typ == #GR_TYPE_EMP)
+	else if (typ == GR_TYPE_EMP)
 		st = "EMP";
-	else if (typ == #GR_TYPE_FLASH)
+	else if (typ == GR_TYPE_FLASH)
 		st = "Flash";
-	else if (typ == #GR_TYPE_FRAG)
+	else if (typ == GR_TYPE_FRAG)
 		st = "Fragmentation";
-	else if (typ == #GR_TYPE_KRAC)
+	else if (typ == GR_TYPE_KRAC)
 		st = "KRAC";
-  	else if (typ == #GR_TYPE_CALTROP)
+  	else if (typ == GR_TYPE_CALTROP)
 		st = "Caltrop";
-	else if (typ == #GR_TYPE_BIO)
+	else if (typ == GR_TYPE_BIO)
 		st = "BioInfection";
-	else if (typ == #GR_TYPE_ANTIGRAV)
+	else if (typ == GR_TYPE_ANTIGRAV)
 		st = "Antigrav";
 	else st = "(BUG)";
     
 
-	sprint(pl, #PRINT_HIGH, st);
+	sprint(pl, PRINT_HIGH, st);
 };
 
 float() GetGrenadePossibility =
 {
 	// there is only a chance of getting a grenade
 	if (random() < 0.5)
-		return #FALSE;
+		return FALSE;
 
 	// determine grenade type to get
 	// FIXME: need maximum number of grenades for each player
@@ -964,25 +966,25 @@ float() GetGrenadePossibility =
 		{			
 			other.no_grenades_1 = other.no_grenades_1 + 1;
 
-            sprint(other, #PRINT_HIGH, "You found a ");
+            sprint(other, PRINT_HIGH, "You found a ");
             PrintGrenadeType(other, other.tp_grenades_1);
-            sprint(other, #PRINT_HIGH, " grenade\n");
+            sprint(other, PRINT_HIGH, " grenade\n");
 
-            return #TRUE;
+            return TRUE;
 		}
         
         /*if ((other.tp_grenades_1 != 0) && (other.no_grenades_1 < 5))
 		{
 			//WK Bandolier gives an extra grenade
-			if (other.no_grenades_1 < 4 || other.tf_items & #NIT_AMMO_BANDOLIER)
-			if (!(other.tp_grenades_1 == #GR_TYPE_NAIL && other.no_grenades_1 >= 2)) {
+			if (other.no_grenades_1 < 4 || other.tf_items & NIT_AMMO_BANDOLIER)
+			if (!(other.tp_grenades_1 == GR_TYPE_NAIL && other.no_grenades_1 >= 2)) {
 				other.no_grenades_1 = other.no_grenades_1 + 1;
 
-				sprint(other, #PRINT_HIGH, "You found a ");
+				sprint(other, PRINT_HIGH, "You found a ");
 				PrintGrenadeType(other, other.tp_grenades_1);
-				sprint(other, #PRINT_HIGH, " grenade\n");
+				sprint(other, PRINT_HIGH, " grenade\n");
 
-				return #TRUE;
+				return TRUE;
 			}
 		}*/
 	}
@@ -992,26 +994,26 @@ float() GetGrenadePossibility =
 		{			
             other.no_grenades_2 = other.no_grenades_2 + 1;
 
-            sprint(other, #PRINT_HIGH, "You found a ");
+            sprint(other, PRINT_HIGH, "You found a ");
             PrintGrenadeType(other, other.tp_grenades_2);
-            sprint(other, #PRINT_HIGH, " grenade\n");
-            return #TRUE;
+            sprint(other, PRINT_HIGH, " grenade\n");
+            return TRUE;
 		}
         /*if ((other.tp_grenades_2 != 0) && (other.no_grenades_2 < 5))
 		{
-			if (other.no_grenades_2 < 4 || other.tf_items & #NIT_AMMO_BANDOLIER)
-			if (!(other.tp_grenades_2 == #GR_TYPE_NAIL && other.no_grenades_2 >= 2)) {
+			if (other.no_grenades_2 < 4 || other.tf_items & NIT_AMMO_BANDOLIER)
+			if (!(other.tp_grenades_2 == GR_TYPE_NAIL && other.no_grenades_2 >= 2)) {
 				other.no_grenades_2 = other.no_grenades_2 + 1;
 
-				sprint(other, #PRINT_HIGH, "You found a ");
+				sprint(other, PRINT_HIGH, "You found a ");
 				PrintGrenadeType(other, other.tp_grenades_2);
-				sprint(other, #PRINT_HIGH, " grenade\n");
-				return #TRUE;
+				sprint(other, PRINT_HIGH, " grenade\n");
+				return TRUE;
 			}
 		}*/
 	}
 
-	return #FALSE;
+	return FALSE;
 };
 
 void() ammo_touch =
@@ -1021,8 +1023,8 @@ void() ammo_touch =
 	local float 	gotgren;
 	local float		gotbox;
 
-	gotgren = #FALSE;
-	gotbox = #FALSE;
+	gotgren = FALSE;
+	gotbox = FALSE;
 
 	if (other.classname != "player")
 		return;
@@ -1033,7 +1035,7 @@ void() ammo_touch =
 
 	if (other.is_feigning)
 		return;
-	if (other.tfstate & #TFSTATE_CANT_MOVE)
+	if (other.tfstate & TFSTATE_CANT_MOVE)
 		return;
 
     //- OfN team_no is now used for items!
@@ -1054,19 +1056,19 @@ void() ammo_touch =
 // shotgun
 	if (self.weapon == 1)
 	{
-		if (other.ammo_shells >= TeamFortress_GetMaxAmmo(other,#IT_SHELLS))
+		if (other.ammo_shells >= TeamFortress_GetMaxAmmo(other,IT_SHELLS))
 			return;
 		other.ammo_shells = other.ammo_shells + self.aflag;
-		gotbox = #TRUE;
+		gotbox = TRUE;
 	}
 
 // spikes
 	if (self.weapon == 2)
 	{
-		if (other.ammo_nails >= TeamFortress_GetMaxAmmo(other, #IT_NAILS))
+		if (other.ammo_nails >= TeamFortress_GetMaxAmmo(other, IT_NAILS))
 			return;
 		other.ammo_nails = other.ammo_nails + self.aflag;
-		gotbox = #TRUE;
+		gotbox = TRUE;
 	}
 
 //	rockets
@@ -1074,13 +1076,13 @@ void() ammo_touch =
 	{
 		gotgren = GetGrenadePossibility();
 
-		if (other.ammo_rockets >= TeamFortress_GetMaxAmmo(other, #IT_ROCKETS ))
+		if (other.ammo_rockets >= TeamFortress_GetMaxAmmo(other, IT_ROCKETS ))
 		{
-			gotbox = #FALSE;
+			gotbox = FALSE;
 		}
 		else
 		{
-			gotbox = #TRUE;
+			gotbox = TRUE;
 			other.ammo_rockets = other.ammo_rockets + self.aflag;
 		}
 	}
@@ -1088,25 +1090,25 @@ void() ammo_touch =
 //	cells
 	else if (self.weapon == 4)
 	{
-		if (other.ammo_cells >= TeamFortress_GetMaxAmmo(other,#IT_CELLS))
+		if (other.ammo_cells >= TeamFortress_GetMaxAmmo(other,IT_CELLS))
 			return;
 		other.ammo_cells = other.ammo_cells + self.aflag;
-		gotbox = #TRUE;
+		gotbox = TRUE;
 	}
 
 	if (!gotbox && !gotgren)
 		return;
 	
-	sound (other, #CHAN_ITEM, "weapons/lock4.wav", 1, #ATTN_NORM);
+	sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 
 	if (gotbox)
 	{
 		bound_other_ammo (other);
 		
-		sprint (other, #PRINT_LOW, "You got the ");
-		sprint (other, #PRINT_LOW, self.netname);
-		sprint (other, #PRINT_LOW, "\n");
+		sprint (other, PRINT_LOW, "You got the ");
+		sprint (other, PRINT_LOW, self.netname);
+		sprint (other, PRINT_LOW, "\n");
 	// ammo touch sound
 
 	// change to a better weapon if appropriate
@@ -1141,7 +1143,7 @@ void() ammo_touch =
 
 void() item_shells =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1149,7 +1151,7 @@ void() item_shells =
 
 	self.touch = ammo_touch;
 
-	if (self.spawnflags & #WEAPON_BIG2)
+	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_shell1.bsp");
 		setmodel (self, "maps/b_shell1.bsp");
@@ -1172,7 +1174,7 @@ void() item_shells =
 
 void() item_spikes =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1180,7 +1182,7 @@ void() item_spikes =
 
 	self.touch = ammo_touch;
 
-	if (self.spawnflags & #WEAPON_BIG2)
+	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_nail1.bsp");
 		setmodel (self, "maps/b_nail1.bsp");
@@ -1203,7 +1205,7 @@ void() item_spikes =
 
 void() item_rockets =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1211,7 +1213,7 @@ void() item_rockets =
 
 	self.touch = ammo_touch;
 
-	if (self.spawnflags & #WEAPON_BIG2)
+	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_rock1.bsp");
 		setmodel (self, "maps/b_rock1.bsp");
@@ -1235,7 +1237,7 @@ void() item_rockets =
 
 void() item_cells =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1243,7 +1245,7 @@ void() item_cells =
 
 	self.touch = ammo_touch;
 
-	if (self.spawnflags & #WEAPON_BIG2)
+	if (self.spawnflags & WEAPON_BIG2)
 	{
 		precache_model ("maps/b_batt1.bsp");
 		setmodel (self, "maps/b_batt1.bsp");
@@ -1272,7 +1274,7 @@ DO NOT USE THIS!!!! IT WILL BE REMOVED!
 #define WEAPON_BIG	8 
 void() item_weapon =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1280,9 +1282,9 @@ void() item_weapon =
 
 	self.touch = ammo_touch;
 
-	if (self.spawnflags & #WEAPON_SHOTGUN)
+	if (self.spawnflags & WEAPON_SHOTGUN)
 	{
-		if (self.spawnflags & #WEAPON_BIG)
+		if (self.spawnflags & WEAPON_BIG)
 		{
 			precache_model ("maps/b_shell1.bsp");
 			setmodel (self, "maps/b_shell1.bsp");
@@ -1298,9 +1300,9 @@ void() item_weapon =
 		self.netname = "shells";
 	}
 
-	if (self.spawnflags & #WEAPON_SPIKES)
+	if (self.spawnflags & WEAPON_SPIKES)
 	{
-		if (self.spawnflags & #WEAPON_BIG)
+		if (self.spawnflags & WEAPON_BIG)
 		{
 			precache_model ("maps/b_nail1.bsp");
 			setmodel (self, "maps/b_nail1.bsp");
@@ -1316,9 +1318,9 @@ void() item_weapon =
 		self.netname = "spikes";
 	}
 
-	if (self.spawnflags & #WEAPON_ROCKET)
+	if (self.spawnflags & WEAPON_ROCKET)
 	{
-		if (self.spawnflags & #WEAPON_BIG)
+		if (self.spawnflags & WEAPON_BIG)
 		{
 			precache_model ("maps/b_rock1.bsp");
 			setmodel (self, "maps/b_rock1.bsp");
@@ -1361,17 +1363,17 @@ void() key_touch =
 	if (prematch >= time)
 		return;
 
-	sprint (other, #PRINT_LOW, "You got the ");
-	sprint (other, #PRINT_LOW, self.netname);
-	sprint (other, #PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "You got the ");
+	sprint (other, PRINT_LOW, self.netname);
+	sprint (other, PRINT_LOW, "\n");
 
-	sound (other, #CHAN_ITEM, self.noise, 1, #ATTN_NORM);
+	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 	other.items = other.items | self.items;
 
 	if (!coop)
 	{	
-		self.solid = #SOLID_NOT;
+		self.solid = SOLID_NOT;
 		self.model = string_null;
 	}
 	else if (coop && self.deadflag)
@@ -1416,7 +1418,7 @@ following:
 
 void() item_key1 =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1442,7 +1444,7 @@ void() item_key1 =
 	}
 	key_setsounds();
 	self.touch = key_touch;
-	self.items = #IT_KEY1;
+	self.items = IT_KEY1;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
@@ -1460,7 +1462,7 @@ following:
 
 void() item_key2 =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1486,7 +1488,7 @@ void() item_key2 =
 	}
 	key_setsounds();
 	self.touch = key_touch;
-	self.items = #IT_KEY2;
+	self.items = IT_KEY2;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
@@ -1517,9 +1519,9 @@ local float		best;
 	CenterPrint (other, "You got the rune!");
 #endif
 
-	sound (other, #CHAN_ITEM, self.noise, 1, #ATTN_NORM);
+	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 	self.model = string_null;
 	serverflags = serverflags | (self.spawnflags & 15);
 	self.classname = "";		// so rune doors won't find it
@@ -1535,7 +1537,7 @@ End of level sigil, pick up to end episode and return to jrstart.
 
 void() item_sigil =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1605,9 +1607,9 @@ local float		best;
     }
     //-----------------------------------//
 
-	sprint (other, #PRINT_LOW, "You got the ");
-	sprint (other, #PRINT_LOW, self.netname);
-	sprint (other, #PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "You got the ");
+	sprint (other, PRINT_LOW, self.netname);
+	sprint (other, PRINT_LOW, "\n");
 
 	if (deathmatch)
 	{
@@ -1634,9 +1636,9 @@ local float		best;
 		self.think = SUB_regen;
 	}	
 
-	sound (other, #CHAN_VOICE, self.noise, 1, #ATTN_NORM);
+	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 	other.items = other.items | self.items;
 	self.model = string_null;
 
@@ -1664,7 +1666,7 @@ local float		best;
 		other.super_time = 1;
 		other.super_damage_finished = time + 30;
 		//WK Remove Inspiration when we get the real thing
-		other.tfstate = other.tfstate - (other.tfstate & #TFSTATE_INSPIRED);
+		other.tfstate = other.tfstate - (other.tfstate & TFSTATE_INSPIRED);
 	}	
 
 	activator = other;
@@ -1678,7 +1680,7 @@ Player is invulnerable for 30 seconds
 */
 void() item_artifact_invulnerability =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1693,7 +1695,7 @@ void() item_artifact_invulnerability =
 	self.noise = "items/protect.wav";
 	setmodel (self, "progs/invulner.mdl");
 	self.netname = "Pentagram of Protection";
-	self.items = #IT_INVULNERABILITY;
+	self.items = IT_INVULNERABILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
@@ -1703,7 +1705,7 @@ Player takes no damage from water or slime for 30 seconds
 */
 void() item_artifact_envirosuit =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1717,7 +1719,7 @@ void() item_artifact_envirosuit =
 	self.noise = "items/suit.wav";
 	setmodel (self, "progs/suit.mdl");
 	self.netname = "Biosuit";
-	self.items = #IT_SUIT;
+	self.items = IT_SUIT;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
@@ -1728,7 +1730,7 @@ Player is invisible for 30 seconds
 */
 void() item_artifact_invisibility =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1743,7 +1745,7 @@ void() item_artifact_invisibility =
 	self.noise = "items/inv1.wav";
 	setmodel (self, "progs/invisibl.mdl");
 	self.netname = "Ring of Shadows";
-	self.items = #IT_INVISIBILITY;
+	self.items = IT_INVISIBILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
@@ -1754,7 +1756,7 @@ The next attack from the player will do 4x damage
 */
 void() item_artifact_super_damage =
 {
-	if (CheckExistence() == #FALSE)
+	if (CheckExistence() == FALSE)
 	{
 		dremove(self);
 		return;
@@ -1769,7 +1771,7 @@ void() item_artifact_super_damage =
 	self.noise = "items/damage.wav";
 	setmodel (self, "progs/quaddama.mdl");
 	self.netname = "Quad Damage";
-	self.items = #IT_QUAD;
+	self.items = IT_QUAD;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
@@ -1805,7 +1807,7 @@ void() BackpackTouch =
         
         PrintFromSoldier(other,other.real_owner,"i picked up some ammo.\n");
 
-        sound (other, #CHAN_ITEM, "weapons/lock4.wav", 1, #ATTN_NORM);
+        sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
       
         dremove(self);
 	    self = other;
@@ -1828,50 +1830,50 @@ void() BackpackTouch =
 		
 	bound_other_ammo (other);
 
-	sprint (other, #PRINT_LOW, "You get ");
+	sprint (other, PRINT_LOW, "You get ");
 
 	if (self.ammo_shells)
 	{
 		s = ftos(self.ammo_shells);
-		sprint (other, #PRINT_LOW, s);
-		sprint (other, #PRINT_LOW, " shells  ");
+		sprint (other, PRINT_LOW, s);
+		sprint (other, PRINT_LOW, " shells  ");
 	}
 	if (self.ammo_nails)
 	{
 		s = ftos(self.ammo_nails);
-		sprint (other, #PRINT_LOW, s);
-		sprint (other, #PRINT_LOW, " nails ");
+		sprint (other, PRINT_LOW, s);
+		sprint (other, PRINT_LOW, " nails ");
 	}
 	if (self.ammo_rockets)
 	{
 		s = ftos(self.ammo_rockets);
-		sprint (other, #PRINT_LOW, s);
-		sprint (other, #PRINT_LOW, " rockets  ");
+		sprint (other, PRINT_LOW, s);
+		sprint (other, PRINT_LOW, " rockets  ");
 	}
 	if (self.ammo_cells)
 	{
 		s = ftos(self.ammo_cells);
-		sprint (other, #PRINT_LOW, s);
-		sprint (other, #PRINT_LOW, " cells  ");
+		sprint (other, PRINT_LOW, s);
+		sprint (other, PRINT_LOW, " cells  ");
 	}
 	// ENGINEER's can get armor from backpacks and use it for metal
-	if (self.armorvalue && (other.weapons_carried & #WEAP_SPANNER || other.tf_items & #NIT_TESLA || other.cutf_items & #CUTF_SENTRYGUN) && other.ammo_cells < other.maxammo_cells)
+	if (self.armorvalue && (other.weapons_carried & WEAP_SPANNER || other.tf_items & NIT_TESLA || other.cutf_items & CUTF_SENTRYGUN) && other.ammo_cells < other.maxammo_cells)
 	{
 		s = ftos(self.armorvalue);
-		sprint (other, #PRINT_LOW, s);
-		sprint (other, #PRINT_LOW, " metal  ");
+		sprint (other, PRINT_LOW, s);
+		sprint (other, PRINT_LOW, " metal  ");
 		other.ammo_cells = other.ammo_cells + self.armorvalue;
 		if (other.ammo_cells > other.maxammo_cells)
 			other.ammo_cells = other.maxammo_cells;
 	}
 	
-	sprint (other, #PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "\n");
 	// backpack touch sound
-	sound (other, #CHAN_ITEM, "weapons/lock4.wav", 1, #ATTN_NORM);
+	sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 
 	// change to a better weapon if appropriate
-/*	if ( (!(other.tfstate & #TFSTATE_RELOADING)) && (other.weapon == best))
+/*	if ( (!(other.tfstate & TFSTATE_RELOADING)) && (other.weapon == best))
 	{
 		stemp = self;
 		self = other;
@@ -1882,7 +1884,7 @@ void() BackpackTouch =
 	dremove(self);
 	
 	self = other;
-	if (!(other.current_weapon == #WEAP_ASSAULT_CANNON))
+	if (!(other.current_weapon == WEAP_ASSAULT_CANNON))
 		W_SetCurrentAmmo ();
 };
 
@@ -1914,9 +1916,9 @@ void() DropBackpack =
 	newmis.velocity_x = -100 + (random() * 200);
 	newmis.velocity_y = -100 + (random() * 200);
 	
-	newmis.flags = #FL_ITEM;
-	newmis.solid = #SOLID_TRIGGER;
-	newmis.movetype = #MOVETYPE_TOSS;
+	newmis.flags = FL_ITEM;
+	newmis.solid = SOLID_TRIGGER;
+	newmis.movetype = MOVETYPE_TOSS;
 	setmodel (newmis, "progs/backpack.mdl");
 	setsize (newmis, '-16 -16 0', '16 16 56');
 	newmis.touch = BackpackTouch;

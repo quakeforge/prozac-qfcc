@@ -1,3 +1,4 @@
+#include "defs.qh"
 /*====================================================
 	SCOUT.QC
 
@@ -26,7 +27,7 @@ void(entity pl, float fTime, string s1) StatusPrint;
 void() FlashGrenadeTouch =
 {
 	// If the Flash Grenade hits a player, it just bounces off
-	sound (self, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -46,7 +47,7 @@ void() FlashTimer =
 	if (te.has_disconnected) //WK Safety, now that we call this to clean up after death
 		return;
 
-	te.FlashTime = te.FlashTime - #SMOOTH_FLASH;
+	te.FlashTime = te.FlashTime - SMOOTH_FLASH;
 
 	if (te.FlashTime < 4)
 	{
@@ -86,7 +87,7 @@ void() FlashTimer =
 		}
 
 
-	self.nextthink = time + #SMOOTH_FLASH;
+	self.nextthink = time + SMOOTH_FLASH;
 };
 
 //=========================================================================
@@ -96,15 +97,15 @@ void() FlashGrenadeExplode =
 	local float expsize;
 	local entity te, oldself;
 
-	self.effects = self.effects | #EF_BRIGHTLIGHT;
+	self.effects = self.effects | EF_BRIGHTLIGHT;
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_TAREXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_TAREXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 #endif
 
 	// Find all people in area
@@ -115,8 +116,8 @@ void() FlashGrenadeExplode =
 		if (te.classname == "player")
 		{
 			// Damage player and explode
-			deathmsg = #DMSG_GREN_FLASH;
-			TF_T_Damage(te, self, self.owner, 60, 0, #TF_TD_FIRE);
+			deathmsg = DMSG_GREN_FLASH;
+			TF_T_Damage(te, self, self.owner, 60, 0, TF_TD_FIRE);
 
 			if (te.health > 0)
 			{
@@ -177,7 +178,7 @@ void() ConcussionGrenadeTouch =
 {
 	// concussion grenades bounce off other players now
 
-	sound (self, #CHAN_WEAPON, "weapons/bounce.wav", 1, #ATTN_NORM);	// bounce sound
+	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -194,13 +195,13 @@ void() ConcussionGrenadeExplode =
 		CamProjectileLockOff();
 #endif
 
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 #ifdef QUAKE_WORLD
-	multicast (self.origin, #MULTICAST_PHS);
+	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 #else
 	BecomeExplosion ();
@@ -224,8 +225,8 @@ void() ConcussionGrenadeTimer =
 	newmis = spawn();
 	setmodel (newmis, "progs/s_bubble.spr");
 	setorigin (newmis, self.owner.origin);
-	newmis.movetype = #MOVETYPE_NOCLIP;
-	newmis.solid = #SOLID_NOT;
+	newmis.movetype = MOVETYPE_NOCLIP;
+	newmis.solid = SOLID_NOT;
 	newmis.velocity = '0 0 15';
 	newmis.nextthink = time + 0.5;
 	newmis.think = bubble_bob;
@@ -235,19 +236,19 @@ void() ConcussionGrenadeTimer =
 	newmis.cnt = 0;
 	setsize(newmis, '-8 -8 -8', '8 8 8');
 
-	self.health = self.health - #GR_CONCUSS_DEC;
+	self.health = self.health - GR_CONCUSS_DEC;
 	
 	// medic recovers twice as fast
-	if (self.owner.weapons_carried & #WEAP_MEDIKIT) //WK
-		self.health = self.health - #GR_CONCUSS_DEC;
-	if (self.owner.cutf_items & #CUTF_STEALTH)
-		self.health = self.health - #GR_CONCUSS_DEC;
-	if (self.owner.cutf_items & #CUTF_GYMNAST)
-		self.health = self.health - #GR_CONCUSS_DEC;
+	if (self.owner.weapons_carried & WEAP_MEDIKIT) //WK
+		self.health = self.health - GR_CONCUSS_DEC;
+	if (self.owner.cutf_items & CUTF_STEALTH)
+		self.health = self.health - GR_CONCUSS_DEC;
+	if (self.owner.cutf_items & CUTF_GYMNAST)
+		self.health = self.health - GR_CONCUSS_DEC;
 
 	if (self.health < 0)
 		self.health = 0;
-	self.nextthink = time + #GR_CONCUSS_TIME;
+	self.nextthink = time + GR_CONCUSS_TIME;
 
 	st = ftos(self.health);
 	stuffcmd(self.owner, "v_idlescale ");
@@ -281,34 +282,34 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 
 	if (self.classname == "player")
 	{
-		if (!(self.tf_items & #NIT_SCANNER))
+		if (!(self.tf_items & NIT_SCANNER))
 			return;
 
-		// If Impulse is #TF_SCAN_ENEMY, toggle Scanning for Enemies
-		if (scanrange == #TF_SCAN_ENEMY)
+		// If Impulse is TF_SCAN_ENEMY, toggle Scanning for Enemies
+		if (scanrange == TF_SCAN_ENEMY)
 		{
-			if (self.tf_items_flags & #NIT_SCANNER_ENEMY)
+			if (self.tf_items_flags & NIT_SCANNER_ENEMY)
 			{
-				sprint (self, #PRINT_HIGH, "Enemy Scanning disabled.\n");
-				self.tf_items_flags = self.tf_items_flags - #NIT_SCANNER_ENEMY;
+				sprint (self, PRINT_HIGH, "Enemy Scanning disabled.\n");
+				self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_ENEMY;
 				return;
 			}
-			sprint (self, #PRINT_HIGH, "Enemy Scanning enabled.\n");
-			self.tf_items_flags = self.tf_items_flags | #NIT_SCANNER_ENEMY;
+			sprint (self, PRINT_HIGH, "Enemy Scanning enabled.\n");
+			self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_ENEMY;
 			return;
 		}
 
-		// If Impulse is #TF_SCAN_FRIENDLY, toggle Scanning for Friendlies
-		if (scanrange == #TF_SCAN_FRIENDLY)
+		// If Impulse is TF_SCAN_FRIENDLY, toggle Scanning for Friendlies
+		if (scanrange == TF_SCAN_FRIENDLY)
 		{
-			if (self.tf_items_flags & #NIT_SCANNER_FRIENDLY)
+			if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
 			{
-				sprint (self, #PRINT_HIGH, "Friendly Scanning disabled.\n");
-				self.tf_items_flags = self.tf_items_flags - #NIT_SCANNER_FRIENDLY;
+				sprint (self, PRINT_HIGH, "Friendly Scanning disabled.\n");
+				self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_FRIENDLY;
 				return;
 			}
-			sprint (self, #PRINT_HIGH, "Friendly Scanning enabled.\n");
-			self.tf_items_flags = self.tf_items_flags | #NIT_SCANNER_FRIENDLY;
+			sprint (self, PRINT_HIGH, "Friendly Scanning enabled.\n");
+			self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_FRIENDLY;
 			return;
 		}
 
@@ -327,25 +328,25 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 
 		if (scanrange <= 0)
 		{
-			sprint(self, #PRINT_HIGH, "No cells.\n");
+			sprint(self, PRINT_HIGH, "No cells.\n");
 			return;
 		}
 */
-		if (scanrange > #NIT_SCANNER_MAXCELL)
-			scanrange = #NIT_SCANNER_MAXCELL;
+		if (scanrange > NIT_SCANNER_MAXCELL)
+			scanrange = NIT_SCANNER_MAXCELL;
 
 		scen = 0;
 		scfr = 0;
 		// Set the Scanner flags
-		if (self.tf_items_flags & #NIT_SCANNER_ENEMY)
+		if (self.tf_items_flags & NIT_SCANNER_ENEMY)
 			scen = 1;
-		if (self.tf_items_flags & #NIT_SCANNER_FRIENDLY)
+		if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
 			scfr = 1;
 
 		// If no entity type is enabled, don't scan
 		if ((scen == 0) && (scfr == 0))
 		{
-			sprint(self, #PRINT_HIGH, "All scanner functions are disabled.\nEnable with 'scane' or 'scanf'.\n");
+			sprint(self, PRINT_HIGH, "All scanner functions are disabled.\nEnable with 'scane' or 'scanf'.\n");
 			return;
 		}
 
@@ -353,13 +354,13 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 		// additions:
 		// altered this so scanner could be more easily tested
 //WK		self.ammo_cells = self.ammo_cells - scancost;
-		scanrange = scanrange * #NIT_SCANNER_POWER;
+		scanrange = scanrange * NIT_SCANNER_POWER;
 
 		if (!inAuto) { //WK Only sprint() if not autoscanner
-			sprint (self, #PRINT_HIGH, "Range: ");
+			sprint (self, PRINT_HIGH, "Range: ");
 			power = ftos(ceil(scanrange));
-			sprint (self, #PRINT_HIGH, power);
-			sprint (self, #PRINT_HIGH, ". Scanning...\n");
+			sprint (self, PRINT_HIGH, power);
+			sprint (self, PRINT_HIGH, ". Scanning...\n");
 		}
 
 		// Get the list of entities the scanner finds
@@ -383,29 +384,29 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 	{
 	if (list != self)
 	{
-		// sets the enemy_detected flag to #TRUE if not on your team, #FALSE if so
-		any_detected = #TRUE; // this flag is set to false if bogie is moving
+		// sets the enemy_detected flag to TRUE if not on your team, FALSE if so
+		any_detected = TRUE; // this flag is set to false if bogie is moving
 							 // too slow to be detected (and velocity checking is on)
 
 		if (vlen(list.origin - self.origin) <= scanrange) //CH Secondary check NEEDED!!!
 		{
 		// If this scanner is a motion detector, don't record
 		// object that don't have the required velocity to be detected.
-		if (self.tf_items_flags & #NIT_SCANNER_MOVEMENT)
+		if (self.tf_items_flags & NIT_SCANNER_MOVEMENT)
 		{
-			if (vlen(list.velocity) > #NIT_SCANNER_MIN_MOVEMENT)
+			if (vlen(list.velocity) > NIT_SCANNER_MIN_MOVEMENT)
 			{
 				if (list.classname == "monster_demon1" && list.health > 0) //Because they dont have teams
 				{
 					if (Teammate(list.real_owner.team_no,self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 				else if (list.classname == "monster_army" && list.health > 0) //Because they dont have teams
@@ -413,12 +414,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (Teammate(list.real_owner.team_no,self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 				else if (list.classname == "monster_shambler" && list.health > 0) //Because they dont have teams
@@ -426,12 +427,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (Teammate(list.real_owner.team_no,self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
    				//- OfN -
@@ -440,12 +441,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (Teammate(list.real_owner.team_no,self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 
@@ -454,42 +455,42 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (list.owned_by == self.team_no && list.team_no != self.team_no)
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else if (list.owned_by == self.team_no && list.team_no == self.team_no)
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else if (list.owned_by != self.team_no && list.team_no == self.team_no)
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 					else
-						any_detected = #FALSE;
+						any_detected = FALSE;
 				}
-				else if ((list.classname == "player" || list.classname == "building_sentrygun" || list.classname == "building_tesla" || list.classname == "building_teleporter") && list.health > 0 && !(list.cutf_items & #CUTF_JAMMER))
+				else if ((list.classname == "player" || list.classname == "building_sentrygun" || list.classname == "building_tesla" || list.classname == "building_teleporter") && list.health > 0 && !(list.cutf_items & CUTF_JAMMER))
 				{
 					if (Teammate(list.team_no, self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 				else
 				{
-					any_detected = #FALSE;
+					any_detected = FALSE;
 				}
 			}
 			else
 			{
-				any_detected = #FALSE;
+				any_detected = FALSE;
 			}
 		}
 		else
@@ -499,12 +500,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (Teammate(list.real_owner.team_no,self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 				if (list.classname == "monster_army" && list.health > 0) //Because they dont have teams
@@ -512,12 +513,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (Teammate(list.real_owner.team_no, self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 				if (list.classname == "monster_shambler" && list.health > 0) //Because they dont have teams
@@ -525,12 +526,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (Teammate(list.real_owner.team_no, self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
                 //- OfN -
@@ -539,12 +540,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (Teammate(list.real_owner.team_no, self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 				else if (list.classname == "item_tfgoal" && list.owned_by > 0 && list.team_no > 0 && self.team_no > 0) //Because they use owned_by
@@ -552,43 +553,43 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 					if (list.owned_by == self.team_no && list.team_no != self.team_no)
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else if (list.owned_by == self.team_no && list.team_no == self.team_no)
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else if (list.owned_by != self.team_no && list.team_no == self.team_no)
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 					else
-						any_detected = #FALSE;
+						any_detected = FALSE;
 				}
-				else if ((list.classname == "player" || list.classname == "building_sentrygun" || list.classname == "building_tesla" || list.classname == "building_teleporter") && list.health > 0 && !(list.cutf_items & #CUTF_JAMMER))
+				else if ((list.classname == "player" || list.classname == "building_sentrygun" || list.classname == "building_tesla" || list.classname == "building_teleporter") && list.health > 0 && !(list.cutf_items & CUTF_JAMMER))
 				{
 					if (Teammate(list.team_no, self.team_no))
 					{
 						scfr = scfr + 1;
-						enemy_detected = #FALSE;
+						enemy_detected = FALSE;
 					}
 					else
 					{
 						scen = scen + 1;
-						enemy_detected = #TRUE;
+						enemy_detected = TRUE;
 					}
 				}
 				else
 				{
-					any_detected = #FALSE;
+					any_detected = FALSE;
 				}
 		}
 		}
 		else
 		{
-			any_detected = #FALSE;
+			any_detected = FALSE;
 		}
 
 		// this displays the direction of the detected player
@@ -604,15 +605,15 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 
 			// Create the Lightning 
 			msg_entity = self;
-			WriteByte (#MSG_ONE, #SVC_TEMPENTITY);
-			WriteByte (#MSG_ONE, #TE_LIGHTNING1);
-			WriteEntity (#MSG_ONE, self);
-			WriteCoord (#MSG_ONE, self.origin_x);
-			WriteCoord (#MSG_ONE, self.origin_y);
-			WriteCoord (#MSG_ONE, self.origin_z + 8);
-			WriteCoord (#MSG_ONE, lightningvec_x);
-			WriteCoord (#MSG_ONE, lightningvec_y);
-			WriteCoord (#MSG_ONE, lightningvec_z + 8);
+			WriteByte (MSG_ONE, SVC_TEMPENTITY);
+			WriteByte (MSG_ONE, TE_LIGHTNING1);
+			WriteEntity (MSG_ONE, self);
+			WriteCoord (MSG_ONE, self.origin_x);
+			WriteCoord (MSG_ONE, self.origin_y);
+			WriteCoord (MSG_ONE, self.origin_z + 8);
+			WriteCoord (MSG_ONE, lightningvec_x);
+			WriteCoord (MSG_ONE, lightningvec_y);
+			WriteCoord (MSG_ONE, lightningvec_z + 8);
 
 			self.scaned = list; //CH for the sbar
 			if (!inAuto)
@@ -629,7 +630,7 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 	// For Base Defences, it will display the counts to all team members
 	if ((scen == 0) && (scfr == 0) && (!inAuto))
 	{
-		sprint (self, #PRINT_HIGH, "No blips.\n");
+		sprint (self, PRINT_HIGH, "No blips.\n");
 		return;
 	}
 
@@ -662,7 +663,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 				if (points < 0)
 					points = 0;
 				points = bounce - points;
-				if (head.cutf_items & #CUTF_GYMNAST)
+				if (head.cutf_items & CUTF_GYMNAST)
 					points = points * 2;
 
 				if (!IsBuilding(head) && points > 0)
@@ -673,8 +674,8 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 
 					if (head.classname != "player")
 					{
-						if(head.flags & #FL_ONGROUND)
-							head.flags = head.flags - #FL_ONGROUND;
+						if(head.flags & FL_ONGROUND)
+							head.flags = head.flags - FL_ONGROUND;
 					}
 					else
 					{
@@ -691,7 +692,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 						{
 							stuffcmd(head,"v_idlescale 100\n");
 							te.health = 100;
-							te.nextthink = time + #GR_CONCUSS_TIME;
+							te.nextthink = time + GR_CONCUSS_TIME;
 						}
 						else
 						{
@@ -699,7 +700,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 							stuffcmd(head,"bf\n");
 							// Create a timer entity
 							te = spawn();
-							te.nextthink = time + #GR_CONCUSS_TIME;
+							te.nextthink = time + GR_CONCUSS_TIME;
 							te.think = ConcussionGrenadeTimer;
 							te.team_no = attacker.team_no;
 							te.classname = "timer";
@@ -716,37 +717,37 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 //CH checks a player and returns True of False
 float(entity scan, entity targ, float enemies, float friends) Scanner_Check_Player =
 {
-		if (targ.playerclass == #PC_UNDEFINED) {
-			return #FALSE;
+		if (targ.playerclass == PC_UNDEFINED) {
+			return FALSE;
 		}
-		else if (targ.done_custom & #CUSTOM_BUILDING) {
-			return #FALSE;
+		else if (targ.done_custom & CUSTOM_BUILDING) {
+			return FALSE;
 		}
 		else if (targ.health <= 0) {
-			return #FALSE;
+			return FALSE;
 		}
 		else if (targ.has_disconnected) {
-			return #FALSE;
+			return FALSE;
 		}
 		else if (targ == scan) {
-			return #FALSE;
+			return FALSE;
 		}
-		else if (targ.flags & #FL_NOTARGET) {
-			return #FALSE;
+		else if (targ.flags & FL_NOTARGET) {
+			return FALSE;
 		}
-		else if (targ.cutf_items & #CUTF_JAMMER)
-			return #FALSE;
+		else if (targ.cutf_items & CUTF_JAMMER)
+			return FALSE;
 //CH ALL NEW CHECKS ABOVE THIS LINE
 		if (teamplay)
 		{
 			if ( friends &&  Teammate(targ.team_no,scan.team_no) )
-				return #TRUE;
+				return TRUE;
 			if ( enemies && !Teammate(targ.team_no,scan.team_no) )
-				return #TRUE;
+				return TRUE;
 		}
 		else
-			return #TRUE;
-	return #FALSE;
+			return TRUE;
+	return FALSE;
 };
 //=========================================================================
 // Returns a list of players within a radius around the origin, like findradius,
@@ -888,20 +889,20 @@ void() CaltropGrenadeExplode =
 /*	deathmsg = DMSG_GREN_CALTROP;
 	T_RadiusDamage (self, self.owner, 50, world);
 	
-	WriteByte (#MSG_BROADCAST, #SVC_TEMPENTITY);
-	WriteByte (#MSG_BROADCAST, #TE_EXPLOSION);
-	WriteCoord (#MSG_BROADCAST, self.origin_x);
-	WriteCoord (#MSG_BROADCAST, self.origin_y);
-	WriteCoord (#MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 	#ifdef QUAKE_WORLD
-		multicast (self.origin, #MULTICAST_PHS);
+		multicast (self.origin, MULTICAST_PHS);
 	#endif
 	
-	self.solid = #SOLID_NOT;
+	self.solid = SOLID_NOT;
 	*/
 	// Very well admiral. Engage the rebels.
 	i = 0;
-	while (i < #GR_TYPE_CALTROP_NO)
+	while (i < GR_TYPE_CALTROP_NO)
 	{
 		CreateCaltrop(self.origin + '0 0 -1',self.owner);
 		i = i + 1;
@@ -927,12 +928,12 @@ void (vector org, entity shooter) CreateCaltrop =
 
 	newmis = spawn ();
 	newmis.owner = shooter;
-	newmis.movetype = #MOVETYPE_BOUNCE;
-	newmis.solid = #SOLID_TRIGGER;
-    //newmis.solid = #SOLID_BBOX;
+	newmis.movetype = MOVETYPE_BOUNCE;
+	newmis.solid = SOLID_TRIGGER;
+    //newmis.solid = SOLID_BBOX;
 
 	newmis.classname = "caltrop";
-	newmis.weapon = #DMSG_CALTROP;
+	newmis.weapon = DMSG_CALTROP;
 
 	newmis.touch = CaltropTouch;
 	newmis.think = SUB_Remove;
@@ -974,17 +975,17 @@ void() CaltropTouch =
 		
         if (self.velocity == '0 0 0') // supposedly on the ground..
         {
-			sprint(other, #PRINT_HIGH, "Ouch! Ouch! Caltrops!\n");
+			sprint(other, PRINT_HIGH, "Ouch! Ouch! Caltrops!\n");
             other.leg_damage = other.leg_damage + 2;
           	TeamFortress_SetSpeed(other);
-            deathmsg = #DMSG_CALTROP;
-    		TF_T_Damage(other, self, self.owner, 16, 0, #TF_TD_OTHER);
+            deathmsg = DMSG_CALTROP;
+    		TF_T_Damage(other, self, self.owner, 16, 0, TF_TD_OTHER);
         }
         else // if its moving...
         {
-			sprint(other, #PRINT_HIGH, "Woah! Caltrops!\n");
-            deathmsg = #DMSG_FLYCALTROP;
-    		TF_T_Damage(other, self, self.owner, 20 + random() * 9, 0, #TF_TD_OTHER);
+			sprint(other, PRINT_HIGH, "Woah! Caltrops!\n");
+            deathmsg = DMSG_FLYCALTROP;
+    		TF_T_Damage(other, self, self.owner, 20 + random() * 9, 0, TF_TD_OTHER);
         }
 
         dremove(self);

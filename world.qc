@@ -2,6 +2,7 @@
 //- CustomTF Worldspawn and related stuff              OfteN      //
 //- 30-01-2001----------------------------------------------------//
 
+#include "defs.qh"
 
 
 //-- OFTEN --//
@@ -227,14 +228,14 @@ void() worldspawn =
     //- OfteN globals -//
 	UpdateInfos();
     debug_target=world;
-   	already_chosen_map = #FALSE;
-    triggered_cycle = #FALSE;
+   	already_chosen_map = FALSE;
+    triggered_cycle = FALSE;
     ////////////////////
 
     // We set up Chris' Teamplay Plus Mode here cos that's fun
 	/*st = infokey(world, "chris");
 	if (st == "on")
-		chris = #TRUE;
+		chris = TRUE;
 	else
 		chris = stof(st);
 		

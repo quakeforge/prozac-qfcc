@@ -1,3 +1,4 @@
+#include "defs.qh"
 //Extern
 //float(entity obj, entity builder) CheckArea; //For demon summons
 void (entity targ) GetRank;
@@ -56,7 +57,7 @@ void()	army_stand8	=[	$stand8,	army_stand1	] {ai_stand();};
 
 void()	army_walk1	=[	$prowl_1,	army_walk2	] {
 if (random() < 0.2)
-	sound (self, #CHAN_VOICE, "soldier/idle.wav", 1, #ATTN_IDLE);
+	sound (self, CHAN_VOICE, "soldier/idle.wav", 1, ATTN_IDLE);
 ai_walk(1);};
 void()	army_walk2	=[	$prowl_2,	army_walk3	] {ai_walk(1);Grunty_Check_Frags();};
 void()	army_walk3	=[	$prowl_3,	army_walk4	] {ai_walk(1);};
@@ -84,7 +85,7 @@ void()	army_walk24	=[	$prowl_24,	army_walk1	] {ai_walk(1);};
 
 void()	army_run1	=[	$run1,		army_run2	] {
 if (random() < 0.2)
-	sound (self, #CHAN_VOICE, "soldier/idle.wav", 1, #ATTN_IDLE);
+	sound (self, CHAN_VOICE, "soldier/idle.wav", 1, ATTN_IDLE);
 ai_run(11);};
 void()	army_run2	=[	$run2,		army_run3	] {ai_run(15);Grunty_Check_Frags();};
 void()	army_run3	=[	$run3,		army_run4	] {ai_run(10);};
@@ -99,7 +100,7 @@ void()	army_atk2	=[	$shoot2,	army_atk3	] {ai_face();};
 void()	army_atk3	=[	$shoot3,	army_atk4	] {ai_face();};
 void()	army_atk4	=[	$shoot4,	army_atk5	] {ai_face();};
 void()	army_atk5	=[	$shoot5,	army_atk6	] {ai_face();army_fire();
-self.effects = self.effects | #EF_DIMLIGHT;};
+self.effects = self.effects | EF_DIMLIGHT;};
 void()	army_atk6	=[	$shoot6,	army_atk7	] {ai_face(); self.effects = 0;};
 void()	army_atk7	=[	$shoot7,	army_atk8	] {ai_face();SUB_CheckRefire (army_atk1);};
 void()	army_atk8	=[	$shoot8,	army_atk9	] {ai_face();};
@@ -162,19 +163,19 @@ void(entity attacker, float damage)	army_pain =
 	{
 		self.pain_finished = time + 0.6;
 		army_pain1 ();
-		sound (self, #CHAN_VOICE, "soldier/pain1.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "soldier/pain1.wav", 1, ATTN_NORM);
 	}
 	else if (r < 0.6)
 	{
 		self.pain_finished = time + 1.1;
 		army_painb1 ();
-		sound (self, #CHAN_VOICE, "soldier/pain2.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "soldier/pain2.wav", 1, ATTN_NORM);
 	}
 	else
 	{
 		self.pain_finished = time + 1.1;
 		army_painc1 ();
-		sound (self, #CHAN_VOICE, "soldier/pain2.wav", 1, #ATTN_NORM);
+		sound (self, CHAN_VOICE, "soldier/pain2.wav", 1, ATTN_NORM);
 	}
 };
 
@@ -185,7 +186,7 @@ void() army_fire =
 	
 	ai_face();
 	
-	sound (self, #CHAN_WEAPON, "soldier/sattck1.wav", 1, #ATTN_NORM);	
+	sound (self, CHAN_WEAPON, "soldier/sattck1.wav", 1, ATTN_NORM);	
 
 // fire somewhat behind the player, so a dodging player is harder to hit
 	en = self.enemy;
@@ -198,7 +199,7 @@ void() army_fire =
 
 void() custom_grunt_die = 
 {
-	sound (self, #CHAN_VOICE, "player/udeath.wav", 1, #ATTN_NORM);
+	sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 	ThrowGib ("progs/h_guard.mdl", self.health);
 	ThrowGib ("progs/gib1.mdl", self.health);
 	ThrowGib ("progs/gib2.mdl", self.health); //- was gib1
@@ -206,8 +207,8 @@ void() custom_grunt_die =
 
 	if (self.real_owner.classname == "player")
 	{
-		sprint(self.real_owner,#PRINT_HIGH,"Your soldier has been killed\n");
-		self.real_owner.job = self.real_owner.job - (self.real_owner.job & #JOB_DEMON_OUT);
+		sprint(self.real_owner,PRINT_HIGH,"Your soldier has been killed\n");
+		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 		self.real_owner.demon_points = self.real_owner.demon_points + 2;
 		self.real_owner.job_finished = time + 10; //Can't summon streams of demons
 	}
@@ -218,10 +219,10 @@ float () SoldierCheckAttack =
 {
 	if (visible(self.enemy))
 	{
-		self.attack_state = #AS_MISSILE;
-		return #TRUE;
+		self.attack_state = AS_MISSILE;
+		return TRUE;
 	}
-	return #FALSE;
+	return FALSE;
 };
 
 void (entity targ) GetRank =
@@ -277,10 +278,10 @@ void() Grunty_Check_Frags =
 			self.health = self.max_health;
 		custom_demon_name(self);
 		GetRank(self);
-		sprint(self.real_owner, #PRINT_HIGH, "Your soldier, ");
-		sprint(self.real_owner, #PRINT_HIGH, self.netname);
-		sprint(self.real_owner, #PRINT_HIGH, ", has reached the rank of ");
-		sprint(self.real_owner, #PRINT_HIGH, self.undercover_name);
-		sprint(self.real_owner, #PRINT_HIGH, "\n");
+		sprint(self.real_owner, PRINT_HIGH, "Your soldier, ");
+		sprint(self.real_owner, PRINT_HIGH, self.netname);
+		sprint(self.real_owner, PRINT_HIGH, ", has reached the rank of ");
+		sprint(self.real_owner, PRINT_HIGH, self.undercover_name);
+		sprint(self.real_owner, PRINT_HIGH, "\n");
 	}
 };
