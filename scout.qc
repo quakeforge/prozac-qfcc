@@ -226,10 +226,12 @@ void() ConcussionGrenadeTimer =
 	if (self.has_camera < time)
 	{
 		self.owner.mangle = '0 0 0';
-	
+
+#ifdef GR_CONCUSS_SETANGLE	
 		msg_entity = self.owner;
 		WriteByte (MSG_ONE, SVC_SETANGLE);
 		WriteAngleV (MSG_ONE, self.owner.v_angle);
+#endif
 
 		self.has_camera = time + GR_CONCUSS_FIXTIME;
 	}

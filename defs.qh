@@ -840,7 +840,7 @@ float (entity e) EF_GlowColor;
 #define GR_ANTIGRAV_TIME	3 
 #define GR_ANTIGRAV_DEC		30 
 
-#define NEW_CONCUSS_BOUNCE	// New conc bounce algo (same as regular gren)
+#undef NEW_CONCUSS_BOUNCE	// New conc bounce algo (same as regular gren)
 
 // Defines for the Gas Grenade
 #define GR_HALLU_TIME	0.1
