@@ -121,10 +121,6 @@ void() DropToCustomClassGen =
 	
     //st = infokey(NIL, "no_grapple");
 
-    kill_my_demon();//FIXED?
-	DetonateMines(self);
-    RemoveArmyTimer();
-
     self.aura = 0;
 
     //Remove everything he's carrying	
@@ -211,15 +207,6 @@ void() DropToCustomClassGen =
 	else
 		self.done_custom = CUSTOM_BUILDING; 
 	
-	//Destroy Buildings... again. :p
-	DetonateAllGuns();
-
-	//And then kill all demons I own
-	
-    //kill_my_demon();
-    //DetonateMines(self);
-    //RemoveArmyTimer();
-
       self.current_menu = MENU_PRIMARY_WEAPON;
       Menu_PrimaryWeapon();
 	return;
@@ -330,6 +317,23 @@ void() DropFromCustomClassGen =
 		    self.maxammo_cells = 320;
       }
       
+	// I don't know if it has to do with the "FRONTLIN HELI BUG FIX" but this shouldn't all be
+	// duped here. If this breaks something, tell me what
+	// -Griev
+
+#if 1
+	if (coop)
+		setspawnparms(self);
+	else
+		SetNewParms();
+
+	PutClientInServer();
+	TeamFortress_SetSpeed(self);
+
+	//GR - ofn hid this in the middle of code below, argh
+	ResetMenu();
+	self.impulse = 0;
+#else
 
 	//- OFN HERE FRONTLIN HELI BUG FIX ---//
     local entity spot;
@@ -408,7 +412,7 @@ void() DropFromCustomClassGen =
     {
         SetArmyTimer();
     }	
-	
+#endif // removed dup code	
 	return;
 };
 

@@ -1811,6 +1811,12 @@ void() PutClientInServer =
 	local float iszoom, oldclass;
 	local entity spot, te;
 
+	local float in_classgen = FALSE;
+
+	if ((!self.done_custom || (self.done_custom & CUSTOM_ON_SPAWN)) && 
+	    (self.playerclass == PC_CUSTOM || self.nextpc == PC_CUSTOM))
+		in_classgen = TRUE;
+
 	self.fire_held_down = 0;
 	self.touch = player_touch;
 	self.classname = "player";
@@ -1929,14 +1935,12 @@ void() PutClientInServer =
 	if (iszoom == 1)
 		self.tfstate = self.tfstate | TFSTATE_ZOOMOFF;
 
-	// Display the Player's Class
-	if (!(self.done_custom == 0 || (self.done_custom & CUSTOM_ON_SPAWN)))
-	{
-		if (self.playerclass != PC_CUSTOM)
-			TeamFortress_PrintClassName(self,self.playerclass, (self.tfstate & TFSTATE_RANDOMPC));
-		else 
-			TeamFortress_PrintJobName(self,self.job);
-	}
+	// Display the Player's class
+	if (self.playerclass != PC_CUSTOM)
+		TeamFortress_PrintClassName(self, self.playerclass, (self.tfstate & TFSTATE_RANDOMPC));
+	else if (!in_classgen)
+		TeamFortress_PrintJobName(self,self.job);
+
 	// Set the weapons and ammo for the player based on class
 	TeamFortress_SetEquipment();
 	// Set the health for the player based on class
@@ -1953,7 +1957,16 @@ void() PutClientInServer =
 	stuffcmd(self, "-left;-right;cl_yawspeed 140\n");
 
 	//WK Again, since they could lose their sentrygun in SetEquip...
-	DetonateAllGuns();
+	if (!in_classgen)
+	{
+		DetonateAllGuns();
+		if (!(self.job & JOB_WARLOCK))
+			kill_my_demon();
+		if (!(self.job & JOB_GUERILLA))
+			DetonateMines(self);
+		if (!(self.job & JOB_ARMY))
+			RemoveArmyTimer();
+	}
 
 
 	SetTeamName(self);
@@ -1978,7 +1991,7 @@ void() PutClientInServer =
 	
 	spot = SelectSpawnPoint ();
 
-	if (self.playerclass != PC_UNDEFINED)
+	if (self.playerclass != PC_UNDEFINED && !in_classgen)
 		spawn_tdeath (spot.origin, self);
 
 	self.observer_list = spot;
@@ -2001,7 +2014,7 @@ void() PutClientInServer =
 
 	// If this is a TeamSpawnpoint, check to see if it
 	// gives out a GoalItem, or displays a message
-	if (spot.classname == "info_player_teamspawn")
+	if (spot.classname == "info_player_teamspawn" && self.playerclass != PC_UNDEFINED && !in_classgen)
 	{
 		if (spot.items != 0)
 		{
@@ -2062,7 +2075,7 @@ void() PutClientInServer =
 //WK Done_custom is initialized to 0, hackish yes.
 //There are two entries, unintialized 0, or a person having issued a 'custom' command
 //which sets the CUSTOM_ON_SPAWN flag
-		if (self.done_custom == 0 || (self.done_custom & CUSTOM_ON_SPAWN))
+		if (in_classgen)
 		{
 			DropToCustomClassGen();
 		}
@@ -2084,7 +2097,7 @@ void() PutClientInServer =
 	if (deathmatch || coop)
 	{
 		makevectors(self.angles);
-		if (self.playerclass != PC_UNDEFINED)
+		if (self.playerclass != PC_UNDEFINED && !in_classgen)
 			spawn_tfog (self.origin + v_forward*10);
 	}
 
@@ -2752,7 +2765,7 @@ void() PlayerPreThink =
 			local vector angle = self.angles;
 			angle_x = -angle_x;
 			makevectors(angle);
-			v_up = '0 0 1' // angle thing is broken for now
+			v_up = '0 0 1'; // angle thing is broken for now
 
 			self.hover_time = self.hover_time - 0.5; //0.1 == tick time
 			if (self.hover_time <= 0) {

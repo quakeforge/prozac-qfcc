@@ -158,8 +158,6 @@ void() UseSpecialSkill =
 // If self.impulse == 1, change to Civilian class
 void() TeamFortress_ChangeClass =
 {
-	local entity spot, te;
-
 	//WK - Handle Custom Class Restarting
 	if (self.playerclass == PC_CUSTOM
 		&& (self.done_custom & CUSTOM_BUILDING)) {
@@ -223,6 +221,22 @@ void() TeamFortress_ChangeClass =
 		self.playerclass = PC_CIVILIAN;
 
 	self.nextpc = 0;
+
+#if 1
+	// Duplicated code again!
+	if (coop)
+		setspawnparms(self);
+	else
+		SetNewParms();
+
+	PutClientInServer();
+	TeamFortress_SetSpeed(self);
+
+	ResetMenu();
+	self.impulse = 0;
+
+#else
+	local entity spot, te;
 
 	// Turn off PC_UNDEFINED's nomove and invincibility
 	self.takedamage = DAMAGE_AIM;
@@ -338,6 +352,7 @@ void() TeamFortress_ChangeClass =
 		self.invincible_time = 1;
 		self.invincible_finished = time + RESPAWN_GUARD_TIME;
 	}
+#endif
 };
 
 //=========================================================================
