@@ -164,10 +164,10 @@ void() player_touch =
 /* WK Why doesn't this work??? Causes occasional program crashes...
 					//WK The owner is the original medic if spreading to friend
 					if (self.team_no == other.team_no) {
-						te = find(world, netname, "biotimer");
-						while ((te.owner != self) && (te != world))
+						te = find(NIL, netname, "biotimer");
+						while ((te.owner != self) && (te))
 							te = find(te, netname, "biotimer");
-						if (te != world)
+						if (te)
 							Bio.enemy = te.enemy; //Person infecting							
 						else
 							RPrint("CustomTF: Odd Behavior in infection spreading");
@@ -1274,7 +1274,7 @@ void() PlayerDie =
 	finished = TRUE;
 	if (self.tfstate & TFSTATE_INFECTED && self == self.enemy)
 	{
-		te = find(world, classname, "timer");
+		te = find(NIL, classname, "timer");
 		while (te)
 		{
 			if (te.owner == self && te.think == BioInfection_Decay)
@@ -1287,7 +1287,7 @@ void() PlayerDie =
 			}
 
 			te = find(te, classname, "timer");
-			if (finished) te = world;
+			if (finished) te = NIL;
 		}
 	}
 

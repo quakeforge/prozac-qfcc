@@ -25,12 +25,12 @@ void() Teleporter_touch =
 	{
 		if (Teleporter_check_person(other))
 		{
-			te = find(world, classname, "building_teleporter");
-			while (!(te.real_owner == self.real_owner && te != self) && te != world)
+			te = find(NIL, classname, "building_teleporter");
+			while (!(te.real_owner == self.real_owner && te != self) && te)
 			{
 				te = find(te, classname, "building_teleporter");
 			}
-			if (te != world)
+			if (te)
 			{
 				if (te.heat == 0 && te.ammo_cells >= TELEPORTER_CELLS)
 				{
@@ -99,9 +99,9 @@ float(entity targ) Teleporter_check_person =
 			CenterPrint(other, "There is no other teleporter!\n");
 		return FALSE;
 	}
-	if (infokey(world,"ceasefire")=="on") //To not cause loops
+	if (infokey(NIL,"ceasefire")=="on") //To not cause loops
 		return FALSE;
-	if (targ == world)//that would be bad.
+	if (!targ)//that would be bad.
 		return FALSE;
 	if (targ.done_custom & CUSTOM_BUILDING)
 		return FALSE;
@@ -155,7 +155,7 @@ void() Teleporter_heat_think =
 	self.nextthink = time + 1;
 	if (Teleporter_CheckBlocked(self)) {
 		sprint (self.real_owner, PRINT_HIGH, "Not enough space for teleportation.\n");
-		TF_T_Damage (self, world, world, self.health + 1, 0, 0);
+		TF_T_Damage (self, NIL, NIL, self.health + 1, 0, 0);
 	}
 };
 

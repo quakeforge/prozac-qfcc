@@ -12,7 +12,7 @@ void() DroppedKeyThink =
 	// let the throwing player pick it up again
 	self.think = NIL;
 	self.touch = key_touch;
-	self.owner = world;
+	self.owner = NIL;
 };
 
 
@@ -109,8 +109,8 @@ float() DoorShouldOpen =
 		return TRUE;
 
 	plyrcount = 0;
-	ptr = find(world, classname, "player");
-	while (ptr != world)
+	ptr = find(NIL, classname, "player");
+	while (ptr)
 	{
 		if (!(ptr.tf_items & self.items) && ptr.playerclass != PC_UNDEFINED
 										 && ptr.solid != SOLID_NOT

@@ -181,15 +181,15 @@ void() Menu_Army2 =
 
 	st += "\x9d\x9f \<Soldier Status\> \x9d\x9f\n\n";
 
-    if (self.demon_one.enemy != world && visible2 (self.demon_one, self.demon_one.enemy))
+    if (self.demon_one.enemy && visible2 (self.demon_one, self.demon_one.enemy))
         st += "Attacking " + GetEnemyName (self.demon_one.enemy) + "\n\n";
-    else if (self.demon_one.enemy!=world)
+    else if (self.demon_one.enemy)
         st += "Seeking " + GetEnemyName (self.demon_one.enemy) + "\n\n";
     else if (self.demon_one.goalentity == self)
         st += "Following You\n\n";
-    else if (self.demon_one.goalentity == world)
+    else if (!self.demon_one.goalentity)
         st += "Standing\n\n";
-    else if (self.demon_one.goalentity != world)
+    else if (self.demon_one.goalentity)
         st += "On Patrol\n\n";
 
 	st += "\x93.. Tactic Mode:    ";
@@ -263,7 +263,7 @@ void(float inp) Menu_Army_Input =
 
 void(float inp) Menu_Army_Input2 =
 {
-	if (inp == 10 || self.demon_one==world) // NOTHING
+	if (inp == 10 || !self.demon_one) // NOTHING
 	{	
 		ResetMenu();
 		self.impulse = 0;
@@ -295,9 +295,9 @@ void(float inp) Menu_Army_Input2 =
             self.demon_one.has_teleporter = 0;
 			self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
 
-            if (self.demon_one.enemy!=world)//self.demon_one.goalentity)
+            if (self.demon_one.enemy)//self.demon_one.goalentity)
             {
-                self.demon_one.enemy=world;                
+                self.demon_one.enemy=NIL;                
                 self.demon_one.goalentity = ReturnEasyWaypoint(self.demon_one,self.demon_one);
             }
 
@@ -379,9 +379,9 @@ void(float inp) Menu_Army_Input1 =
         
         return;
 	}
-    else if (inp == 1 && self.demon_one == world) // Teleport it!
+    else if (inp == 1 && !self.demon_one) // Teleport it!
 	{	
-		if (self.army_ready == TRUE && self.demon_one==world && !(self.job & JOB_DEMON_OUT))
+		if (self.army_ready == TRUE && !self.demon_one && !(self.job & JOB_DEMON_OUT))
         {
            ResetMenu();
            //StartTeleArmy();
@@ -400,7 +400,7 @@ void(float inp) Menu_Army_Input1 =
 	}	
 	else if (inp == 8) // Kill it!
 	{
-		if (self.demon_one!=world)
+		if (self.demon_one)
         {            
             ResetMenu();
             sprint(self,PRINT_HIGH,"You detonate the micro-explosive implanted in his brain!\n");
@@ -416,22 +416,22 @@ void(float inp) Menu_Army_Input1 =
 		
 		return;
 	}
-	else if (inp == 1 && self.demon_one != world) // primary waypoint
+	else if (inp == 1 && self.demon_one) // primary waypoint
 	{
         
-        if (self.demon_one.martyr_enemy != world)
+        if (self.demon_one.martyr_enemy)
             RemoveWaypoint(self.demon_one.martyr_enemy,self.demon_one);
         
-        if (self.demon_one.demon_two != world)
+        if (self.demon_one.demon_two)
             RemoveWaypoint(self.demon_one.demon_two,self.demon_one);
 
             //dremove(self.demon_one.martyr_enemy);
 
-        /*if (self.demon_one.demon_two != world)
+        /*if (self.demon_one.demon_two)
 			dremove(self.demon_one.demon_two);*/ // OfN - prova
 
     	self.demon_one.martyr_enemy = CreateWaypoint(self.origin, WAYPOINT_LIFE, WAYPOINT_TYPE_PRIMARY);
-		self.demon_one.martyr_enemy.goalentity = world;
+		self.demon_one.martyr_enemy.goalentity = NIL;
 		
         self.demon_one.penance_time=3;
         if (visible2(self.demon_one,self.demon_one.martyr_enemy)) self.demon_one.goalentity = self.demon_one.martyr_enemy;
@@ -444,12 +444,12 @@ void(float inp) Menu_Army_Input1 =
 
 		return;
 	}
-	else if (inp == 2 && self.demon_one != world) // secondary waypoint
+	else if (inp == 2 && self.demon_one) // secondary waypoint
 	{
-        if (self.demon_one.demon_two != world)
+        if (self.demon_one.demon_two)
             RemoveWaypoint(self.demon_one.demon_two,self.demon_one);
 
-        if (self.demon_one.martyr_enemy==world)
+        if (!self.demon_one.martyr_enemy)
         {
             self.impulse=0;
             PrintFromSoldier(self.demon_one,self,"you must set my primary waypoint first!\n");
@@ -465,7 +465,7 @@ void(float inp) Menu_Army_Input1 =
         self.demon_one.job = 2;
         self.demon_one.penance_time=3;
         self.demon_one.goalentity = ReturnEasyWaypoint(self.demon_one,self.demon_one);
-		if (self.demon_one.martyr_enemy!=world) self.demon_one.martyr_enemy.goalentity = self.demon_one.demon_two;
+		if (self.demon_one.martyr_enemy) self.demon_one.martyr_enemy.goalentity = self.demon_one.demon_two;
 		
         ResetMenu(); // reset menu?
         
@@ -475,9 +475,9 @@ void(float inp) Menu_Army_Input1 =
 
 		return;
 	}
-	else if (inp == 3 && self.demon_one != world) // FOLLOW ME, GRUNTY!
+	else if (inp == 3 && self.demon_one) // FOLLOW ME, GRUNTY!
 	{
-        if (self.demon_one.enemy!=world)
+        if (self.demon_one.enemy)
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
@@ -508,9 +508,9 @@ void(float inp) Menu_Army_Input1 =
     	return;
 	}
 
-    else if (inp == 4 && self.demon_one != world) // Stay there!
+    else if (inp == 4 && self.demon_one) // Stay there!
 	{
-        if (self.demon_one.enemy!=world)
+        if (self.demon_one.enemy)
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
@@ -525,7 +525,7 @@ void(float inp) Menu_Army_Input1 =
         	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
         }
 
-		self.demon_one.goalentity = world;
+		self.demon_one.goalentity = NIL;
         PrintFromSoldier(self.demon_one,self,"Holding position...\n");
 
         self.demon_one.penance_time = 2;
@@ -535,9 +535,9 @@ void(float inp) Menu_Army_Input1 =
     	return;
 	}
 
-    else if (inp == 5 && self.demon_one != world) // Use your waypoints!
+    else if (inp == 5 && self.demon_one) // Use your waypoints!
 	{
-        if (self.demon_one.enemy!=world)
+        if (self.demon_one.enemy)
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
@@ -554,7 +554,7 @@ void(float inp) Menu_Army_Input1 =
         self.demon_one.penance_time = 3;
         self.demon_one.goalentity = ReturnEasyWaypoint(self.demon_one,self.demon_one);
 
-		if (self.demon_one.goalentity != world)
+		if (self.demon_one.goalentity)
         {
             PrintFromSoldier(self.demon_one,self,"Moving on!\n");
         }
@@ -570,7 +570,7 @@ void(float inp) Menu_Army_Input1 =
 		self.impulse = 0;
     	return;
 	}
-	if (inp == 9 && self.demon_one != world) {
+	if (inp == 9 && self.demon_one) {
 		self.current_menu = MENU_ARMY;
 		self.menu_count = MENU_REFRESH_RATE;
 		self.impulse = 0;
@@ -688,9 +688,9 @@ float() TeleSoldier =
 	newmis.max_health = newmis.health;
 
     newmis.ltime=time; // trhown or felt on water?
-    newmis.martyr_enemy=world;
-    newmis.demon_one=world;
-    newmis.demon_two=world;
+    newmis.martyr_enemy=NIL;
+    newmis.demon_one=NIL;
+    newmis.demon_two=NIL;
     
     sprint(self,PRINT_HIGH,"You teleport your soldier.\n");
     //PrintFromSoldier(self.demon_one,self,"Your orders?\n");
@@ -714,7 +714,7 @@ void() SetArmyTimer =
 {
     if (self.army_ready!=FALSE || self.job & JOB_DEMON_OUT) return;
 
-    if (GetArmyTimer(self)!=world) return;
+    if (GetArmyTimer(self)) return;
     
     newmis = spawn();
     newmis.classname="army_timer";
@@ -742,7 +742,7 @@ void() ArmyTimerThink =
         return;
     }
 
-    if (self.owner.demon_one!=world)
+    if (self.owner.demon_one)
     {
         sprint(self.owner,PRINT_HIGH,"You have another soldier waiting!\n");
         self.owner.army_ready = TRUE;
@@ -765,7 +765,7 @@ void() ArmyTimerThink =
 entity(entity player) GetArmyTimer =
 {
     local entity te;
-    te = find(world, classname, "army_timer");
+    te = find(NIL, classname, "army_timer");
     while (te)
 	{
 		if (te.owner == player)
@@ -774,14 +774,14 @@ entity(entity player) GetArmyTimer =
 		te = find(te, classname, "army_timer");
 	}
 
-    return world;
+    return NIL;
 };
 
 void() RemoveArmyTimer =
 {
     local entity te;
     te=GetArmyTimer(self);
-    if (te!=world)
+    if (te)
         dremove(te);
 };
 
@@ -797,7 +797,7 @@ void(entity player) PrintArmyTime =
 
     ArmyTimer=GetArmyTimer(player);
 
-    if (ArmyTimer==world) return;
+    if (!ArmyTimer) return;
 
     fl=fabs(floor(ArmyTimer.nextthink - time));
     

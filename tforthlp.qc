@@ -58,7 +58,7 @@ void() TeamFortress_MOTD =
 	if (self.motd == MOTD_FINISHED - 1)
 	{
 		//WK CHECK TO SEE IF WE ARE REDIRECTING PLAYERS
-		st = infokey(world, "redir");
+		st = infokey(NIL, "redir");
 		if (st && st != "off") {
 			stuffcmd(self,"connect ");
 			stuffcmd(self,st);
@@ -158,7 +158,7 @@ void() PrintMOTD =
 			intro = intro + MSG_INTROBAR;
 		intro = intro + MSG_INTRO3;
 	}
-	infostring = infokey (world, "motd");
+	infostring = infokey (NIL, "motd");
 	if (infostring != "") {
 		if (intro != "")
 			intro = intro + MSG_INTROBAR;
@@ -176,7 +176,7 @@ void() TeamFortress_HelpMap =
 {
 	local entity te;
 
-	te = find(world, classname, "info_tfdetect");
+	te = find(NIL, classname, "info_tfdetect");
 	if (te)
 	{
 		if (te.non_team_broadcast)

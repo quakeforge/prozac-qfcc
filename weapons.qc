@@ -591,13 +591,13 @@ void(float inAuto) W_FireMedikit =
 
 				// remove concussion from player
 				// Try to find a concusstimer entity for this player
-				te = find(world, classname, "timer");
-				while (((te.owner != trace_ent) || (te.think != ConcussionGrenadeTimer)) && (te != world))
+				te = find(NIL, classname, "timer");
+				while (((te.owner != trace_ent) || (te.think != ConcussionGrenadeTimer)) && (te))
 				{
 					te = find(te, classname, "timer");
 				}
 
-				if (te != world)
+				if (te)
 				{
 					stuffcmd(trace_ent ,"v_idlescale 0\n");
 					SpawnBlood(org, 20);
@@ -618,13 +618,13 @@ void(float inAuto) W_FireMedikit =
 				// Try to find a hallucination timer entity for this player
 				if (trace_ent.tfstate & TFSTATE_HALLUCINATING)
 				{
-					te = find(world, classname, "timer");
-					while (((te.owner != trace_ent) || (te.think != HallucinationTimer)) && (te != world))
+					te = find(NIL, classname, "timer");
+					while (((te.owner != trace_ent) || (te.think != HallucinationTimer)) && (te))
 					{
 						te = find(te, classname, "timer");
 					}
 
-					if (te != world)
+					if (te)
 					{
 						trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_HALLUCINATING);
 
@@ -651,13 +651,13 @@ void(float inAuto) W_FireMedikit =
 				// Try to find a tranquilisation timer entity for this player
 				if (trace_ent.tfstate & TFSTATE_TRANQUILISED)
 				{
-					te = find(world, classname, "timer");
-					while (((te.owner != trace_ent) || (te.think != TranquiliserTimer)) && (te != world))
+					te = find(NIL, classname, "timer");
+					while (((te.owner != trace_ent) || (te.think != TranquiliserTimer)) && (te))
 					{
 						te = find(te, classname, "timer");
 					}
 
-					if (te != world)
+					if (te)
 					{
 						trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_TRANQUILISED);
 						TeamFortress_SetSpeed(trace_ent);
@@ -684,11 +684,11 @@ void(float inAuto) W_FireMedikit =
 				// check if the healed player is blinded
 				if (trace_ent.FlashTime > 0)
 				{
-					te = find(world, netname, "flashtimer");
-					while ((te.owner != trace_ent || te.classname != "timer") && (te != world))
+					te = find(NIL, netname, "flashtimer");
+					while ((te.owner != trace_ent || te.classname != "timer") && (te))
 						te = find(te, netname, "flashtimer");
 
-					if (te != world)
+					if (te)
 					{
 						trace_ent.FlashTime = 0;
 						SpawnBlood(org, 20);
@@ -1090,7 +1090,7 @@ float   puff_count;
 
 void() ClearMultiDamage =
 {
-	multi_ent = world;
+	multi_ent = NIL;
 	multi_damage = 0;
 	blood_count = 0;
 	puff_count = 0;
@@ -1350,7 +1350,7 @@ void() W_FireSniperRifle =
     traceline (src, src + dir*8092, FALSE, self);
 	if (trace_fraction != 1.0)
 	{
-		if (trace_ent != world)
+		if (trace_ent)
 		{
 			if (trace_ent.classname == "player")
 			{
@@ -1658,15 +1658,15 @@ void() Rocket_Track_Dot =
 		local vector	dir, vtemp;
 		local entity tg, sight;
 
-		sight = world;
-		tg = find (world, classname, "timer");
+		sight = NIL;
+		tg = find (NIL, classname, "timer");
 		while (tg)
 		{
 			if (tg.owner == self.owner && tg.think == SniperSight_Update2)
 				sight = tg;
 			tg = find(tg, classname, "timer");
 		}
-		if (sight != world) //Found a sight
+		if (sight) //Found a sight
 		{
 			vtemp = sight.origin;
 			dir = normalize(vtemp - self.origin);
@@ -1847,7 +1847,7 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	f_z = 0;
 	f = f*16;
 
-	e1 = e2 = world;
+	e1 = e2 = NIL;
 
 	traceline (p1, p2, FALSE, self);
 
@@ -1902,8 +1902,8 @@ void() W_FireLightning =
 		self.ammo_cells = self.ammo_cells - cells;
 		W_SetCurrentAmmo ();
 		deathmsg = DMSG_LIGHTNING;
-		//WK T_RadiusDamage (self, self, 35*cells, world);
-		T_RadiusDamage (self, self, 20*cells, world);
+		//WK T_RadiusDamage (self, self, 35*cells, NIL);
+		T_RadiusDamage (self, self, 20*cells, NIL);
 		Attack_Finished(5);
 		return;
 	}
@@ -2020,10 +2020,10 @@ void(float tno) ExplodeOldPipebomb =
 		index = num_world_pipebombs - MAX_WORLD_PIPEBOMBS;
 	}
 
-	old = find(world, classname, "pipebomb");
+	old = find(NIL, classname, "pipebomb");
 	while (index > 0)
 	{
-		if (old == world)
+		if (!old)
 		{
 			RPrint("*** ERROR: ExplodeOldPipebomb. ***\n");
 			RPrint("*** Please report this.        ***\n");
@@ -2081,7 +2081,7 @@ void() GrenadeExplode =
 	}
 
 	deathmsg = self.weapon;
-	T_RadiusDamage (self, self.owner, 120, world);
+	T_RadiusDamage (self, self.owner, 120, NIL);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -4972,7 +4972,7 @@ void() HIP_LaserTouch =
    local vector oldvel;
    //local float r;
 
-   self.owner = world;
+   self.owner = NIL;
    self.cnt = self.cnt + 1;
    if (pointcontents(self.origin) == CONTENTS_SKY)
    {

@@ -191,10 +191,10 @@ void() worldspawn =
 	local string st; //WK
 	local entity ticker;
 
-	lastspawn = world;
+	lastspawn = world = self;
 	InitBodyQue ();
 
-	st = infokey(world, "mapcfg");
+	st = infokey(NIL, "mapcfg");
 	if (!(st == "0" || st == "off" || st == ""))
 	{
 		if (st == "1" || st == "on")
@@ -205,12 +205,12 @@ void() worldspawn =
 		localcmd("exec \"");
 		localcmd(st);
 		localcmd("/");
-		localcmd(infokey(world, "map"));
+		localcmd(infokey(NIL, "map"));
 		localcmd(".cfg\"\n");
 	}
 
 // custom map attributes
-	st = infokey(world, "*gamedir");
+	st = infokey(NIL, "*gamedir");
 	if (st != "fortress")
 	{
 		if (st == "")
@@ -222,28 +222,28 @@ void() worldspawn =
 	
     //- OfteN globals -//
 	UpdateInfos();
-    debug_target=world;
+    debug_target=NIL;
    	already_chosen_map = FALSE;
     triggered_cycle = FALSE;
     ////////////////////
 
-	if (stof(infokey (world, "edictticker")))
+	if (stof(infokey (NIL, "edictticker")))
 	{
 		ticker = spawn();
 		ticker.classname = "edictcount";
 		ticker.nextthink = time + 5;
 		ticker.think = edictticker_think;
-		ticker.num_mines = stof(infokey (world, "edictticker")); // I hate overloading, but I don't want to use a full thing just for this one stupid little hack.
+		ticker.num_mines = stof(infokey (NIL, "edictticker")); // I hate overloading, but I don't want to use a full thing just for this one stupid little hack.
 	}
 
     // We set up Chris' Teamplay Plus Mode here cos that's fun
-	/*st = infokey(world, "chris");
+	/*st = infokey(NIL, "chris");
 	if (st == "on")
 		chris = TRUE;
 	else
 		chris = stof(st);
 		
-	st = infokey(world, "roundtime");
+	st = infokey(NIL, "roundtime");
 	roundtime = stof(st);
 	if (!roundtime)
 		roundtime = 300;
@@ -256,13 +256,13 @@ void() worldspawn =
 
 	// We load the masks from the map, overriding it with infokeys if
 	// they exist
-	st = infokey (world, "friends1_mask");
+	st = infokey (NIL, "friends1_mask");
 	friends1_mask = stof (st ? st : self.noise1);
-	st = infokey (world, "friends2_mask");
+	st = infokey (NIL, "friends2_mask");
 	friends2_mask = stof (st ? st : self.noise2);
-	st = infokey (world, "friends3_mask");
+	st = infokey (NIL, "friends3_mask");
 	friends3_mask = stof (st ? st : self.noise3);
-	st = infokey (world, "friends4_mask");
+	st = infokey (NIL, "friends4_mask");
 	friends4_mask = stof (st ? st : self.noise4);
 
 
@@ -562,7 +562,7 @@ void() StartFrame =
 
 	local string timeleft;
 	timeleft = timelimit ? sprintf ("%.0f", (timelimit - time) / 60) : "";
-	if (timeleft != infokey (world, "timeleft"))
+	if (timeleft != infokey (NIL, "timeleft"))
 		localcmd ("serverinfo timeleft " + timeleft + "\n");
 };
 

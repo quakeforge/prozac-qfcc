@@ -180,7 +180,7 @@ void() ConcussionGrenadeTouch =
 // Concussion grenade explosion function
 void() ConcussionGrenadeExplode =
 {	
-	T_RadiusBounce (self, self.owner, 240, world);
+	T_RadiusBounce (self, self.owner, 240, NIL);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -670,10 +670,10 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 						// Concuss 'em!!
 						// If they are already concussed, set the concussion back up
 						// Try to find a concusstimer entity for this player
-						te = find(world, classname, "timer");
-						while (((te.owner != head) || (te.think != ConcussionGrenadeTimer)) && (te != world))
+						te = find(NIL, classname, "timer");
+						while (((te.owner != head) || (te.think != ConcussionGrenadeTimer)) && (te))
 							te = find(te, classname, "timer");
-						if (te != world)
+						if (te)
 						{
 							stuffcmd(head,"v_idlescale 100\n");
 							te.health = 100;
@@ -744,8 +744,8 @@ entity(entity scanner, float scanrange, float enemies, float friends) T_RadiusSc
 	local entity list_head;
 	local entity list;
 	local float gotatarget;
-	list_head = world;
-	list = world;
+	list_head = NIL;
+	list = NIL;
 
 	head = findradius(scanner.origin, scanrange+40);
 
@@ -872,7 +872,7 @@ void() CaltropGrenadeExplode =
 	local float i;
 	
 /*	deathmsg = DMSG_GREN_CALTROP;
-	T_RadiusDamage (self, self.owner, 50, world);
+	T_RadiusDamage (self, self.owner, 50, NIL);
 	
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);

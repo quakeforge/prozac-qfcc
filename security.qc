@@ -32,7 +32,7 @@ void() Security_Camera_Idle =
 //========
 float() Security_Camera_FindTarget =
 {
-	local entity client = world;
+	local entity client = NIL;
 	local float	r, gotone, loopc;
 
 	if (self.is_malfunctioning & SCREWUP_TWO) // SB how tragic, camera can't see
@@ -83,7 +83,7 @@ float() Security_Camera_FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = world;
+			self.enemy = NIL;
 			return FALSE;
 		}
 	}
@@ -103,7 +103,7 @@ float() Security_Camera_FindTarget =
 
 float() Security_Camera_FindFakeTarget =
 {
-	local entity client = world;
+	local entity client = NIL;
 	local float	r, gotone, loopc;
 
 	if (self.is_malfunctioning & SCREWUP_THREE) // SB how tragic, camera can't see
@@ -151,7 +151,7 @@ float() Security_Camera_FindFakeTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = world;
+			self.enemy = NIL;
 			return FALSE;
 		}
 	}
@@ -234,7 +234,7 @@ void() Security_Camera_Spawn =
 	newmis.classname = "building_camera";
 	newmis.netname = "security_camera";
 	setorigin (newmis, self.origin);
-	newmis.owner = world;
+	newmis.owner = NIL;
 	newmis.real_owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '0 0 0';
@@ -261,7 +261,7 @@ void() Security_Camera_Spawn =
 //========
 void() SecurityCameraTossTouch = 
 {
-	if (other != world || other == self.real_owner)
+	if (other || other == self.real_owner)
 		return;
 	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
 	{

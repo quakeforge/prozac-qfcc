@@ -20,7 +20,7 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 		if (targ.classname != "player")
 			return FALSE;
 		if (chkcease)
-			if (infokey(world,"ceasefire")=="on")
+			if (infokey(NIL,"ceasefire")=="on")
 				return FALSE;
 		if (targ.playerclass == PC_UNDEFINED)
 			return FALSE;
@@ -200,17 +200,17 @@ bprint(PRINT_HIGH, "\n");
 void(string search, entity person, float chkown) Find_And_Dmg =
 {
 	local entity te;
-	te = find(world, classname, search);
+	te = find(NIL, classname, search);
 	while (te)
 	{
 		if (chkown)
 		{
 			if (te.real_owner == person)
-				TF_T_Damage(te, world, world, te.health+100, 0, 0);
+				TF_T_Damage(te, NIL, NIL, te.health+100, 0, 0);
 		}
 		else
 		{
-			TF_T_Damage(te, world, world, te.health+100, 0, 0);
+			TF_T_Damage(te, NIL, NIL, te.health+100, 0, 0);
 		}
 		te = find(te, classname, search);
 	}

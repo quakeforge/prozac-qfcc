@@ -720,7 +720,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 				attacker.inspirator.frags = attacker.inspirator.real_frags;
 		}
 
-		if (attacker.aura && attacker.crusader_inspirator != world) {
+		if (attacker.aura && attacker.crusader_inspirator) {
 			attacker.crusader_inspirator.real_frags += 0.5;
 			if (!(toggleflags & TFLAG_TEAMFRAGS))
 				attacker.crusader_inspirator.frags = attacker.crusader_inspirator.real_frags;
@@ -1224,7 +1224,7 @@ void (entity targ, entity attacker) Obituary_Player_Misc =
 			deathstring = " visits the Volcano God\n";
 	} else if (attacker.classname == "explo_box") {
 		deathstring = " blew up\n";
-	} else if (attacker.solid == SOLID_BSP && attacker != world) {
+	} else if (attacker.solid == SOLID_BSP && attacker) {
 		deathstring = " was squished\n";
 	} else if (attacker.classname == "trap_shooter"
 			   || attacker.classname == "trap_spikeshooter"
@@ -1248,7 +1248,7 @@ void (entity targ, entity attacker) Obituary_Player_Misc =
 		deathstring = " ate a lavaball\n";
 	} else if (attacker.classname == "trigger_changelevel") {
 		deathstring = " tried to leave\n";
-	} else if (targ.deathtype == "falling" && attacker == world) {
+	} else if (targ.deathtype == "falling" && !attacker) {
 		targ.deathtype = "";
 		deathstring = " fell to his death\n";
 	} else { //- OfN - unknown death by himself
@@ -2366,7 +2366,7 @@ void (entity targ, entity attacker) Obituary_Monster_Misc =
 
 	if (attacker.classname == "explo_box")
 		deathstring = " blew up\n";
-	else if (attacker.solid == SOLID_BSP && attacker != world)
+	else if (attacker.solid == SOLID_BSP && attacker)
 		deathstring = " was squished\n";
 	else if (attacker.classname == "trap_shooter"
 			 || attacker.classname == "trap_spikeshooter"

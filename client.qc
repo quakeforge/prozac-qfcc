@@ -205,28 +205,28 @@ void () PrematchBegin =
 	if (prematch)
 	{
 		bprint(PRINT_HIGH,"œ The game has now started! œ\n");
-		other = find(world, classname, "player");
-		while (other != world)
+		other = find(NIL, classname, "player");
+		while (other)
 		{
 			other.is_abouttodie = TRUE;
 			other.items = other.items & ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects = other.effects - (other.effects & EF_DIMLIGHT);
-			TF_T_Damage(other, world, world, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			other = find(other, classname, "player");
 		}
 		
         // - OfN - wtf
-        /*other = find(world, classname, "grunty");
-		while (other != world)
+        /*other = find(NIL, classname, "grunty");
+		while (other)
 		{
 			other.is_abouttodie = TRUE;
 			other.items = other.items & ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects = other.effects - (other.effects & EF_DIMLIGHT);
-			TF_T_Damage(other, world, world, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			other = find(other, classname, "grunty");
 		}*/
 	}
@@ -255,8 +255,8 @@ void () PrematchBegin =
 
 	oself = self;
 	
-	other = find(world, classname, "player");
-	while (other != world)
+	other = find(NIL, classname, "player");
+	while (other)
 	{
 		if (livesperguy > 0)
 		{
@@ -271,7 +271,7 @@ void () PrematchBegin =
 		kill_my_demon();
 		DetonateAllGuns();
 		
-		TF_T_Damage(other, world, world, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		
 		other = find(other, classname, "player");
 	}
@@ -294,8 +294,8 @@ void () TeamAllPlayers =
 {
 	local entity other, oself;
 	
-	other = find(world, classname, "player");
-	while (other != world)
+	other = find(NIL, classname, "player");
+	while (other)
 	{
 		if (other.team_no <= 0 && !other.has_disconnected)
 		{
@@ -348,7 +348,7 @@ void () TeamAllPlayers =
 	local entity guy;
 	
 	guy = find(other, classname, "player");
-	while (guy != world)
+	while (guy)
 	{
 		if (guy.team_no == 1)
 		{
@@ -381,13 +381,13 @@ void () TeamAllPlayers =
 	local string st;
 	
 	// Kill the round timer
-	other = find(world, classname, "chris_round_timer");
+	other = find(NIL, classname, "chris_round_timer");
 	// I deliberately don't do a contingency check here - if it screws up I wanna know about it
 	dremove(other);
 	
-	st = infokey(world, "pm");
+	st = infokey(NIL, "pm");
 	if (!st) // if 'pm' isn't set, try 'prematch'
-		st = infokey(world, "prematch");
+		st = infokey(NIL, "prematch");
 	if (st == "on") // if it reads 'on', do a 30 second prematch
 		prematchtime = time + 30;
 	else // if it doesn't read 'on'...
@@ -400,10 +400,10 @@ void () TeamAllPlayers =
 		prematch = FALSE; // otherwise, no prematch
 	
 	// Kill everyone
-/*	other = find(world, classname, "player");
-	while (other != world)
+/*	other = find(NIL, classname, "player");
+	while (other)
 	{
-		TF_T_Damage(other, world, world, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		other = find(other, classname, "player");
 	} Don't kill everyone here or it drops the flag
 	*/
@@ -470,8 +470,8 @@ void() DecodeLevelParms =
 	#endif
 
 		// Is this a FortressMap?
-		ent = find(world, classname, "info_tfdetect");
-		if (ent != world)
+		ent = find(NIL, classname, "info_tfdetect");
+		if (ent)
 		{
 			// Turn on Teamplay
 			if (teamplay == 0)
@@ -488,8 +488,8 @@ void() DecodeLevelParms =
 		else
 		{
 			// Is this a CTF map?
-			ent = find(world, classname, "info_player_team1");
-			if ((ent != world) || (CTF_Map == TRUE))
+			ent = find(NIL, classname, "info_player_team1");
+			if ((ent) || (CTF_Map == TRUE))
 			{
 				// Turn on CTF MAP
 				CTF_Map = TRUE;
@@ -561,7 +561,7 @@ void() DecodeLevelParms =
 			toggleflags = toggleflags | TFLAG_CHEATCHECK;
 		}
 
-		st = infokey(world, "temp1");
+		st = infokey(NIL, "temp1");
 		toggleflags = (toggleflags | TFLAG_FIRSTENTRY | stof(st));
 
 		local float autoteam_time;
@@ -570,9 +570,9 @@ void() DecodeLevelParms =
 		// check all serverinfo settings, to set the appropriate toggleflags
 
 		// AUTOTEAM
-		st = infokey(world, "a");
+		st = infokey(NIL, "a");
 		if (!st)
-			st = infokey(world, "autoteam");
+			st = infokey(NIL, "autoteam");
 		if (st == "on")
 			toggleflags = toggleflags | TFLAG_AUTOTEAM;
 		else if (st == "off")
@@ -584,18 +584,18 @@ void() DecodeLevelParms =
 		}
 
 		// TEAMFRAGS
-		st = infokey(world, "t");
+		st = infokey(NIL, "t");
 		if (!st)
-			st = infokey(world, "teamfrags");
+			st = infokey(NIL, "teamfrags");
 		if (st == "on")
 			toggleflags = toggleflags | TFLAG_TEAMFRAGS;
 		else if (st == "off")
 			toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
 
 		//WK JELLO WATER
-		st = infokey(world, "j");
+		st = infokey(NIL, "j");
 		if (!st)
-			st = infokey(world, "jello");
+			st = infokey(NIL, "jello");
 		if (st == "on")
 			jello = TRUE;
 		else {
@@ -609,9 +609,9 @@ void() DecodeLevelParms =
 
 		//WK JELLO WATER
 		light_damage = FALSE;
-		st = infokey(world, "ld");
+		st = infokey(NIL, "ld");
 		if (!st)
-			st = infokey(world, "lightdamage");
+			st = infokey(NIL, "lightdamage");
 		if (st == "on")
 			light_damage = TRUE;
 
@@ -619,9 +619,9 @@ void() DecodeLevelParms =
 		// We can make a class, come in, run around, play tag the flag, but can't do anything
 		// useful until the prematch is over!
 		
-		st = infokey(world, "pm");
+		st = infokey(NIL, "pm");
 		if (!st) // if 'pm' isn't set, try 'prematch'
-			st = infokey(world, "prematch");
+			st = infokey(NIL, "prematch");
 		if (st == "on") // if it reads 'on', do a 30 second prematch
 			prematchtime = time + 30;
 		else // if it doesn't read 'on'...
@@ -636,18 +636,18 @@ void() DecodeLevelParms =
 			prematch = FALSE; // otherwise, no prematch
 		
 		//WK Bounty System
-		st = infokey(world, "bounty");
+		st = infokey(NIL, "bounty");
 		if (!st)
-			st = infokey(world, "moola");
+			st = infokey(NIL, "moola");
 		if (st == "on")
 			bounty = TRUE;
 		else
 			bounty = FALSE;
 
 		//CH Sets the starting amount of money :)
-		st = infokey(world, "m");
+		st = infokey(NIL, "m");
 		if (!st)
-			st = infokey(world, "money");
+			st = infokey(NIL, "money");
 		local float numba;
 		numba = stof(st);
 		if (numba)
@@ -656,32 +656,32 @@ void() DecodeLevelParms =
 			custom_money = SPENDING_LIMIT;
 
 		// GRAPPLING HOOK
-		st = infokey(world, "g");
+		st = infokey(NIL, "g");
 		if (!st)
-			st = infokey(world, "grapple");
+			st = infokey(NIL, "grapple");
 		if (st == "off")
 			allow_hook = FALSE;
 		if (!(toggleflags & TFLAG_GRAPPLE) && st != "on")
 			allow_hook = FALSE;
 
 		// SPY OFF
-		st = infokey(world, "spy");
+		st = infokey(NIL, "spy");
 		if (st == "off")
 			spy_off = TRUE;
 
 		// SPY INVIS ONLY
-		st = infokey(world, "s");
+		st = infokey(NIL, "s");
 		if (!st)
-			st = infokey(world, "spyinvis");
+			st = infokey(NIL, "spyinvis");
 		if (st == "on" || toggleflags & TFLAG_SPYINVIS)
 			invis_only = TRUE;
 		else if (st == "off")
 			invis_only = FALSE;
 
 		// RespawnDelay
-		st = infokey(world, "rd");
+		st = infokey(NIL, "rd");
 		if (!st)
-			st = infokey(world, "respawn_delay");
+			st = infokey(NIL, "respawn_delay");
 		respawn_delay_time = stof(st);
 		if (respawn_delay_time)
 			toggleflags = toggleflags | TFLAG_RESPAWNDELAY;
@@ -700,9 +700,9 @@ void() DecodeLevelParms =
 			ent.think = autoteam_think;
 		}
 
-		st = infokey (world, "improve_respawns");
+		st = infokey (NIL, "improve_respawns");
 		if (st == "1" || st == "on") {
-			local entity ent = world;
+			local entity ent = NIL;
 			while (ent = find (ent, classname, "info_tfgoal")) {
 				if (ent.ammo_shells && ent.ammo_nails
 					&& ent.ammo_rockets && ent.ammo_cells
@@ -764,7 +764,7 @@ entity() FindIntermission =
 	local	float cyc;
 
 	// look for info_intermission first
-	spot = find (world, classname, "info_intermission");
+	spot = find (NIL, classname, "info_intermission");
 	if (spot)
 	{	// pick a random one
 		cyc = random() * 1;
@@ -782,12 +782,12 @@ entity() FindIntermission =
 	}
 
 // then look for the start position
-	spot = find (world, classname, "info_player_start");
+	spot = find (NIL, classname, "info_player_start");
 	if (spot)
 		return spot;
 
 // then look through the deathmatch starts
-	spot = find (world, classname, "info_player_deathmatch");
+	spot = find (NIL, classname, "info_player_deathmatch");
 	if (spot)
 	{	
 		// pick a random one
@@ -818,18 +818,18 @@ entity (entity start_point) FindNextIntermission =
 	if (deathmatch)
 	{
 	// look through info_intermission first
-		if (start_point.classname == "info_intermission" || start_point == world)
+		if (start_point.classname == "info_intermission" || !start_point)
 		{
 			spot = find (start_point, classname, "info_intermission");
 			if (spot)
 				return spot;
 			else
-				start_point = world;
+				start_point = NIL;
 		}
 
 
 	// then look through the deathmatch starts
-		if (start_point.classname == "info_player_deathmatch" || start_point == world)
+		if (start_point.classname == "info_player_deathmatch" || !start_point)
 		{
 			spot = find (start_point, classname, "info_player_deathmatch");
 			if (spot)
@@ -837,17 +837,17 @@ entity (entity start_point) FindNextIntermission =
 		}
 
 		// at the end of the list
-		spot = find (world, classname, "info_intermission");
+		spot = find (NIL, classname, "info_intermission");
 		if (spot)
 			return spot;
 
-		spot = find (world, classname, "info_player_deathmatch");
+		spot = find (NIL, classname, "info_player_deathmatch");
 		if (spot)
 			return spot;
 	}
 	else // do not cycle though in co-op or single
 	{
-		spot = find (world, classname, "info_player_start");
+		spot = find (NIL, classname, "info_player_start");
 		if (spot)
 			return spot;
 	}
@@ -887,17 +887,17 @@ float() DoExtraCycle =
     //-------------------------------------------------//
     //- OfN - I tried to make this work like in tf2.8 -//
     local string nmap, temp;
-    nmap = infokey(world, "nmap");
+    nmap = infokey(NIL, "nmap");
     if (nmap) {
         local float minplayers, maxplayers, itsok, currentpl;
         
-        if (infokey(world,"minp")!="")
-            minplayers = stof(infokey(world,"minp"));
+        if (infokey(NIL,"minp")!="")
+            minplayers = stof(infokey(NIL,"minp"));
         else
             minplayers = 0;
 
-        if (infokey(world,"maxp")!="")
-            maxplayers = stof(infokey(world,"maxp"));
+        if (infokey(NIL,"maxp")!="")
+            maxplayers = stof(infokey(NIL,"maxp"));
         else
             maxplayers = 32;
 
@@ -909,7 +909,7 @@ float() DoExtraCycle =
         
         if (minplayers > currentpl) {
             bprint(PRINT_HIGH,"Map ");
-            nmap = infokey(world, "nmap");
+            nmap = infokey(NIL, "nmap");
             bprint(PRINT_HIGH, nmap);
             bprint(PRINT_HIGH," skipped - minimum players ");
             temp = ftos(minplayers);
@@ -922,7 +922,7 @@ float() DoExtraCycle =
         } else {
             if (maxplayers < currentpl) {
                 bprint(PRINT_HIGH,"Map ");
-                nmap = infokey(world, "nmap");
+                nmap = infokey(NIL, "nmap");
                 bprint(PRINT_HIGH, nmap);
                 bprint(PRINT_HIGH," skipped - maximum players ");
                 temp = ftos(maxplayers);
@@ -942,7 +942,7 @@ float() DoExtraCycle =
 
         //execute map conditions ok
         if (itsok) {
-            nmap = infokey(world, "nmap");
+            nmap = infokey(NIL, "nmap");
             
             bprint(PRINT_HIGH,"\nLoading ");
             bprint(PRINT_HIGH,nmap);
@@ -960,7 +960,7 @@ float() DoExtraCycle =
 			return FALSE;
 		}
     } else if (already_chosen_map == MAP_LOADCYCLE) {
-		local string st = infokey (world, "loopcycle");
+		local string st = infokey (NIL, "loopcycle");
 		if (st != "0" && st != "off") {
 			dprint ("No map loaded, restarting map cycle\n");
 			SetNextMapNum (0);
@@ -994,9 +994,9 @@ float() GetNextMapNum =
 	local float num;
 	local string maxmapnum;
 
-	infostring = infokey (world, "n");
+	infostring = infokey (NIL, "n");
 	num = stof (infostring);
-	maxmapnum = infokey (world, "maxmapnum");
+	maxmapnum = infokey (NIL, "maxmapnum");
 
 	if (!infostring) { // always use info when available
 		if (cvar ("crudefile_quota") >= 0) {
@@ -1040,7 +1040,7 @@ void(float mapnum) SetNextMapNum =
 	localcmd("localinfo n ");
 	localcmd(mapstring);
 	localcmd("\n");
-	setinfokey (world, "n", mapstring);
+	setinfokey (NIL, "n", mapstring);
 };
 
 void() LoadNextMap =
@@ -1087,7 +1087,7 @@ void() LoadNextMap =
 
 	if (mapcount == 0)
 	{
-		cyc = infokey(world, "cycledir");
+		cyc = infokey(NIL, "cycledir");
 		if (!cyc)
 			cyc = "qwmcycle";
 
@@ -1112,7 +1112,7 @@ void() GotoNextMap =
 
     if (already_chosen_map != MAP_YES)
     {
-		local string nmap = infokey (world, "nmap");
+		local string nmap = infokey (NIL, "nmap");
 		if (already_chosen_map == MAP_LOADCYCLE && nmap) {
 			// load up the map config
 			localcmd ("exec \"mapcfg.cfg\"\n");
@@ -1207,7 +1207,7 @@ void() ExitIntermission =
 			WriteByte (MSG_ALL, 3);
 
 			WriteByte (MSG_ALL, SVC_FINALE);
-			WriteString (MSG_ALL, "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our world! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person.");
+			WriteString (MSG_ALL, "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our NIL! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person.");
 			return;
 		}
 
@@ -1288,8 +1288,8 @@ void() execute_changelevel =
 	WriteAngle (MSG_ALL, pos.mangle_y);
 	WriteAngle (MSG_ALL, pos.mangle_z);
 	
-	other = find (world, classname, "player");
-	while (other != world)
+	other = find (NIL, classname, "player");
+	while (other)
 	{
 		other.takedamage = DAMAGE_NO;
 		other.solid = SOLID_NOT;
@@ -1443,7 +1443,7 @@ void() ClientKill =
 	if (self.tfstate & TFSTATE_INFECTED)
 	{
 		finished = FALSE;
-		te = find(world, classname, "timer");
+		te = find(NIL, classname, "timer");
 		while (te)
 		{
 			if (te.owner == self && te.think == BioInfection_Decay)
@@ -1456,7 +1456,7 @@ void() ClientKill =
 			}
 
 			te = find(te, classname, "timer");
-			if (finished) te = world;
+			if (finished) te = NIL;
 		}
 	} else 
 		logfrag (self, self);
@@ -1518,16 +1518,16 @@ entity(float team_num) FindTeamSpawnPoint =
 
 			spot = find(spot, team_str_home, "ts1");
 
-			if (spot == world)
-				spot = find(world, team_str_home, "ts1");
+			if (!spot)
+				spot = find(NIL, team_str_home, "ts1");
 
-			if (spot == world)
-				return world;
+			if (!spot)
+				return NIL;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
 
-			while (at_spot != world)
+			while (at_spot)
 			{
 				if (at_spot.classname == "player" && at_spot.deadflag == DEAD_NO)
 				{
@@ -1561,16 +1561,16 @@ entity(float team_num) FindTeamSpawnPoint =
 
 			spot = find(spot, team_str_home, "ts2");
 
-			if (spot == world)
-				spot = find(world, team_str_home, "ts2");
+			if (!spot)
+				spot = find(NIL, team_str_home, "ts2");
 
-			if (spot == world)
-				return world;
+			if (!spot)
+				return NIL;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
 
-			while (at_spot != world)
+			while (at_spot)
 			{
 				if (at_spot.classname == "player" && at_spot.deadflag == DEAD_NO)
 				{
@@ -1603,16 +1603,16 @@ entity(float team_num) FindTeamSpawnPoint =
 
 			spot = find(spot, team_str_home, "ts3");
 
-			if (spot == world)
-				spot = find(world, team_str_home, "ts3");
+			if (!spot)
+				spot = find(NIL, team_str_home, "ts3");
 
-			if (spot == world)
-				return world;
+			if (!spot)
+				return NIL;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
 
-			while (at_spot != world)
+			while (at_spot)
 			{
 				if (at_spot.classname == "player" && at_spot.deadflag == DEAD_NO)
 				{
@@ -1645,16 +1645,16 @@ entity(float team_num) FindTeamSpawnPoint =
 
 			spot = find(spot, team_str_home, "ts4");
 
-			if (spot == world)
-				spot = find(world, team_str_home, "ts4");
+			if (!spot)
+				spot = find(NIL, team_str_home, "ts4");
 
-			if (spot == world)
-				return world;
+			if (!spot)
+				return NIL;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
 
-			while (at_spot != world)
+			while (at_spot)
 			{
 				if (at_spot.classname == "player" && at_spot.deadflag == DEAD_NO)
 				{
@@ -1677,7 +1677,7 @@ entity(float team_num) FindTeamSpawnPoint =
 	}
 
 	// failure
-	return world;
+	return NIL;
 };
 
 /*
@@ -1696,7 +1696,7 @@ entity() SelectSpawnPoint =
 	
 	// testinfo_player_start is only found in regioned levels
 	/*
-	spot = find (world, classname, "testplayerstart");
+	spot = find (NIL, classname, "testplayerstart");
 	if (spot)
 		return spot;
 	*/
@@ -1707,7 +1707,7 @@ entity() SelectSpawnPoint =
 	if (self.team_no != 0)
 	{
 		spot = FindTeamSpawnPoint(self.team_no);
-		if (spot != world)
+		if (spot)
 			return spot;
 
 		// failure to find a team spawn point for that player
@@ -1718,21 +1718,21 @@ entity() SelectSpawnPoint =
 	if (coop)
 	{ 
 		lastspawn = find(lastspawn, classname, "info_player_coop");
-		if (lastspawn == world)
-            lastspawn = find (world, classname, "info_player_coop");
+		if (!lastspawn)
+            lastspawn = find (NIL, classname, "info_player_coop");
                 
-        if (lastspawn != world)
+        if (lastspawn)
         	return lastspawn;
 	}
 	else if (deathmatch)
 	{
 		// search through
 		spot = find(lastspawn, classname, "info_player_deathmatch");
-		if (spot == world)
-			spot = find(world, classname, "info_player_deathmatch");
+		if (!spot)
+			spot = find(NIL, classname, "info_player_deathmatch");
 
 		attempts = 0;
-		while (spot != world && attempts < 100)
+		while (spot && attempts < 100)
 		{
 			attempts = attempts + 1;
 
@@ -1759,19 +1759,19 @@ entity() SelectSpawnPoint =
 			
 			spot = find(spot, classname, "info_player_deathmatch");	
 			
-			if (spot == world)
-				spot = find(world, classname, "info_player_deathmatch");
+			if (!spot)
+				spot = find(NIL, classname, "info_player_deathmatch");
 		}
 	}
 
 	if (serverflags)
 	{	// return with a rune to start
-		spot = find (world, classname, "info_player_start2");
+		spot = find (NIL, classname, "info_player_start2");
 		if (spot)
 			return spot;
 	}
 	
-	spot = find (world, classname, "info_player_start");
+	spot = find (NIL, classname, "info_player_start");
 	if (!spot)
 		error ("PutClientInServer: no info_player_start on level\n");
 	
@@ -1824,7 +1824,7 @@ void() PutClientInServer =
 	self.FlashTime = 0;
 	self.flags = FL_CLIENT;
   	self.aura = 0; //- OfN
-    self.crusader_inspirator=world; // OfN - needed?
+    self.crusader_inspirator=NIL; // OfN - needed?
 	self.gravity = 1; //WK
 	self.air_finished = time + 12;
 	self.dmg = 2;   		// initial water damage
@@ -2065,8 +2065,8 @@ void() PutClientInServer =
 	}
 
 	// Set Rocket Jump Modifiers
-	if (stof(infokey(world, "rj")) != 0)
-		rj = stof(infokey(world, "rj"));
+	if (stof(infokey(NIL, "rj")) != 0)
+		rj = stof(infokey(NIL, "rj"));
 	else
 		rj = 1;
 
@@ -2190,14 +2190,14 @@ void() DumpScore =
 		error ("DumpScore: world.chain is set");
 
 // build a sorted lis
-	e = find(world, classname, "player");
-	sort = world;
+	e = find(NIL, classname, "player");
+	sort = NIL;
 	while (e)
 	{
 		if (!sort)
 		{
 			sort = e;
-			e.chain = world;
+			e.chain = NIL;
 		}
 		else
 		{
@@ -2213,7 +2213,7 @@ void() DumpScore =
 				{
 					if (!walk.chain)
 					{
-						e.chain = world;
+						e.chain = NIL;
 						walk.chain = e;
 					}
 					else if (walk.chain.frags < e.frags)
@@ -2273,7 +2273,7 @@ Exit deathmatch games upon conditions
 void() CheckRules =
 {
 	local string st;
-	st = infokey (world, "cyclenow");
+	st = infokey (NIL, "cyclenow");
 
 	if (!cyclenow && (st == "1" || st == "on"))
 	{
@@ -2432,7 +2432,7 @@ void() WaterMove =
 				if (self.dmg > 6)
 					self.dmg = 2.2;
 				if (self.dmg < self.health - 1)
-					TF_T_Damage (self, world, world, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+					TF_T_Damage (self, NIL, NIL, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 				self.pain_finished = time + 1;
 			}
 		}
@@ -2453,7 +2453,7 @@ void() WaterMove =
 			self.dmg = self.dmg + 2;
 			if (self.dmg > 15)
 				self.dmg = 10;
-			TF_T_Damage (self, world, world, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage (self, NIL, NIL, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			self.pain_finished = time + 1;
 		}
 	}
@@ -2483,7 +2483,7 @@ void() WaterMove =
 				self.dmgtime = time + 0.2;
 
 			// Asbestos armor helps against lava, but I doubt it'll save you :)
-			TF_T_Damage (self, world, world, 10*self.waterlevel, 0, TF_TD_FIRE);
+			TF_T_Damage (self, NIL, NIL, 10*self.waterlevel, 0, TF_TD_FIRE);
 		}
 	}
 	else if (self.watertype == CONTENTS_SLIME)
@@ -2491,8 +2491,8 @@ void() WaterMove =
 		if (self.dmgtime < time && self.radsuit_finished < time)
 		{
 			self.dmgtime = time + 1;
-			//T_Damage (self, world, world, 4*self.waterlevel);
-			TF_T_Damage (self, world, world, 4*self.waterlevel, 0, TF_TD_ELECTRICITY);
+			//T_Damage (self, NIL, NIL, 4*self.waterlevel);
+			TF_T_Damage (self, NIL, NIL, 4*self.waterlevel, 0, TF_TD_ELECTRICITY);
 		}
 	}
 	
@@ -2577,7 +2577,7 @@ void() PlayerPreThink =
 
 	makevectors (self.v_angle);		// is this still used?
 
-	if (infokey(world,"ceasefire")=="on") //Cyto
+	if (infokey(NIL,"ceasefire")=="on") //Cyto
 	{
 		#ifndef ceasefire_allows_to_move
         if (self.lip)
@@ -2757,7 +2757,7 @@ void() PlayerPreThink =
 	}
 
 	if (self.health > 0 && pointcontents (self.origin) == CONTENTS_SOLID)
-		TF_T_Damage (self, world, world, self.health + 100,
+		TF_T_Damage (self, NIL, NIL, self.health + 100,
 					 TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 };
 	
@@ -2881,7 +2881,7 @@ void() CheckPowerups =
 		{
 			// Only remove dimlight if it's not being supplied by a GoalItem
 			lighton = FALSE;
-			te = find (world, classname, "item_tfgoal");
+			te = find (NIL, classname, "item_tfgoal");
 			while (te)
 			{
 				if (te.owner == self)
@@ -2939,7 +2939,7 @@ void() CheckPowerups =
 		{
 			// Only remove dimlight if it's not being supplied by a GoalItem
 			lighton = FALSE;
-			te = find (world, classname, "item_tfgoal");
+			te = find (NIL, classname, "item_tfgoal");
 			while (te)
 			{
 				if (te.owner == self)
@@ -3016,7 +3016,7 @@ void() PlayerPostThink =
 {
 	if (self.view_ofs == '0 0 0')
 		return;		// intermission or finale
-	if (infokey(world,"ceasefire")=="on") //Cyto
+	if (infokey(NIL,"ceasefire")=="on") //Cyto
 		if (!Good_Impulse(self.impulse)) //See admin.qc
 			self.impulse = 0;
 	if (self.deadflag)
@@ -3038,7 +3038,7 @@ void() PlayerPostThink =
 		{
 			if (!(self.cutf_items & CUTF_STEALTH)) { //WK Judo teaches falling... SB ceaf judo
 				self.deathtype = "falling";
-				T_Damage (self, world, world, 5); 
+				T_Damage (self, NIL, NIL, 5); 
 				sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
 			}
 		}
@@ -3102,7 +3102,7 @@ void() ClientConnect =
 	bprint (PRINT_HIGH, " has joined the server\n");
     
     //- OfN - shouldnt be needed anyway...
-    self.admin_kick = world;
+    self.admin_kick = NIL;
 
 	// Set Default autozoom
 	if (DEFAULT_AUTOZOOM == OFF)
@@ -3235,7 +3235,7 @@ void() ClientDisconnect =
 	self.has_disconnected = TRUE;
 
     if (debug_target == self)
-        debug_target = world;
+        debug_target = NIL;
 
 	// Remove Timers
 	TeamFortress_RemoveTimers();
@@ -3252,7 +3252,7 @@ void() ClientDisconnect =
 	//WK Added demon cleanup
 	kill_my_demon();
 	//WK Added ammobox/pipebomb fix
-	te = find(world, classname, "ammobox");
+	te = find(NIL, classname, "ammobox");
 	while (te)
 	{
 		if (te.enemy == self) {
@@ -3266,7 +3266,7 @@ void() ClientDisconnect =
 
 		te = find(te, classname, "ammobox");
 	}
-	te = find(world, classname, "pipebomb");
+	te = find(NIL, classname, "pipebomb");
 	while (te)
 	{
 		if (te.owner == self) {
@@ -3285,7 +3285,7 @@ void() ClientDisconnect =
     RemoveArmyTimer();
 
 	// Remove Detpacks
-	te = find(world, classname, "detpack");
+	te = find(NIL, classname, "detpack");
 	while (te)
 	{
 		if (te.owner == self)
@@ -3300,7 +3300,7 @@ void() ClientDisconnect =
 			}
 
 			dremove(te);
-			te = world;
+			te = NIL;
 		}
 
 		te = find(te, classname, "detpack");
@@ -3308,12 +3308,12 @@ void() ClientDisconnect =
 
 	// Clear anything that thinks he attacked/hacked it
 	local entity mrmartyr;
-	mrmartyr = world;
+	mrmartyr = NIL;
 	do {
 		mrmartyr = nextent (mrmartyr);
 		if (mrmartyr && mrmartyr.martyr_enemy == te)
-			mrmartyr.martyr_enemy = world;
-	} while (mrmartyr != world);
+			mrmartyr.martyr_enemy = NIL;
+	} while (mrmartyr);
 
 	set_suicide_frame ();
 	self.netname = "";

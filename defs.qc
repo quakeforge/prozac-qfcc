@@ -242,7 +242,7 @@ float		deathmatch;
 //================================================
 
 //
-// world fields (FIXME: make globals)
+// NIL fields (FIXME: make globals)
 //
 .string		wad;
 .string 	map;
@@ -449,7 +449,7 @@ void(entity e) remove				= #15;
 // nomonsters can be:
 // An entity will also be ignored for testing if forent == test,
 // forent->owner == test, or test->owner == forent
-// a forent of world is ignored
+// a forent of NIL is ignored
 void(vector v1, vector v2, float nomonsters, entity forent) traceline = #16;	
 
 entity() checkclient				= #17;	// returns a client to look for
@@ -552,7 +552,7 @@ void(entity e) setspawnparms			= #78;		// set parm1... to the
 												// for coop respawn
 
 void(entity killer, entity killee) logfrag = #79;	// add to stats
-string(entity e, string key) infokey	= #80;		// get a key value (world = serverinfo)
+string(entity e, string key) infokey	= #80;		// get a key value (NIL = serverinfo)
 void(vector where, float set) multicast 	= #82;  // sends the temp message
 													// to a set of clients,
 													// possibly in PVS or PHS

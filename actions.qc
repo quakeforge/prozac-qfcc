@@ -119,7 +119,7 @@ void() TeamFortress_SaveMe =
 		self.last_saveme_sound = time + 4;
 	}
 
-	te = find(world, classname, "player");
+	te = find(NIL, classname, "player");
 	while (te)
 	{	
 		if (self.weapons_carried & WEAP_MEDIKIT)
@@ -189,7 +189,7 @@ void(float inAuto) TeamFortress_ID =
 	//else
 	//	spacer = "\n\n\n\n\n\n\n";
 
-	if (trace_ent != world && trace_ent.origin != world.origin )
+	if (trace_ent && trace_ent.origin != world.origin )
 	{
 		if (trace_ent.classname == "player" && trace_ent.health > 0)
 		{
@@ -705,10 +705,10 @@ void() TeamFortress_DropItems =
 {
 	local entity tg;
 
-	tg = find (world, classname, "item_tfgoal");
+	tg = find (NIL, classname, "item_tfgoal");
 	while (tg)
 	{
-		if (tg.owner == self && tg != world && tg.classname == "item_tfgoal")
+		if (tg.owner == self && tg && tg.classname == "item_tfgoal")
 		{
 			if (tg.goal_result & TFGR_DROPITEMS)
 			{

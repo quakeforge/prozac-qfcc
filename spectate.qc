@@ -27,7 +27,7 @@ void() SpectatorConnect =
 	stuffcmd(self, "bind 0 \"impulse 10\"\n");
 	TeamFortress_Alias("id", TF_ID, 0);
 
-	self.goalentity = world; // used for impulse 1 below
+	self.goalentity = NIL; // used for impulse 1 below
 };
 
 /*
@@ -58,9 +58,9 @@ void() SpectatorImpulseCommand =
 		// note that if the spectator is tracking, this doesn't do
 		// much
 		self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
-		if (self.goalentity == world)
+		if (!self.goalentity)
 			self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
-		if (self.goalentity != world) {
+		if (self.goalentity) {
 			setorigin(self, self.goalentity.origin);
 			self.angles = self.goalentity.angles;
 			self.fixangle = TRUE;           // turn this way immediately

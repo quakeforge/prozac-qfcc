@@ -218,7 +218,7 @@ void() Player_Menu =
 		self.StatusRefreshTime = time + 1.5;
 
     //- OfN - Checks for destroyed buildings - NEEDED?
-    /*if (self.current_menu >= MENU_ENGINEER_FIX_DISPENSER && self.current_menu <= MENU_ENGINEER_FIX_FIELDGEN && self.building == world)
+    /*if (self.current_menu >= MENU_ENGINEER_FIX_DISPENSER && self.current_menu <= MENU_ENGINEER_FIX_FIELDGEN && !self.building)
     {
         ResetMenu();
         return;
@@ -525,7 +525,7 @@ void() Menu_Class =
 {
 	local entity AD;
 
-	AD = find(world, classname, "info_tfdetect");
+	AD = find(NIL, classname, "info_tfdetect");
 
 	if (AD)
 	{
@@ -1211,7 +1211,7 @@ void(float inp) Menu_Engineer_Input =
         if (self.has_teleporter == 1)
 		{
                 local float r;
-				te = find(world, classname, "building_teleporter");
+				te = find(NIL, classname, "building_teleporter");
 				while (te)
 				{
 					if (te.real_owner == self)
@@ -1262,12 +1262,12 @@ void(float inp) Menu_Engineer_Input =
             }
             
             // find if there are other generators too close, if this is our first generator only - nope
-            if (infokey(world, "fieldtest") != "1")
+            if (infokey(NIL, "fieldtest") != "1")
             {
                 local float r, mindist;
                 mindist = 3000;
 
-                te = find(world, classname, "building_fieldgen");
+                te = find(NIL, classname, "building_fieldgen");
                 while (te)
                 {
                     if (te.real_owner != self)
@@ -1343,7 +1343,7 @@ void(float inp) Menu_Engineer_Input =
 	}
 	else if (inp == 3 && self.has_tesla == TRUE)
 	{
-		te = find(world, classname, "building_tesla");
+		te = find(NIL, classname, "building_tesla");
 		while (te)
 		{
 			if (te.real_owner == self)
@@ -1381,7 +1381,7 @@ void(entity person, string build) Add_Building_Teamkill =
 	bprint (PRINT_HIGH, build);
 	bprint (PRINT_HIGH, "!\n");
 
-	st = infokey(world, "curse");
+	st = infokey(NIL, "curse");
 	if (st)
 		threshold = stof(st);
 	person.ff_count = person.ff_count + 2; //Increase their bastard rating
@@ -1414,7 +1414,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 	local float metalcost;
 	local float am;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
     local float iI; // is Improved?
@@ -1502,7 +1502,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 	{
 		ResetMenu();		
 		self.impulse = 0;
-		self.building = world;
+		self.building = NIL;
 
 		bound_other_ammo(self);
 
@@ -1542,7 +1542,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 	local float am, metalcost;
 	local string st;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
 	if (inp == 1)
@@ -1722,7 +1722,7 @@ void(float inp) Menu_EngineerFix_Sensor_Input =
 //*ch
 	local float metalcost;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
 	if (inp == 1)
@@ -1778,7 +1778,7 @@ void(float inp) Menu_EngineerFix_Camera_Input =
 //*ch
 	local float metalcost;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
 	if (inp == 1)
@@ -1834,7 +1834,7 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 //*ch
 	local float metalcost;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
 	if (inp == 1)
@@ -1903,7 +1903,7 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 {
 	local float metalcost;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
 	if (inp == 1)
@@ -2231,7 +2231,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 {
 	local float cost = 0;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
 	if (inp <= 10 && inp >= 1)
@@ -2369,7 +2369,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 {
 	local float cost = 0;
 
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
 
 	if (inp <= 10 && inp >= 1)
@@ -2505,7 +2505,7 @@ void() Menu_Dispenser =
 
 void(float inp) Menu_Dispenser_Input =
 {
-	if (self.classname != "player" || self.building == world)
+	if (self.classname != "player" || !self.building)
 		return;
     
     local float am, empty;
@@ -2612,7 +2612,7 @@ void(float inp) Menu_Dispenser_Input =
 			sprint(self, PRINT_HIGH, "The dispenser is empty.\n");
 		ResetMenu();		
 		self.impulse = 0;
-		self.building = world;
+		self.building = NIL;
 		self.building_wait = time + 0.5;
 
 		bound_other_ammo(self);
@@ -2714,7 +2714,7 @@ void() Menu_PrimaryWeapon =
 void(float inp) Menu_PrimaryWeapon_Input =
 {
 	local string st;
-	st = infokey(world, "no_spam");
+	st = infokey(NIL, "no_spam");
 	if (inp <= 10 && inp >= 1)
 	{
 //Snipe
@@ -3528,8 +3528,8 @@ void(float inp) Menu_Special_Input =
 #undef PRICE
 #define PRICE 650
 		
-    //st = infokey(world, "no_grapple");
-    st2 = infokey(world, "no_spam");
+    //st = infokey(NIL, "no_grapple");
+    st2 = infokey(NIL, "no_spam");
     if (inp == 1) {
         if (self.tf_items & NIT_SCANNER)
         {
@@ -3675,7 +3675,7 @@ l4 =	"* ™.. Dispenser       ­  600\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Special2_Input =
 {
 	local string st;
-	st = infokey(world, "no_spam");	
+	st = infokey(NIL, "no_spam");	
 
     if (inp == 1)//SB Jammer
 		BuyCuTF(1000, CUTF_JAMMER);
@@ -3815,8 +3815,8 @@ l4 =	"1 ™.. MIRV            ­ 1500\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Gren1_Input =
 {	
 	local string st, st2;
-	st = infokey(world, "no_gasgren");
-	st2 = infokey (world, "no_spam");
+	st = infokey(NIL, "no_gasgren");
+	st2 = infokey (NIL, "no_spam");
 
     if (inp == 1)
         BuyGren(500,GR_TYPE_NORMAL);
@@ -3935,8 +3935,8 @@ l4 =	"1 ™.. Krac            ­ 1500\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Gren2_Input =
 {
 	local string st, st2;
-	st = infokey(world, "no_antigrav");
-	st2 = infokey(world, "no_spam");
+	st = infokey(NIL, "no_antigrav");
+	st2 = infokey(NIL, "no_spam");
 
     //WK I should have done all the buy menus like this
     //SB I reckon - this one actually looks nice and makes sense
@@ -4035,7 +4035,7 @@ void(float inp) Menu_Gren1_Input =
 {
 	local string st2, st3;
 	
-	st2 = infokey(world, "no_spam");
+	st2 = infokey(NIL, "no_spam");
     
 	if (inp <= 10 && inp >= 1)
 	{
@@ -4094,7 +4094,7 @@ void() Menu_Gren2 =
 {
 	local string temp,st;
 	temp = ftos(self.money);
-	st = infokey(world, "no_flare");
+	st = infokey(NIL, "no_flare");
     local string l1,l2,l3,l4;
 
 l1 = eqstr(self.tp_grenades_2, GR_TYPE_FLARE, GR_TYPE_CONCUSSION,
@@ -4130,9 +4130,9 @@ l4 =	"* ™.. Nail            ­ 2000\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Gren2_Input =
 {	
 	local string st, st2,st3;
-	st = infokey(world, "no_gasgren");
-	st2 = infokey (world, "no_spam");
-    st3 = infokey(world, "no_flare");
+	st = infokey(NIL, "no_gasgren");
+	st2 = infokey (NIL, "no_spam");
+    st3 = infokey(NIL, "no_flare");
 	if (inp <= 10 && inp >= 1)
 	{
 		if (inp == 1) {

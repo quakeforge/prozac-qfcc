@@ -181,7 +181,7 @@ void() sham_swingl6 =[      $swingl6,      sham_swingl7   ] {ai_charge(18);};
 void() sham_swingl7 =[      $swingl7,      sham_swingl8   ] {ai_charge(10); ShamClaw(250);
 if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 {
-self.enemy = world;
+self.enemy = NIL;
 // FIXME: look all around for other targets
 	/*if (self.oldenemy.health > 0)
 	{
@@ -216,7 +216,7 @@ void() sham_swingr6 =[      $swingr6,      sham_swingr7   ] {ai_charge(12);};
 void() sham_swingr7 =[      $swingr7,      sham_swingr8   ] {ai_charge(12); ShamClaw(-250);
 if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 {
-self.enemy = world;
+self.enemy = NIL;
 // FIXME: look all around for other targets
 	/*if (self.oldenemy.health > 0)
 	{
@@ -422,7 +422,7 @@ void() custom_shambler_die =
 		sprint(self.real_owner,PRINT_HIGH,"Your shambler is dead.\n");
 		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 		self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
-        self.real_owner.demon_one = world;
+        self.real_owner.demon_one = NIL;
 	}
     
     // check for gib

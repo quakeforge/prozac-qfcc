@@ -315,7 +315,7 @@ float() Tesla_FindTarget =
 	//else
 	//	self.origin_z = self.origin_z + 24;
 
-	self.oldenemy = world; //CH for sbar
+	self.oldenemy = NIL; //CH for sbar
 
 	if (self.ammo_shells == 0)
 		client = Tesla_RadiusScan (self, 400);
@@ -428,26 +428,26 @@ float() Tesla_Fire =
 
 		if (cheater){
 			sprint(self.real_owner,PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
-			TF_T_Damage(self,world,world,self.health+100,0,0);
+			TF_T_Damage(self,NIL,NIL,self.health+100,0,0);
 			return FALSE;
 		}
 	}
 	//WK Stop gun from shooting at dead spies
 	if (!self.enemy)
 		return FALSE;
-	if (self.enemy == world)
+	if (!self.enemy)
 		return FALSE;
 	if (self.enemy == self)
 		return FALSE;
 	if (self.enemy.health <= 0)
 		return FALSE;
-	if (infokey(world,"ceasefire")=="on") //CH
+	if (infokey(NIL,"ceasefire")=="on") //CH
 		return FALSE;
 	if (self.enemy.classname == "player")
 	{
 		if (self.enemy.has_disconnected)
 		{
-			self.enemy = world;
+			self.enemy = NIL;
 			return FALSE;
 		}
 		if (!(self.tf_items & NIT_AUTOID))
@@ -505,7 +505,7 @@ float() Tesla_Fire =
 		self.ammo_cells = 0;
 		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
 		//else self.origin_z = self.origin_z - 24;
-		self.enemy = world;
+		self.enemy = NIL;
 		return FALSE;
 	}
 
@@ -521,7 +521,7 @@ float() Tesla_Fire =
 		WriteCoord (MSG_MULTICAST, self.origin_x);
 		WriteCoord (MSG_MULTICAST, self.origin_y);
 		WriteCoord (MSG_MULTICAST, self.origin_z);
-		T_RadiusDamage(self, self, damg, world);
+		T_RadiusDamage(self, self, damg, NIL);
 		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
 		//else self.origin_z = self.origin_z - 24;
 		return FALSE;
@@ -617,7 +617,7 @@ float() Tesla_Fire =
 
 	if (self.enemy.health <= 0)
 	{
-		self.enemy = world;
+		self.enemy = NIL;
 		return FALSE;
 	}
 	return TRUE;
@@ -705,11 +705,11 @@ void() Tesla_Touch =
 
 		if (cheater){
 			sprint(self.real_owner,PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
-			TF_T_Damage(self,world,world,self.health+100,0,0);
+			TF_T_Damage(self,NIL,NIL,self.health+100,0,0);
 			return;
 		}
 
-		if (other == world)
+		if (!other)
 		{ //The eagle has landed!
 		//	sprint(self.real_owner, PRINT_HIGH, "The eagle has landed!\n");
 			self.solid = SOLID_BBOX;
@@ -874,7 +874,7 @@ entity(entity OldTesla) TeslaClone =
     local vector tmp1, tmp2;
 
     //now hack inside hack! =)
-    te = find(world, classname, "player");
+    te = find(NIL, classname, "player");
     while (te)
 	{
         if (te.is_haxxxoring) // if we r currently hacking...
@@ -895,7 +895,7 @@ entity(entity OldTesla) TeslaClone =
 		te = find(te, classname, "player");
 	}
 
-    te = find(world, classname, "monster_army");
+    te = find(NIL, classname, "monster_army");
     while (te)
 	{
         if (te.goalentity == OldTesla)
@@ -982,8 +982,8 @@ entity(entity OldTesla) TeslaClone =
     newmis.no_grenades_2 = OldTesla.no_grenades_2; //0; // cloak touch delay reset
 
     newmis.touch = Tesla_Touch;
-    newmis.enemy = OldTesla.enemy; //world;
-    newmis.oldenemy = OldTesla.oldenemy; //world; //CH for sbar
+    newmis.enemy = OldTesla.enemy; //NIL;
+    newmis.oldenemy = OldTesla.oldenemy; //NIL; //CH for sbar
 
     //Set all initial tesla values here
     newmis.maxammo_shells = OldTesla.maxammo_shells; //Voltage == 0

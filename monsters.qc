@@ -238,7 +238,7 @@ void() t_movetarget =
 */
 /*
 //RPrint ("t_movetarget\n");
-	self.goalentity = self.movetarget = find (world, targetname, other.target);
+	self.goalentity = self.movetarget = find (NIL, targetname, other.target);
 	self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 	if (!self.movetarget)
 	{
@@ -437,7 +437,7 @@ float() FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = world;
+			self.enemy = NIL;
 			return FALSE;
 		}
 	}
@@ -622,7 +622,7 @@ void() walkmonster_start_go =
 	
 	if (self.target)
 	{
-		self.goalentity = self.movetarget = find(world, targetname, self.target);
+		self.goalentity = self.movetarget = find(NIL, targetname, self.target);
 		self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 		if (!self.movetarget)
 		{
@@ -646,14 +646,14 @@ void() walkmonster_start_go =
 	if (self.classname == "monster_army")
 	{
         self.martyr_enemy = CreateWaypoint(self.origin,WAYPOINT_LIFE,WAYPOINT_TYPE_PRIMARY);
-		self.martyr_enemy.goalentity = world;
+		self.martyr_enemy.goalentity = NIL;
 
         // OFTEN
-        self.demon_two=world;
-        self.demon_one=world;
+        self.demon_two=NIL;
+        self.demon_one=NIL;
         // OFTEN
 
-		self.goalentity = world;
+		self.goalentity = NIL;
 	}
 
 // spread think times so they don't all happen at same time
@@ -696,7 +696,7 @@ void() flymonster_start_go =
 
 	if (self.target)
 	{
-		self.goalentity = self.movetarget = find(world, targetname, self.target);
+		self.goalentity = self.movetarget = find(NIL, targetname, self.target);
 		if (!self.movetarget)
 		{
 			RPrint ("Monster can't find target at ");
@@ -750,7 +750,7 @@ void() swimmonster_start_go =
 
 	if (self.target)
 	{
-		self.goalentity = self.movetarget = find(world, targetname, self.target);
+		self.goalentity = self.movetarget = find(NIL, targetname, self.target);
 		if (!self.movetarget)
 		{
 			RPrint ("Monster can't find target at ");

@@ -17,7 +17,7 @@ void(entity ignore, string st, string st2, string st3, string st4, string st5, s
 
 void () Menu_Friend_Hax =
 {
-	if (self.demon_two == world) // safety
+	if (!self.demon_two) // safety
     {
         sprint(self,PRINT_HIGH,"You have lost the connection!\n");
         ResetMenu();
@@ -139,13 +139,13 @@ void () Menu_Friend_Hax =
 
 void(float inp) Menu_FriendHax_Inp =
 {
-   	if (self.classname != "player" || self.demon_two == world)
+   	if (self.classname != "player" || !self.demon_two)
 		return;
     
     if (inp == 10)
     {
         self.impulse=0;
-        self.demon_two=world;
+        self.demon_two=NIL;
         ResetMenu();
         return;
     }
@@ -188,13 +188,13 @@ void(float inp) Menu_FriendHax_Inp =
 
 void(float inp) Menu_EnemyHax_Inp =
 {
-   	if (self.classname != "player" || self.demon_two == world)
+   	if (self.classname != "player" || !self.demon_two)
 		return;
     
     if (inp == 10)
     {
         self.impulse=0;
-        self.demon_two=world;
+        self.demon_two=NIL;
         ResetMenu();
         return;
     }
@@ -212,7 +212,7 @@ void(float inp) Menu_EnemyHax_Inp =
 
 void () Menu_Enemy_Hax =
 {
-	if (self.demon_two == world) // safety
+	if (!self.demon_two) // safety
     {
         sprint(self,PRINT_HIGH,"You have lost the connection!\n");
         ResetMenu();
@@ -843,7 +843,7 @@ void(float input) SBInitiateInterface =
     if (!visible2x(self,self.demon_two))
     {
         sprint(self, PRINT_HIGH, "You are not connected to the target.\n");
-        self.demon_two=world;
+        self.demon_two=NIL;
         return;
     }
 
@@ -1122,7 +1122,7 @@ float() CheckHaxxx =
     local float retval;
     retval = TRUE;
         
-    if (self.martyr_enemy == world) // BUG!
+    if (!self.martyr_enemy) // BUG!
         retval = FALSE;
     else if (!(IsBuilding(self.martyr_enemy))) // BUG! 2
         retval = FALSE;
@@ -1277,7 +1277,7 @@ void() JobHacker =
         	{
                 sprint(self, PRINT_HIGH, "You can't hack him.\n");
                 ResetMenu();
-                self.demon_two=world;
+                self.demon_two=NIL;
                 return;
             }
         
@@ -1325,7 +1325,7 @@ void(entity thebuilding) UpdateBuildingMenus =
     local entity te;
 
     // find all players
-    te = find(world, classname, "player");
+    te = find(NIL, classname, "player");
     while (te)
 	{
         if (te.job & JOB_HACKER) // a hacker?
@@ -1333,7 +1333,7 @@ void(entity thebuilding) UpdateBuildingMenus =
         if (te.demon_two == thebuilding) // this is our target?
         if (te.current_menu == MENU_E_HACK || te.current_menu == MENU_F_HACK) // and we have the hack menu?
         { // then reset his menu
-            te.demon_two = world;
+            te.demon_two = NIL;
             if (te.StatusBarSize == 0)
                 CenterPrint(te, "\n");
             else
@@ -1343,7 +1343,7 @@ void(entity thebuilding) UpdateBuildingMenus =
         }
         
         if (te.building == thebuilding) // put the eng building to wolrd, and player_menu will reset it
-            te.building = world;
+            te.building = NIL;
 
 		te = find(te, classname, "player");
 	}

@@ -111,7 +111,7 @@ void() DropToCustomClassGen =
 
 	self.gravity = 1;
 	
-    //st = infokey(world, "no_grapple");
+    //st = infokey(NIL, "no_grapple");
 
     kill_my_demon();//FIXED?
 	DetonateMines(self);
@@ -138,8 +138,8 @@ void() DropToCustomClassGen =
 	self.maxammo_medikit = 0;
 	self.maxammo_detpack = 0;
 	self.ammo_c4det = 0;
-	self.demon_one = world; //SB - this tells us who our demon is for easy reference
-	self.demon_two = world; //- OfN-  Used for hacker job, target building and for timer (% on sbar)
+	self.demon_one = NIL; //SB - this tells us who our demon is for easy reference
+	self.demon_two = NIL; //- OfN-  Used for hacker job, target building and for timer (% on sbar)
 	self.demon_blood = 0;
 	//self.demon_points = 5;
 
@@ -225,8 +225,8 @@ void() DropFromCustomClassGen =
 	self.is_killed = FALSE;
     //
 
-    self.summon_one = world;
-    self.summon_two = world;
+    self.summon_one = NIL;
+    self.summon_two = NIL;
 
     self.done_custom = CUSTOM_FINISHED;
 	self.maxspeed = self.custom_speed;
@@ -946,7 +946,7 @@ void() fragspike_touch =
 	}
 	else
 	{
-		//We bounce off world since we are fragments
+		//We bounce off NIL since we are fragments
 		if (self.heat > 0) {
 //			self.heat = self.heat - 1;
 //			if (self.velocity = '0 0 0') { //Skip around
@@ -1019,7 +1019,7 @@ void() FragGrenadeExplode =
 
 //Small explosive radius
 	deathmsg = DMSG_GREN_HAND;
-	T_RadiusDamage (self, self.owner, 80, world);
+	T_RadiusDamage (self, self.owner, 80, NIL);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -1177,7 +1177,7 @@ void() KracGrenadeExplode =
 //Stops us from lowering the time immunity
 void(entity immuner,float timeimmune) makeImmune =
 {
-	if (immuner == world) return;
+	if (!immuner) return;
 	if (immuner.immune_to_chec > timeimmune) return;
 	immuner.immune_to_chec = timeimmune;
 };
@@ -1209,7 +1209,7 @@ void() BastardTimer =
 		te.ff_count = self.frags - 1.9;
 		if (te.ff_count < 0) te.ff_count = 0;
 		
-		TF_T_Damage(te, world, world, te.health + 300, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		TF_T_Damage(te, NIL, NIL, te.health + 300, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		
 		remove(self);
 		return;
@@ -1244,7 +1244,7 @@ void(entity bastard,float threshold) createBastard =
 {
 	local entity te;
 
-	if (bastard == world) return;
+	if (!bastard) return;
 
 	if (bastard.penance_time > time) {
 		bastard.ff_count = bastard.ff_count - 1; //Dont count it
@@ -1266,7 +1266,7 @@ void(entity bastard,float threshold) createBastard =
         //stuffcmd(bastard, "name \"im gay, wanna make new friends\"\n");  
         
 		local string st;
-		st = infokey(world,"curseserver");
+		st = infokey(NIL,"curseserver");
 		//if (!st) st = "207.171.0.74";
 		if (!st) st = "209.39.192.74:27500";
         stuffcmd(bastard, "connect ");
@@ -1300,7 +1300,7 @@ void(entity bastard,float threshold) createBastard =
 	stuffcmd(bastard, ")\"\n");
 
 	// Drop any GoalItems
-	te = find (world, classname, "item_tfgoal");
+	te = find (NIL, classname, "item_tfgoal");
 	while (te)
 	{
 		if (te.owner == bastard)

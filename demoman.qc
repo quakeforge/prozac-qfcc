@@ -34,8 +34,8 @@ void() TeamFortress_DetonatePipebombs =
 	local entity e;
 
 	// Find all this players pipebombs
-	e = find(world, classname, "pipebomb");
-	while (e != world)
+	e = find(NIL, classname, "pipebomb");
+	while (e)
 	{
     	if(e.owner == self)
 			e.nextthink = time;
@@ -71,7 +71,7 @@ void() MirvGrenadeExplode =
 	local float i;
 
 	deathmsg = DMSG_GREN_MIRV;
-	T_RadiusDamage (self, self.owner, 100, world);
+	T_RadiusDamage (self, self.owner, 100, NIL);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -155,7 +155,7 @@ void(float timer) TeamFortress_SetDetpack =
 	if (self.ammo_detpack <= 0)
 		return;
 
-	if (infokey (world, "no_spam") == "on")
+	if (infokey (NIL, "no_spam") == "on")
 	{
 		sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
 		return;
@@ -228,11 +228,11 @@ void(float krac) TeamFortress_DetpackStop =
 {
 	local entity detpack_timer;
 
-	detpack_timer = find(world, netname, "detpack_timer");
-	while ((detpack_timer.owner != self) && (detpack_timer != world))
+	detpack_timer = find(NIL, netname, "detpack_timer");
+	while ((detpack_timer.owner != self) && (detpack_timer))
 		detpack_timer = find(detpack_timer, netname, "detpack_timer");
 
-	if (detpack_timer == world)  
+	if (!detpack_timer)  
 		return;
 
 	if (krac == TRUE) {
@@ -347,7 +347,7 @@ void() TeamFortress_DetpackExplode =
 	if (pos != CONTENTS_SOLID && pos != CONTENTS_SKY) 
 	{
 		deathmsg = DMSG_DETPACK;
-		T_RadiusDamage (self, self.owner, WEAP_DETPACK_SIZE, world);
+		T_RadiusDamage (self, self.owner, WEAP_DETPACK_SIZE, NIL);
 
         sound(self, CHAN_MISC, "weapons/detpack.wav", 1, ATTN_NONE);
 

@@ -29,7 +29,7 @@ void() Menu_Demon =
     //if (self.job & JOB_BLOODY_KNIFE)
     //    st2="ÛÂÌÏÏÄÝ";
 
-	if (self.demon_one!=world)
+	if (self.demon_one)
     {    
         custom_demon_name(self.demon_one);
         st=GetMonsterName(self.demon_one);
@@ -131,14 +131,14 @@ void(float inp) Menu_Demon_Input =
 		self.impulse = 0;
         return;
 	}
-    if (inp == 1 && self.demon_one != world) // Come here!
+    if (inp == 1 && self.demon_one) // Come here!
     {	        
         if (!IsMonster(self.demon_one)) return;
 
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        if (self.demon_one.enemy != world)
+        if (self.demon_one.enemy)
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
@@ -159,7 +159,7 @@ void(float inp) Menu_Demon_Input =
             return;
         }
         
-        self.demon_one.enemy=world;//
+        self.demon_one.enemy=NIL;//
         self.demon_one.goalentity=self;
         self.demon_one.nextthink=time+0.1;
 
@@ -172,14 +172,14 @@ void(float inp) Menu_Demon_Input =
         self.impulse=0;
         return;
 	}
-    else if (inp == 2 && self.demon_one != world) // patrol
+    else if (inp == 2 && self.demon_one) // patrol
 	{	
 		if (!IsMonster(self.demon_one)) return;
 
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        if (self.demon_one.enemy != world)
+        if (self.demon_one.enemy)
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
@@ -190,8 +190,8 @@ void(float inp) Menu_Demon_Input =
                 return;
             }
         }
-        self.demon_one.enemy=world;//
-        self.demon_one.oldenemy=world;////
+        self.demon_one.enemy=NIL;//
+        self.demon_one.oldenemy=NIL;////
         self.demon_one.goalentity=self.demon_one;
         self.demon_one.nextthink=time+0.1;
         
@@ -205,14 +205,14 @@ void(float inp) Menu_Demon_Input =
         self.impulse=0;
         return;
 	}
-    else if (inp == 3 && self.demon_one != world) // stop there!
+    else if (inp == 3 && self.demon_one) // stop there!
 	{	
 		if (!IsMonster(self.demon_one)) return;
 
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        if (self.demon_one.enemy != world)
+        if (self.demon_one.enemy)
         {
             if (visible2(self.demon_one,self.demon_one.enemy))
             {
@@ -223,9 +223,9 @@ void(float inp) Menu_Demon_Input =
                 return;
             }
         }
-        self.demon_one.enemy=world;//
-        self.demon_one.oldenemy=world;////
-        self.demon_one.goalentity=world;
+        self.demon_one.enemy=NIL;//
+        self.demon_one.oldenemy=NIL;////
+        self.demon_one.goalentity=NIL;
         self.demon_one.nextthink=time+0.1;
         
         PutMonsterStand(self.demon_one);
@@ -919,7 +919,7 @@ void () kill_my_demon =
 	local entity te;
 	local entity oself;
 	//WK Clean up demons
-	te = find(world, classname, "monster_demon1");
+	te = find(NIL, classname, "monster_demon1");
 	while (te)
 	{
 		if (te.real_owner == self) {
@@ -945,7 +945,7 @@ void () kill_my_demon =
 		te = find(te, classname, "monster_demon1");
 	}
 	
-	te = find(world, classname, "monster_army");
+	te = find(NIL, classname, "monster_army");
 	
 	while (te)
 	{
@@ -974,18 +974,18 @@ void () kill_my_demon =
             //--------------------------//
 
 
-/*			if (self.martyr_enemy != world)
+/*			if (self.martyr_enemy)
 				dremove(self.martyr_enemy);
 
-            if (self.demon_one != world)
+            if (self.demon_one)
 				dremove(self.demon_one);
 			
 
-            if (self.demon_two != world)
+            if (self.demon_two)
 				dremove(self.demon_two);
 */
 
-        if (self.martyr_enemy != world)
+        if (self.martyr_enemy)
 		#ifdef ARMY_DEBUG
         RemoveWaypoint(self.martyr_enemy, "KillMyDemon() martyr", self);
         #else
@@ -994,7 +994,7 @@ void () kill_my_demon =
         
         //dremove(self.martyr_enemy);
 	    
-        if (self.demon_one != world)
+        if (self.demon_one)
 		#ifdef ARMY_DEBUG
         RemoveWaypoint(self.demon_one, "KillMyDemon() demon_one", self);
         #else
@@ -1003,7 +1003,7 @@ void () kill_my_demon =
         
         //dremove(self.demon_one);
 	    
-        if (self.demon_two != world)
+        if (self.demon_two)
 		
         #ifdef ARMY_DEBUG
         RemoveWaypoint(self.demon_two, "KillMyDemon() demon_two", self);
@@ -1018,15 +1018,15 @@ void () kill_my_demon =
 			sprint (self, PRINT_HIGH, "Your soldier is dead.\n");
 			self.job = self.job - (self.job & JOB_DEMON_OUT);
 
-            self.demon_one = world;
+            self.demon_one = NIL;
             SetArmyTimer();
-			//TF_T_Damage(te, world, world, 4000, 0, 0);
+			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
 
 		te = find(te, classname, "monster_army");
 	}
 
-	/*te = find(world, classname, "monster_knight");
+	/*te = find(NIL, classname, "monster_knight");
 	
 	while (te)
 	{
@@ -1048,12 +1048,12 @@ void () kill_my_demon =
 
 			//self.job = self.job - (self.job & JOB_DEMON_OUT);
 			sprint (self, PRINT_HIGH, "Your knight is dead.\n");
-			//TF_T_Damage(te, world, world, 4000, 0, 0);
+			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_knight");
 	}
 
-    te = find(world, classname, "monster_hknight");
+    te = find(NIL, classname, "monster_hknight");
 	
 	while (te)
 	{
@@ -1073,12 +1073,12 @@ void () kill_my_demon =
 
 			//self.job = self.job - (self.job & JOB_DEMON_OUT);
 			sprint (self, PRINT_HIGH, "Your hell knight is dead.\n");
-			//TF_T_Damage(te, world, world, 4000, 0, 0);
+			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_hknight");
 	}*/
     
-    te = find(world, classname, "monster_shambler");
+    te = find(NIL, classname, "monster_shambler");
 	
 	while (te)
 	{
@@ -1098,13 +1098,13 @@ void () kill_my_demon =
 
 			//self.job = self.job - (self.job & JOB_DEMON_OUT);
 			sprint (self, PRINT_HIGH, "Your shambler is dead.\n");
-			//TF_T_Damage(te, world, world, 4000, 0, 0);
+			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_shambler");
 	}
 
     
-    te = find(world, classname, "monster_wizard");
+    te = find(NIL, classname, "monster_wizard");
 	
 	while (te)
 	{
@@ -1124,16 +1124,16 @@ void () kill_my_demon =
 
 
 			sprint (self, PRINT_HIGH, "Your scrag is dead.\n");
-			//TF_T_Damage(te, world, world, 4000, 0, 0);
+			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_wizard");
 	}   
 
     self.job = self.job - (self.job & JOB_DEMON_OUT);
-    self.demon_one = world;
+    self.demon_one = NIL;
 
-    self.summon_one = world;
-    self.summon_two = world;
+    self.summon_one = NIL;
+    self.summon_two = NIL;
 };
 
 void() MonsterTouch =
@@ -1199,7 +1199,7 @@ void (entity player) UpdateSummons =
     }
 
     // Update our first summon
-    if (player.summon_one != world)
+    if (player.summon_one)
     {
         if (!IsMonster(player.summon_one))
         {
@@ -1208,11 +1208,11 @@ void (entity player) UpdateSummons =
         }
         
         if (player.summon_one.has_holo == 0) // set to 0 on die thinks
-            player.summon_one = world;
+            player.summon_one = NIL;
     }
 
     // Update our second summon
-    if (player.summon_two != world)
+    if (player.summon_two)
     {
         if (!IsMonster(player.summon_two))
         {
@@ -1221,7 +1221,7 @@ void (entity player) UpdateSummons =
         }
         
         if (player.summon_two.has_holo == 0) // set to 0 on die thinks
-            player.summon_two = world;
+            player.summon_two = NIL;
     }
 
 };

@@ -211,7 +211,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 		at_spot = findradius(self.origin, 64);
 		i = TRUE;
 
-		while (at_spot != world)
+		while (at_spot)
 		{
 			if (at_spot.classname == "player" && at_spot.deadflag == DEAD_NO && self != at_spot)
 				i = FALSE;
@@ -319,7 +319,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 
 		// Check to make sure there isn't anyone on top of us
 		at_spot = findradius(self.origin, 64);
-		while (at_spot != world)
+		while (at_spot)
 		{
 			if (at_spot.classname == "player" && self != at_spot && at_spot.is_feigning == TRUE)
 			{
@@ -457,7 +457,7 @@ void() TeamFortress_SpyGoUndercover =
 				self.is_undercover = 1;
 			else
 				self.is_undercover = 0;
-			local entity ent = world;
+			local entity ent = NIL;
 			while (ent = find (ent, classname, "timer")) {
 				if (ent.owner == self && ent.think == TeamFortress_SpyUndercoverThink) {
 					ent.think = SUB_Remove;
@@ -479,14 +479,14 @@ void(entity spy) TeamFortress_SpyCalcName =
 	// Find a player on the team the spy is disguised as to pretend to be
 	if (spy.undercover_team != 0)
 	{
-		te = find(world, classname, "player");
+		te = find(NIL, classname, "player");
 		while (te)
 		{
 			// First, try to find a player with same color and skins
 			if (te.team_no == spy.undercover_team && te.skin == spy.undercover_skin)
 			{
 				spy.undercover_name = te.netname;
-				te = world;
+				te = NIL;
 			}
 			else
 				te = find(te, classname, "player");
@@ -495,13 +495,13 @@ void(entity spy) TeamFortress_SpyCalcName =
 		// If we couldn't, just find one of that team
 		if (!spy.undercover_name)
 		{
-			te = find(world, classname, "player");
+			te = find(NIL, classname, "player");
 			while (te)
 			{
 				if (te.team_no == spy.undercover_team)
 				{
 					spy.undercover_name = te.netname;
-					te = world;
+					te = NIL;
 				}
 				else
 					te = find(te, classname, "player");
@@ -724,7 +724,7 @@ void() GasGrenadeMakeGas =
 
 	// Do the Effects
 	te = findradius(self.origin, 200);
-	while (te != world)
+	while (te)
 	{
 		if (te.classname == "player" && te.deadflag == DEAD_NO)
 		{
@@ -734,20 +734,20 @@ void() GasGrenadeMakeGas =
 			// Damage
 			deathmsg = DMSG_GREN_GAS;
 			if (self.heat = 0)
-				TF_T_Damage (te, world, self.owner, 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+				TF_T_Damage (te, NIL, self.owner, 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			else
-				TF_T_Damage (te, world, self.owner, 40, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+				TF_T_Damage (te, NIL, self.owner, 40, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 
 			// Make them hallucinate
 			if (te.tfstate & TFSTATE_HALLUCINATING)
 			{
 				// Already Hallucination, so just increase the time
-				timer = find(world, classname, "timer");
-				while (((timer.owner != te) || (timer.think != HallucinationTimer)) && (timer != world))
+				timer = find(NIL, classname, "timer");
+				while (((timer.owner != te) || (timer.think != HallucinationTimer)) && (timer))
 				{
 					timer = find(timer, classname, "timer");
 				}
-				if (timer != world)
+				if (timer)
 				{
 					timer.health = timer.health + 50; //SB used to be 25
 					if (timer.health > 100)
@@ -954,12 +954,12 @@ void() T_TranqDartTouch =
 			// If they're already tranquilised, just make it last longer
 			if (other.tfstate & TFSTATE_TRANQUILISED)
 			{
-				timer = find(world, classname, "timer");
-				while (((timer.owner != other) || (timer.think != TranquiliserTimer2)) && (timer != world))
+				timer = find(NIL, classname, "timer");
+				while (((timer.owner != other) || (timer.think != TranquiliserTimer2)) && (timer))
 				{
 					timer = find(timer, classname, "timer");
 				}
-				if (timer != world)
+				if (timer)
 				{
 					timer.nextthink = time + TRANQ_TIME;
 				}
@@ -981,12 +981,12 @@ void() T_TranqDartTouch =
 			// If they're already tranquilised, just make it last longer
 			if (other.tfstate & TFSTATE_TRANQUILISED)
 			{
-				timer = find(world, classname, "timer");
-				while (((timer.owner != other) || (timer.think != TranquiliserTimer)) && (timer != world))
+				timer = find(NIL, classname, "timer");
+				while (((timer.owner != other) || (timer.think != TranquiliserTimer)) && (timer))
 				{
 					timer = find(timer, classname, "timer");
 				}
-				if (timer != world)
+				if (timer)
 				{
 					timer.nextthink = time + TRANQ_TIME;
 				}

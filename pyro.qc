@@ -25,14 +25,14 @@ float (string id_flame) RemoveFlameFromQueue;
 // 1 : burning flames making light and damage (1 per players or monsters)
 // 2 : exploding flames (grenade)
 // 3 : burning flames (players, monsters)
-// 4 : world flames (on ground)
+// 4 : NIL flames (on ground)
 
 
 // create a flame of a given type, maintaining the count for each type
 entity (string type, entity p_owner) FlameSpawn =
 {
 	if (type != "1")
-		return world;
+		return NIL;
 
 
 	num_world_flames = num_world_flames + 1;
@@ -49,7 +49,7 @@ entity (string type, entity p_owner) FlameSpawn =
 		if (!(RemoveFlameFromQueue(type)))
 		{
 			// RPrint("Create flame failed: too many\n");
-			return world;
+			return NIL;
 		}
 	}
 
@@ -133,25 +133,25 @@ float (string id_flame) RemoveFlameFromQueue =
 
 	num_world_flames = num_world_flames - 1;
 
-	tmp = find(world, flame_id, "4");
+	tmp = find(NIL, flame_id, "4");
 	if (!tmp)
 	{
 		if (id_flame == "4") // if priority not high enough, don't continue
 			return FALSE;
 
-		tmp = find(world, flame_id, "3");
+		tmp = find(NIL, flame_id, "3");
 		if (!tmp)
 		{
 			if (id_flame == "3")
 				return FALSE;
 
-			tmp = find(world, flame_id, "2");
+			tmp = find(NIL, flame_id, "2");
 			if (!tmp)
 			{
 				if (id_flame == "2")
 					return FALSE;
 
-				tmp = find(world, flame_id, "1");
+				tmp = find(NIL, flame_id, "1");
 			 	if (!tmp)
 				{
 					// oh shit, no flames found!
@@ -281,7 +281,7 @@ void (vector org, entity shooter) NapalmGrenadeLaunch =
 	zdir = 40 * random();
 
 	newmis = FlameSpawn ("2", shooter);
-	if (newmis == world)
+	if (!newmis)
 		return;
 
 	self.touch = NIL;
@@ -422,7 +422,7 @@ void() OnPlayerFlame_touch =
 	local entity flame;
 	local vector vtemp;
 
-	if (other != world && other.health > 0 && other != self.enemy)
+	if (other && other.health > 0 && other != self.enemy)
 	{
 
 		if (other.numflames >= FLAME_MAXPLYRFLAMES)
@@ -445,7 +445,7 @@ void() OnPlayerFlame_touch =
 		else
 		{
 			flame = FlameSpawn ("3", other);
-			if (flame == world)
+			if (!flame)
 				return;
 		}
 
@@ -477,7 +477,7 @@ void() WorldFlame_touch =
 	deathmsg = DMSG_FLAME;
 	TF_T_Damage(other, self, self.enemy, 2, TF_TD_NOTTEAM, TF_TD_FIRE);
 
-	if (other != world && other.solid != SOLID_TRIGGER && other.health > 0)
+	if (other && other.solid != SOLID_TRIGGER && other.health > 0)
 	{
 
 		if (other.numflames >= FLAME_MAXPLYRFLAMES)
@@ -499,7 +499,7 @@ void() WorldFlame_touch =
 		else
 		{
 			flame = FlameSpawn ("3", other);
-			if (flame == world)
+			if (!flame)
 				return;
 		}
 
@@ -549,7 +549,7 @@ void() Flamer_stream_touch =
 	//WK Sweep for mines at point of contact	
 	GuerillaMineSweep(self.origin);
 
-	if (other != world)
+	if (other)
 	{
 		if (other.takedamage == DAMAGE_AIM && other.health > 0)
 		{
@@ -587,7 +587,7 @@ void() Flamer_stream_touch =
 			else
 			{
 				flame = FlameSpawn("3", other);
-				if (flame == world)
+				if (!flame)
 					return;
 			}
 			flame.classname = "fire";
@@ -615,7 +615,7 @@ void() Flamer_stream_touch =
 			return;
 		}
 		flame = FlameSpawn("4", other);
-		if (flame != world)
+		if (flame)
 		{
 			flame.touch = WorldFlame_touch;
 			flame.classname = "fire";
@@ -641,7 +641,7 @@ void() Napalm_touch =
 	if (other.classname == "fire")
 		return;
 
-	if (other != world)
+	if (other)
 	{
 		if (other.takedamage == DAMAGE_AIM && other.health > 0)
 		{
@@ -671,7 +671,7 @@ void() Napalm_touch =
 			else
 			{
 				flame = FlameSpawn("3", other);
-				if (flame == world)
+				if (!flame)
 					return;
 			}
 			flame.classname = "fire";
@@ -694,7 +694,7 @@ void() Napalm_touch =
 	else
 	{
 		flame = FlameSpawn("4", other);
-		if (flame != world)
+		if (flame)
 		{
 			flame.touch = WorldFlame_touch;
 			flame.classname = "fire";

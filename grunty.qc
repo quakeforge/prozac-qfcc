@@ -184,7 +184,7 @@ void() grunty_stand = // We need two stand sections for axe and weapon
 
 	Grunty_Check_Frags();
 
-    if (self.goalentity != world)
+    if (self.goalentity)
 	{
 		self.walkframe = 0;
 		self.think = grunty_run;
@@ -235,7 +235,7 @@ void() grunty_run =
 	}
 	#endif
 
-	if (self.goalentity == world)
+	if (!self.goalentity)
 	{
 		self.walkframe = 0;
 		self.think = grunty_stand;
@@ -572,7 +572,7 @@ void() GruntyThink =
 	// check for Follow Me Grunty's owner death
 	if (self.goalentity == self.real_owner)
 		if (self.goalentity.health <= 0)
-			self.goalentity = world;
+			self.goalentity = NIL;
 	
 	
 	// Check to buy
@@ -587,7 +587,7 @@ void() GruntyThink =
 // LookAround for grunty
 entity (entity scanner) LookAroundGrunty =
 {
-	if (infokey(world,"ceasefire")=="on") //OfN
+	if (infokey(NIL,"ceasefire")=="on") //OfN
 	    return scanner;
     
 	local entity		client;
@@ -654,7 +654,7 @@ entity (entity scanner) LookAroundGrunty =
 
 entity () GruntyPharse =
 {
-    local entity retarg = world;
+    local entity retarg = NIL;
     local float r;
 	r = random();
     
@@ -677,21 +677,21 @@ entity () GruntyPharse =
 void() GruntyScanTargets =
 {
 	local entity	targ; // our hapless foe
-	targ = world;
+	targ = NIL;
 	
-	if (self.enemy != world)
+	if (self.enemy)
 		if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 		{
 
-            self.enemy = world;
+            self.enemy = NIL;
             self.goalentity = ReturnEasyWaypoint(self,self);
 
-           //// self.enemy = world;
-			//// self.goalentity = world;
-			if (self.demon_one != world)
+           //// self.enemy = NIL;
+			//// self.goalentity = NIL;
+			if (self.demon_one)
 			{
                 RemoveWaypoint(self.demon_one,self);
-                self.demon_one = world;
+                self.demon_one = NIL;
             }
 
             self.has_teleporter = 0;
@@ -699,16 +699,16 @@ void() GruntyScanTargets =
 			return;
 		}
 	// If we have a target already
-	if (self.enemy != world)
+	if (self.enemy)
 	{
 		local float vis;
 		vis = visible(self.enemy);
 		if (vis)
 		{
-			if (self.demon_one != world)
+			if (self.demon_one)
 			{
                 RemoveWaypoint(self.demon_one,self);
-                self.demon_one=world;
+                self.demon_one=NIL;
 
             } //often =world
 			self.search_time = time + 3;
@@ -719,7 +719,7 @@ void() GruntyScanTargets =
 		{
 			if (self.is_malfunctioning==0 || self.is_malfunctioning==2)
             {
-                self.enemy = world;
+                self.enemy = NIL;
                 self.goalentity = ReturnEasyWaypoint(self,self);
 
                 self.has_teleporter = 0;
@@ -729,9 +729,9 @@ void() GruntyScanTargets =
             }
             // tactic
             
-            if (self.demon_one == world) // if we don't have a enemy last seen marker
+            if (!self.demon_one) // if we don't have a enemy last seen marker
             {
-                if (self.demon_one!=world)
+                if (self.demon_one)
                 {
                     RemoveWaypoint(self.demon_one,self);
                 }
@@ -745,13 +745,13 @@ void() GruntyScanTargets =
             }
             if (self.search_time <= time) // we seeked enemy for GRUNTY_SEEKTIME already so...
             {
-                self.enemy = world;
-                self.goalentity = world;
+                self.enemy = NIL;
+                self.goalentity = NIL;
                 
-                if (self.demon_one != world) // d1 remove contingency check
+                if (self.demon_one) // d1 remove contingency check
                 {
                     RemoveWaypoint(self.demon_one,self);
-                    self.demon_one = world;
+                    self.demon_one = NIL;
                     self.goalentity = ReturnEasyWaypoint(self,self);
                 }
             }
@@ -764,10 +764,10 @@ void() GruntyScanTargets =
 		
         if (targ == self)
             return;
-        if (targ == world)
+        if (!targ)
             return;
 
-		if (!self.is_detpacking || infokey(world,"ceasefire")=="on")
+		if (!self.is_detpacking || infokey(NIL,"ceasefire")=="on")
         {
             if (!IsBuilding(targ) && self.super_time < time && targ.netname != "land_mine")
             {
@@ -804,13 +804,13 @@ void() GruntyCheckFire =
 	if (self.attack_finished > time)
 		return;
 	
-    if (self.enemy == world)
+    if (!self.enemy)
 		return;
     
-    if (infokey(world,"ceasefire")=="on")
+    if (infokey(NIL,"ceasefire")=="on")
     {
         self.goalentity=ReturnEasyWaypoint(self,self);
-        self.enemy=world;
+        self.enemy=NIL;
         return;
     }
 
@@ -978,7 +978,7 @@ void() GRun =
 	// ok, we're trying to get somewhere
 	// first look at where we are trying to go
 	// Version 1.0 of GruntyLead(tm)
-	if (self.enemy != world)
+	if (self.enemy)
 	{
 		local vector pvel;
 		
@@ -999,7 +999,7 @@ void() GRun =
 	}
 	else
 	{
-        if (self.goalentity!=world) //- OfN - dont change yaw if we r not after a goal
+        if (self.goalentity) //- OfN - dont change yaw if we r not after a goal
         {
             self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 		    self.ideal_yaw = anglemod(self.ideal_yaw);
@@ -1052,14 +1052,14 @@ void() GRun =
 	else if (self.has_teleporter == 0) // no evasive, standard move (forward)
 	{
 		//- OfN - force move to forward if we r going to a last seen enemy waypoint
-        if (self.goalentity == self.demon_one && self.demon_one!=world)
+        if (self.goalentity == self.demon_one && self.demon_one)
         {
             self.has_teleporter = 0;
             botmovedist(vectoyaw(v_forward), dist); // move
         }
 		else
 		{
-			if (self.is_malfunctioning == 2 && self.enemy != world) {
+			if (self.is_malfunctioning == 2 && self.enemy) {
 				local float dist = vlen (self.origin - self.enemy.origin);
 				local float desired_min, desired_max;
 
@@ -1107,7 +1107,7 @@ void() GRun =
 			} else
 		        botmovedist(vectoyaw(v_forward), dist); // move
 
-			if (random() < 0.05 && self.enemy != world)				// if we get a score
+			if (random() < 0.05 && self.enemy)				// if we get a score
 			{															// of one on a d20,
 				local float r;											// special
 				r = random();
@@ -1342,15 +1342,15 @@ void() custom_grunt_die =
 		sprint(self.real_owner,PRINT_HIGH,"Your soldier is dead.\n");
 		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 		self.real_owner.job_finished = time + 2; //Can't summon streams of demons SB can so
-        self.real_owner.demon_one = world;
+        self.real_owner.demon_one = NIL;
     	
-        if (self.martyr_enemy != world)
+        if (self.martyr_enemy)
         RemoveWaypoint(self.martyr_enemy, self);
         
-        if (self.demon_one != world)
+        if (self.demon_one)
         RemoveWaypoint(self.demon_one, self);
         
-        if (self.demon_two != world)
+        if (self.demon_two)
         RemoveWaypoint(self.demon_two, self);
 
         local entity oself;
@@ -1498,7 +1498,7 @@ void() Waypoint_Touch =
     if (self.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN)
     {        
         if (self.owner.demon_one.demon_one == self)
-           self.owner.demon_one.demon_one = world;   
+           self.owner.demon_one.demon_one = NIL;   
        
         dremove(self);
         return;
@@ -1534,7 +1534,7 @@ void() Waypoint_DoNothing = // A waypoint checks for redundancy
         || !(self.owner.job & JOB_DEMON_OUT)
         || self.owner.classname!="player")
     {
-       dremove(self); // no pointer set to world needed cause soldier shouldnt be present on game
+       dremove(self); // no pointer set to NIL needed cause soldier shouldnt be present on game
        return;
     }
 
@@ -1542,13 +1542,13 @@ void() Waypoint_DoNothing = // A waypoint checks for redundancy
     {
        if (self.has_sensor == WAYPOINT_TYPE_PRIMARY
         && self.owner.demon_one.martyr_enemy == self)
-           self.owner.demon_one.martyr_enemy = world;
+           self.owner.demon_one.martyr_enemy = NIL;
        if (self.has_sensor == WAYPOINT_TYPE_SECONDARY
         && self.owner.demon_one.demon_two == self)
-           self.owner.demon_one.demon_two = world;
+           self.owner.demon_one.demon_two = NIL;
        if (self.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN
         && self.owner.demon_one.demon_one == self)
-           self.owner.demon_one.demon_one = world;
+           self.owner.demon_one.demon_one = NIL;
 
        dremove(self);
        return;
@@ -1966,7 +1966,7 @@ void() grunty_touch =
         return;
     }*/
     
-    if (other.classname=="player" && self.has_holo < time && self.enemy == world && self.health >= 0)
+    if (other.classname=="player" && self.has_holo < time && !self.enemy && self.health >= 0)
     {
         local string st;    
 
@@ -2012,31 +2012,31 @@ void() grunty_touch =
 
 void(entity wyp, entity soldier) RemoveWaypoint =
 {
-    if (wyp==world) return;
+    if (!wyp) return;
 
     if (wyp.classname == "grunty_waypoint" && wyp.owner == soldier.real_owner)
     {    
-        if (wyp.owner.demon_one.martyr_enemy != world)
+        if (wyp.owner.demon_one.martyr_enemy)
         {
             if (wyp.owner.demon_one.martyr_enemy.goalentity == wyp)
-                wyp.owner.demon_one.martyr_enemy.goalentity = world;
+                wyp.owner.demon_one.martyr_enemy.goalentity = NIL;
         }
 
-        if (wyp.owner.demon_one.demon_two != world)
+        if (wyp.owner.demon_one.demon_two)
         {
             if (wyp.owner.demon_one.demon_two.goalentity == wyp)
-                wyp.owner.demon_one.demon_two.goalentity = world;
+                wyp.owner.demon_one.demon_two.goalentity = NIL;
         }
         
         if (wyp.has_sensor == WAYPOINT_TYPE_PRIMARY
          && wyp.owner.demon_one.martyr_enemy == wyp)
-            wyp.owner.demon_one.martyr_enemy = world;
+            wyp.owner.demon_one.martyr_enemy = NIL;
         else if (wyp.has_sensor == WAYPOINT_TYPE_SECONDARY
          && wyp.owner.demon_one.demon_two == wyp)
-            wyp.owner.demon_one.demon_two = world;
+            wyp.owner.demon_one.demon_two = NIL;
         else if (wyp.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN
          && wyp.owner.demon_one.demon_one == wyp)
-            wyp.owner.demon_one.demon_one = world;
+            wyp.owner.demon_one.demon_one = NIL;
         
         dremove(wyp);
     }   
@@ -2047,15 +2047,15 @@ void(entity wyp, entity soldier) RemoveWaypoint =
 
 entity(entity sold, entity viewpoint) ReturnEasyWaypoint =
 {    
-    if (sold.penance_time==2) return world;
-    if (sold.penance_time==0) return world;
+    if (sold.penance_time==2) return NIL;
+    if (sold.penance_time==0) return NIL;
 
     if (sold.penance_time==1)
     {
         if (sold.real_owner.health <= 0)
         {
             sold.penance_time=0;
-            return world;
+            return NIL;
         }
         
         if (visible2(sold,sold.real_owner))
@@ -2064,23 +2064,23 @@ entity(entity sold, entity viewpoint) ReturnEasyWaypoint =
         {
             //sold.penance_time=0; // don't reset sold last "intention"
             PrintFromSoldier(sold,sold.real_owner,"i was following you but i can't see you now!\n");
-            return world;
+            return NIL;
         }
 
     }
     
-    if (sold.martyr_enemy!=world && sold.job==1 && visible2(viewpoint,sold.martyr_enemy))
+    if (sold.martyr_enemy && sold.job==1 && visible2(viewpoint,sold.martyr_enemy))
         return sold.martyr_enemy;
     
-    if (sold.demon_two!=world && sold.job==2 && visible2(viewpoint,sold.demon_two))
+    if (sold.demon_two && sold.job==2 && visible2(viewpoint,sold.demon_two))
         return sold.demon_two;
 
     // no last waypoint walk so lets see whats easier to reach...    
 
     local entity retENT;
-    retENT=world;
+    retENT=NIL;
     
-    if (sold.demon_two!=world && sold.martyr_enemy!=world) // both waypoints assigned? ok...
+    if (sold.demon_two && sold.martyr_enemy) // both waypoints assigned? ok...
     {
         if (visible2(viewpoint,sold.martyr_enemy) && visible2(viewpoint,sold.demon_two)) // both waypoints visible? lets see which one is closest...
         {
@@ -2102,18 +2102,18 @@ entity(entity sold, entity viewpoint) ReturnEasyWaypoint =
         else if (visible2(viewpoint,sold.demon_two)) // only secondary wayp is visible?
             retENT=sold.demon_two;
     } 
-    else if (sold.demon_two!=world) // only secondary wayp is assigned?
+    else if (sold.demon_two) // only secondary wayp is assigned?
     {
         if (visible2(viewpoint,sold.demon_two))
             retENT=sold.demon_two;
     }
-    else if (sold.martyr_enemy!=world) // only primary wayp is assigned?
+    else if (sold.martyr_enemy) // only primary wayp is assigned?
     {
         if (visible2(viewpoint,sold.martyr_enemy))
             retENT=sold.martyr_enemy;
     }    
 
-    if (sold.penance_time == 3 && retENT==world)
+    if (sold.penance_time == 3 && !retENT)
     {
         PrintFromSoldier(sold,sold.real_owner,"can't see my waypoints around here!\n");
         //sold.penance_time = 0; // don't reset sold last "intention"

@@ -15,10 +15,10 @@ void(entity who) MakeMeDebug;
 
 //==============================================================
 // A remove function which makes sure the entity hasn't already
-// been removed, and that it isn't the world object.
+// been removed, and that it isn't the NIL object.
 void(entity te) dremove =
 {
-	if (te == world)
+	if (!te)
 	{
 		RPrint("***BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG***\n");
 		RPrint("WORLD has nearly been removed. Don't worry!\n");
@@ -68,7 +68,7 @@ void (string msg) RPrint =
 {
     dprint(msg);
     
-    if (debug_target==world)
+    if (!debug_target)
         return;
 
     sprint(debug_target,PRINT_HIGH,msg);
@@ -98,7 +98,7 @@ void(entity who) MakeMeDebug =
     RPrint(who.netname);
     RPrint(" requests remote debugging. Debug (dprints) messages will be sent to him/her too.\n");
 
-    if (debug_target!=world)
+    if (debug_target)
     {
         sprint(debug_target,PRINT_HIGH,"(OfteN debug): You are not the remote debugger anymore.\n");
         sprint(debug_target,PRINT_HIGH," New remote debugger is: '");

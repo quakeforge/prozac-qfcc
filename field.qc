@@ -37,7 +37,7 @@ For field generator entity:
 
 .fieldgen_status - Holds current status of every field generator, FIELDGEN_XXXX determines
 .fieldgen_hasfield - Boolean value, determines if field generator is currently supporting a force field
-.fieldgen_field  - This points to the force field, if none its always 'world'
+.fieldgen_field  - This points to the force field, if none its always 'NIL'
 .no_grenades_1	 - Controls delay between tries to link (only affects sound currently, it tries to link every frame)
 .no_grenades_1	 - Controls delay for field to go up again after beeing disabled
 .tp_grenades_1	 - Controls delay of the WORKING status
@@ -120,17 +120,17 @@ void() Field_think =
 		if (IsValidFieldGen(self.demon_one))
 		{
 			self.demon_one.fieldgen_hasfield = FALSE;
-			self.demon_one.fieldgen_field = world;
+			self.demon_one.fieldgen_field = NIL;
 		}
 
 		if (IsValidFieldGen(self.demon_two))
 		{
 			self.demon_two.fieldgen_hasfield = FALSE;
-			self.demon_two.fieldgen_field = world;
+			self.demon_two.fieldgen_field = NIL;
 		}
 
-		self.demon_one = world;
-		self.demon_two = world;
+		self.demon_one = NIL;
+		self.demon_two = NIL;
 		
 		dremove(self);
 
@@ -346,11 +346,11 @@ entity(entity myself) GetMyFieldGen =
 {
 	local entity te;
 	local float foundit;
-	te = world;
+	te = NIL;
 	foundit = FALSE;
 
-	te = find(world, classname, "building_fieldgen");
-	while (te != world && foundit == FALSE)
+	te = find(NIL, classname, "building_fieldgen");
+	while (te && foundit == FALSE)
 	{
 		if (te.real_owner == myself) // is it ours?
 			foundit = TRUE; // yeah, found it
@@ -504,7 +504,7 @@ void(entity tfield, vector where, entity thing) FieldExplosion =
 {
 	if (!tfield.has_camera)
 	{
-		if (thing == world || thing.is_removed) return;
+		if (!thing || thing.is_removed) return;
 
 		local vector whereFX;
 		whereFX = where;
@@ -555,7 +555,7 @@ void(entity gen1, entity gen2) Create_Field =
 	eprint(gen2.fieldgen_field);
 	dprint("done\n"); */
 
-	if (gen1.fieldgen_field != world || gen2.fieldgen_field != world) // CHECK
+	if (gen1.fieldgen_field || gen2.fieldgen_field) // CHECK
 		return;
 
 	// already checked b4 on CanLink -> CanIdle
@@ -573,7 +573,7 @@ void(entity gen1, entity gen2) Create_Field =
 	// generate field
 	tfield = spawn();
 	tfield.classname = "force_field";
-	tfield.owner = world;
+	tfield.owner = NIL;
 	tfield.real_owner = gen1.real_owner; // --> player
 
 	tfield.think = Field_think;
@@ -644,7 +644,7 @@ void(entity gen1, entity gen2) Create_Field =
 	else if (gen1.martyr_enemy)
 		tfield.martyr_enemy = gen2.martyr_enemy;
 	else
-		tfield.martyr_enemy = world;
+		tfield.martyr_enemy = NIL;
 
 /*	// make sure the field goes off instantly if there's somebody in it
 	local entity oldself;
@@ -667,11 +667,11 @@ void(entity gen1, entity gen2) Remove_Field =
 			dremove(gen1.fieldgen_field);
 		}
 		gen1.fieldgen_hasfield = FALSE;
-		gen1.fieldgen_field = world;
+		gen1.fieldgen_field = NIL;
 		if (IsValidFieldGen(gen2))
 		{
 			gen2.fieldgen_hasfield = FALSE;
-			gen2.fieldgen_field = world;
+			gen2.fieldgen_field = NIL;
 		}
 	}
 	else if (IsValidFieldGen(gen2))
@@ -682,13 +682,13 @@ void(entity gen1, entity gen2) Remove_Field =
 			dremove(gen2.fieldgen_field);
 		}
 		gen2.fieldgen_hasfield = FALSE;
-		gen2.fieldgen_field = world;
+		gen2.fieldgen_field = NIL;
 	}
 };
 
 float(entity field) IsValidField =
 {
-	if (field == world)
+	if (!field)
 		return FALSE;
 	
 	if (field.classname != "force_field")
@@ -699,7 +699,7 @@ float(entity field) IsValidField =
 
 float(entity field) IsValidFieldGen =
 {
-	if (field == world)
+	if (!field)
 		return FALSE;
 	
 	if (field.classname != "building_fieldgen")
@@ -983,8 +983,8 @@ void(entity field) Field_Built =
 	field.fieldgen_status = FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)
 	field.fieldgen_hasfield = FALSE;
 	field.no_grenades_1 = time + 3;
-	field.fieldgen_field = world;
-	field.martyr_enemy = world;
+	field.fieldgen_field = NIL;
+	field.martyr_enemy = NIL;
 };
 
 //==============================================================
@@ -994,11 +994,11 @@ entity(entity fieldgen) Find_OtherGen =
 {
 	local entity te;
 	local float foundit;
-	te = world;
+	te = NIL;
 	foundit = FALSE;
 
-	te = find(world, classname, "building_fieldgen");
-	while (te != world && foundit == FALSE)
+	te = find(NIL, classname, "building_fieldgen");
+	while (te && foundit == FALSE)
 	{
 		if (te.real_owner == fieldgen.real_owner) // is it ours?
 		if (te != fieldgen)						  // and not the same generator..
@@ -1023,7 +1023,7 @@ void (vector place) WhereGen =
 		return;
 
 	local float r, foundit;
-	local entity te = world;
+	local entity te = NIL;
 
 	foundit = FALSE;
 
@@ -1032,10 +1032,10 @@ void (vector place) WhereGen =
 		te = find (te, classname, "building_fieldgen");
 		if (te.real_owner == self)
 			foundit = TRUE;
-	} while (te != world && foundit == FALSE);
+	} while (te && foundit == FALSE);
 /*
-	te = find (world, classname, "building_fieldgen");
-	while (te != world && foundit == FALSE)
+	te = find (NIL, classname, "building_fieldgen");
+	while (te && foundit == FALSE)
 	{
 		if (te.real_owner == self) // is it ours?
 			foundit = TRUE; // yeah, found it
@@ -1045,7 +1045,7 @@ void (vector place) WhereGen =
 	}*/
 
 	// check for error getting the other gen
-	if (te == world || te.classname != "building_fieldgen" || foundit == FALSE)
+	if (!te || te.classname != "building_fieldgen" || foundit == FALSE)
 	{
 		RPrint("BUG: Error on field generator placement routine. 'WhereGen()'\n");
 		return;
@@ -1098,7 +1098,7 @@ void() FieldGen_Die =
 	}
 	else
 	{
-	   Remove_Field(self, world); // extra removal, not needed i think...
+	   Remove_Field(self, NIL); // extra removal, not needed i think...
 	}
 
 	sprint(self.real_owner, PRINT_HIGH, "Your field generator was destroyed.\n");
@@ -1122,7 +1122,7 @@ void(entity field) Engineer_UseFieldGen =
 		sprint(self,PRINT_HIGH,"Trapped field generator, have a nice day!\n");
 			
 		deathmsg = DMSG_FGTRAP;
-		T_RadiusDamage (self.building, self.building, FGTRAP_DMG, world);
+		T_RadiusDamage (self.building, self.building, FGTRAP_DMG, NIL);
 //			  TF_T_Damage(self.building, self.building, self.building, 2000, 0, TF_TD_OTHER);
 		return;
 		//}

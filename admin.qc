@@ -10,7 +10,7 @@
 float() Admin_is_Disabled = 
 {
     local string st;
-    st = infokey(world, "no_admin");
+    st = infokey(NIL, "no_admin");
     if (st == "1" || st == "on")
     {
         sprint(self, PRINT_HIGH, "All admin actions are disabled.\n");
@@ -24,12 +24,12 @@ float(entity theAdmin) HasValidAdminTarget =
 {
     if (theAdmin.admin_kick.classname != "player") {
         sprint(theAdmin, PRINT_HIGH, "No user selected!\n");
-        theAdmin.admin_kick = world;
+        theAdmin.admin_kick = NIL;
         return FALSE;
     }
     if (theAdmin.admin_kick.has_disconnected) {
         sprint(theAdmin, PRINT_HIGH, "User has disconnected!\n");
-        theAdmin.admin_kick = world;
+        theAdmin.admin_kick = NIL;
         return FALSE;
     }
 
@@ -44,7 +44,7 @@ float(entity person) Is_Admin =
 		return TRUE;
 	else
 	{
-		pass = infokey(world, "adminpwd");
+		pass = infokey(NIL, "adminpwd");
 		if (pass)
 		{
 			if (infokey(person, "adminpwd") == pass)
@@ -68,7 +68,7 @@ void(entity person) Check_Admin_Password =
     }
 
     local string pass;
-    pass = infokey(world, "adminpwd");
+    pass = infokey(NIL, "adminpwd");
     if (pass)
     {
         if (infokey(person, "adminpwd") == pass)
@@ -100,10 +100,10 @@ void() Admin_Kick_Cycle =
 	loopc = 0;
 	num = FALSE;
 
-    te = world;
+    te = NIL;
 	
     te = find(self.admin_kick, classname, "player");
-	while (te != world && num == FALSE)
+	while (te && num == FALSE)
     {
         num = TRUE;
 
@@ -117,7 +117,7 @@ void() Admin_Kick_Cycle =
     }
     
     
-    //te = world;
+    //te = NIL;
     
     /*while (num == FALSE && loopc < 32)
 	{
@@ -138,9 +138,9 @@ void() Admin_Kick_Cycle =
 		loopc = loopc + 1;
 	}*/
 	//if (loopc >= 32) {
-    if (te == world) {
+    if (!te) {
 		sprint(self, PRINT_HIGH, "No Clients Found!\n");
-        self.admin_kick=world;
+        self.admin_kick=NIL;
 	} else {
 		self.admin_kick = te; //Set current selected person
 		//sprint(self, PRINT_HIGH, "You can type כידכ or גבמ to throw them out. Type חופ again to select someone else.");
@@ -161,15 +161,15 @@ void() Admin_Kick_Person =
     if (Admin_is_Disabled())
         return;
     
-    if (self.admin_kick != world) //Bad
+    if (self.admin_kick) //Bad
 	{
 		//WK Add checks so that it doesn't crash the server!
 		/*if (self.admin_kick.classname != "player") {
-			self.admin_kick = world;
+			self.admin_kick = NIL;
 			return;
 		}
 		if (self.admin_kick.has_disconnected) {
-			self.admin_kick = world;
+			self.admin_kick = NIL;
 			return;
 		}*/
 
@@ -183,7 +183,7 @@ void() Admin_Kick_Person =
 
 		stuffcmd(self.admin_kick, "disconnect\n"); //Kick them!
 
-		self.admin_kick = world; //Clear it //WK BUG! Used to be ==
+		self.admin_kick = NIL; //Clear it //WK BUG! Used to be ==
 	}
     else
         sprint(self, PRINT_HIGH, "No target client selected!\n");
@@ -201,15 +201,15 @@ void() Admin_Ban_Person =
     if (Admin_is_Disabled())
         return;
     
-    if (self.admin_kick != world) //Bad
+    if (self.admin_kick) //Bad
 	{
 		//WK Add checks so that it doesn't crash the server!
 		/*if (self.admin_kick.classname != "player") {
-			self.admin_kick = world;
+			self.admin_kick = NIL;
 			return;
 		}
 		if (self.admin_kick.has_disconnected) {
-			self.admin_kick = world;
+			self.admin_kick = NIL;
 			return;
 		}*/
 
@@ -228,7 +228,7 @@ void() Admin_Ban_Person =
 
 		stuffcmd(self.admin_kick, "disconnect\n"); //Kick them!
 
-		self.admin_kick = world; //Clear it //WK BUG! Used to be ==
+		self.admin_kick = NIL; //Clear it //WK BUG! Used to be ==
 	}
     else
         sprint(self, PRINT_HIGH, "No target client selected!\n");
@@ -252,17 +252,17 @@ void() Admin_Cmd =
     if (Admin_is_Disabled())
         return;
 
-	if (self.admin_kick != world) //Bad
+	if (self.admin_kick) //Bad
 	{
 		//WK Add checks so that it doesn't crash the server!
 		/*if (self.admin_kick.classname != "player") {
             sprint(self, PRINT_HIGH, "No user selected!\n");
-            self.admin_kick = world;
+            self.admin_kick = NIL;
 			return;
 		}
 		if (self.admin_kick.has_disconnected) {
             sprint(self, PRINT_HIGH, "User has disconnected!\n");
-			self.admin_kick = world;
+			self.admin_kick = NIL;
             return;
         }*/
         
@@ -280,7 +280,7 @@ void() Admin_Cmd =
             local string st2;
             
             tf = 0;
-            st2 = infokey(world, "curse");
+            st2 = infokey(NIL, "curse");
             
             if (!st2) 
                 tf = stof(st2);
@@ -435,7 +435,7 @@ void() Admin_Call_Ceasefire =
     if (Admin_is_Disabled())
         return;
 
-	st = infokey(world, "ceasefire");
+	st = infokey(NIL, "ceasefire");
 	if (st == "on")
 	{
 		localcmd("localinfo ceasefire \"off\"\n"); //Turn it off

@@ -168,7 +168,7 @@ void(entity pl) RefreshStatusBar1 =
 	local string s1, s2, s3, s4;
 	local string s5, s6, s7;
 	local entity sent;
-	sent = world;
+	sent = NIL;
 
 	if (pl.StatusBarSize == 0)
 	{
@@ -184,7 +184,7 @@ void(entity pl) RefreshStatusBar1 =
 
 	do
 		sent = find(sent, classname, "building_sentrygun");
-	while (sent != world && sent.real_owner != self);
+	while (sent && sent.real_owner != self);
 
 	if (sent)
 	{
@@ -192,7 +192,7 @@ void(entity pl) RefreshStatusBar1 =
 		s3 = ftos(floor((sent.health / sent.max_health) * 100));
 		s4 = "% health  ";
 
-		if (sent.enemy != world)
+		if (sent.enemy)
 		{
 			s5 = "Attacking: ";
 			s6 = sent.enemy.netname;
@@ -234,7 +234,7 @@ void(entity pl) RefreshStatusBar4 =
 	local string s1, s2, s3, s4;
 	local string s5, s6, s7;
 	local entity sent;
-	sent = world;
+	sent = NIL;
 
 	if (pl.StatusBarSize == 0)
 	{
@@ -250,7 +250,7 @@ void(entity pl) RefreshStatusBar4 =
 
 	do
 		sent = find(sent, classname, "building_tesla");
-	while (sent != world && sent.real_owner != self);
+	while (sent && sent.real_owner != self);
 
 	if (sent)
 	{
@@ -260,7 +260,7 @@ void(entity pl) RefreshStatusBar4 =
 		s2 = TeslaDetailsToString(sent);
 		s3 = ftos(floor((sent.health / sent.max_health) * 100));
 		s4 = "% health  ";
-		if (sent.oldenemy != world)
+		if (sent.oldenemy)
 		{
 			s5 = "Attacking: ";
 			s6 = sent.enemy.netname;

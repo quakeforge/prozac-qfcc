@@ -328,7 +328,7 @@ void() lightning_fire =
 
 	WriteByte (MSG_ALL, SVC_TEMPENTITY);
 	WriteByte (MSG_ALL, TE_LIGHTNING3);
-	WriteEntity (MSG_ALL, world);
+	WriteEntity (MSG_ALL, NIL);
 	WriteCoord (MSG_ALL, p1_x);
 	WriteCoord (MSG_ALL, p1_y);
 	WriteCoord (MSG_ALL, p1_z);
@@ -342,7 +342,7 @@ void() lightning_use =
 	if (lightning_end >= time + 1)
 		return;
 
-	le1 = find( world, target, "lightning");
+	le1 = find( NIL, target, "lightning");
 	le2 = find( le1, target, "lightning");
 	if (!le1 || !le2)
 	{
@@ -368,7 +368,7 @@ void() lightning_use =
 	lightning_fire ();		
 
 // advance the boss pain if down
-	self = find (world, classname, "monster_boss");
+	self = find (NIL, classname, "monster_boss");
 	if (!self)
 		return;
 	self.enemy = activator;

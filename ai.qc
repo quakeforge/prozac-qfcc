@@ -30,7 +30,7 @@ void() wiz_die;
 /*
 
 .enemy
-Will be world if not currently angry at anyone.
+Will be NIL if not currently angry at anyone.
 
 .movetarget
 The next path spot to walk toward.  If .enemy, ignore .movetarget.
@@ -110,8 +110,8 @@ void(entity test) AI_Check_Contents =
 			
             if (self.health > self.max_health)
 				self.health = self.max_health;
-			//T_Damage (self, world, world, 4*self.waterlevel);
-			//TF_T_Damage (self, world, world, 5, 0, TF_TD_ELECTRICITY);
+			//T_Damage (self, NIL, NIL, 4*self.waterlevel);
+			//TF_T_Damage (self, NIL, NIL, 5, 0, TF_TD_ELECTRICITY);
 		}
 	}
 	if (pointcontents(test.origin) == CONTENTS_LAVA)
@@ -121,7 +121,7 @@ void(entity test) AI_Check_Contents =
 			self.dmgtime = time + 1;
 
 			// Asbestos armor helps against lava, but I doubt it'll save you :)
-			//TF_T_Damage (self, world, world, 25, 0, TF_TD_FIRE);
+			//TF_T_Damage (self, NIL, NIL, 25, 0, TF_TD_FIRE);
             if (IsMonster(self))            
             {
                 local string MName;
@@ -163,8 +163,8 @@ void(entity test) AI_Check_Contents =
 		if (self.dmgtime < time)
 		{
 			self.dmgtime = time + 1;
-			//T_Damage (self, world, world, 4*self.waterlevel);
-			//TF_T_Damage (self, world, world, 5, 0, TF_TD_ELECTRICITY);
+			//T_Damage (self, NIL, NIL, 4*self.waterlevel);
+			//TF_T_Damage (self, NIL, NIL, 5, 0, TF_TD_ELECTRICITY);
 
             if (IsMonster(self))            
             {
@@ -200,8 +200,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
+				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
                 
                 //self.think = custom_demon_die;
                 //self.nextthink=time+0.1;
@@ -227,8 +227,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
+				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
                 
                 
                 if (self.ltime > time - 4) //- OfN - if it felt just after summon
@@ -255,8 +255,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
+				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
 
                 self.think = custom_shambler_die;
                 self.nextthink=time+0.1;
@@ -273,8 +273,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, world, world, 4*self.waterlevel);
-				//TF_T_Damage (self, world, world, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
+				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
 
                 self.think = wiz_die;
                 self.nextthink=time+0.1;
@@ -368,7 +368,7 @@ local entity	temp;
 		sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);// play chainsaw drag sound
 
 //RPrint ("t_movetarget\n");
-	self.goalentity = self.movetarget = find (world, targetname, other.target);
+	self.goalentity = self.movetarget = find (NIL, targetname, other.target);
 	self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 	if (!self.movetarget)
 	{
@@ -576,7 +576,7 @@ void() FoundTarget =
 entity (entity scanner) LookAround =
 {
 
-    if (infokey(world,"ceasefire")=="on") //OfN
+    if (infokey(NIL,"ceasefire")=="on") //OfN
 	    return scanner;
 
 	local entity		client;
@@ -720,7 +720,7 @@ float() FindTarget =
 	if (client == self.enemy)
 		return FALSE;
 
-    if (client == world) //- OfN - added, needed?
+    if (!client) //- OfN - added, needed?
         return FALSE; 
 
 	/*if (client.health < 0) // - OfN DONE IN PHARSE?
@@ -818,7 +818,7 @@ float() FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = world;
+			self.enemy = NIL;
 			return FALSE;
 		}
 	} */
@@ -1146,11 +1146,11 @@ void(float dist) ai_run =
 	else
 		movedist = dist;
 
-	if (infokey(world,"ceasefire")=="on") //CH
+	if (infokey(NIL,"ceasefire")=="on") //CH
 	{
         enemy_vis=FALSE;
-        self.enemy=world;
-        self.goalentity=world;
+        self.enemy=NIL;
+        self.goalentity=NIL;
 
         if (self.movetarget)
         	self.th_walk ();
@@ -1163,7 +1163,7 @@ void(float dist) ai_run =
 // see if the enemy is dead
 	if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 	{
-		self.enemy = world;
+		self.enemy = NIL;
 	// FIXME: look all around for other targets
 		/*if (self.oldenemy.health > 0 && !(self.oldenemy.has_disconnected))
 		{
@@ -1182,7 +1182,7 @@ void(float dist) ai_run =
 	}
 
     //- OfN - don't make them hunt for ever if not visible!! -//
-    if (self.enemy != world && random() < 0.010 && !visible2(self,self.enemy))
+    if (self.enemy && random() < 0.010 && !visible2(self,self.enemy))
     {                                       
         enemy_vis=FALSE; 
 

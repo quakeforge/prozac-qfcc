@@ -641,7 +641,7 @@ entity(float ino) Finditem =
 	local string st;
 
 	// Look for the goal
-	tg = find (world, classname, "item_tfgoal");
+	tg = find (NIL, classname, "item_tfgoal");
 	while (tg)
 	{
 		if (tg.goal_no == ino)
@@ -665,7 +665,7 @@ entity(float gno) Findgoal =
 	local string st;
 
 	// Look for the goal
-	tg = find (world, classname, "info_tfgoal");
+	tg = find (NIL, classname, "info_tfgoal");
 	while (tg)
 	{
 		if (tg.goal_no == gno)
@@ -691,7 +691,7 @@ entity(float gno) Findteamspawn =
 	local string st;
 
 	// Look for the goal
-	tg = find (world, classname, "info_player_teamspawn");
+	tg = find (NIL, classname, "info_player_teamspawn");
 	while (tg)
 	{
 		if (tg.goal_no == gno)
@@ -1075,7 +1075,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 	}
 #endif
 
-	if (Goal.goal_result & TFGR_CAUSERESPAWN && Player != world)
+	if (Goal.goal_result & TFGR_CAUSERESPAWN && Player)
 	{
 		if ((Player.playerclass == PC_CUSTOM && Player.done_custom & CUSTOM_FINISHED) || (Player.playerclass != PC_UNDEFINED && Player.playerclass != PC_CUSTOM)) //CH respawn player
 		{
@@ -1128,7 +1128,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 	if (Goal.remove_item_group != 0)
 	{
 	 	// Find all goals
-		te = find (world, classname, "item_tfgoal");
+		te = find (NIL, classname, "item_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.remove_item_group && te.owner == AP)
@@ -1232,7 +1232,7 @@ void (entity Goal, entity Player) RemoveResults =
 	puquad = FALSE;
 	purad = FALSE;
 	// Make sure we don't remove an effect another Goal is also supplying
-	te = find (world, classname, "item_tfgoal");
+	te = find (NIL, classname, "item_tfgoal");
 	while (te)
 	{
 		if ((te.owner == Player) && (te != Goal))
@@ -1311,7 +1311,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	RPrint(Goal.netname);
 #endif
 
-	if (AP != world)
+	if (AP)
 	{
 	#ifdef MAP_DEBUG
 		#ifdef VERBOSE
@@ -1381,7 +1381,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 
 #ifdef MAP_DEBUG
 	#ifdef VERBOSE
-	if (AP != world)
+	if (AP)
 		RPrint("passed.\n   Checking Goal States...");
 	else
 		RPrint("\nChecking Goal States...");
@@ -1424,7 +1424,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	if (Goal.if_group_is_active)
 	{
 		// Find all goals in the group
-		te = find (world, classname, "info_tfgoal");
+		te = find (NIL, classname, "info_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.if_group_is_active)
@@ -1440,7 +1440,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	if (Goal.if_group_is_inactive)
 	{
 		// Find all goals in the group
-		te = find (world, classname, "info_tfgoal");
+		te = find (NIL, classname, "info_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.if_group_is_inactive)
@@ -1456,7 +1456,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	if (Goal.if_group_is_removed)
 	{
 		// Find all goals in the group
-		te = find (world, classname, "info_tfgoal");
+		te = find (NIL, classname, "info_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.if_group_is_removed)
@@ -1507,14 +1507,14 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	#endif
 #endif
 
-	if (AP != world)
+	if (AP)
 	{
 		gotone = FALSE;
 		if (Goal.has_item_from_group)
 		{
 			// Find all goals
-			te = find (world, classname, "item_tfgoal");
-			while (te != world && !gotone)
+			te = find (NIL, classname, "item_tfgoal");
+			while (te && !gotone)
 			{
 				if (te.group_no == Goal.has_item_from_group && te.owner == AP)
 					gotone = TRUE;
@@ -1700,7 +1700,7 @@ void(entity Goal, entity AP, entity ActivatingGoal) AttemptToActivate =
 		// It's all cool. Do the Results.
 		if (ActivatingGoal == Goal)
 			DoResults(Goal, AP, TRUE);
-		else if (ActivatingGoal != world)
+		else if (ActivatingGoal)
 			DoResults(Goal, AP, (ActivatingGoal.goal_result & TFGR_ADD_BONUSES));
 		else
 			DoResults(Goal, AP, 0);
@@ -1842,7 +1842,7 @@ void(entity Goal, entity AP) DoGroupWork =
 
 			allset = 1;
 			// Find all goals
-			tg = find (world, classname, "info_tfgoal");
+			tg = find (NIL, classname, "info_tfgoal");
 			while (tg)
 			{
 				if (tg.group_no == Goal.all_active)
@@ -1883,7 +1883,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.activate_group_no != 0)
 	{
 		// Find all goals
-		tg = find (world, classname, "info_tfgoal");
+		tg = find (NIL, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.activate_group_no)
@@ -1897,7 +1897,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.inactivate_group_no != 0)
 	{
 		// Find all goals
-		tg = find (world, classname, "info_tfgoal");
+		tg = find (NIL, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.inactivate_group_no)
@@ -1911,7 +1911,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.remove_group_no != 0)
 	{
 		// Find all goals
-		tg = find (world, classname, "info_tfgoal");
+		tg = find (NIL, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.remove_group_no)
@@ -1925,7 +1925,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.restore_group_no != 0)
 	{
 		// Find all goals
-		tg = find (world, classname, "info_tfgoal");
+		tg = find (NIL, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.restore_group_no)
@@ -1939,7 +1939,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.remove_spawngroup != 0)
 	{
 		// Find all goals
-		tg = find (world, classname, "info_player_teamspawn");
+		tg = find (NIL, classname, "info_player_teamspawn");
 		while (tg)
 		{
 			if (tg.group_no == Goal.remove_spawngroup)
@@ -1955,7 +1955,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.restore_spawngroup != 0)
 	{
 		// Find all goals
-		tg = find (world, classname, "info_player_teamspawn");
+		tg = find (NIL, classname, "info_player_teamspawn");
 		while (tg)
 		{
 			if (tg.group_no == Goal.restore_spawngroup)
@@ -1997,7 +1997,7 @@ void(entity Item, entity AP) DoItemGroupWork =
 		}
 
 		// Find all goals
-		tg = find (world, classname, "item_tfgoal");
+		tg = find (NIL, classname, "item_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Item.distance)
@@ -2029,16 +2029,16 @@ void(entity Item, entity AP) DoItemGroupWork =
 			RPrint(" has a .speed specified, but no .attack_finished\n");
 		}
 
-		carrier = world;
+		carrier = NIL;
 		// Find all goals
-		tg = find (world, classname, "item_tfgoal");
+		tg = find (NIL, classname, "item_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Item.speed)
 			{
 				if (tg.goal_state != TFGS_ACTIVE)
 					allcarried = FALSE;
-				else if (carrier == world)
+				else if (!carrier)
 					carrier = tg.owner;
 				else if (carrier != tg.owner)
 					allcarried = FALSE;
@@ -2074,15 +2074,15 @@ void(entity Goal, entity AP) DoTriggerWork =
 	// remove targets
 	if (Goal.killtarget)
 	{
-		t = world;
+		t = NIL;
 		do
 		{
 			t = find(t, targetname, Goal.killtarget);
 
-			if (t != world && t != Goal)
+			if (t && t != Goal)
 				remove(t);
 
-		} while ( t != world );
+		} while ( t );
 	}
 
 #ifdef MAP_DEBUG
@@ -2097,12 +2097,12 @@ void(entity Goal, entity AP) DoTriggerWork =
 	// fire targets
 	if (Goal.target)
 	{
-		t = world;
+		t = NIL;
 		activator = AP;
 		do
 		{
 			t = find (t, targetname, Goal.target);
-			if (t == world)
+			if (!t)
 				return;
 			stemp = self;
 			otemp = other;
@@ -2113,7 +2113,7 @@ void(entity Goal, entity AP) DoTriggerWork =
 			self = stemp;
 			other = otemp;
 			activator = AP;
-		} while ( t != world );
+		} while ( t );
 	}
 };
 
@@ -2239,12 +2239,12 @@ void(entity Goal, entity AP, float addb) DoResults =
 	// CTF Map support
 	if (CTF_Map == TRUE)
 	{
-		if (AP != world)
+		if (AP)
 		{
 			if (Goal.goal_no == CTF_FLAG1)
 			{
-				te = find(world, classname, "player");
-				while (te != world)
+				te = find(NIL, classname, "player");
+				while (te)
 				{
 					if (te.team_no == 2)
 					{
@@ -2281,8 +2281,8 @@ void(entity Goal, entity AP, float addb) DoResults =
 			}
 			else if (Goal.goal_no == CTF_FLAG2)
 			{
-				te = find(world, classname, "player");
-				while (te != world)
+				te = find(NIL, classname, "player");
+				while (te)
 				{
 					if (te.team_no == 1)
 					{
@@ -2318,8 +2318,8 @@ void(entity Goal, entity AP, float addb) DoResults =
 			}
 			else if (Goal.goal_no == CTF_DROPOFF1)
 			{
-				te = find(world, classname, "player");
-				while (te != world)
+				te = find(NIL, classname, "player");
+				while (te)
 				{
 					if (te.team_no == 2)
 					{
@@ -2340,8 +2340,8 @@ void(entity Goal, entity AP, float addb) DoResults =
 			}
 			else if (Goal.goal_no == CTF_DROPOFF2)
 			{
-				te = find(world, classname, "player");
-				while (te != world)
+				te = find(NIL, classname, "player");
+				while (te)
 				{
 					if (te.team_no == 1)
 					{
@@ -2363,8 +2363,8 @@ void(entity Goal, entity AP, float addb) DoResults =
 	}
 
 	// Go through all the players and do any results
-	te = find(world, classname, "player");
-	while (te != world)
+	te = find(NIL, classname, "player");
+	while (te)
 	{
 		// Centerprinting
 		if (Goal.broadcast && CTF_Map == FALSE)
@@ -2447,7 +2447,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 		winners = TeamFortress_TeamGetWinner();
 
 		// Stop everyone
-		te = find (world, classname, "player");
+		te = find (NIL, classname, "player");
 		while (te)
 		{
 			te.takedamage = 0;
@@ -2604,9 +2604,9 @@ void() tfgoal_timer_tick =
 		RPrint("   Checking criteria...");
 	#endif
 
-		if (APMeetsCriteria(self, world))
+		if (APMeetsCriteria(self, NIL))
 		{
-			DoResults(self, world, TRUE);
+			DoResults(self, NIL, TRUE);
 		}
 		else
 		{
@@ -2624,7 +2624,7 @@ void() tfgoal_timer_tick =
 // Touch function for the goalitem entity
 void() item_tfgoal_touch =
 {
-    if (infokey(world,"ceasefire")=="on") //OfN
+    if (infokey(NIL,"ceasefire")=="on") //OfN
 	    return;
     
 	local entity te;
@@ -2657,8 +2657,8 @@ void() item_tfgoal_touch =
 					bprint(PRINT_HIGH, other.netname);
 					bprint(PRINT_HIGH, " ретурнед the блуе flag!\n");
 
-					te = find(world, classname, "player");
-					while (te != world)
+					te = find(NIL, classname, "player");
+					while (te)
 					{
 						if (te.team_no == 1)
 							CenterPrint2(te, "\n\n\n", "Your flag was ретурнед!!");
@@ -2694,8 +2694,8 @@ void() item_tfgoal_touch =
 					bprint(PRINT_HIGH, other.netname);
 					bprint(PRINT_HIGH, " ретурнед the ред flag!\n");
 
-					te = find(world, classname, "player");
-					while (te != world)
+					te = find(NIL, classname, "player");
+					while (te)
 					{
 						if (te.team_no == 2)
 							CenterPrint(te, "\n\n\n Your flag was ретурнед!!");
@@ -2902,9 +2902,9 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	local float spyoff;
 	local entity DelayReturn;
 
-	if (Item == world)
+	if (!Item)
 	{
-		RPrint("error: tfgoalitem_RemoveFromPlayer(): Item == world");
+		RPrint("error: tfgoalitem_RemoveFromPlayer(): !Item");
 		return;
 	}
 
@@ -2923,7 +2923,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	spyoff = FALSE;
 	// Remove the deeds from the player
 	// Make sure we don't remove an effect another Goal is also supplying
-	te = find (world, classname, "item_tfgoal");
+	te = find (NIL, classname, "item_tfgoal");
 	while (te)
 	{
 		if ((te.owner == AP) && (te != Item))
@@ -2969,8 +2969,8 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 
 	// Remove AP Modifications
 	// Go through all the players and do any results
-	te = find(world, classname, "player");
-	while (te != world)
+	te = find(NIL, classname, "player");
+	while (te)
 	{
 		if (IsAffectedBy(Item, te, AP))
 		{
@@ -2991,8 +2991,8 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	if (method == 0)		// Dropped by a dying player
 	{
 		// Do messages
-		te = find(world, classname, "player");
-		while (te != world)
+		te = find(NIL, classname, "player");
+		while (te)
 		{
 			if (te.team_no == Item.owned_by)
 			{
@@ -3041,12 +3041,12 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 		else
 		{
 			// Remove the Item
-			Item.owner = world;
+			Item.owner = NIL;
 			dremove(Item);
 			TeamFortress_SetSpeed(AP);
 			return;
 		}
-		Item.owner = world;
+		Item.owner = NIL;
 		TeamFortress_SetSpeed(AP);
 		return;
 	}
@@ -3083,14 +3083,14 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 			tfgoalitem_checkgoalreturn(Item);
 */
 
-			Item.owner = world;
+			Item.owner = NIL;
 			TeamFortress_SetSpeed(AP);
 			return;
 		}
 
 		// Don't remove it, since it may be given away again later
 		Item.solid = SOLID_NOT;
-		Item.owner = world;
+		Item.owner = NIL;
 		TeamFortress_SetSpeed(AP);
 		return;
 	}
@@ -3291,7 +3291,7 @@ void() tfgoalitem_remove =
 		// Do we need to do any CenterPrint2ing?
 		if (self.noise3 || self.noise4)
 		{
-			te = find (world, classname, "player");
+			te = find (NIL, classname, "player");
 			while (te)
 			{
 				if (te.team_no == self.owned_by)
@@ -3367,7 +3367,7 @@ void(entity Item) tfgoalitem_checkgoalreturn =
 		{
 			te = Findgoal(Item.impulse);
 			if (te)
-				AttemptToActivate(te, world, Item);
+				AttemptToActivate(te, NIL, Item);
 		}
 	}
 };
@@ -3593,8 +3593,8 @@ void() CTF_FlagCheck =
 	local float flagcount, pos;
 
 	flagcount = 0;
-	te = find(world, classname, "item_tfgoal");
-	while (te != world)
+	te = find(NIL, classname, "item_tfgoal");
+	while (te)
 	{
 		if (te.goal_no == CTF_FLAG1)
 		{

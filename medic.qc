@@ -125,13 +125,13 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	
 	// remove concussion from player
 	// Try to find a concusstimer entity for this player
-	te = find(world, classname, "timer");
-	while (((te.owner != patient) || (te.think != ConcussionGrenadeTimer)) && (te != world))
+	te = find(NIL, classname, "timer");
+	while (((te.owner != patient) || (te.think != ConcussionGrenadeTimer)) && (te))
 	{
 		te = find(te, classname, "timer");
 	}
 
-	if (te != world)
+	if (te)
 	{
 		SpawnBlood(org, 20);
 		patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_CONCUSSIONED);
@@ -158,13 +158,13 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	// Try to find a hallucination timer entity for this player
 	if (patient.tfstate & TFSTATE_HALLUCINATING)
 	{
-		te = find(world, classname, "timer");
-		while (((te.owner != patient) || (te.think != HallucinationTimer)) && (te != world))
+		te = find(NIL, classname, "timer");
+		while (((te.owner != patient) || (te.think != HallucinationTimer)) && (te))
 		{
 			te = find(te, classname, "timer");
 		}
 
-		if (te != world)
+		if (te)
 		{
 			patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_HALLUCINATING);
 			SpawnBlood(org, 20);
@@ -196,12 +196,12 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	// Try to find a tranquilisation timer entity for this player
 	if (patient.tfstate & TFSTATE_TRANQUILISED)
 	{
-		te = find(world, classname, "timer");
-		while (((te.owner != patient) || (te.think != TranquiliserTimer)) && (te != world))
+		te = find(NIL, classname, "timer");
+		while (((te.owner != patient) || (te.think != TranquiliserTimer)) && (te))
 		{
 			te = find(te, classname, "timer");
 		}
-		if (te != world)
+		if (te)
 		{
 			patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_TRANQUILISED);
 			TeamFortress_SetSpeed(patient);
@@ -259,9 +259,9 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 		// remove the infection
 		patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_INFECTED);
 		
-		te = find(world, netname, "biotimer");
+		te = find(NIL, netname, "biotimer");
 		
-		while (te != world)
+		while (te)
 		{
 			if (te.classname == "timer")
 				if (te.owner == patient)

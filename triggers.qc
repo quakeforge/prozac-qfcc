@@ -453,7 +453,7 @@ void() teleport_touch =
 // put a tfog where the player was
 	spawn_tfog (other.origin);
 
-	t = find (world, targetname, self.target);
+	t = find (NIL, targetname, self.target);
 	if (!t)
 		objerror ("couldn't find target");
 		

@@ -6,7 +6,7 @@ typedef struct
 {	int	pad[28];
 	int	self;
 	int	other;
-	int	world;
+	int	NIL;
 	float	time;
 	float	frametime;
 	float	force_retouch;

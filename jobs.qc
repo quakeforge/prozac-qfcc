@@ -278,7 +278,7 @@ void() ChaplanInspire = {
 //entity(entity start, .string fld, string match) find = #18;
 void() ChaplanGuides = {
 	local entity head;
-	head = find(world,classname,"player");
+	head = find(NIL,classname,"player");
 	while (head) {
 		if (head.inspirator == self) {
 			// Create the Lightning 
@@ -292,7 +292,7 @@ void() ChaplanGuides = {
 			WriteCoord (MSG_ONE, head.origin_x);
 			WriteCoord (MSG_ONE, head.origin_y);
 			WriteCoord (MSG_ONE, head.origin_z + 8);
-			head = world;
+			head = NIL;
 		}
 		else //We can only draw one lightning. :p
 			head = find(head,classname,"player");
@@ -505,8 +505,8 @@ void() JudokaRearm =
 		////Fix feign while stolen
 		self.enemy.weapon = 0;
 		////Fix reloading
-		te = find(world, netname, "reloadtimer");
-		while (te != world)
+		te = find(NIL, netname, "reloadtimer");
+		while (te)
 		{
 			if (te.classname == "timer" && te.owner == self.enemy) {
 				oself = self;
@@ -600,8 +600,8 @@ void() JobJudoka =
 			trace_ent.current_weapon = WEAP_SNIPER_RIFLE;
 
 		//If already reloading, remove that timer
-		te = find(world, netname, "reloadtimer");
-		while (te != world)
+		te = find(NIL, netname, "reloadtimer");
+		while (te)
 		{
 			if (te.classname == "timer" && te.owner == trace_ent) {
 				oself = self;
@@ -723,9 +723,9 @@ void() GuerillaExplode =
       // if has_tesla is 1 print nothing, as this is set by DetonateMines() and GuerillaThink
       
 	if (time < self.heat + ACTIVATE_TIME) //If not charged, do less damage when blowing up
-	   T_RadiusDamage (self, self.owner, 80, world); //- damage was 80
+	   T_RadiusDamage (self, self.owner, 80, NIL); //- damage was 80
 	else 
-       T_RadiusDamage (self, self.owner, MINE_DMG, world); //- damage was 160
+       T_RadiusDamage (self, self.owner, MINE_DMG, NIL); //- damage was 160
 
     // num_mines is the number of mines the player has
     self.owner.num_mines = self.owner.num_mines - 1;
@@ -749,9 +749,9 @@ void(entity mine_owner) DetonateMines =
 	local entity e;
 
 	// Find any mine
-	e = find(world, netname, "land_mine");
+	e = find(NIL, netname, "land_mine");
 	
-    while (e != world)
+    while (e)
     {
        if(e.owner == mine_owner) {
          e.heat = time;
@@ -819,7 +819,7 @@ void() GuerillaThink = //Every second see if we have enemy nearby
 		return;
 	}
 	head = findradius(self.origin,GUERILLA_RADIUS);//OfN it was 150
-	while (head != world && !finished) {
+	while (head && !finished) {
 		if (head.classname == "player") {
 			//Mines detonate on either enemies or yourself
 			if (CanDamage(head,self)) {
@@ -859,7 +859,7 @@ void() GuerillaTouch = //What happens when someone runs it over
 
 void() GuerillaTossTouch = 
 {
-	if (other != world) {
+	if (other) {
 		GuerillaTouch();
 		return;
 	}

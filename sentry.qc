@@ -65,7 +65,7 @@ void()  lvl1_sentry_stand =[ $lvl1_stand1, 	lvl1_sentry_stand ] {RemoveGlow(); S
 void()	lvl1_sentry_atk1 =[	$lvl1_shoot1,	lvl1_sentry_atk3 ] 
 {
 	ai_face();
-	if (self.enemy == world || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
+	if (!self.enemy || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
 		lvl1_sentry_stand();
 	else if (self.ammo_shells <= 0)
 		lvl1_sentry_stand();
@@ -87,7 +87,7 @@ void()  lvl2_sentry_stand=	[  $lvl2_stand1, 	lvl2_sentry_stand ] {RemoveGlow(); 
 void()	lvl2_sentry_atk1 =  [	$lvl2_shoot1,	lvl2_sentry_atk2	] 
 {
 	ai_face();
-	if (self.enemy == world || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
+	if (!self.enemy || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
 		lvl2_sentry_stand();
 	else if (self.ammo_shells <= 0)
 		lvl2_sentry_stand();
@@ -114,7 +114,7 @@ void()  lvl3_sentry_stand=	[   $lvl3_stand1, 	lvl3_sentry_stand ] {RemoveGlow();
 void()	lvl3_sentry_atk1 =  [	$lvl3_shoot1,	lvl3_sentry_atk2  ] 
 {
 	ai_face();
-	if (self.enemy == world || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
+	if (!self.enemy || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
 		lvl3_sentry_stand();
 	else if (self.ammo_shells <= 0 && self.ammo_rockets <= 0)
 		lvl3_sentry_stand();
@@ -140,7 +140,7 @@ void()	lvl3_sentry_atk3 =[	$lvl3_stand1,	lvl3_sentry_atk1	]
 void()	lvl3_sentry_atk4 =  [	$lvl3_stand1,	lvl3_sentry_atk5  ] 
 {
 	ai_face();
-	if (self.enemy == world || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
+	if (!self.enemy || self.enemy.health <= 0 || /* !visible(self.enemy) || */ self.enemy.has_disconnected == TRUE) //CH
 		lvl3_sentry_stand();
 	else if (self.ammo_shells <= 0 && self.ammo_rockets <= 0)
 		lvl3_sentry_stand();
@@ -164,7 +164,7 @@ void() Sentry_Rotate =
 	if (self.tf_items & NIT_TURRET)
 		testpoint_z -= 40;
 	if (pointcontents (testpoint) == CONTENTS_SOLID) {
-		TF_T_Damage (self, world, world, self.health + 100,
+		TF_T_Damage (self, NIL, NIL, self.health + 100,
 					 TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		return;
 	}
@@ -244,12 +244,12 @@ float(entity targ) rangesentry =
 
 float() Sentry_FindTarget =
 {
-	self.enemy = world; //CH for sbar
+	self.enemy = NIL; //CH for sbar
 
-	if (infokey(world,"ceasefire")=="on")
+	if (infokey(NIL,"ceasefire")=="on")
 		return FALSE;
     
-    local entity client = world;
+    local entity client = NIL;
 	local float	r, gotone, loopc;
 
 	//WK Hack to get floating sentry working
@@ -319,9 +319,9 @@ float() Sentry_FindTarget =
     {
         local entity te;
 
-        te = find(world, message,"XX");
+        te = find(NIL, message,"XX");
 
-        while (te != world && gotone == FALSE)
+        while (te && gotone == FALSE)
         {
             gotone = TRUE;
 
@@ -395,7 +395,7 @@ float() Sentry_FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = world;
+			self.enemy = NIL;
 			return FALSE;
 		}
 	}*/
@@ -514,7 +514,7 @@ float() Sentry_Fire =
     // this on the end..
     //self.attack_finished = time + SENTRY_UNLOCKTIME; // don't rotate immediately after target invisible or dead
 
-	if (infokey(world,"ceasefire")=="on") //Cyto
+	if (infokey(NIL,"ceasefire")=="on") //Cyto
 			return FALSE;
 
 	//WK Stop gun from shooting at dead spies
@@ -639,7 +639,7 @@ float() Sentry_Fire =
 		{
 			local float damg;
 			damg = random() * 50 + 120;
-			T_RadiusDamage(self, self, damg, world);
+			T_RadiusDamage(self, self, damg, NIL);
 			WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 			WriteByte (MSG_MULTICAST, TE_EXPLOSION);
 			WriteCoord (MSG_MULTICAST, self.origin_x);
@@ -779,7 +779,7 @@ void() Sentry_Touch =
 			Sentry_Die();
 			return;
 		}
-		if (other == world) { //The eagle has landed!
+		if (!other) { //The eagle has landed!
 		//	sprint(self.real_owner, PRINT_HIGH, "The eagle has landed!\n");
 			self.flags = self.flags | FL_ONGROUND;
 			self.movetype = MOVETYPE_STEP;

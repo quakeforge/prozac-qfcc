@@ -128,7 +128,7 @@ void() RotateTargets =
 
    makevectors (self.angles);
 
-   ent = find( world, targetname, self.target);
+   ent = find( NIL, targetname, self.target);
    while( ent )
       {
       if ( ent.rotate_type == OBJECT_SETORIGIN )
@@ -171,7 +171,7 @@ void() RotateTargetsFinal =
    {
    local entity ent;
 
-   ent = find( world, targetname, self.target);
+   ent = find( NIL, targetname, self.target);
    while( ent )
       {
       ent.velocity = '0 0 0';
@@ -187,7 +187,7 @@ void() SetTargetOrigin =
    {
    local entity ent;
 
-   ent = find( world, targetname, self.target);
+   ent = find( NIL, targetname, self.target);
    while( ent )
       {
       if ( ent.rotate_type == OBJECT_MOVEWALL )
@@ -209,7 +209,7 @@ void() LinkRotateTargets =
    local vector tempvec;
 
    self.oldorigin = self.origin;
-   ent = find( world, targetname, self.target);
+   ent = find( NIL, targetname, self.target);
    while( ent )
       {
       if ( ent.classname == "rotate_object" )
@@ -241,7 +241,7 @@ void( float amount ) SetDamageOnTargets =
    {
    local entity ent;
 
-   ent = find( world, targetname, self.target);
+   ent = find( NIL, targetname, self.target);
    while( ent )
       {
       if ( ent.classname == "trigger_hurt" )
@@ -556,7 +556,7 @@ void() rotate_train_next =
    self.state = STATE_NEXT;
 
    current = self.goalentity;
-   targ = find (world, targetname, self.path );
+   targ = find (NIL, targetname, self.path );
    if ( targ.classname != "path_rotate" )
       objerror( "Next target is not path_rotate" );
 
@@ -717,7 +717,7 @@ void() rotate_train_find =
 
    // the first target is the point of rotation.
    // the second target is the path.
-   targ = find ( world, targetname, self.path);
+   targ = find ( NIL, targetname, self.path);
    if ( targ.classname != "path_rotate" )
       objerror( "Next target is not path_rotate" );
 
@@ -1054,7 +1054,7 @@ void() rotate_door_group_reversedirection =
    if ( self.group )
       {
       name = self.group;
-      self = find( world, group, name);
+      self = find( NIL, group, name);
       while( self )
          {
          rotate_door_reversedirection();

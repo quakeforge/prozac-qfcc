@@ -633,7 +633,7 @@ void() TeamFortress_Inventory =
 	}
 
 	// GoalItems
-	tg = find (world, classname, "item_tfgoal");
+	tg = find (NIL, classname, "item_tfgoal");
 	while (tg)
 	{
 		if (tg.owner == self)
@@ -697,7 +697,7 @@ if (!invis_only)
 
     if (self.has_sentry)
     {
-        tg = find(world, classname, "building_sentrygun");
+        tg = find(NIL, classname, "building_sentrygun");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -716,7 +716,7 @@ if (!invis_only)
     }
     if (self.has_tesla)
     {
-        tg = find(world, classname, "building_tesla");
+        tg = find(NIL, classname, "building_tesla");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -735,7 +735,7 @@ if (!invis_only)
     }
     if (self.has_dispenser)
     {
-        tg = find(world, classname, "building_dispenser");
+        tg = find(NIL, classname, "building_dispenser");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -754,7 +754,7 @@ if (!invis_only)
     }
     if (self.has_sensor)
     {
-        tg = find(world, classname, "building_sensor");
+        tg = find(NIL, classname, "building_sensor");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -773,7 +773,7 @@ if (!invis_only)
     }
     if (self.has_camera)
     {
-        tg = find(world, classname, "building_camera");
+        tg = find(NIL, classname, "building_camera");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -792,7 +792,7 @@ if (!invis_only)
     }
     if (self.has_teleporter > 0)
     {
-        tg = find(world, classname, "building_teleporter");
+        tg = find(NIL, classname, "building_teleporter");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -811,7 +811,7 @@ if (!invis_only)
     }
     if (self.has_fieldgen > 0)
     {
-        tg = find(world, classname, "building_fieldgen");
+        tg = find(NIL, classname, "building_fieldgen");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -836,7 +836,7 @@ if (!invis_only)
         sprint (self, PRINT_HIGH, ac);
         sprint (self, PRINT_HIGH, " summoned: ");
 
-		tg = find(world, classname, "monster_demon1");
+		tg = find(NIL, classname, "monster_demon1");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -849,7 +849,7 @@ if (!invis_only)
 			tg = find(tg, classname, "monster_demon1");
 		}
 		
-		tg = find(world, classname, "monster_army");
+		tg = find(NIL, classname, "monster_army");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -862,7 +862,7 @@ if (!invis_only)
 			tg = find(tg, classname, "monster_army");
 		}
 
-		tg = find(world, classname, "monster_shambler");
+		tg = find(NIL, classname, "monster_shambler");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -875,7 +875,7 @@ if (!invis_only)
 			tg = find(tg, classname, "monster_shambler");
 		}
 
-		tg = find(world, classname, "monster_wizard");
+		tg = find(NIL, classname, "monster_wizard");
 		while (tg)
 		{
 			if (tg.real_owner == self)
@@ -931,7 +931,7 @@ if (!invis_only)
 
     if (self.aura) //- OfN - If we have an aura it should tell
     {
-        if (self.crusader_inspirator != world && !(self.crusader_inspirator.has_disconnected) && self.crusader_inspirator.classname == "player")
+        if (self.crusader_inspirator && !(self.crusader_inspirator.has_disconnected) && self.crusader_inspirator.classname == "player")
         {
             sprint(self,PRINT_HIGH,"\n");
             sprint(self,PRINT_HIGH,self.crusader_inspirator.netname);
@@ -1575,8 +1575,8 @@ void(entity p) TeamFortress_SetSpeed =
 
 		// 2nd, see if any GoalItems are slowing them down
 		tf = 0;
-		te = find (world, classname, "item_tfgoal");
-		while ((te != world) && (tf == 0)) {
+		te = find (NIL, classname, "item_tfgoal");
+		while ((te) && (tf == 0)) {
 			if (te.owner == p) {
 				if (te.goal_activation & TFGI_SLOW) {
 					tf = 1;
@@ -1929,7 +1929,7 @@ void() TeamFortress_SetEquipment =
 	self.items = self.items | kept_items;
 
 	// Start the Cheat-Checking Cyclic Event if CheatChecking Toggleflag is on
-	if (!stof(infokey(world,"nospeed")) && (toggleflags&TFLAG_CHEATCHECK))
+	if (!stof(infokey(NIL,"nospeed")) && (toggleflags&TFLAG_CHEATCHECK))
 	{
 		te = spawn(); //Cyto
 		te.nextthink = time + 2;
@@ -2686,7 +2686,7 @@ void() TeamFortress_RemoveTimers =
 	self.leg_damage = 0;
 	self.is_undercover = 0;
 	self.is_building = 0;
-	self.building = world;
+	self.building = NIL;
 
 	//CH
 	stuffcmd (self, "throwgren\n"); //Throw any grenades
@@ -2701,8 +2701,8 @@ void() TeamFortress_RemoveTimers =
 	}
 
 	// Remove all the timer entities for this player
-	te = find(world, classname, "timer");
-	while (te != world)
+	te = find(NIL, classname, "timer");
+	while (te)
 	{
 		//WK Judokatimer is a little weird
 		if (te.netname == "judokatimer" && te.think == JudokaRearm)
@@ -2727,7 +2727,7 @@ void() TeamFortress_RemoveTimers =
 				stuffcmd(self, "v_cshift 0\n");
 				stuffcmd(self, "r_norefresh 0;wait;echo;wait;echo;wait;echo;wait;echo\n");
 				dremove(te);
-				te = find(world, classname, "timer");
+				te = find(NIL, classname, "timer");
 			}
 			//WK Support for the curse timer
 			else if (te.netname == "bastardtimer")
@@ -2735,7 +2735,7 @@ void() TeamFortress_RemoveTimers =
 				if (self.has_disconnected == TRUE)
 				{
 					dremove(te);
-					te = find(world, classname, "timer");
+					te = find(NIL, classname, "timer");
 				}
 				else 
 					te = find(te, classname, "timer");
@@ -2743,7 +2743,7 @@ void() TeamFortress_RemoveTimers =
 			else
 			{
 				dremove(te);
-				te = find(world, classname, "timer");
+				te = find(NIL, classname, "timer");
 			}
 		}
 		else
@@ -2751,7 +2751,7 @@ void() TeamFortress_RemoveTimers =
 	}
 
 	// Drop any GoalItems
-	te = find (world, classname, "item_tfgoal");
+	te = find (NIL, classname, "item_tfgoal");
 	while (te)
 	{
 		if (te.owner == self)
@@ -2779,7 +2779,7 @@ void() TeamFortress_RemoveTimers =
 	}
 
 	// Reset detpacks being disarmed to not being disarmed
-	te = find (world, classname, "detpack");
+	te = find (NIL, classname, "detpack");
 	while (te)
 	{
 		if ((te.weaponmode == 1) && (te.enemy == self))
@@ -2922,7 +2922,7 @@ void() TeamFortress_CheckClassStats =
 		self.no_grenades_2 = 0;
 	// Check health
 	if (self.health > self.max_health && !(self.items & IT_SUPERHEALTH))
-		TF_T_Damage (self, world, world, (self.max_health - self.health), 0, TF_TD_NOSOUND);
+		TF_T_Damage (self, NIL, NIL, (self.max_health - self.health), 0, TF_TD_NOSOUND);
 	if (self.health < 0)
 		T_Heal(self, (self.health - self.health), 0);
 
@@ -3244,10 +3244,10 @@ void(float tno) RemoveOldAmmobox =
 		index = num_world_ammoboxes - MAX_WORLD_AMMOBOXES;
 	}
 
-	old = find(world, classname, "ammobox");
+	old = find(NIL, classname, "ammobox");
 	while (index > 0)
 	{
-		if (old == world)
+		if (!old)
 		{
 //			RPrint("*** ERROR: RemoveOldAmmobox. ***\n");
 //			RPrint("*** Shaka thought he fixed this ***\n");
@@ -3531,7 +3531,7 @@ void() NormalGrenadeTouch =
 void() NormalGrenadeExplode =
 {
 	deathmsg = DMSG_GREN_HAND;
-	T_RadiusDamage (self, self.owner, 180, world);
+	T_RadiusDamage (self, self.owner, 180, NIL);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -3554,7 +3554,7 @@ void() TeamFortress_DisplayDetectionItems =
 {
 	local entity Goal, te;
 
-	Goal = find(world, classname, "info_tfdetect");
+	Goal = find(NIL, classname, "info_tfdetect");
 	if (!Goal)
 		return;
 

@@ -130,7 +130,7 @@ void() door_fire =
 			{
 				door_go_down ();
 				self = self.enemy;
-			} while ( (self != starte) && (self != world) );
+			} while ( (self != starte) && (self) );
 			self = oself;
 			return;
 		}
@@ -142,7 +142,7 @@ void() door_fire =
 	{
 		door_go_up ();
 		self = self.enemy;
-	} while ( (self != starte) && (self != world) );
+	} while ( (self != starte) && (self) );
 	self = oself;
 };
 

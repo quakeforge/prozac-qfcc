@@ -306,9 +306,9 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	local float ping;
 
 	mirror = 0;
-	if (infokey(world,"ceasefire")=="on") //Cyto
+	if (infokey(NIL,"ceasefire")=="on") //Cyto
 		return;
-	if (targ == world)
+	if (!targ)
 		return;
 	if (!targ.takedamage)
 		return;
@@ -467,8 +467,8 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	//WK Slight mirror demon protection
 	//Do 2 points of damage to a friendly teammate shooting a friendly demon
 	//SB 2 damage? no way, we're doing the full mirror damage
-	//- Ofn- if ((targ.classname == "monster_demon1" || targ.classname == "monster_army" || targ.classname == "monster_shambler") && targ.real_owner != world)
-	if (IsMonster(targ) && targ.real_owner != world) {
+	//- Ofn- if ((targ.classname == "monster_demon1" || targ.classname == "monster_army" || targ.classname == "monster_shambler") && targ.real_owner)
+	if (IsMonster(targ) && targ.real_owner) {
         targ.armorvalue = 1;
 		if (T_flags & TF_TD_NOTTEAM)
 		{
@@ -607,7 +607,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	}
 
 	// KNOCKATION CALCULATION
-	if ( (inflictor != world) && (targ.movetype == MOVETYPE_WALK) )
+	if ( (inflictor) && (targ.movetype == MOVETYPE_WALK) )
 	{
 		// Nail Gren doesn't knock ppl
 		//WK People with Aspect of HWGUY are immune to knockation
@@ -683,7 +683,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			deathmsg = DMSG_DETPACK_DIS;
 
 		//WK Autotrigger martyr - OfN - Now exp.body
-		if ((targ.cutf_items & CUTF_EXPBODY) && attacker != world && targ.is_abouttodie == FALSE)
+		if ((targ.cutf_items & CUTF_EXPBODY) && attacker && targ.is_abouttodie == FALSE)
 		{
 			//oldself = self;
 			//self = targ;
@@ -695,7 +695,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			return;
 		}// /////// OFTEN ///////////
 
-		//WK Make sure the world doesn't have a bastard level
+		//WK Make sure the NIL doesn't have a bastard level
 		if (attacker.classname != "player" || targ.classname != "player") {
 			//bprint(PRINT_MEDIUM,"Non player death or kill\n");
 			Killed(targ, attacker);
@@ -710,7 +710,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			local string st;
 			local float threshold;
 			threshold = 0;
-			st = infokey(world, "curse");
+			st = infokey(NIL, "curse");
 			if (st)
 				threshold = stof(st);
 

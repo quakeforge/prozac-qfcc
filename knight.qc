@@ -257,7 +257,7 @@ void() knight_die =
 	    sprint(self.real_owner,PRINT_HIGH,"Your knight is dead.\n");
 	    self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
 	    self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
-        self.real_owner.demon_one = world;
+        self.real_owner.demon_one = NIL;
     } 
     
     self.has_holo = 0; // we r dead, mark us

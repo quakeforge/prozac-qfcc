@@ -17,7 +17,7 @@ void() Kick_My_Owner =
 
 	//Don't kick if cheats are off
 	off = FALSE;
-	nospeed = infokey(world,"nospeed");
+	nospeed = infokey(NIL,"nospeed");
 	if (nospeed) {
 		off = stof(nospeed);
 	}
@@ -28,7 +28,7 @@ void() Kick_My_Owner =
 	sprint(self.owner, PRINT_HIGH,"\nYou have been кицкед for цхеатинг.\nIf you were not cheating, I apologize.\nHave a nice day.\n");
 
 	ip = infokey(self.owner,"ip");
-	if (infokey(world,"infip") == ip) { // second infraction. ban.
+	if (infokey(NIL,"infip") == ip) { // second infraction. ban.
 		localcmd("addip ");
 		localcmd(ip);
 		localcmd("\n");
@@ -71,7 +71,7 @@ void () TeamFortress_CheckForSpeed =
 	local float off;
 
 	off = FALSE;
-	nospeed = infokey(world,"nospeed");
+	nospeed = infokey(NIL,"nospeed");
 	if (nospeed) {
 		off = stof(nospeed);
 	}

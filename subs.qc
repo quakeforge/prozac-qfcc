@@ -252,7 +252,7 @@ void() SUB_UseTargets =
 	// kill the killtagets
 	if (self.killtarget)
 	{
-		t = world;
+		t = NIL;
 		do
 		{
 			t = find (t, targetname, self.killtarget);
@@ -266,7 +266,7 @@ void() SUB_UseTargets =
 	if (self.target)
 	{
 		act = activator;
-		t = world;
+		t = NIL;
 		do
 		{
 			t = find (t, targetname, self.target);

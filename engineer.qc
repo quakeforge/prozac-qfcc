@@ -72,7 +72,7 @@ void() LaserBolt_Touch =
 	if (other == self.owner)
 		return;		
 
-	if (other == self.enemy && self.enemy != world)
+	if (other == self.enemy && self.enemy)
 		return;		// don't explode on same person twice
 
 	if (pointcontents(self.origin) == CONTENTS_SKY)
@@ -189,7 +189,7 @@ void() EMPExplode =
 	}
 
 	deathmsg = DMSG_GREN_EMP_AMMO;
-	T_RadiusDamage (self, self.enemy, expsize, world);
+	T_RadiusDamage (self, self.enemy, expsize, NIL);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -445,13 +445,13 @@ void() TeamFortress_EngineerBuild =
 		TeamFortress_SetSpeed(self);
 
 		// Remove the timer
-		te = find(world, netname, "build_timer");
+		te = find(NIL, netname, "build_timer");
 		while (te)
 		{
 			if (te.owner == self)
 			{
 				dremove(te);
-				te = world;
+				te = NIL;
 			}
 			else
 			{
@@ -808,7 +808,7 @@ void() TeamFortress_FinishedBuilding =
 
 	oldself = self;
 	self = self.owner;
-	oldself.owner = world;
+	oldself.owner = NIL;
 	oldself.real_owner = self;
 
 	self.is_building = 0;
@@ -854,7 +854,7 @@ void() TeamFortress_FinishedBuilding =
 		oldself.real_owner = self;			// The Engineer owns this item
 		oldself.colormap = self.colormap;	// Set the Color
 		oldself.takedamage = DAMAGE_AIM;
-		oldself.owner = world;
+		oldself.owner = NIL;
 
 		// Put some ammo in the Dispenser
 		oldself.ammo_shells = ceil(self.ammo_shells * 0.25);
@@ -985,8 +985,8 @@ void() TeamFortress_FinishedBuilding =
         oldself.no_grenades_2 = 0; // cloak touch delay reset
 
 		oldself.touch = Tesla_Touch;
-		oldself.enemy = world;
-		oldself.oldenemy = world; //CH for sbar
+		oldself.enemy = NIL;
+		oldself.oldenemy = NIL; //CH for sbar
 
 		//Set all initial tesla values here
 		oldself.maxammo_shells = 0; //Voltage == 0
@@ -1056,7 +1056,7 @@ void() TeamFortress_FinishedBuilding =
 		oldself.real_owner = self;			// The Engineer owns this item
 		oldself.colormap = self.colormap;	// Set the Color
 		oldself.takedamage = DAMAGE_AIM;
-		oldself.owner = world;
+		oldself.owner = NIL;
 		oldself.movetype = MOVETYPE_TOSS;
 
 		oldself.solid = SOLID_BBOX;
@@ -1101,7 +1101,7 @@ void() TeamFortress_FinishedBuilding =
 		oldself.real_owner = self;			// The Engineer owns this item
 		oldself.colormap = self.colormap;	// Set the Color
 		oldself.takedamage = DAMAGE_AIM;
-		oldself.owner = world;
+		oldself.owner = NIL;
 		oldself.movetype = MOVETYPE_TOSS;
 
 		oldself.solid = SOLID_BBOX;
@@ -1136,7 +1136,7 @@ void() T_Dispenser =
 		TF_T_Damage(self, self, self, 200, 0, TF_TD_OTHER);
 
 	// Ignore any engineer working on this dispenser
-	if (other.building == world && other.building_wait < time)
+	if (!other.building && other.building_wait < time)
 	{
 		// Pop up the menu
 		other.current_menu = MENU_DISPENSER;
@@ -1160,7 +1160,7 @@ void() T_Dispenser =
 
 void() Dispenser_Explode =
 {    
-    T_RadiusDamage(self.demon_one, self.demon_one, self.has_holo, world);
+    T_RadiusDamage(self.demon_one, self.demon_one, self.has_holo, NIL);
 
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -1189,7 +1189,7 @@ void() Dispenser_Die =
     newmis.demon_one = self;
     newmis.nextthink = time + 0.1;
     newmis.think = Dispenser_Explode;
-    /*T_RadiusDamage(self, self, damg, world); // OfN - Fixme, stack overflow??*/
+    /*T_RadiusDamage(self, self, damg, NIL); // OfN - Fixme, stack overflow??*/
 
 
 	sprint(self.real_owner, PRINT_HIGH, "Your dispenser was destroyed.\n");
@@ -1546,7 +1546,7 @@ void() CheckDistance =
 		CenterPrint(self.owner, "\n");
 		self.owner.menu_count = MENU_REFRESH_RATE;
 		self.owner.current_menu = MENU_DEFAULT;
-		self.owner.building = world;
+		self.owner.building = NIL;
 		dremove(self);
 		return;
 	}

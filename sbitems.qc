@@ -58,7 +58,7 @@ void() SwitchToCamera =
 	if (self.is_cameraviewing)
 		return;
 	
-	camera = find(world, classname, "building_camera");
+	camera = find(NIL, classname, "building_camera");
 	if (camera.real_owner == self)
 		done = TRUE;
 	while (!done)
@@ -66,11 +66,11 @@ void() SwitchToCamera =
 		camera = find(camera, classname, "building_camera");
 		if (camera.real_owner == self)
 			done = TRUE;
-		if (camera == world)
+		if (!camera)
 			done = TRUE;
 	}
 	
-	if (camera == world)
+	if (!camera)
 		return;
 		
 	msg_entity = self;
@@ -117,7 +117,7 @@ void() PrimeC4Det =
 {
 	local entity te;
 
-	if (infokey (world, "no_spam") == "on")
+	if (infokey (NIL, "no_spam") == "on")
 	{
 		sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
 		return;
@@ -319,7 +319,7 @@ void() SBBuildSensor =
 
 void() MotionSensorTossTouch = 
 {
-	if (other != world || other == self.real_owner)
+	if (other || other == self.real_owner)
 		return;
 	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
 	{
@@ -370,7 +370,7 @@ void() MotionSensorIdle =
 
 float() MotionSensorFindTarget =
 {
-	local entity client = world;
+	local entity client = NIL;
 	local float	r, gotone, loopc;
 
 	// Try a few checks to make it react faster
@@ -417,7 +417,7 @@ float() MotionSensorFindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = world;
+			self.enemy = NIL;
 			return FALSE;
 		}
 	}*/ // OfN - wtf does this?
@@ -493,7 +493,7 @@ void() MotionSensorSpawn =
 	newmis.classname = "building_sensor";
 	newmis.netname = "motion_sensor";
 	setorigin (newmis, self.origin);
-	newmis.owner = world;
+	newmis.owner = NIL;
 	newmis.real_owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '0 0 0';
@@ -547,7 +547,7 @@ void() MotionSensorDie =
 
 void() AntiGravGrenadeExplode =
 {	
-	T_RadiusAntiGrav (self, self.owner, 100, world);
+	T_RadiusAntiGrav (self, self.owner, 100, NIL);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -607,10 +607,10 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 						// Turn on antigrav
 						// If it's already on, restore it to full time
 						// Try to find a concusstimer entity for this player
-						te = find(world, classname, "timer");
-						while (((te.owner != head) || (te.think != AntiGravGrenadeTimer)) && (te != world))
+						te = find(NIL, classname, "timer");
+						while (((te.owner != head) || (te.think != AntiGravGrenadeTimer)) && (te))
 							te = find(te, classname, "timer");
-						if (te != world)
+						if (te)
 						{
 							head.gravity = 0.3 * random();
 							te.health = 100;
