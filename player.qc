@@ -1521,6 +1521,8 @@ float(entity e) EF_GlowColor =
 				else if (te.owned_by == 2)
 					ret |= EF_RED;
 			}
+
+			te = find(te, classname, "item_tfgoal");
 		}
 
 		if (e.super_damage_finished)
