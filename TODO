@@ -6,6 +6,7 @@ I = in progress
 W = waiting on other work
 - = not pertinent anymore
 
+ o  Add all fixes / map extensions between TF 2.5 and 2.9
  o  Fix assault cannon death while firing = can't fire again until re-AC bug.
  X  Can't switch from LG with 0 cells to airfist.
  X  Scout while customizing bug.
