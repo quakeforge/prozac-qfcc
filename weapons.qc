@@ -863,7 +863,11 @@ void(float inAuto) W_FireMedikit =
 						trace_ent.health = trace_ent.max_health;
 				}
 			}
-		} 
+		} else {
+			trace_ent.axhitme = 1;
+			SpawnBlood (org, 30);
+			T_Damage (trace_ent, self, self, 10);
+		}
 	}
 	else
 	{	
