@@ -150,8 +150,6 @@ void(entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDam
 void(entity bastard,float threshold) createBastard;
 //CY Tinker
 void() DoTinker;
-//WW Needed for the Dismantling
-void(entity targ, entity attacker) ClientObituary;
 
 // WK --------------
 

@@ -217,11 +217,11 @@ void() Menu_Army2 =
 		if (self.demon_one.army_ready == 0)
 			st += "\<none  \>\n";
 		else if (self.demon_one.army_ready == 1)
-			st += "\<small \>\n";
+			st += "\<short \>\n";
 		else if (self.demon_one.army_ready == 2)
 			st += "\<medium\>\n";
 		else if (self.demon_one.army_ready == 3)
-			st += "\<large \>\n";
+			st += "\<long  \>\n";
 	}
 
 	st += "\x98.. Reports:        ";

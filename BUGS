@@ -15,3 +15,4 @@
 - sentries/teslas should check their pointcontents every frame, and blow up if they're out of the map
 - topcolor gets reset every time you respawn (?), even though it shouldn't be.  ditto for skin?
 - prematch shouldn't force autoteam when it's done
+- sometimes ID doesn't work.  this may be because impulses are unreliable though :/

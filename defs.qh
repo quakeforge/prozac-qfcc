@@ -1320,3 +1320,6 @@
 #include "ofndefs.qh"
 
 #define AVG(a,b) (((a) + (b)) * 0.5)
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define BOUND(a,b,c) (MAX((a), MIN((b), (c))))

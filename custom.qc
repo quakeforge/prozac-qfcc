@@ -74,20 +74,17 @@ float(float targteam, float attackteam) Teammate =
 {
 	local float teammask;
 
-	if ( !teamplay ) return FALSE;
-	if ( !targteam ) return FALSE;
-	if ( targteam == attackteam ) return TRUE;
-	if ( number_of_teams < 3 ) return FALSE;
+	if (!teamplay) return FALSE;
+	if (!targteam) return FALSE;
+	if (targteam == attackteam) return TRUE;
+	if (number_of_teams < 3) return FALSE;
 
-	if      ( targteam == 1 ) teammask = 1;
-	else if ( targteam == 2 ) teammask = 2;
-	else if ( targteam == 3 ) teammask = 4;
-	else if ( targteam == 4 ) teammask = 8;
+	teammask = 1 << (targteam - 1);
 
-	if      ( attackteam == 1 && (friends1_mask & teammask)) return TRUE;
-	else if ( attackteam == 2 && (friends2_mask & teammask)) return TRUE;
-	else if ( attackteam == 3 && (friends3_mask & teammask)) return TRUE;
-	else if ( attackteam == 4 && (friends4_mask & teammask)) return TRUE;
+	if      (attackteam == 1 && (friends1_mask & teammask)) return TRUE;
+	else if (attackteam == 2 && (friends2_mask & teammask)) return TRUE;
+	else if (attackteam == 3 && (friends3_mask & teammask)) return TRUE;
+	else if (attackteam == 4 && (friends4_mask & teammask)) return TRUE;
 
 	return FALSE;
 };

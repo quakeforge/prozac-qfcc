@@ -697,22 +697,22 @@ void(entity themonster) KillTheMonster =
 
 string(entity thebuilding) GetBuildingName =
 {
-    if (thebuilding.classname == "building_dispenser")
-        return "dispenser";
-    if (thebuilding.classname == "building_sentrygun")
-        return "sentry gun";
-    if (thebuilding.classname == "building_tesla")
-        return "tesla sentry";
-    if (thebuilding.classname == "building_sensor")
-        return "motion sensor";
-    if (thebuilding.classname == "building_camera")
-        return "security camera";
-    if (thebuilding.classname == "building_teleporter")
-        return "teleporter";
-    if (thebuilding.classname == "building_fieldgen")
-        return "field generator";
-
-    return "unknown stuff";
+	if (thebuilding.classname == "building_dispenser")
+		return "dispenser";
+	else if (thebuilding.classname == "building_sentrygun")
+		return "sentry gun";
+	else if (thebuilding.classname == "building_tesla")
+		return "tesla sentry";
+	else if (thebuilding.classname == "building_sensor")
+		return "motion sensor";
+	else if (thebuilding.classname == "building_camera")
+		return "security camera";
+	else if (thebuilding.classname == "building_teleporter")
+		return "teleporter pad";
+	else if (thebuilding.classname == "building_fieldgen")
+		return "field generator";
+	else
+	    return "unknown building (BUG)";
 };
 
 // soldiers don't target unoffensive buildings, or cloaked teslas!

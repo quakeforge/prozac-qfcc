@@ -21,6 +21,15 @@
 
 */
 
+#define ARMY_RANGE_NONE_MIN 0
+#define ARMY_RANGE_NONE_MAX 0
+#define ARMY_RANGE_SMALL_MIN 75
+#define ARMY_RANGE_SMALL_MAX 100
+#define ARMY_RANGE_MEDIUM_MIN 175
+#define ARMY_RANGE_MEDIUM_MAX 200
+#define ARMY_RANGE_LONG_MIN 250
+#define ARMY_RANGE_LONG_MAX 275
+
 // Function Prototypes
 // Whenever a function is added within the grunty, add it up here
 
@@ -218,8 +227,7 @@ void() grunty_run =
     if (self.super_time <= time)
 	{
 		sprint(self.real_owner, PRINT_HIGH, "Hello, commander! I am currently running at speed ");
-		st = ftos(self.custom_speed);
-		sprint(self.real_owner, PRINT_HIGH, st);
+		sprint(self.real_owner, PRINT_HIGH, ftos(self.custom_speed));
 		sprint(self.real_owner, PRINT_HIGH, " towards ");
 		sprint(self.real_owner, PRINT_HIGH, self.goalentity.netname);
 		sprint(self.real_owner, PRINT_HIGH, "\n");
@@ -961,6 +969,7 @@ void() GruntyCheckFire =
 //        RPrint("NONE\n");
 	}
 };
+float statehack;
 
 void() GRun =
 {
@@ -1011,8 +1020,14 @@ void() GRun =
 	/* - OfN -if (self.enemy.classname == "monster_shambler" || self.enemy.weapons_carried & WEAP_ASSAULT_CANNON)
 		if (self.has_teleporter == 0)
 			self.has_teleporter = 3;*/
+
+	// 0% > 75% health, 50% < 25% health, range in between
+	local float chance = (BOUND (0.5, 1 - (self.health / self.max_health), 0.75) - 0.50) / 8;
+//	dprint ("retreat chance: " + ftos (chance) + "\n");
+	if (random () < chance)
+		self.has_teleporter = 3; // we're getting wasted, better retreat
 	
-	if (random() < 0.02) // to prevent us from strafing or whatever forever.
+	if (random () < 0.02) // to prevent us from strafing or whatever forever.
 		self.has_teleporter = 0;
 	
 	// Test to see if we want to do an evasive maneuver
@@ -1042,22 +1057,70 @@ void() GRun =
         {
             self.has_teleporter = 0;
             botmovedist(vectoyaw(v_forward), dist); // move
-            return;
         }
+		else
+		{
+			if (self.is_malfunctioning == 2 && self.enemy != world) {
+				local float dist = vlen (self.origin - self.enemy.origin);
+				local float desired_min, desired_max;
 
-        botmovedist(vectoyaw(v_forward), dist); // move
-		if (random() * 20 < 1 && self.enemy != world)				// if we get a score
-		{															// of one on a d20,
-			local float r;											// special
-			r = random();
-			if (r < 0.25)
-				self.has_teleporter = -1; // left
-			else if (r < 0.5)
-				self.has_teleporter = 1; // right
-			else if (r < 0.75)
-				self.has_teleporter = 2; // jump!
-			else
-				self.has_teleporter = 3; // italian style!
+				if (self.army_ready == 0) {
+					desired_min = ARMY_RANGE_NONE_MIN;
+					desired_max = ARMY_RANGE_NONE_MAX;
+				} else if (self.army_ready == 1) {
+					desired_min = ARMY_RANGE_SMALL_MIN;
+					desired_max = ARMY_RANGE_SMALL_MAX;
+				} else if (self.army_ready == 2) {
+					desired_min = ARMY_RANGE_MEDIUM_MIN;
+					desired_max = ARMY_RANGE_MEDIUM_MAX;
+				} else { // if (self.army_ready == 3)
+					desired_min = ARMY_RANGE_LONG_MIN;
+					desired_max = ARMY_RANGE_LONG_MAX;
+				}
+
+				local string diststring = "dist: " + ftos (dist)
+										  + "  min: " + ftos (desired_min)
+										  + "  max: " + ftos (desired_max)
+										  + "  action: ";
+				if (dist < desired_min) {
+					if (statehack != -1) {
+//						dprint ("me: " + vtos (self.origin) + "  goal: " + vtos (self.goalentity.origin) + "\n");
+						dprint (diststring + "back off\n");
+						statehack = -1;
+					}
+					botmovedist (vectoyaw (v_forward), dist * -0.1); // back off
+				} else if (dist > desired_max) {
+                    if (statehack != 1) {
+//                        dprint ("me: " + vtos (self.origin) + "  goal: " + vtos (self.goalentity.origin) + "\n");
+                        dprint (diststring + "close in\n");
+                        statehack = 1;
+                    }
+					botmovedist (vectoyaw (v_forward), dist); // close in
+				} else {
+                    if (statehack != 0) {
+//                        dprint ("me: " + vtos (self.origin) + "  goal: " + vtos (self.goalentity.origin) + "\n");
+                        dprint (diststring + "do nothing *cough*\n");
+                        statehack = 0;
+                    }
+					if (random () < 0.1)
+						botmovedist (vectoyaw (v_forward), dist);
+				}
+			} else
+		        botmovedist(vectoyaw(v_forward), dist); // move
+
+			if (random() < 0.05 && self.enemy != world)				// if we get a score
+			{															// of one on a d20,
+				local float r;											// special
+				r = random();
+				if (r < 0.25)
+					self.has_teleporter = -1; // left
+				else if (r < 0.5)
+					self.has_teleporter = 1; // right
+				else if (r < 0.75)
+					self.has_teleporter = 2; // jump!
+				else
+					self.has_teleporter = 3; // italian style!
+			}
 		}
 	}
 };

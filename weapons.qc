@@ -1198,9 +1198,8 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 {
 	local vector direction;
 	local vector src;
-	
-//	makevectors (self.v_angle); // umm, shouldn't this be dir?
-	makevectors (dir);
+
+	makevectors (self.v_angle);
 
 	src = self.origin + v_forward * 10;
 	src_z = self.absmin_z + self.size_z * 0.7;
@@ -1213,10 +1212,7 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 		direction += AVG (crandom(), crandom()) * spread_x * v_right;
 		direction += AVG (crandom(), crandom()) * spread_y * v_up;
 
-		if (self.current_weapon & WEAP_ASSAULT_CANNON)
-			traceline (src, src + direction * 2048, FALSE, self); //WK 2048
-		else
-			traceline (src, src + direction * 2024, FALSE, self); //WK 2048A
+		traceline (src, src + direction * 2048, FALSE, self);
 
 		if (trace_fraction == 1.0)
 			TraceAttack (0, direction);
@@ -1290,7 +1286,8 @@ void() W_FireSuperShotgun =
 		dir = normalize (dir - self.origin);
 	}
 	deathmsg = DMSG_SSHOTGUN;
-	FireBullets (12, dir, '0.05 0.05 0'); //WK 14, 0.14, 0.08
+	FireBullets (6, dir, '0.05 0.05 0'); //WK 14, 0.14, 0.08
+	FireBullets (6, dir, '0.05 0.05 0');
 };
 
 
@@ -1515,12 +1512,12 @@ void() W_FireAssaultCannon =
 		self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 	dir = aim (self, 100000);
 	deathmsg = DMSG_ASSAULTCANNON;
-	//WK FireBullets (5, dir, '0.1 0.1 0');
+	FireBullets (5, dir, '0.15 0.10 0');
 	//We want more of a cone of fire...
 //	FireBullets (5, dir, '0.2 0.1 0');
 //	FireBullets (5, dir, '0.4 0.1 0');
-	FireBullets (7, dir, '0.16 0.12 0');
-	FireBullets (3, dir, '0.12 0.09 0');
+//	FireBullets (7, dir, '0.16 0.12 0');
+//	FireBullets (3, dir, '0.12 0.09 0');
 };
 
 /*
