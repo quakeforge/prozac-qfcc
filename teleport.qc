@@ -98,10 +98,8 @@ float(entity targ) Teleporter_check_person =
 			CenterPrint(other, "There is no other teleporter!\n");
 		return FALSE;
 	}
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //To not cause loops
 		return FALSE;
-#endif
 	if (targ == world)//that would be bad.
 		return FALSE;
 	if (targ.done_custom & CUSTOM_BUILDING)
@@ -199,10 +197,6 @@ void() Teleporter_Die =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };

@@ -78,9 +78,7 @@ void() MirvGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
-#endif
 
 	self.solid = SOLID_NOT;
 
@@ -200,9 +198,7 @@ void(float timer) TeamFortress_SetDetpack =
 	self.weaponmodel = "";
 	self.weaponframe = 0;
 
-#ifdef QUAKE_WORLD
 	TeamFortress_SetSpeed(self);
-#endif
 
 	self.pausetime = time + WEAP_DETPACK_SETTIME;
 
@@ -254,9 +250,7 @@ void(float krac) TeamFortress_DetpackStop =
 	self.current_weapon = self.weapon;
 	W_SetCurrentAmmo();
 
-#ifdef QUAKE_WORLD
 	TeamFortress_SetSpeed(self);
-#endif
 
 	self.pausetime = time;
 };
@@ -271,9 +265,7 @@ void() TeamFortress_DetpackSet =
 	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_CANT_MOVE);
     self.owner.is_detpacking = 0;
 
-#ifdef QUAKE_WORLD
 	TeamFortress_SetSpeed(self.owner);
-#endif
 
 #ifdef SPEECH
 	stuffcmd(self.owner, "play speech/demo_dp.wav\n");
@@ -290,11 +282,7 @@ void() TeamFortress_DetpackSet =
 	newmis.owner = self.owner;
     newmis.origin = self.owner.origin - '0 0 23';
 	newmis.movetype = MOVETYPE_BOUNCE;
-#ifdef QUAKE_WORLD
 	newmis.solid = SOLID_BBOX;
-#else
-	newmis.solid = SOLID_TRIGGER;
-#endif
 	newmis.classname = "detpack";
     newmis.flags = FL_ITEM;
 		
@@ -368,18 +356,14 @@ void() TeamFortress_DetpackExplode =
 		WriteCoord (MSG_BROADCAST, self.origin_x);
 		WriteCoord (MSG_BROADCAST, self.origin_y);
 		WriteCoord (MSG_BROADCAST, self.origin_z);
-	#ifdef QUAKE_WORLD
 		multicast (self.origin, MULTICAST_PHS);
-	#endif
 
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_LAVASPLASH);
 		WriteCoord (MSG_BROADCAST, self.origin_x);
 		WriteCoord (MSG_BROADCAST, self.origin_y);
 		WriteCoord (MSG_BROADCAST, self.origin_z);
-	#ifdef QUAKE_WORLD
 		multicast (self.origin, MULTICAST_PHS);
-	#endif
 
     //- OfN - Should a detpack make the same explosion a gren does? dont think so...
     #ifdef extra_detpack_explosions
@@ -402,9 +386,7 @@ void() TeamFortress_DetpackExplode =
                 WriteCoord (MSG_BROADCAST, rexp_x);
                 WriteCoord (MSG_BROADCAST, rexp_y);
                 WriteCoord (MSG_BROADCAST, rexp_z);
-            #ifdef QUAKE_WORLD
                 multicast (rexp, MULTICAST_PHS);
-            #endif
             }
             loopc = loopc + 1;
         }
@@ -449,11 +431,7 @@ void() TeamFortress_DetpackExplode =
 	// This code handles a disarming scout with protection
 	if (self.weaponmode == 1)     	  // Detpack was being disarmed
 	{   
-#ifdef QUAKE_WORLD
 		TeamFortress_SetSpeed(self.enemy);
-#else
-		self.enemy.pausetime = time;		
-#endif
 
 		dremove(self.oldenemy);  	 // CountDown
 		dremove(self.observer_list); //	Disarm timer
@@ -486,11 +464,7 @@ void() TeamFortress_DetpackTouch =
 	other.tfstate = other.tfstate | TFSTATE_CANT_MOVE;
 
 	sprint(other, PRINT_HIGH, "Disarming detpack...\n");
-#ifdef QUAKE_WORLD
 	TeamFortress_SetSpeed(other);
-#else
-	other.pausetime = time + WEAP_DETPACK_DISARMTIME;
-#endif
 
 	// Spawn disarming entity
 	disarm = spawn();
@@ -528,11 +502,7 @@ void() TeamFortress_DetpackDisarm =
         self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_CANT_MOVE);
 
 	// Reset speeds of scout
-#ifdef QUAKE_WORLD
-    	TeamFortress_SetSpeed(self.owner);
-#else
-    	self.owner.pausetime = time;		
-#endif
+	TeamFortress_SetSpeed(self.owner);
 	//}
 
 	dremove(self.enemy.oldenemy);	// remove count down

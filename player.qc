@@ -1286,9 +1286,7 @@ void() PlayerDie =
 		{
 			if (te.owner == self && te.think == BioInfection_Decay)
 			{
-			#ifdef QUAKE_WORLD
 				logfrag(te.enemy, self);
-			#endif
 				te.enemy.real_frags = te.enemy.real_frags + 1;
 			 	if (!(toggleflags & TFLAG_TEAMFRAGS))
 					te.enemy.frags = te.enemy.real_frags;

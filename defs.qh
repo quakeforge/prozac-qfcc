@@ -119,13 +119,9 @@
 #define SVC_CDTRACK		32 
 #define SVC_SELLSCREEN		33 
 
-#ifdef QUAKE_WORLD
-
-	#define SVC_SMALLKICK	 34
-	#define SVC_BIGKICK	 35
-	#define SVC_MUZZLEFLASH	 39
-
-#endif
+#define SVC_SMALLKICK	 34
+#define SVC_BIGKICK	 35
+#define SVC_MUZZLEFLASH	 39
 
 
 #define TE_SPIKE			0 
@@ -180,11 +176,7 @@
 // just define BROADCAST as MULTICAST for QW 1.5
 
 #define MSG_MULTICAST   4
-#ifdef QUAKE_WORLD
-    #define MSG_BROADCAST 	MSG_MULTICAST
-#else
-    #define MSG_BROADCAST	0 	// unreliable to all
-#endif
+#define MSG_BROADCAST 	MSG_MULTICAST
 
 #define MSG_ONE			1 		// reliable to one (msg_entity)
 #define MSG_ALL			2 		// reliable to all

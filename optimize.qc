@@ -19,11 +19,9 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 {
 		if (targ.classname != "player")
 			return FALSE;
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 		if (chkcease)
 			if (infokey(world,"ceasefire")=="on")
 				return FALSE;
-#endif
 		if (targ.playerclass == PC_UNDEFINED)
 			return FALSE;
 		if (targ.done_custom & CUSTOM_BUILDING)
@@ -172,12 +170,10 @@ bprint(PRINT_HIGH, "\n");
 		else
 			bprint(PRINT_HIGH, "Error in Give_Frags_Out!\n");
 			
-		#ifdef QUAKE_WORLD
-			if (fraggetlog)
-			{
-				logfrag (targ, atk);
-			}
-		#endif
+		if (fraggetlog)
+		{
+			logfrag (targ, atk);
+		}
 		if (chkvamp)
 		{
 			if (teamplay & TEAMPLAY_VAMPIRE)

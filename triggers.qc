@@ -361,9 +361,7 @@ void(vector org) spawn_tfog =
 	WriteCoord (MSG_BROADCAST, org_x);
 	WriteCoord (MSG_BROADCAST, org_y);
 	WriteCoord (MSG_BROADCAST, org_z);
-#ifdef QUAKE_WORLD
 	multicast (org, MULTICAST_PHS);
-#endif
 };
 
 
@@ -594,27 +592,8 @@ Only used on start map.
 */
 void() trigger_setskill =
 {
-#ifdef QUAKE_WORLD
 	dremove(self);
 	return;
-#else
-	if (CheckExistence() == FALSE)
-	{
-		dremove(self);
-		return;
-	}
-
-	if (deathmatch)
-	{
-		dremove(self);
-		return;
-	}
-	else
-	{
-		InitTrigger ();
-		self.touch = trigger_skill_touch;
-	}
-#endif
 };
 
 

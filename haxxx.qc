@@ -1188,15 +1188,11 @@ void() SBHackDotTimerThink =
 
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-		#ifdef QUAKE_WORLD
-			WriteByte (MSG_MULTICAST, 3);
-		#endif
+		WriteByte (MSG_MULTICAST, 3);
 		WriteCoord (MSG_BROADCAST, org_x);
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
-		#ifdef QUAKE_WORLD
-			multicast (org, MULTICAST_PVS);
-		#endif
+		multicast (org, MULTICAST_PVS);
 	}
 	
 	self.heat = self.heat - 1;

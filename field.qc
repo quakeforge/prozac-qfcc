@@ -1058,9 +1058,7 @@ void() FieldGen_Die =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
-#endif
 
     // check if field should be removed..
     local entity othergen;

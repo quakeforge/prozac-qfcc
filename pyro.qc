@@ -266,12 +266,8 @@ void() NapalmGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 
 
 };
@@ -372,14 +368,6 @@ void() FlameFollow =
 
 	self.health = self.health - 1;
 
-#ifndef QUAKE_WORLD
-	dir_x = (random() * boundsize_x/2)+boundsize_x/4;
-	dir_y = (random() * boundsize_y/2)+boundsize_y/4;
-	dir_z = (random() * boundsize_z/3)+boundsize_z/2;
-	vtemp = vtemp + dir;
-	setorigin(self, vtemp);
-#else
-
 	// if player is moving too fast, hide flames
 	if (vlen(self.enemy.velocity) < 50)
 	{
@@ -400,8 +388,6 @@ void() FlameFollow =
 		self.model = string_null;
 		setmodel(self, self.model);		
 	}
-
-#endif
 
 	//traceline(self.origin,self.origin,TRUE,self);
 
@@ -867,16 +853,12 @@ void() T_IncendiaryTouch =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it
         FieldExplosion(other,self.origin,self);
 
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 

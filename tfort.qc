@@ -1641,23 +1641,9 @@ void(entity p) TeamFortress_SetSpeed =
 			p.maxspeed = p.maxspeed + 200;
 	}
 
-	#ifdef QUAKE_WORLD
 		stuffcmd(p,"cl_backspeed 1000\n");
 		stuffcmd(p,"cl_forwardspeed 1000\n");
 		stuffcmd(p,"cl_sidespeed 1000\n");
-	#else
-		sp = ftos(p.maxspeed);
-		stuffcmd(p,"cl_backspeed ");
-		stuffcmd(p,sp);
-		stuffcmd(p,"\n");
-		stuffcmd(p,"cl_forwardspeed ");
-		stuffcmd(p,sp);
-		stuffcmd(p,"\n");
-		sp = ftos(p.maxspeed);
-		stuffcmd(p,"cl_sidespeed ");
-		stuffcmd(p,sp);
-		stuffcmd(p,"\n");
-	#endif
 };
 
 //=========================================================================
@@ -1740,7 +1726,6 @@ void(entity p) TeamFortress_SetSkin =
 
 	st = "base"; // just in case
 
-#ifdef QUAKE_WORLD
 	if (p.skin != PC_UNDEFINED)
 	{
 	//WK Figure out what Mr.Custom Should look like
@@ -1841,7 +1826,6 @@ void(entity p) TeamFortress_SetSkin =
 	stuffcmd(p, st);
 	stuffcmd(p, "\n");
 	setinfokey(p, "skin", st);
-#endif
 };
 
 //=========================================================================
@@ -3567,12 +3551,8 @@ void() NormalGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 //=========================================================================

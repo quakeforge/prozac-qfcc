@@ -591,15 +591,11 @@ void() FlareGrenadeExplode =
 
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-		#ifdef QUAKE_WORLD
-			WriteByte (MSG_MULTICAST, 3);
-		#endif
+		WriteByte (MSG_MULTICAST, 3);
 		WriteCoord (MSG_BROADCAST, org_x);
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
-		#ifdef QUAKE_WORLD
-			multicast (org, MULTICAST_PVS);
-		#endif
+		multicast (org, MULTICAST_PVS);
 
     self.effects = self.effects | EF_DIMLIGHT;
 
@@ -786,9 +782,7 @@ void() ExpBodyThink =
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
-  #ifdef QUAKE_WORLD
    	multicast (self.origin, MULTICAST_PHS);
-  #endif
 
     deathmsg = DMSG_EXPBODY;
     T_RadiusDamage (self.owner, self.owner, EXPBODY_DMG, self.owner);
@@ -807,9 +801,7 @@ void(vector where) spawnFOG =
 	WriteCoord (MSG_BROADCAST, where_x);
 	WriteCoord (MSG_BROADCAST, where_y);
 	WriteCoord (MSG_BROADCAST, where_z);
-#ifdef QUAKE_WORLD
 	multicast (where, MULTICAST_PHS);
-#endif
 };
 
 //=========================================================//
@@ -869,9 +861,7 @@ float() CheckEnemyDismantle =
     sprint(self.building.real_owner, PRINT_HIGH, st);
     sprint(self.building.real_owner, PRINT_HIGH, "!\n");
 
-#ifdef QUAKE_WORLD
     logfrag(self, self.building.real_owner);
-#endif
 	
     self.real_frags = self.real_frags + 1; 
 	if (!(toggleflags & TFLAG_TEAMFRAGS))

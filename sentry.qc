@@ -236,10 +236,8 @@ float() Sentry_FindTarget =
 {
 	self.enemy = world; //CH for sbar
 
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on")
 		return FALSE;
-#endif
     
     local entity client;
 	local float	r, gotone, loopc;
@@ -487,12 +485,8 @@ void() Sentry_Die =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 float() Sentry_Fire =
@@ -510,10 +504,8 @@ float() Sentry_Fire =
     // this on the end..
     //self.attack_finished = time + SENTRY_UNLOCKTIME; // don't rotate immediately after target invisible or dead
 
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //Cyto
 			return FALSE;
-#endif
 
 	//WK Stop gun from shooting at dead spies
 	if (self.enemy.is_feigning)

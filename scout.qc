@@ -104,9 +104,7 @@ void() FlashGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
-#endif
 
 	// Find all people in area
 	te = findradius(self.origin, 200);
@@ -163,11 +161,7 @@ void() FlashGrenadeExplode =
 		CamProjectileLockOff();
 #endif
 
-#ifdef QUAKE_WORLD
 	dremove(self);
-#else
-	BecomeExplosion();
-#endif
 };
 
 
@@ -200,12 +194,8 @@ void() ConcussionGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 //=========================================================================
@@ -894,9 +884,7 @@ void() CaltropGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-	#ifdef QUAKE_WORLD
-		multicast (self.origin, MULTICAST_PHS);
-	#endif
+	multicast (self.origin, MULTICAST_PHS);
 	
 	self.solid = SOLID_NOT;
 	*/

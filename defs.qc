@@ -17,11 +17,9 @@ entity	world;
 float		time;
 float		frametime;
 
-#ifdef QUAKE_WORLD
 entity	newmis;				// if this is set, the entity that just
 							// run created a new missile that should
 							// be simulated immediately
-#endif
 
 float		force_retouch;		// force all entities to touch triggers
 								// next frame.  this is needed because
@@ -32,12 +30,6 @@ float		force_retouch;		// force all entities to touch triggers
 								// decremented each frame, so set to 2
 								// to guarantee everything is touched
 string	mapname;
-
-#ifndef QUAKE_WORLD
-float		deathmatch;
-float		coop;
-float		teamplay;
-#endif
 
 float		serverflags;		// propagated from level to level, used to
 								// keep track of completed episodes
@@ -113,9 +105,7 @@ void		end_sys_globals;		// flag for structure dumping
 .vector		absmin, absmax;	// *** origin + mins / maxs
 
 .float		ltime;		// local time for entity
-#ifdef QUAKE_WORLD
 .float		lastruntime;	// *** to allow entities to run out of sequence
-#endif
 
 .float		movetype;
 .float		solid;
@@ -125,10 +115,6 @@ void		end_sys_globals;		// flag for structure dumping
 .vector		velocity;
 .vector		angles;
 .vector		avelocity;
-
-#ifndef QUAKE_WORLD
-.vector		punchangle;		// temp angle adjust from damage or recoil
-#endif
 
 .string		classname;		// spawn function
 .string		model;
@@ -173,10 +159,6 @@ void		end_sys_globals;		// flag for structure dumping
 
 .float		fixangle;
 .vector		v_angle;		// view / targeting angle for players
-#ifndef QUAKE_WORLD
-.float		idealpitch;		// calculated pitch angle for lookup up slopes
-#endif
-
 
 .string		netname;
 
@@ -240,10 +222,6 @@ void		end_sys_fields;			// flag for structure dumping
 // globals
 //
 float	movedist;
-
-#ifndef QUAKE_WORLD
-float	gameover;		// set when a rule exits
-#endif
 
 string	string_null;	// null string, nothing should be held here
 float		empty_float;
@@ -485,38 +463,6 @@ string(string s) precache_model		= #20;
 void(entity client, string s)stuffcmd 	= #21;
 entity(vector org, float rad) findradius  = #22;
 
-#ifndef QUAKE_WORLD
-//void(string s) bprint				= #23;
-//void(entity client, string s) sprint 	= #24;
-void(...) nqw_bprint				= #23;
-void(...) nqw_sprint 				= #24;
-
-// used for QW compatibility
-/*
-void(float level, string s) bprint;
-void(entity client, float level, string s) sprint;
-
-void(float level, string s1, string s2) bprint2;
-void(entity client, float level, string s1, string s2) sprint2;
-
-void(float level, string s1, string s2, string s3) bprint3;
-void(entity client, float level, string s1, string s2, string s3) sprint3;
-
-void(float level, string s1, string s2, string s3, string s4) bprint4;
-void(entity client, float level, string s1, string s2, string s3, string s4) sprint4;
-
-void(float level, string s1, string s2, string s3, string s4, string s5) bprint5;
-void(entity client, float level, string s1, string s2, string s3, string s4, string s5) sprint5;
-
-void(float level, string s1, string s2, string s3, string s4, string s5, string s6) bprint6;
-void(entity client, float level, string s1, string s2, string s3, string s4, string s5, string s6) sprint6;
-
-void(float level, string s1, string s2, string s3, string s4, string s5, string s6, string s7) bprint7;
-void(entity client, float level, string s1, string s2, string s3, string s4, string s5, string s6, string s7) sprint7;
-
-void(float level, string s1, string s2, string s3, string s4, string s5, string s6, string s7, string s8) bprint8;
-*/
-#else
 //void(float level, string s) bprint	= #23;
 //void(entity client, float level, string s) sprint = #24;
 void(...) bprint					= #23;
@@ -541,7 +487,6 @@ void(...) bprint7					= #23;
 void(...) sprint7 				= #24;
 
 void(...) bprint8					= #23;
-#endif
 
 void(string s) dprint				= #25;
 string(float f) ftos				= #26;
@@ -612,13 +557,11 @@ void(entity e) setspawnparms			= #78;		// set parm1... to the
 												// values at level start
 												// for coop respawn
 
-#ifdef QUAKE_WORLD
 void(entity killer, entity killee) logfrag = #79;	// add to stats
 string(entity e, string key) infokey	= #80;		// get a key value (world = serverinfo)
 float(string s) stof				= #81;		// convert string to float
 void(vector where, float set) multicast 	= #82;  // sends the temp message to a set
 												// of clients, possibly in PVS or PHS
-#endif
 void (entity ent, string key, string value) setinfokey = #102;
 float (string path, string mode) cfopen = #103;
 void (float desc) cfclose = #104;
@@ -873,10 +816,8 @@ float team4nextspam;
 // CTF stuff
 float CTF_Map;
 
-#ifdef QUAKE_WORLD
 float		coop;
 float       rj;					// Rocket Jump Modifier
-#endif
 
 
 
@@ -1129,12 +1070,6 @@ float live_camera;
 
 float already_chosen_map;
 float triggered_cycle;
-
-#ifndef QUAKE_WORLD
-entity		newmis;				// if this is set, the entity that just
-								// run created a new missile that should
-								// be simulated immediately
-#endif
 
 // grappling hook variables
 

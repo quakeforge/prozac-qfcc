@@ -177,11 +177,7 @@ void() TeamFortress_C4DetpackTouch =
 	other.tfstate = other.tfstate | TFSTATE_CANT_MOVE;
 
 	sprint(other, PRINT_HIGH, "Disarming detpack...\n");
-#ifdef QUAKE_WORLD
 	TeamFortress_SetSpeed(other);
-#else
-	other.pausetime = time + WEAP_DETPACK_DISARMTIME;
-#endif
 
 	// Spawn disarming entity
 	disarm = spawn();
@@ -539,12 +535,8 @@ void() MotionSensorDie =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 
@@ -568,12 +560,8 @@ void() AntiGravGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 // Bounces the enemy a bit and screws over their gravity :)

@@ -25,9 +25,7 @@ string(float tno) TeamFortress_TeamGetColorString;
 void(entity Player) TeamFortress_TeamShowMemberClasses;
 float(float tno) TeamFortress_TeamGetIllegalClasses;
 float(float tno) TeamFortress_TeamIsCivilian;
-#ifdef QUAKE_WORLD
 void(entity p) SetTeamName;
-#endif
 string(float tno) GetTrueTeamName;
 
 //-------- OfN ---------------------------------//
@@ -121,7 +119,6 @@ void(float tno) TeamFortress_TeamSetColor =
 	}
 };
 
-#ifdef QUAKE_WORLD
 string(float tno) GetTeamName =
 {
 	local string st;
@@ -201,9 +198,7 @@ string(float tno) GetTrueTeamName =
 	else 
 		return "ERROR";
 };
-#endif
 
-#ifdef QUAKE_WORLD
 void(entity p) SetTeamName =
 {
 	local string st;
@@ -214,7 +209,6 @@ void(entity p) SetTeamName =
 	stuffcmd(p, "\"\n");
 	setinfokey(p, "team", st);
 };
-#endif
 
 //=========================================================================
 // Set the current player's.team_no to self.impulse. Return TRUE if successful
@@ -303,9 +297,7 @@ float(float tno) TeamFortress_TeamSet =
 		self.team_no = tno;
 		self.lives = TeamFortress_TeamGetLives(tno);
 
-	#ifdef QUAKE_WORLD
 		SetTeamName(self);
-	#endif
 
 		// Set the Civilian Class of anyone in a Civilian Team
 		if (self.playerclass == PC_UNDEFINED)
@@ -341,9 +333,7 @@ float(float tno) TeamFortress_TeamSet =
 	// Tell them what class the other members of their team are
 	TeamFortress_TeamShowMemberClasses(self);
 
-#ifdef QUAKE_WORLD
 	SetTeamName(self);
-#endif
 
 	// Set the Civilian Class of anyone in a Civilian Team
 	if (self.playerclass == PC_UNDEFINED)
@@ -396,7 +386,6 @@ void() TeamFortress_CheckTeamCheats =
 		stuffcmd(self,"disconnect\n");
 	}
 
-#ifdef QUAKE_WORLD
 	//WK Limit rate to 10k?
 	st = infokey(self,"rate");
 	if (st != string_null)
@@ -404,7 +393,6 @@ void() TeamFortress_CheckTeamCheats =
 	if (rate > 10000) {
 		stuffcmd(self,"rate 10000\n");
 	}
-#endif
 
     //- OfN - Added checking for topcolor changes... (see IsValidTopColor in OfteN.qc)
     local float tTopColor;
@@ -414,37 +402,6 @@ void() TeamFortress_CheckTeamCheats =
 	// Have they changed color?
 	if (self.team_no > 0 && teamplay > 0)
 	{
-	#ifndef QUAKE_WORLD
-		// if they're a spy, check to see if they've changed colors manually
-		if ((self.cutf_items & CUTF_SPY_KIT) && self.undercover_team != 0)
-		{
-			if (TeamGetColor(self.undercover_team) != self.team) //- OfN
-            //if ((TeamGetColor(self.undercover_team) != self.team) || !IsValidTopColor(self.undercover_team,tTopColor))
-            //  || !IsValidTopColor(self.undercover_team,tTopColor)
-			{
-				// Set their color
-				tc = TeamGetColor (self.undercover_team) - 1;
-				tc2 = TeamGetNiceColor (self.undercover_team);
-				SetPlayerColor (self, tc, tc2);
-
-//				bprint2(PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-//				sprint(self, PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
-//				stuffcmd(self, "disconnect\n");
-				return;
-			}
-		}
-		else if (TeamGetColor(self.team_no) != self.team)
-		{
-			tc = TeamGetColor (self.team_no) - 1;
-			tc2 = TeamGetNiceColor (self.team_no);
-			SetPlayerColor (self, tc, tc2);
-
-//			bprint2(PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-//			sprint(self, PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
-//			stuffcmd(self, "disconnect\n");
-			return;
-		}
-	#else
 		// QuakeWorld
 		st = infokey(self, "bottomcolor");
 		tc = stof(st);
@@ -485,10 +442,7 @@ void() TeamFortress_CheckTeamCheats =
 			return;
 		}
 
-	#endif
-
 		// Have they changed their skin?
-	#ifdef QUAKE_WORLD
 		if (self.playerclass != PC_UNDEFINED)
 		{
 			//WK For some reason, this isn't reading right for el PC_CUSTOM
@@ -582,7 +536,6 @@ void() TeamFortress_CheckTeamCheats =
 			return;
 		}
 		}
-	#endif
 	}
 };
 

@@ -565,9 +565,6 @@ void(entity AD) ParseTFDetect =
 
 	// Do localcmds
 	localcmd(AD.message);
-#ifndef QUAKE_WORLD
-	cvar_set("sv_maxspeed", "500");
-#endif
 
 	// Set life limits
 	team1lives = AD.ammo_shells;
@@ -2488,9 +2485,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 		WriteCoord (MSG_BROADCAST, self.origin_x);
 		WriteCoord (MSG_BROADCAST, self.origin_y);
 		WriteCoord (MSG_BROADCAST, self.origin_z);
-	#ifdef QUAKE_WORLD
 		multicast (self.origin, MULTICAST_PHS);
-	#endif
 //		BecomeExplosion();
 	}
 
@@ -2635,10 +2630,8 @@ void() tfgoal_timer_tick =
 // Touch function for the goalitem entity
 void() item_tfgoal_touch =
 {
-	#ifdef QUAKE_WORLD
     if (infokey(world,"ceasefire")=="on") //OfN
 	    return;
-    #endif
     
     local string st;
 	local entity te;

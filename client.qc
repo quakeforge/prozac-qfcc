@@ -40,9 +40,7 @@ void(float Suicided) TeamFortress_SetupRespawn;
 void() TeamFortress_ShowTF;
 float(float pc) IsLegalClass;
 void() SetupTeamEqualiser;
-#ifdef QUAKE_WORLD
 void(entity p) SetTeamName;
-#endif
 void (float number) decrement_team_ammoboxes;
 void() TeamFortress_DetonatePipebombs;
 void(float f) decrement_team_pipebombs;		
@@ -158,9 +156,7 @@ void() SetChangeParms =
 	parm13 = self.StatusBarRes;
 	parm14 = self.StatusBarSize;
 #endif
-#ifdef QUAKE_WORLD
 	parm15 = self.admin_flag; //CH Pass along admin status :)
-#endif
 };
 
 void() SetNewParms =
@@ -507,10 +503,6 @@ void() DecodeLevelParms =
 				number_of_teams = 4;
 			}
 
-			// Set speed limits
-#ifndef QUAKE_WORLD
-			cvar_set("sv_maxspeed", "1000");
-#endif
 			// set aiming level
 #ifndef NET_SERVER
 			cvar_set("sv_aim", "1");
@@ -562,17 +554,12 @@ void() DecodeLevelParms =
 			toggleflags = toggleflags | TFLAG_CHEATCHECK;
 		}
 
-	#ifdef QUAKE_WORLD
 		st = infokey(world, "temp1");
 		toggleflags = (toggleflags | TFLAG_FIRSTENTRY | stof(st));
-	#else
-		toggleflags = (toggleflags | TFLAG_FIRSTENTRY | cvar("temp1"));
-	#endif
 
 		local float autoteam_time;
 		autoteam_time = 30;
 
-	#ifdef QUAKE_WORLD
 		// check all serverinfo settings, to set the appropriate toggleflags
 		local string st;
 
@@ -692,11 +679,6 @@ void() DecodeLevelParms =
 		respawn_delay_time = stof(st);
 		if (respawn_delay_time)
 			toggleflags = toggleflags | TFLAG_RESPAWNDELAY;
-	#else
-		// GRAPPLING HOOK
-		if (!(toggleflags & TFLAG_GRAPPLE) && (CTF_Map == FALSE))
-			allow_hook = FALSE;
-	#endif
 
 		// If no Respawndelay has been specified, set the default
 		if (toggleflags & TFLAG_RESPAWNDELAY && respawn_delay_time == 0)
@@ -724,10 +706,8 @@ void() DecodeLevelParms =
 	if (parm14)
 		self.StatusBarSize = parm14;
 #endif
-#ifdef QUAKE_WORLD
 	if (parm15)
 		self.admin_flag = parm15; //CH Admin status :)
-#endif
 };
 
 /*
@@ -1224,7 +1204,6 @@ void() IntermissionThink =
 	if (!self.button0 && !self.button1 && !self.button2)
 		return;
 
-#ifdef QUAKE_WORLD
 	
 	if (!triggered_cycle)
     {
@@ -1232,51 +1211,7 @@ void() IntermissionThink =
         triggered_cycle = TRUE;
         GotoNextMap();
     }
-#else
-	ExitIntermission ();
-#endif
 };
-
-#ifndef QUAKE_WORLD
-void() execute_changelevel =
-{
-	local entity	pos;
-
-	intermission_running = 1;
-	
-// enforce a wait time before allowing changelevel
-	if (deathmatch)
-		intermission_exittime = time + 5;
-	else
-		intermission_exittime = time + 2;
-
-// OfN TODO: remove this?
-
-/*    WriteByte (MSG_ALL, SVC_CDTRACK);
-	WriteByte (MSG_ALL, 3);
-	WriteByte (MSG_ALL, 3);*/
-	
-	pos = FindIntermission ();
-
-	other = find (world, classname, "player");
-	while (other != world)
-	{
-		other.view_ofs = '0 0 0';
-		other.angles = other.v_angle = pos.mangle;
-		other.fixangle = TRUE;		// turn this way immediately
-		other.nextthink = time + 0.5;
-		other.takedamage = DAMAGE_NO;
-		other.solid = SOLID_NOT;
-		other.movetype = MOVETYPE_NONE;
-		other.modelindex = 0;
-		setorigin (other, pos.origin);
-		other = find (other, classname, "player");
-	}	
-
-	WriteByte (MSG_ALL, SVC_INTERMISSION);
-};
-
-#else
 
 void() PrintResults;
 
@@ -1317,7 +1252,6 @@ void() execute_changelevel =
 	}	
 
 };
-#endif
 
 void() changelevel_touch =
 {
@@ -1328,16 +1262,8 @@ void() changelevel_touch =
 	if (other.classname != "player")
 		return;
 
-#ifndef QUAKE_WORLD
-    if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
-	{
-		T_Damage (other, self, self, 50000);
-		return;
-	}
-#else
 	if (cvar("samelevel") == 2 || (cvar("samelevel") == 3 && mapname != "start"))
 		return;
-#endif
 
 	bprint (PRINT_HIGH, other.netname);
 	bprint (PRINT_HIGH, " exited the level\n");
@@ -1479,9 +1405,7 @@ void() ClientKill =
 		{
 			if (te.owner == self && te.think == BioInfection_Decay)
 			{
-			#ifdef QUAKE_WORLD
 				logfrag(te, self);
-			#endif
 				te.enemy.real_frags = te.enemy.real_frags + 1;
 			 	if (!(toggleflags & TFLAG_TEAMFRAGS))
 					te.enemy.frags = te.enemy.real_frags;
@@ -1491,11 +1415,8 @@ void() ClientKill =
 			te = find(te, classname, "timer");
 			if (finished) te = world;
 		}
-	}
-#ifdef QUAKE_WORLD
-	else 
+	} else 
 		logfrag (self, self);
-#endif
 
 	self.real_frags = self.real_frags - 1;
 	if (teamplay & TEAMPLAY_VAMPIRE) //WK
@@ -1969,9 +1890,7 @@ void() PutClientInServer =
 	DetonateAllGuns();
 
 
-#ifdef QUAKE_WORLD
 	SetTeamName(self);
-#endif
 
 	W_SetCurrentAmmo ();
 
@@ -2055,10 +1974,8 @@ void() PutClientInServer =
 		}
 	}
 
-#ifdef QUAKE_WORLD
 	setmodel (self, string_null);
 	modelindex_null = self.modelindex;
-#endif
 
 	setmodel (self, "progs/eyes.mdl");
 	modelindex_eyes = self.modelindex;
@@ -2068,11 +1985,7 @@ void() PutClientInServer =
 
 	if (self.playerclass == PC_UNDEFINED)
 	{
-#ifdef QUAKE_WORLD
 		self.modelindex = modelindex_null;
-#else
-		setmodel(self, string_null);
-#endif
 		self.current_menu = 1;
 		self.gravity = 0;
 	}
@@ -2109,13 +2022,11 @@ void() PutClientInServer =
 			spawn_tfog (self.origin + v_forward*10);
 	}
 
-#ifdef QUAKE_WORLD
 	// Set Rocket Jump Modifiers
 	if (stof(infokey(world, "rj")) != 0)
 		rj = stof(infokey(world, "rj"));
 	else
 		rj = 1;
-#endif
 
 	//This code is in three places. client,custom & tfort.qc
 	//WK Give them invincibility if they are a normal class or bought it
@@ -2451,10 +2362,6 @@ void() PlayerJump =
 	//SB No, people with high jump do
 	if (self.cutf_items & CUTF_HIGHJUMP)
 		self.velocity_z = self.velocity_z + 400;
-
-#ifndef QUAKE_WORLD
-	self.velocity_z = self.velocity_z + 270;
-#endif
 };
 
 
@@ -2568,11 +2475,6 @@ void() WaterMove =
 		if (self.tf_items & NIT_SCUBA)
 			TeamFortress_SetSpeed(self);
 	}
-
-#ifndef QUAKE_WORLD	
-	if (! (self.flags & FL_WATERJUMP) )
-		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
-#endif
 };
 
 void() CheckWaterJump =
@@ -2638,7 +2540,6 @@ void() PlayerPreThink =
 
 	makevectors (self.v_angle);		// is this still used?
 
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //Cyto
 	{
 		#ifndef ceasefire_allows_to_move
@@ -2671,7 +2572,6 @@ void() PlayerPreThink =
 		self.lip = FALSE;
 		centerprint(self,"");
 	}
-#endif
 // End Cyt0
 
 	CheckRules ();
@@ -2714,11 +2614,6 @@ void() PlayerPreThink =
 
 	if (self.playerclass != PC_UNDEFINED)
 		WaterMove();
-
-#ifndef QUAKE_WORLD
-	if (self.waterlevel == 2 && self.playerclass != PC_UNDEFINED)
-		CheckWaterJump ();
-#endif
 
 	if (self.deadflag >= DEAD_DEAD)
 	{
@@ -3083,11 +2978,9 @@ void() PlayerPostThink =
 
 	if (self.view_ofs == '0 0 0')
 		return;		// intermission or finale
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //Cyto
 		if (!Good_Impulse(self.impulse)) //See admin.qc
 			self.impulse = 0;
-#endif
 	if (self.deadflag)
 	{
 		DeadImpulses();	 // check for dead-only commands
@@ -3153,11 +3046,7 @@ void() PlayerPostThink =
 	{
 		TeamFortress_CheckTeamCheats();
 
-	#ifdef QUAKE_WORLD
 		self.cheat_check = time + 5;
-	#else
-		self.cheat_check = time + 1;
-	#endif
 	}
 };
 
@@ -3190,7 +3079,6 @@ void() ClientConnect =
 	self.ff_count = 0; //WK Clear the friendly-fire counter
 
 
-#ifdef QUAKE_WORLD
 //RJM
 	st = infokey(self, "sbr");
 	if (st == string_null)
@@ -3222,7 +3110,6 @@ void() ClientConnect =
 	self.StatusBarSize = stof(st);
 	if (self.StatusBarSize > 2 || self.StatusBarSize < 0)
 		self.StatusBarSize = 0;
-#endif
 
 	self.has_disconnected = FALSE;
 
@@ -3257,11 +3144,6 @@ void() ClientDisconnect =
 {
 	local float teamsup;
 	local entity te;
-
-#ifndef QUAKE_WORLD
-	if (gameover)
-		return;
-#endif
 
     local string st;
 
@@ -3376,11 +3258,7 @@ void() ClientDisconnect =
 			if (te.weaponmode == 1)     	  // Detpack was being disarmed
 			{   
 				te.enemy.tfstate = te.enemy.tfstate - (te.enemy.tfstate & TFSTATE_CANT_MOVE);
-		#ifdef QUAKE_WORLD
 				TeamFortress_SetSpeed(te.enemy);
-		#else
-				te.enemy.pausetime = time;		
-		#endif
 
 				dremove(te.oldenemy);  	 // CountDown
 				dremove(te.observer_list); //	Disarm timer
@@ -4062,9 +3940,7 @@ void(entity targ, entity attacker) ClientObituary =
  			if (!(toggleflags & TFLAG_TEAMFRAGS))
 				targ.frags = targ.real_frags;
 			
-#ifdef QUAKE_WORLD
 			logfrag (targ, targ);
-#endif
 */
 			return;
 		}
@@ -4077,9 +3953,7 @@ void(entity targ, entity attacker) ClientObituary =
 				bprint (PRINT_MEDIUM, targ.netname);
 				bprint (PRINT_MEDIUM, attacker.deathtype);
 			}
-#ifdef QUAKE_WORLD
 			logfrag (targ, targ);
-#endif
 			return;
 		}
 
@@ -4302,9 +4176,7 @@ void(entity targ, entity attacker) ClientObituary =
 /*				if (teamplay & TEAMPLAY_VAMPIRE) //Frag vamp
 					targ.real_frags = targ.real_frags - 1;
 
-				#ifdef QUAKE_WORLD
-					logfrag (attacker, targ);
-				#endif
+				logfrag (attacker, targ);
 
 			 	if (!(toggleflags & TFLAG_TEAMFRAGS)) {
 					attacker.frags = attacker.real_frags;
@@ -4910,9 +4782,7 @@ void(entity targ, entity attacker) ClientObituary =
 		{
 			Give_Frags_Out(targ, targ, -1, 1, 1, 1, 0);
 /*
-			#ifdef QUAKE_WORLD
-				logfrag (targ, targ);
-			#endif
+			logfrag (targ, targ);
 
 			targ.real_frags = targ.real_frags - 1;   // killed self
 		 	if (!(toggleflags & TFLAG_TEAMFRAGS))
@@ -4947,45 +4817,6 @@ void(entity targ, entity attacker) ClientObituary =
 				else
 					deathstring = " visits the Volcano God\n";
 			}
-#ifndef QUAKE_WORLD
-	//#ifdef COOP_MODE
-			else if (attacker.flags & FL_MONSTER)
-			{
-				if (attacker.classname == "monster_army")
-					deathstring = " was shot by a Grunt\n";
-				else if (attacker.classname == "monster_demon1")
-					deathstring = " was eviscerated by a Fiend\n";
-				else if (attacker.classname == "monster_dog")
-					deathstring = " was mauled by a Rottweiler\n";
-				else if (attacker.classname == "monster_dragon")
-					deathstring = " was fried by a Dragon\n";
-				else if (attacker.classname == "monster_enforcer")
-					deathstring = " was blasted by an Enforcer\n";
-				else if (attacker.classname == "monster_fish")
-					deathstring = " was fed to the Rotfish\n";
-				else if (attacker.classname == "monster_hell_knight")
-					deathstring = " was slain by a Death Knight\n";
-				else if (attacker.classname == "monster_knight")
-					deathstring = " was slashed by a Knight\n";
-				else if (attacker.classname == "monster_ogre")
-					deathstring = " was destroyed by an Ogre\n";
-				else if (attacker.classname == "monster_oldone")
-					deathstring = " became one with Shub-Niggurath\n";
-				else if (attacker.classname == "monster_shalrath")
-					deathstring = " was exploded by a Vore\n";
-				else if (attacker.classname == "monster_shambler")
-					deathstring = " was smashed by a Shambler\n";
-				else if (attacker.classname == "monster_tarbaby")
-					deathstring = " was slimed by a Spawn\n";
-				else if (attacker.classname == "monster_vomit")
-					deathstring = " was vomited on by a Vomitus\n";
-				else if (attacker.classname == "monster_wizard")
-					deathstring = " was scragged by a Scrag\n";
-				else if (attacker.classname == "monster_zombie")
-					deathstring = " joins the Zombies\n";
-			}
-	//#endif
-#endif
 			else if (attacker.classname == "explo_box")
 			{
 				deathstring = " blew up\n";

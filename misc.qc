@@ -273,13 +273,6 @@ void() barrel_explode =
 	// did say self.owner
 	T_RadiusDamage (self, self, 160, world);
 
-#ifndef QUAKE_WORLD
-	sound (self, CHAN_VOICE, "weapons/r_exp3.wav", 1, ATTN_NORM);
-	particle (self.origin, '0 0 0', 75, 255);
-
-	self.origin_z = self.origin_z + 32;
-	BecomeExplosion ();
-#else
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
 	WriteCoord (MSG_BROADCAST, self.origin_x);
@@ -287,7 +280,6 @@ void() barrel_explode =
 	WriteCoord (MSG_BROADCAST, self.origin_z+32);
 	multicast (self.origin, MULTICAST_PHS);
 	remove (self);
-#endif
 };
 
 
@@ -400,15 +392,11 @@ void() Laser_Touch =
 	{
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-	#ifdef QUAKE_WORLD
 		WriteByte (MSG_MULTICAST, 5);
-	#endif
 		WriteCoord (MSG_BROADCAST, org_x);
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
-	#ifdef QUAKE_WORLD
 		multicast (org, MULTICAST_PVS);
-	#endif
 	}
 
 	dremove(self);	
@@ -708,18 +696,7 @@ void() air_bubbles =
 		return;
 	}
 
-#ifndef QUAKE_WORLD
-	if (deathmatch)
-	{
-		remove (self);
-		return;
-	}
-	precache_model ("progs/s_bubble.spr");
-	self.nextthink = time + 1;
-	self.think = make_bubbles;
-#else
 	dremove(self);
-#endif
 };
 
 void() make_bubbles =

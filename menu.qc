@@ -1519,11 +1519,9 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
         sprint (self, PRINT_HIGH, "You dismantle the Dispenser.\n");
   		self.ammo_cells = self.ammo_cells + (BUILD_COST_DISPENSER / 2.0);
 ///////////////////////////
-#ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "dispenser");
 		}
-#endif
 
         self.building.health=0; // - OfN aborts hacks on it
         self.building.real_owner.has_dispenser = FALSE;
@@ -1666,11 +1664,9 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 //CH give .5 of build cost====give 25*level
 		self.ammo_cells = self.ammo_cells + (BUILD_COST_SENTRYGUN / 2.0) + (self.building.weapon * 25);
 
-#ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "sentry gun");
 		}
-#endif
 		self.building.real_owner.has_sentry = FALSE;
 		dremove(self.building.trigger_field);
         self.building.health=0; // - OfN aborts hacks on it
@@ -1779,11 +1775,9 @@ void(float inp) Menu_EngineerFix_Sensor_Input =
 		self.ammo_cells = self.ammo_cells + (BUILD_COST_SENSOR * 0.5) + floor(self.building.health / 40);
 		self.building.real_owner.has_sensor = FALSE;
 
-#ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "motion sensor");
 		}
-#endif
 
         self.building.health=0; // - OfN aborts hacks on it
 		dremove(self.building);
@@ -1838,11 +1832,9 @@ void(float inp) Menu_EngineerFix_Camera_Input =
 		self.ammo_cells = self.ammo_cells + (BUILD_COST_CAMERA * 0.5) + floor(self.building.health / 40);
 		self.building.real_owner.has_camera = FALSE;
 
-#ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "security camera");
 		}
-#endif
 
         self.building.health=0; // - OfN aborts hacks on it
         dremove(self.building);
@@ -1908,11 +1900,9 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 		self.ammo_cells = self.ammo_cells + (BUILD_COST_TELEPORTER * 0.5) + floor(self.building.health / 15);
 		self.building.real_owner.has_teleporter = (self.building.real_owner.has_teleporter - 1);
 
-#ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "teleporter");
 		}
-#endif
 
         self.building.health=0; // - OfN aborts hacks on it
         dremove(self.building);
@@ -1980,11 +1970,9 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 		self.ammo_cells = self.ammo_cells + (BUILD_COST_FIELDGEN * 0.5) + floor(self.building.health / 15);
 		self.building.real_owner.has_fieldgen = (self.building.real_owner.has_fieldgen - 1);
 
-#ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "field generator");
 		}
-#endif
 
         self.building.health=0; // - OfN aborts hacks on it
         dremove(self.building);
@@ -2242,11 +2230,9 @@ void() Menu_EngineerDismantle_Tesla =
 	self.ammo_cells = self.ammo_cells + (BUILD_COST_TESLA / 2.0) + (self.building.ammo_rockets * 25) + (self.building.ammo_cells / 2);
 	self.building.real_owner.has_tesla = FALSE;
 
-#ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
 			Add_Building_Teamkill (self, "tesla");
 		}
-#endif
 	dremove(self.building);
 };
 //CH does random and picks what upgrade to give

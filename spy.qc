@@ -239,10 +239,8 @@ void(float type) TeamFortress_SpyFeignDeath =
 			self.current_weapon = self.weapon;
 			W_SetCurrentAmmo();
 
-		#ifdef QUAKE_WORLD
 			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 			TeamFortress_SetSpeed(self);
-		#endif
 
 			// Check .weapon, because .current_weapon has been reset
 			if (self.weapon <= WEAP_AXE)
@@ -331,12 +329,10 @@ void(float type) TeamFortress_SpyFeignDeath =
 			at_spot = at_spot.chain;			
 		}
 
-	#ifdef QUAKE_WORLD
 		makeImmune(self,time+2);
 		//self.immune_to_check = time + 2;
 		self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
 		TeamFortress_SetSpeed(self);
-	#endif
 
 		self.is_feigning = TRUE;
 		Attack_Finished(0.8);
@@ -709,11 +705,7 @@ void() GasGrenadeExplode =
 		CamProjectileLockOff();
 #endif
 
-#ifndef QUAKE_WORLD
-	BecomeExplosion ();
-#else		
 	dremove(self);
-#endif
 };
 
 //=========================================================================
@@ -786,9 +778,7 @@ void() GasGrenadeMakeGas =
 		WriteCoord (MSG_BROADCAST, self.origin_x);
 		WriteCoord (MSG_BROADCAST, self.origin_y);
 		WriteCoord (MSG_BROADCAST, self.origin_z);
-	#ifdef QUAKE_WORLD
 		multicast (self.origin, MULTICAST_PVS);
-	#endif
 		return;
 	}
 	if (self.heat <= 3)
@@ -801,9 +791,7 @@ void() GasGrenadeMakeGas =
 			WriteCoord (MSG_BROADCAST, self.origin_x);
 			WriteCoord (MSG_BROADCAST, self.origin_y);
 			WriteCoord (MSG_BROADCAST, self.origin_z - 24);
-		#ifdef QUAKE_WORLD
 			multicast (self.origin, MULTICAST_PVS);
-		#endif
 		}
 		else if (self.weapon == 2)
 		{
@@ -1026,9 +1014,7 @@ void() T_TranqDartTouch =
             WriteCoord (MSG_BROADCAST, self.origin_x);
             WriteCoord (MSG_BROADCAST, self.origin_y);
             WriteCoord (MSG_BROADCAST, self.origin_z);
-        #ifdef QUAKE_WORLD
             multicast (self.origin, MULTICAST_PVS);
-        #endif
         }
 	}
 

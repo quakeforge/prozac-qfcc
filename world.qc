@@ -213,14 +213,6 @@ void() worldspawn =
 		cvar_set ("sv_gc", "10");
 
 // custom map attributes
-#ifndef QUAKE_WORLD
-	if (self.model == "maps/e1m8.bsp")
-		cvar_set ("sv_gravity", "100");
-	else
-		cvar_set ("sv_gravity", "800");
-#endif
-
-#ifdef QUAKE_WORLD
 	st = infokey(world, "*gamedir");
 	if (st != "fortress")
 	{
@@ -229,7 +221,6 @@ void() worldspawn =
 		else
 			objerror("QW TF must be run with a gamedir of \"fortress\".\n");
 	}
-#endif
 	
     //- OfteN globals -//
 	UpdateInfos();
@@ -473,10 +464,8 @@ void() worldspawn =
 	precache_model2("progs/grenade2.mdl");	  // New grenade
 	precache_model2("progs/v_grap.mdl");	  // Grapple gun
 	precache_model2("progs/hook.mdl");		  // Grapple hook
-//#ifndef QUAKE_WORLD
 	if (headless==1)
        precache_model2("progs/headless.mdl");	  // Player with no head
-//#endif hehe why??
 
     precache_model2("progs/sencer.mdl");
 

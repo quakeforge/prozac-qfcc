@@ -6,7 +6,6 @@
 
 #include "defs.qh"
 
-#ifdef QUAKE_WORLD
 //Goes for whole file
 float() Admin_is_Disabled = 
 {
@@ -511,5 +510,3 @@ float(float inp) Good_Impulse_OnMenu =
 	return FALSE;
 
 };
-
-#endif

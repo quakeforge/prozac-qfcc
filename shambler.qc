@@ -290,9 +290,7 @@ void() CastLightning =
         WriteCoord (MSG_BROADCAST, trace_endpos_x);
         WriteCoord (MSG_BROADCAST, trace_endpos_y);
         WriteCoord (MSG_BROADCAST, trace_endpos_z);
-    #ifdef QUAKE_WORLD
         multicast (org, MULTICAST_PHS);
-    #endif
 
         return;
     }
@@ -633,12 +631,8 @@ void(float side) ShamFireball =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 */
 

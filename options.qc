@@ -12,14 +12,11 @@ Defines for the compilable options within TF.
 //#define BOTS			// doesn't do anything yet
 //#define DEMO_STUFF
 #define STATUSBAR
-#define QUAKE_WORLD
 
-#ifdef QUAKE_WORLD
-	#pragma PROGS_DAT "qwprogs.dat"
+#pragma PROGS_DAT "qwprogs.dat"
 
-	#undef COOP_MODE
-	#define NET_SERVER
-#endif
+#undef COOP_MODE
+#define NET_SERVER
 
 #ifdef NET_SERVER
 	#define SPY_INVIS_ONLY		 #OFF	// Spy becomes invisible instead of changing skin/color
@@ -68,13 +65,11 @@ Defines for the compilable options within TF.
 //#define SPEECH					// Don't enable this, ever.
 #define MEDIKIT_IS_BIOWEAPON 	 	// WK THIS MUST BE DEFINED OR SHIT BREAKS NOW
 
-#ifdef QUAKE_WORLD
-	#undef COOP_MODE
+#undef COOP_MODE
 //	#undef NET_SERVER
-    #undef PLAYER_PUSHING
+#undef PLAYER_PUSHING
 
-	#define NET_SERVER
-#endif
+#define NET_SERVER
 
 // Message Options
 //#define CHEAT_WARNINGS   	// If defined, the server will be told when players 

@@ -390,12 +390,8 @@ void() Tesla_Die =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 float (vector where) DoorsAt = 
@@ -447,10 +443,8 @@ float() Tesla_Fire =
 		return FALSE;
 	if (self.enemy.health <= 0)
 		return FALSE;
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //CH
 		return FALSE;
-#endif
 	if (self.enemy.classname == "player")
 	{
 		if (self.enemy.has_disconnected)
@@ -557,9 +551,7 @@ float() Tesla_Fire =
         WriteCoord (MSG_BROADCAST, trace_endpos_x);
         WriteCoord (MSG_BROADCAST, trace_endpos_y);
         WriteCoord (MSG_BROADCAST, trace_endpos_z);
-    #ifdef QUAKE_WORLD
         multicast (self.origin, MULTICAST_PHS);
-    #endif
         
         shoulddmg = FALSE;
 
@@ -580,9 +572,7 @@ float() Tesla_Fire =
         WriteCoord (MSG_BROADCAST, self.enemy.origin_x);
         WriteCoord (MSG_BROADCAST, self.enemy.origin_y);
         WriteCoord (MSG_BROADCAST, self.enemy.origin_z);
-    #ifdef QUAKE_WORLD
         multicast (self.origin, MULTICAST_PHS);
-    #endif
     }
 
 	sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);

@@ -309,10 +309,8 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	local float ping;
 
 	mirror = 0;
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //Cyto
 		return;
-#endif
 	if (targ == world)
 		return;
 	if (!targ.takedamage)
@@ -636,7 +634,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
 			dir = normalize(dir);
 
-	#ifdef QUAKE_WORLD
 			// Increase kickback for smaller weapons
 			if ( (damage < 60) & ((attacker.classname == "player") & (targ.classname == "player")) & ( attacker.netname != targ.netname)) 
 				targ.velocity = targ.velocity + dir * damage * 11;
@@ -646,9 +643,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 				targ.velocity = targ.velocity + dir * damage * rj;
 			if (targ.classname == "player" && targ.cutf_items & CUTF_GYMNAST)
 				targ.velocity = targ.velocity + dir * damage * 8;
-	#else
-			targ.velocity = targ.velocity + dir*damage*8;
-	#endif
 		}
 	}
 
@@ -715,7 +709,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			return;
 		}
 
-#ifdef QUAKE_WORLD
 		//WK Handle Total Bastard Checking
 		//If they kill more than a certain number of friends in a certain period, they are booted
 		if (Teammate(targ.team_no, attacker.team_no) && targ != attacker && !(targ.penance_time > time) && !(targ.is_undercover) && prematch < time)
@@ -741,7 +734,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			attacker.ff_count = attacker.ff_count - 0.5;
 			if (attacker.ff_count < 0) attacker.ff_count = 0;
 		}
-#endif
 
 		if (targ.penance_time > time) //A penitent loses frags
 			Killed(targ, targ);

@@ -119,9 +119,7 @@ void() LaserBolt_Touch =
 		WriteCoord (MSG_BROADCAST, self.origin_x);
 		WriteCoord (MSG_BROADCAST, self.origin_y);
 		WriteCoord (MSG_BROADCAST, self.origin_z);
-	#ifdef QUAKE_WORLD
 		multicast (self.origin, MULTICAST_PHS);
-	#endif
 	}
 	
 	dremove(self);	
@@ -198,9 +196,7 @@ void() EMPExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
-#endif
 
 	// Respawn
 	Respawn_Item(self, self.enemy);
@@ -231,9 +227,7 @@ void() EMPGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
-#endif
 
 	// Find all ammo in the area
 	te = findradius(self.origin, 240);
@@ -299,9 +293,7 @@ void() EMPGrenadeExplode =
 				WriteCoord (MSG_BROADCAST, te.origin_x);
 				WriteCoord (MSG_BROADCAST, te.origin_y);
 				WriteCoord (MSG_BROADCAST, te.origin_z);
-			#ifdef QUAKE_WORLD
 				multicast (te.origin, MULTICAST_PHS);
-			#endif
 			}
 		}
 		// Backpack/Player?
@@ -345,9 +337,7 @@ void() EMPGrenadeExplode =
                         WriteCoord (MSG_BROADCAST, te.origin_x);
                         WriteCoord (MSG_BROADCAST, te.origin_y);
                         WriteCoord (MSG_BROADCAST, te.origin_z);
-                    #ifdef QUAKE_WORLD
                         multicast (te.origin, MULTICAST_PHS);
-                    #endif
                     }
 				}
 				else
@@ -361,9 +351,7 @@ void() EMPGrenadeExplode =
 				WriteCoord (MSG_BROADCAST, te.origin_x);
 				WriteCoord (MSG_BROADCAST, te.origin_y);
 				WriteCoord (MSG_BROADCAST, te.origin_z);
-			#ifdef QUAKE_WORLD
 				multicast (te.origin, MULTICAST_PHS);
-			#endif
 			}
 		}
 
@@ -387,11 +375,7 @@ if (total_exp > 0) {//CH Thanks Slice for the idea :)
 		CamProjectileLockOff();
 #endif
 
-#ifdef QUAKE_WORLD
 	dremove(self);
-#else
-	BecomeExplosion();
-#endif
 };
 
 
@@ -458,11 +442,7 @@ void() TeamFortress_EngineerBuild =
 		self.is_building = 0;
 		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
 
-#ifdef QUAKE_WORLD
 		TeamFortress_SetSpeed(self);
-#else
- 		self.pausetime = time;
-#endif
 
 		// Remove the timer
 		te = find(world, netname, "build_timer");
@@ -754,11 +734,7 @@ void(float objtobuild) TeamFortress_Build =
         self.weaponmodel = "";
         self.weaponframe = 0;
 
-    #ifdef QUAKE_WORLD
         TeamFortress_SetSpeed(self);
-    #else
-        self.pausetime = btime;
-    #endif
 	}
 };
 
@@ -1168,12 +1144,8 @@ void() Dispenser_Explode =
 	WriteCoord (MSG_BROADCAST, self.demon_one.origin_x);
 	WriteCoord (MSG_BROADCAST, self.demon_one.origin_y);
 	WriteCoord (MSG_BROADCAST, self.demon_one.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.demon_one.origin, MULTICAST_PHS);
     dremove(self.demon_one);
-#else
-    BecomeExplosion ();
-#endif
 
     dremove(self); // remove explosion timer for this dispenser
 };

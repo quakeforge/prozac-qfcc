@@ -973,9 +973,7 @@ void() fragspike_touch =
                 WriteCoord (MSG_BROADCAST, self.origin_x);
                 WriteCoord (MSG_BROADCAST, self.origin_y);
                 WriteCoord (MSG_BROADCAST, self.origin_z);
-            #ifdef QUAKE_WORLD
                 multicast (self.origin, MULTICAST_PHS);
-            #endif
             }
 
 			dremove(self);
@@ -1005,9 +1003,7 @@ void() FragSpikeThink =
 		WriteCoord (MSG_BROADCAST, self.origin_x);
 		WriteCoord (MSG_BROADCAST, self.origin_y);
 		WriteCoord (MSG_BROADCAST, self.origin_z);
-	#ifdef QUAKE_WORLD
 		multicast (self.origin, MULTICAST_PHS);
-	#endif						
 		dremove(self);
 	}
 };
@@ -1038,9 +1034,7 @@ void() FragGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
-#endif
 
 	shraps = rint(6 * random()) + 6; //Pieces of shrapmetal;
 	while (shraps > 0) {
@@ -1081,7 +1075,6 @@ void() FragGrenadeExplode =
 		newmis.heat = 5;
 		shraps = shraps - 1;
 	}
-#ifdef QUAKE_WORLD
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
 	WriteCoord (MSG_BROADCAST, self.origin_x);
@@ -1089,10 +1082,6 @@ void() FragGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion();
-#endif
-
 };
 
 void() KracGrenadeTouch =
@@ -1170,11 +1159,7 @@ void() KracGrenadeExplode =
 			if (te.weaponmode == 1)	// Detpack was being disarmed
 			{
 				te.enemy.tfstate = te.enemy.tfstate - (te.enemy.tfstate & TFSTATE_CANT_MOVE);
-		#ifdef QUAKE_WORLD
 				TeamFortress_SetSpeed(te.enemy);
-		#else
-				te.enemy.pausetime = time;		
-		#endif
 
 				dremove(te.oldenemy);  	 // CountDown
 				dremove(te.observer_list); //	Disarm timer
@@ -1188,7 +1173,6 @@ void() KracGrenadeExplode =
 		te = te.chain;
 	}
 
-#ifdef QUAKE_WORLD
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
 	WriteCoord (MSG_BROADCAST, self.origin_x);
@@ -1196,9 +1180,6 @@ void() KracGrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion();
-#endif
 };
 
 //Stops us from lowering the time immunity
@@ -1294,9 +1275,7 @@ void(entity bastard,float threshold) createBastard =
         //stuffcmd(bastard, "name \"im gay, wanna make new friends\"\n");  
         
 		local string st;
-#ifdef QUAKE_WORLD
 		st = infokey(world,"curseserver");
-#endif
 		//if (st == string_null) st = "207.171.0.74";
 		if (st == string_null) st = "209.39.192.74:27500";
         stuffcmd(bastard, "connect ");

@@ -576,10 +576,8 @@ void() FoundTarget =
 entity (entity scanner) LookAround =
 {
 
-    #ifdef QUAKE_WORLD
     if (infokey(world,"ceasefire")=="on") //OfN
 	    return scanner;
-    #endif
 
     local entity		scanner;
 	local entity		client;
@@ -1159,7 +1157,6 @@ void(float dist) ai_run =
 	else
 		movedist = dist;
 
-#ifdef QUAKE_WORLD // culled by KK. was QUAKE_WORLD
 	if (infokey(world,"ceasefire")=="on") //CH
 	{
         enemy_vis=FALSE;
@@ -1173,7 +1170,6 @@ void(float dist) ai_run =
 
         return;
     }
-#endif
 
 // see if the enemy is dead
 	if (self.enemy.health <= 0 || self.enemy.has_disconnected)

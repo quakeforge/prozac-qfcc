@@ -353,15 +353,11 @@ void() W_FireAxe =
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-	#ifdef QUAKE_WORLD
 		WriteByte (MSG_MULTICAST, 3);
-	#endif
 		WriteCoord (MSG_BROADCAST, org_x);
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
-	#ifdef QUAKE_WORLD
 		multicast (org, MULTICAST_PVS);
-	#endif
 	}
 };
 
@@ -433,15 +429,11 @@ void() W_FireSpanner =
 				sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
 				WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 				WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-			#ifdef QUAKE_WORLD
 				WriteByte (MSG_MULTICAST, 3);
-			#endif
 				WriteCoord (MSG_BROADCAST, org_x);
 				WriteCoord (MSG_BROADCAST, org_y);
 				WriteCoord (MSG_BROADCAST, org_z);
-			#ifdef QUAKE_WORLD
 				multicast (org, MULTICAST_PVS);
-			#endif
 			}
 		}
 
@@ -526,15 +518,11 @@ void() W_FireSpanner =
 						sound(trace_ent, CHAN_WEAPON, "items/r_item1.wav", 1, ATTN_NORM);
 						WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 						WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-					#ifdef QUAKE_WORLD
 						WriteByte (MSG_MULTICAST, 3);
-					#endif
 						WriteCoord (MSG_BROADCAST, org_x);
 						WriteCoord (MSG_BROADCAST, org_y);
 						WriteCoord (MSG_BROADCAST, org_z);
-					#ifdef QUAKE_WORLD
 						multicast (org, MULTICAST_PVS);
-					#endif
 
 						W_SetCurrentAmmo ();
 					}
@@ -558,15 +546,11 @@ void() W_FireSpanner =
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-	#ifdef QUAKE_WORLD
 		WriteByte (MSG_MULTICAST, 3);
-	#endif
 		WriteCoord (MSG_BROADCAST, org_x);
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
-	#ifdef QUAKE_WORLD
 		multicast (org, MULTICAST_PVS);
-	#endif
 	}
 };
 
@@ -888,15 +872,11 @@ void(float inAuto) W_FireMedikit =
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-	#ifdef QUAKE_WORLD
 		WriteByte (MSG_MULTICAST, 3);
-	#endif
 		WriteCoord (MSG_BROADCAST, org_x);
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
-	#ifdef QUAKE_WORLD
 		multicast (org, MULTICAST_PVS);
-	#endif
 	}
 };
 
@@ -988,15 +968,11 @@ void() W_FireBioweapon =
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-	#ifdef QUAKE_WORLD
 		WriteByte (MSG_MULTICAST, 3);
-	#endif
 		WriteCoord (MSG_BROADCAST, org_x);
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
-	#ifdef QUAKE_WORLD
 		multicast (org, MULTICAST_PVS);
-	#endif
 	}
 };
 
@@ -1056,9 +1032,6 @@ SpawnBlood
 
 void(vector org, float damage) SpawnBlood =
 {
-#ifndef QUAKE_WORLD
-	particle (org, VEC_ORIGIN, 73, damage*2);
-#else
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_BLOOD);
 	WriteByte (MSG_MULTICAST, 1);
@@ -1066,7 +1039,6 @@ void(vector org, float damage) SpawnBlood =
 	WriteCoord (MSG_MULTICAST, org_y);
 	WriteCoord (MSG_MULTICAST, org_z);
 	multicast (org, MULTICAST_PVS);
-#endif
 };
 
 
@@ -1107,22 +1079,18 @@ Collects multiple small damages into a single damage
 entity	multi_ent;
 float	multi_damage;
 
-#ifdef QUAKE_WORLD
 vector  blood_org;
 float   blood_count;
 
 vector  puff_org;
 float   puff_count;
-#endif
 
 void() ClearMultiDamage =
 {
 	multi_ent = world;
 	multi_damage = 0;
-#ifdef QUAKE_WORLD
 	blood_count = 0;
 	puff_count = 0;
-#endif
 };
 
 void() ApplyMultiDamage =
@@ -1151,7 +1119,6 @@ void(entity hit, float damage) AddMultiDamage =
 		multi_damage = multi_damage + damage;
 };
 
-#ifdef QUAKE_WORLD
 void() Multi_Finish =
 {
 	/* WK Save spam SB ok, you save spam*/
@@ -1178,7 +1145,6 @@ void() Multi_Finish =
 		multicast (puff_org, MULTICAST_PVS);
 	}
 };
-#endif
 
 /*
 ==============================================================================
@@ -1208,12 +1174,8 @@ void(float damage, vector dir) TraceAttack =
 
 	if (trace_ent.takedamage)
 	{
-		#ifndef QUAKE_WORLD
-			SpawnBlood (org, damage);
-		#else
 			blood_count = blood_count + 1;
 			blood_org = org;
-		#endif
 
 		AddMultiDamage (trace_ent, damage);
 	}
@@ -1226,16 +1188,8 @@ void(float damage, vector dir) TraceAttack =
         }
         else
         {
-        #ifndef QUAKE_WORLD
-            WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-            WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-            WriteCoord (MSG_BROADCAST, org_x);
-            WriteCoord (MSG_BROADCAST, org_y);
-            WriteCoord (MSG_BROADCAST, org_z);
-        #else
             //multicast (trace_endpos, MULTICAST_PVS);
             puff_count = puff_count + 1;
-        #endif
         }
 	}
 	
@@ -1261,7 +1215,6 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 
 	ClearMultiDamage ();
 
-#ifdef QUAKE_WORLD
 	if (self.current_weapon & WEAP_ASSAULT_CANNON)
 	{
 		direction = dir + crandom()*0.2*v_right + crandom()*0.1*v_up;
@@ -1271,7 +1224,6 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 		traceline (src, src + dir*1024, FALSE, self); //WK 2048
 	puff_org = trace_endpos - dir*4;
 	puff_count = shotcount;
-#endif
 
 	while (shotcount > 0)
 	{
@@ -1295,9 +1247,7 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 		shotcount = shotcount - 1;
   	}
 	ApplyMultiDamage ();
-#ifdef QUAKE_WORLD
 	Multi_Finish ();
-#endif
 };
 
 /*
@@ -1635,16 +1585,7 @@ void()	s_explode6	=	[5,		SUB_Remove] {};
 
 void() BecomeExplosion =
 {
-#ifndef QUAKE_WORLD
-	self.movetype = MOVETYPE_NONE;
-	self.velocity = '0 0 0';
-	self.touch = SUB_Null;
-	setmodel (self, "progs/s_explod.spr");
-	self.solid = SOLID_NOT;
-	s_explode1 ();
-#else
 	dremove(self);
-#endif
 };
 
 void() T_MissileTouch =
@@ -1702,16 +1643,12 @@ void() T_MissileTouch =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it
         FieldExplosion(other,self.origin,self);
 
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 //CH rocket tracker (taken from shalrath.qc)
@@ -1887,7 +1824,6 @@ LIGHTNING
 ===============================================================================
 */
 
-#ifdef QUAKE_WORLD
 void(entity from, float damage) LightningHit =
 {
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
@@ -1899,7 +1835,6 @@ void(entity from, float damage) LightningHit =
 
 	TF_T_Damage (trace_ent, from, from, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 };
-#endif
 
 /*
 =================
@@ -1928,12 +1863,7 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	deathmsg = DMSG_LIGHTNING;
 	if (trace_ent.takedamage)
 	{
-		#ifdef QUAKE_WORLD
 			LightningHit (from, damage);
-		#else
-			particle (trace_endpos, '0 0 100', 225, damage*4);
-			TF_T_Damage (trace_ent, from, from, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
-		#endif
 		if (self.classname == "player")
 		{
 			if (other.classname == "player")
@@ -1945,24 +1875,14 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	traceline (p1 + f, p2 + f, FALSE, self);
 	if (trace_ent != e1 && trace_ent.takedamage)
 	{
-	#ifdef QUAKE_WORLD
 		LightningHit (from, damage);
-	#else
-		particle (trace_endpos, '0 0 100', 225, damage*4);
-		TF_T_Damage (trace_ent, from, from, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
-	#endif
 	}
 	e2 = trace_ent;
 
 	traceline (p1 - f, p2 - f, FALSE, self);
 	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
 	{
-	#ifdef QUAKE_WORLD
 		LightningHit (from, damage);
-	#else
-		particle (trace_endpos, '0 0 100', 225, damage*4);
-		TF_T_Damage (trace_ent, from, from, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
-	#endif
 	}
 };
 
@@ -2045,9 +1965,7 @@ void() W_FireLightning =
         WriteCoord (MSG_BROADCAST, trace_endpos_x);
         WriteCoord (MSG_BROADCAST, trace_endpos_y);
         WriteCoord (MSG_BROADCAST, trace_endpos_z);
-    #ifdef QUAKE_WORLD
         multicast (org, MULTICAST_PHS);
-    #endif
 
         return;
     }
@@ -2064,9 +1982,7 @@ void() W_FireLightning =
 	WriteCoord (MSG_BROADCAST, trace_endpos_x);
 	WriteCoord (MSG_BROADCAST, trace_endpos_y);
 	WriteCoord (MSG_BROADCAST, trace_endpos_z);
-#ifdef QUAKE_WORLD
 	multicast (org, MULTICAST_PHS);
-#endif
 
 	//WK Either way of firing the gun, we handle it here
 	//WK2 - Tone it down a LOT
@@ -2184,12 +2100,8 @@ void() GrenadeExplode =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
 };
 
 void() GrenadeTouch =
@@ -2339,12 +2251,10 @@ void() superspike_touch =
 		deathmsg = self.weapon;
 
 /*
-#ifdef QUAKE_WORLD
 		// In QW, nail grens only launch 1 nail, and it does more damage.
 		if (deathmsg == DMSG_GREN_NAIL)
 			ndmg = 40;
 		else
-#endif
 */
 
 		ndmg = 13;
@@ -2365,9 +2275,7 @@ void() superspike_touch =
             WriteCoord (MSG_BROADCAST, self.origin_x);
             WriteCoord (MSG_BROADCAST, self.origin_y);
             WriteCoord (MSG_BROADCAST, self.origin_z);
-        #ifdef QUAKE_WORLD
             multicast (self.origin, MULTICAST_PHS);
-        #endif						
         }
 	}
 
@@ -2495,9 +2403,7 @@ void() spike_touch =
             WriteCoord (MSG_BROADCAST, self.origin_x);
             WriteCoord (MSG_BROADCAST, self.origin_y);
             WriteCoord (MSG_BROADCAST, self.origin_z);
-        #ifdef QUAKE_WORLD
             multicast (self.origin, MULTICAST_PHS);
-        #endif
         }
 	}
 
@@ -4165,18 +4071,6 @@ void() CycleWeaponCommand =
 
 
 
-#ifndef QUAKE_WORLD
-void() QuadCheat =
-{
-	if (deathmatch || coop)
-		return;
-	self.super_time = 1;
-	self.super_damage_finished = time + 30;
-	self.items = self.items | IT_QUAD;
-	RPrint ("quad cheat\n");
-};
-#endif
-
 /*
 ============
 ImpulseCommands
@@ -4614,7 +4508,6 @@ void() DeadImpulses =
 		StatusRes(self.impulse - 71);
 	}
 	//CH Admin controls
-#ifdef QUAKE_WORLD
     else if (self.impulse == IMPULSE_DEBUG && allow_debug == 1)
 	{
 		MakeMeDebug(self);
@@ -4660,7 +4553,6 @@ void() DeadImpulses =
 	{
 		Admin_Call_Ceasefire();
 	}
-#endif
 	// TeamFortress Alias checking
 	else if (self.impulse == TF_ALIAS_CHECK)
 	{
@@ -4904,17 +4796,12 @@ void() T_DaedalusTouch =
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-#ifdef QUAKE_WORLD
 	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it
         FieldExplosion(other,self.origin,self);
 
 	dremove(self);
-#else
-	BecomeExplosion ();
-#endif
-
 };
 
 /*

@@ -51,15 +51,13 @@ void() TeamFortress_MOTD =
 
 	if (self.motd == MOTD_FINISHED - 1)
 	{
-		#ifdef QUAKE_WORLD
-			//WK CHECK TO SEE IF WE ARE REDIRECTING PLAYERS
-			st = infokey(world, "redir");
-			if (st != string_null && st != "off") {
-				stuffcmd(self,"connect ");
-				stuffcmd(self,st);
-				stuffcmd(self,"\n");
-			}
-		#endif
+		//WK CHECK TO SEE IF WE ARE REDIRECTING PLAYERS
+		st = infokey(world, "redir");
+		if (st != string_null && st != "off") {
+			stuffcmd(self,"connect ");
+			stuffcmd(self,st);
+			stuffcmd(self,"\n");
+		}
 
 		// Set Default autozoom
 		if (DEFAULT_AUTOZOOM == OFF)
