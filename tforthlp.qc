@@ -197,7 +197,7 @@ void () Alias_SetBatch =
 	if (self.got_aliases_time > time)
 		return;
 
-	sprint (self, PRINT_MEDIUM, "num: " + ftos (num) + "\n\n");
+//	sprint (self, PRINT_MEDIUM, "num: " + ftos (num) + "\n\n");
 
 	if (self.got_aliases != TF_GOTALIAS_SETTING)
 		error ("AliasCheck() called with wrong got_aliases setting (" + ftos (self.got_aliases) + ")!\n");
