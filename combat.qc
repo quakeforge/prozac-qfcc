@@ -397,7 +397,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			attacker.tfstate = attacker.tfstate - TFSTATE_INSPIRED;
 			attacker.super_damage_finished = 0;
 			attacker.items = attacker.items & ~IT_QUAD;
-			attacker.effects = attacker.effects - (attacker.effects & EF_DIMLIGHT);
+			attacker.effects &= ~EF_ANYGLOW;
 		}
 	}
 	if (targ.classname == "player" && targ.tfstate & TFSTATE_INSPIRED) {
@@ -407,7 +407,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			targ.tfstate = targ.tfstate - TFSTATE_INSPIRED;
 			targ.super_damage_finished = 0;
 			targ.items = targ.items & ~IT_QUAD;
-			targ.effects = targ.effects - (targ.effects & EF_DIMLIGHT);
+			targ.effects &= ~EF_ANYGLOW;
 		}
 	}
 

@@ -195,7 +195,7 @@ void() Wiz_FastFire =
 
 	if (self.owner.health > 0)
 	{
-		self.owner.effects = self.owner.effects | EF_MUZZLEFLASH;
+		self.owner.effects = self.owner.effects | EF_DIMLIGHT;
 
 		makevectors (self.enemy.angles);	
 		dst = self.enemy.origin - 13*self.movedir;

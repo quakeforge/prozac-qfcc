@@ -1254,7 +1254,6 @@ void() PlayerDie =
 	//WK Stop orff
 	sound (self, CHAN_MUSIC, "items/r_item1.wav", 0.1, ATTN_NORM);
 	//WK Stop glows!
-	self.flags &= ~(EF_BRIGHTLIGHT | EF_DIMLIGHT);
 	self.effects = 0;
 	// make dead guy release hook (wedge)
 	if (self.hook_out) {
@@ -1497,4 +1496,60 @@ void() player_laser4   =[$nailatt1, player_laser1  ]
 		return;
 	}
 	self.weaponframe=5;
+};
+
+float(entity e) EF_GlowColor =
+{
+	local float ret = 0;
+
+	if (e.classname == "player")
+	{
+		local entity te = NIL;
+
+		te = find(NIL, classname, "item_tfgoal");
+
+		while (te)
+		{
+			if (te.owner == e && (te.goal_activation & TFGI_GLOW))
+			{
+				ret |= EF_DIMLIGHT;
+
+				local float teamno = 0;
+
+				if (te.owned_by == 1)
+					ret |= EF_BLUE;
+				else if (te.owned_by == 2)
+					ret |= EF_RED;
+			}
+		}
+
+		if (e.super_damage_finished)
+			ret |= EF_BLUE;
+		if (e.invincible_finished)
+			ret |= EF_RED;
+
+		if ((ret & EF_ANYGLOW) != EF_DIMLIGHT)
+			ret &= ~EF_DIMLIGHT;
+
+		return ret;
+	}
+	else if (e.classname == "item_tfgoal")
+	{
+		if (e.owned_by)
+		{
+			if (e.owned_by == 1)
+				return EF_BLUE;
+			else if (e.owned_by == 2)
+				return EF_RED;
+		}
+		else if (e.team)
+		{
+			if (e.team == 1)
+				return EF_BLUE;
+			else if (e.team == 2)
+				return EF_RED;
+		}
+		
+		return EF_DIMLIGHT;			
+	}
 };

@@ -273,7 +273,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 		}
 		
 		//WK - Can't feign while carrying flag. King cheater!
-		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT)) { 
+		if (self.effects & EF_ANYGLOW) { 
 			sprint(self, PRINT_HIGH, "Can't feign while glowing, you sloppy bitch.\n");
 			return;
 		}
@@ -404,7 +404,7 @@ void() TeamFortress_SpyGoUndercover =
 {
 	local entity te;
 
-	if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT))
+	if (self.effects & EF_ANYGLOW)
 	{
 		sprint(self, PRINT_MEDIUM, "You cannot disguise while glowing.\n");
 		return;

@@ -84,7 +84,7 @@ void() JobThief =
 		//}
 		else { //Become fully hidden
 			//RJM - Can't hide while carrying flags.
-			if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT)) { 
+			if (self.effects & EF_ANYGLOW) { 
 				sprint(self,PRINT_HIGH,"Not while glowing, idiot.\n");
 				return;
 			}
@@ -113,7 +113,7 @@ void() JobThief =
 		//RJM - Can't hide while carrying flags.
 		//WK  - Allow them to go eyes invisible but not full hide
 		/*
-		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT)) { 
+		if (self.effects & EF_ANYGLOW) { 
 			sprint(self, PRINT_HIGH, "Not while glowing, gimp.\n");
 			return;
 		}
@@ -319,7 +319,7 @@ void() ChaplanThink = {
 			//Sync CHAN_MUSIC with disconnect and sound below
 			self.job = self.job - (self.job & JOB_ACTIVE);
 			sound (self, CHAN_MUSIC, "items/r_item1.wav", 0.1, ATTN_NORM);
-			self.effects = self.effects - (self.effects & EF_BRIGHTLIGHT);
+			self.effects &= ~EF_ANYGLOW;
 			//self.tfstate = self.tfstate - (self.tfstate & TFSTATE_RELOADING);
 			self.current_weapon = self.weapon;
 			W_SetCurrentAmmo();
@@ -368,7 +368,7 @@ void() JobChaplan =
 	//Start playing preacher music, glow and inspire!
 	//sound (self, CHAN_VOICE, "ambience/orff.wav", 0.75, ATTN_NORM);
 	sound (self, CHAN_MUSIC, "ambience/orff.wav", 0.75, ATTN_NORM);
-	self.effects = self.effects | EF_BRIGHTLIGHT;
+	self.effects |= EF_BRIGHTLIGHT | EF_GlowColor(self);
 	ChaplanInspire();
 };
 

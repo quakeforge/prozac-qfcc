@@ -967,7 +967,7 @@ void(float inp) Menu_Spy_Input =
 {
 	if (inp == 1 || inp == 2)
 	{
-		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT))
+		if (self.effects & EF_ANYGLOW)
 		{
 			sprint(self, PRINT_HIGH, "You can't go undercover while glowing.\n");
 			ResetMenu();		

@@ -144,7 +144,7 @@ void() UseSpecialSkill =
 		if (self.money)
 			self.impulse = TF_ENGINEER_BUILD;
 		else {
-			if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT)) //CH why not have the check here too, saves a keypress
+			if (self.effects & EF_ANYGLOW) //CH why not have the check here too, saves a keypress
 				self.impulse = TF_ENGINEER_BUILD;
 			else
 				self.impulse = TF_SPY_SPY;
@@ -3589,7 +3589,7 @@ void() TeamFortress_RegenerateCells =
 		}
 		else if ((self.owner.velocity_z == 0 && self.owner.velocity_y == 0 && self.owner.velocity_x == 0)
 				 && !(self.owner.job & JOB_FULL_HIDE)
-				 && !(self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT)))
+				 && !(self.effects & EF_ANYGLOW))
 		{
 			self.owner.frame = 0;
 			self.owner.weaponframe = 0;

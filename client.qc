@@ -212,7 +212,7 @@ void () PrematchBegin =
 			other.items = other.items & ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
-			other.effects = other.effects - (other.effects & EF_DIMLIGHT);
+			other.effects &= ~EF_ANYGLOW;
 			TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			other = find(other, classname, "player");
 		}
@@ -225,7 +225,7 @@ void () PrematchBegin =
 			other.items = other.items & ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
-			other.effects = other.effects - (other.effects & EF_DIMLIGHT);
+			other.effects &= ~EF_ANYGLOW;
 			TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			other = find(other, classname, "grunty");
 		}*/
@@ -2702,7 +2702,7 @@ void() PlayerPreThink =
 
 	if (self.undercover_team || self.undercover_skin || self.is_undercover)
 	{
-		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT))
+		if (self.effects & EF_ANYGLOW)
 		{
 			sprint(self, PRINT_MEDIUM, "The glowing removes your disguise.\n");
 			Spy_RemoveDisguise(self);
@@ -2710,7 +2710,7 @@ void() PlayerPreThink =
 	}
 	/*if (self.job & JOB_THIEF && self.job & JOB_FULL_HIDE) 
 	{
-		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT))
+		if (self.effects & EF_ANYGLOW)
 		{
 			sprint(self, PRINT_MEDIUM, "The glowing removes your full invisibility.\n");
 			self.job = self.job - (self.job & JOB_FULL_HIDE);
@@ -2859,9 +2859,6 @@ Check for turning off powerups
 */
 void() CheckPowerups =
 {
-	local float lighton;
-	local entity te;
-
 	if (self.health <= 0)
 		return;
 
@@ -2963,26 +2960,8 @@ void() CheckPowerups =
 			self.items = self.items & ~IT_INVULNERABILITY;
 			self.invincible_time = 0;
 			self.invincible_finished = 0;
-		}
-		if (self.invincible_finished > time)
-			self.effects = self.effects | EF_DIMLIGHT;
-		else
-		{
-			// Only remove dimlight if it's not being supplied by a GoalItem
-			lighton = FALSE;
-			te = find (NIL, classname, "item_tfgoal");
-			while (te)
-			{
-				if (te.owner == self)
-				{
-					if (te.goal_activation & TFGI_GLOW)
-						lighton = TRUE;
-				}
-				te = find(te, classname, "item_tfgoal");
-			}
-
-			if (!lighton)
-				self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+			self.effects &= ~EF_ANYGLOW;
+			self.effects |= EF_GlowColor(self);
 		}
 	}
 
@@ -3021,26 +3000,8 @@ void() CheckPowerups =
 			self.super_time = 0;
 			//WK If inspired, remove inspiration
 			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_INSPIRED);
-		}
-		if (self.super_damage_finished > time)
-			self.effects = self.effects | EF_DIMLIGHT;
-		else
-		{
-			// Only remove dimlight if it's not being supplied by a GoalItem
-			lighton = FALSE;
-			te = find (NIL, classname, "item_tfgoal");
-			while (te)
-			{
-				if (te.owner == self)
-				{
-					if (te.goal_activation & TFGI_GLOW)
-						lighton = TRUE;
-				}
-				te = find(te, classname, "item_tfgoal");
-			}
-
-			if (!lighton)
-				self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+			self.effects &= ~EF_ANYGLOW;
+			self.effects |= EF_GlowColor(self);
 		}
 	}	
 

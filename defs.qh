@@ -175,11 +175,19 @@
 
 // entity effects
 
-#define EF_BRIGHTFIELD	1 
-#define EF_MUZZLEFLASH	2 
+#define EF_BRIGHTFIELD	8  //really 1, doesn't exist in quakeworld
+#define EF_MUZZLEFLASH	8  //really 2, doesn't exist in quakeworld
+ 
 #define EF_BRIGHTLIGHT	4 
-#define EF_DIMLIGHT	8 
+#define EF_DIMLIGHT	8
+#define EF_FLAG1	16
+#define EF_FLAG2	32
+#define EF_RED		64
+#define EF_BLUE		128 
 
+#define EF_ANYGLOW (EF_BRIGHTLIGHT | EF_DIMLIGHT |  EF_RED | EF_BLUE)
+
+float (entity e) EF_GlowColor;
 
 // network writes.  argument to Write*
 #define MSG_ONE			1 		// reliable to one (msg_entity)

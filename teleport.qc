@@ -125,7 +125,7 @@ float(entity targ) Teleporter_check_person =
 		CenterPrint(targ, "Civilian + Teleporter = No, NFC!\n");
 		return FALSE;
 	}
-	if (targ.effects & (EF_BRIGHTLIGHT | EF_DIMLIGHT | EF_BRIGHTFIELD)) {//no flag for you!
+	if (targ.effects & EF_ANYGLOW) {//no flag for you!
 		CenterPrint(targ, "Can't use teleporter while glowing!\n");
 		return FALSE;
 	}

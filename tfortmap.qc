@@ -195,7 +195,7 @@ void() TF_PlaceItem =
 //	self.oldorigin = self.origin; 		// So we can return it later
 
  	if (self.goal_activation & TFGI_ITEMGLOWS)
-		self.effects = self.effects | EF_DIMLIGHT;
+		self.effects = self.effects | EF_GlowColor(self);
 
 	// Setup the item_list mask
 	if (item_list_bit == 0)
@@ -2770,12 +2770,12 @@ void(entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer =
 
 	// Do the deeds on the player
 	if (Item.goal_activation & TFGI_GLOW)
-		AP.effects = AP.effects | EF_DIMLIGHT;
+		AP.effects = AP.effects | EF_GlowColor(AP);
 	if (Item.goal_activation & TFGI_SLOW)
 		TeamFortress_SetSpeed(AP);
 
  	if (Item.goal_activation & TFGI_ITEMGLOWS)
- 		Item.effects = Item.effects - (Item.effects | EF_DIMLIGHT);
+ 		Item.effects &= ~EF_ANYGLOW;
 
 	// Light up console icons
 	if (Item.items & IT_KEY1)
@@ -2899,7 +2899,7 @@ void() ReturnItem =
 void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 {
 	local entity te;
-	local float lighton, slowon;
+	local float slowon;
 	local float key1on, key2on;
 	local float spyoff;
 	local entity DelayReturn;
@@ -2918,46 +2918,18 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	RPrint("\n");
 #endif
 
-	lighton = FALSE;
 	slowon = FALSE;
 	key1on = FALSE;
 	key2on = FALSE;
 	spyoff = FALSE;
 	// Remove the deeds from the player
 	// Make sure we don't remove an effect another Goal is also supplying
-	te = find (NIL, classname, "item_tfgoal");
-	while (te)
-	{
-		if ((te.owner == AP) && (te != Item))
-		{
-			if (te.goal_activation & TFGI_GLOW)
-				lighton = TRUE;
-			if (te.goal_activation & TFGI_SLOW)
-				slowon = TRUE;
 
-			if (te.items & IT_KEY1)
-				key1on = TRUE;
-			if (te.items & IT_KEY2)
-				key2on = TRUE;
-
-			if (te.goal_result & TFGR_REMOVE_DISGUISE)
-				spyoff = 1;
-		}
-		te = find(te, classname, "item_tfgoal");
-	}
-
-	// Check Powerups too
-	if (!lighton)
-	{
-		if (AP.invincible_finished > time + 3)
-			lighton = TRUE;
-	}
-
-	if (!lighton)
-		AP.effects = AP.effects - (AP.effects & EF_DIMLIGHT);
+	AP.effects &= ~EF_ANYGLOW;
+	AP.effects |= EF_GlowColor(AP); // This handles other glows 
 
  	if (Item.goal_activation & TFGI_ITEMGLOWS)
-		Item.effects = Item.effects | EF_DIMLIGHT;
+		Item.effects = Item.effects | EF_GlowColor(self);
 
 	// Remove the Spy prevention
 	if (!spyoff)
