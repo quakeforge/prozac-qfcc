@@ -282,7 +282,6 @@ float		deathmatch;
 
 .float	search_time; 		//WK Used for hover boots. :/
 .float	attack_state;		//WK Not usable?
-.float  lastframe_time;
 
 //
 // player only fields

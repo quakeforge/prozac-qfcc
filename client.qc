@@ -3135,7 +3135,7 @@ void() PlayerPostThink =
 		}
 		else 
 #ifdef WALL_HURT
-		if (vlen(self.movedir) - vlen(self.velocity) > 5500 * (time - self.lastframe_time))
+		if (vlen(self.movedir) - vlen(self.velocity) > 5500 * frametime)
 		{
 			self.deathtype = "wall";
 			T_Damage (self, NIL, NIL, ((vlen(self.movedir) - vlen(self.velocity)) - 550) / 10);
@@ -3182,8 +3182,6 @@ void() PlayerPostThink =
 
 		self.cheat_check = time + 5;	
 	}
-
-	self.lastframe_time = time;	
 };
 
 

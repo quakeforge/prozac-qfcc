@@ -4048,7 +4048,7 @@ void() W_WeaponFrame =
 
 	if (!(self.tfstate & TFSTATE_AIMING)) {
 		if (self.height > 29 && self.height < 90) {
-			self.height = self.height + 80 * (time - self.lastframe_time);
+			self.height = self.height + 80 * frametime;
 			if (self.height > 90)
 				self.height = 90;
 
@@ -4103,7 +4103,7 @@ void() W_WeaponFrame =
 	}
 
 	if (self.current_weapon == WEAP_AUTO_RIFLE) // BUG BUG BUG! GIVES ADVANTAGE TO HIGH FPSERS
-	    self.heat -= 1000 * (time - self.lastframe_time);
+	    self.heat -= 1000 * frametime;
 	// check for attack
     if (self.button0 && !(self.fire_held_down)) {
 		if ((self.current_menu == MENU_CLASSHELP) || (self.current_menu == MENU_CLASSHELP2)) {
