@@ -1237,7 +1237,6 @@ void() W_FireSniperRifle =
 
 	sound (self ,CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
 	KickPlayer(-2, self);
-//	self.currentammo = self.ammo_shells = self.ammo_shells - 1; // ofn moved!
 
 	angle = self.v_angle;
 
@@ -1286,11 +1285,13 @@ void() W_FireSniperRifle =
 	if (!dam_mult)
 	   dam_mult = SNIPER_DMG;	
 
+#if 0	// otr out
 	if (self.cutf_items & CUTF_OTR)
 	{
 		ign_mult=dam_mult*OTR_IGNFACTOR;
 		dam_mult=dam_mult*OTR_DMGFACTOR;
 	}
+#endif
 
 	self.ammo_shells -= 5;
 	W_SetCurrentAmmo();
@@ -1322,21 +1323,24 @@ void() W_FireSniperRifle =
 			if (zdif < 0) {
 				// leg shot doesn't hurt very much
 				dam_mult *= 0.40;
-				ign_mult *= 0.40;
 
-				if ((dam_mult + ign_mult) > SNIPER_MAXLEG)
+				if (dam_mult > SNIPER_MAXLEG)
 				{
-					dam_mult *= (dam_mult + ign_mult) / SNIPER_MAXLEG;
-					ign_mult *= (dam_mult + ign_mult) / SNIPER_MAXLEG;
+					dam_mult = SNIPER_MAXLEG;
 				}
 
 				if (trace_ent.armorvalue < 0.8)
 					trace_ent.leg_damage++;
 
+				if (trace_ent.leg_damage > 5)
+					trace_ent.leg_damage = 5;
+
+#if 0	// OTR out
                 //- OfN - OTR bullets do twice damage ----------//
 				if (self.cutf_items & CUTF_OTR) {
 					trace_ent.leg_damage++;
 				}
+#endif
                 
 				TeamFortress_SetSpeed(trace_ent); 
 				deathmsg = DMSG_SNIPERLEGSHOT;
@@ -1344,17 +1348,19 @@ void() W_FireSniperRifle =
 				//GR red armor has leg protection
 
 				if (trace_ent.armortype >= 0.7 && trace_ent.armorvalue > 0) {
-				    TF_T_Damage (trace_ent, self, self, ign_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
 				    TF_T_Damage (trace_ent, self, self, dam_mult, 0, TF_TD_SHOT);
 				} else {
-				    TF_T_Damage (trace_ent, self, self, dam_mult + ign_mult, TF_TD_IGNOREARMOUR,0);
+				    TF_T_Damage (trace_ent, self, self, dam_mult, TF_TD_IGNOREARMOUR,0);
 				} 
 
 				if (trace_ent.health > 0) {
+#if 0 // OTR out
 					if (self.cutf_items & CUTF_OTR) {
 						sprint(trace_ent, PRINT_MEDIUM, "Leg injury! That was OTR stuff!\n");
 						sprint(self, PRINT_MEDIUM, "OTR Leg shot - that'll slow him down!\n");
-					} else { //- not OTR..
+					} else 
+#endif
+					{ //- not OTR..
 						sprint(trace_ent, PRINT_MEDIUM, "Leg injury!\n");
 						sprint(self, PRINT_MEDIUM, "Leg shot - that'll slow him down!\n");
 					}
@@ -1364,7 +1370,6 @@ void() W_FireSniperRifle =
 			} else if (zdif > 20) {
 				// head shot
 				dam_mult *= 2;
-				ign_mult *= 2;
 
 				stuffcmd(trace_ent, "bf\n");
 
@@ -1372,27 +1377,26 @@ void() W_FireSniperRifle =
 				deathmsg = DMSG_SNIPERHEADSHOT;
 				if (trace_ent.armortype > 0.5 && trace_ent.armorvalue > 0)
 				{
-				    TF_T_Damage (trace_ent, self, self, ign_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
 				    TF_T_Damage (trace_ent, self, self, dam_mult, 0, TF_TD_SHOT);
 				} else {
-				    TF_T_Damage (trace_ent, self, self, dam_mult + ign_mult, TF_TD_IGNOREARMOUR, 0);
+				    TF_T_Damage (trace_ent, self, self, dam_mult, TF_TD_IGNOREARMOUR, 0);
 				}
 
 				if (trace_ent.health > 0) {
+#if 0 // otr out
 					if (self.cutf_items & CUTF_OTR) {
 						sprint(trace_ent, PRINT_MEDIUM, "Head injury! That was OTR stuff!\n");
 						sprint(self, PRINT_MEDIUM, "OTR Head shot - that's gotta hurt!\n");
-					} else {
+					} else 
+#endif
+					{
 						sprint(trace_ent, PRINT_MEDIUM, "Head injury!\n");
 						sprint(self, PRINT_MEDIUM, "Head shot - that's gotta hurt!\n");
 					}
 				}
 
 				return;
-			} else
-				deathmsg = DMSG_SNIPERRIFLE;
-
-			TF_T_Damage (trace_ent, self, self, ign_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
+			}
 		}
 	}
 

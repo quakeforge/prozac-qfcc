@@ -1103,10 +1103,13 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 				deathstring2 = "\n";
 			}
 		} else if (deathmsg == DMSG_SNIPERRIFLE) {
+#ifdef OTR	// OTR out
 			if (attacker.cutf_items & CUTF_OTR) {
 				deathstring = " learns from ";
 				deathstring2 = " what an OTR bullet is\n";
-			} else {
+			} else
+#endif
+			{
 				if (random () < FRAC (1, 2)) {
 					deathstring = " takes a bullet in the chest from ";
 					deathstring2 = "\n";
@@ -1116,10 +1119,13 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 				}
 			}
 		} else if (deathmsg == DMSG_SNIPERHEADSHOT) {
+#ifdef OTR	// OTR out
 			if (attacker.cutf_items & CUTF_OTR && random () < FRAC (3, 5)) {
 				deathstring = "'s head flies away due to ";
 				deathstring2 = " and his OTR bullets\n";
-			} else {
+			} else 
+#endif
+			{
 				if (random () < FRAC (1, 2)) {
 					deathstring = " gets a third eye from ";
 					deathstring2 = "\n";
@@ -1129,10 +1135,13 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 				}
 			}
 		} else if (deathmsg == DMSG_SNIPERLEGSHOT) {
+#ifdef OTR	// OTR out
 			if (attacker.cutf_items & CUTF_OTR && random () < FRAC (1, 4)) {
 				deathstring = " owns a metallic replacement for his legs from ";
 				deathstring2 = "\n";
-			} else {
+			} else
+#endif
+			{
 				if (random () < FRAC (1, 2)) {
 					deathstring = " is made legless by ";
 					deathstring2 = "\n";
