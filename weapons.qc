@@ -1081,6 +1081,16 @@ void (float damage, vector dir) TraceAttack =
 		puff_org = org;
 		puff_count++;
 
+		msg_entity = self;
+
+		WriteByte (MSG_ONE, SVC_TEMPENTITY);
+		WriteByte (MSG_ONE, TE_GUNSHOT);
+		WriteByte (MSG_ONE, 1.0);
+
+		WriteCoord (MSG_ONE, trace_endpos_x);
+		WriteCoord (MSG_ONE, trace_endpos_y);
+		WriteCoord (MSG_ONE, trace_endpos_z);
+
 	if (trace_ent.classname == "force_field") { //- OfN - Makes field explosion b4 removing it
 		FieldExplosion(trace_ent,trace_endpos,trace_ent);
 		PutFieldWork(trace_ent);
@@ -1109,10 +1119,8 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 	while (shotcount > 0) {
 		
 		direction = dir + crandom() * spread_x * v_right + crandom() * spread_y * v_up;
-		if (self.current_weapon & WEAP_ASSAULT_CANNON)
-			traceline (src, src + direction * 2048, FALSE, self);
-		else
-			traceline (src, src + direction * 1024, FALSE, self);
+
+		traceline (src, src + direction * 4096, FALSE, self);
 										
 		if (trace_fraction == 1.0)
 			TraceAttack (0, direction);
