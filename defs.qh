@@ -89,12 +89,12 @@
 
 // point content values
 
-#define CONTENT_EMPTY	-1 
-#define CONTENT_SOLID	-2 
-#define CONTENT_WATER	-3 
-#define CONTENT_SLIME	-4 
-#define CONTENT_LAVA	-5 
-#define CONTENT_SKY	-6 
+#define CONTENTS_EMPTY	-1 
+#define CONTENTS_SOLID	-2 
+#define CONTENTS_WATER	-3 
+#define CONTENTS_SLIME	-4 
+#define CONTENTS_LAVA	-5 
+#define CONTENTS_SKY	-6 
 
 #define STATE_TOP	0 
 #define STATE_BOTTOM	1 

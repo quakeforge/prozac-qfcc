@@ -142,7 +142,6 @@ void() Field_think =
 	if (self.demon_one.fieldgen_status == FIELDGEN_ISWORKING)
 		Field_MakeVisual(self);		   
 
-#ifdef ALIGNED_FIELDGENS 
 	// checks for anything stuck in field :)
 	local entity te;
 	local float frange;
@@ -170,9 +169,6 @@ void() Field_think =
 		}
 		te = te.chain;
 	}
-#else
-# warning We do NOT have a test for being stuck in the field, so I am disabling it
-#endif
 };
 
 //=============================================================================================
@@ -194,6 +190,8 @@ float(entity e1, entity e2) EntsTouching2 =
 	if (e1.absmax_z < e2.absmin_z)
 		return FALSE;
 
+	if (hullpointcontents (e2, e1.mins, e1.maxs, e1.origin) != CONTENTS_SOLID)
+		return FALSE;
 	return TRUE;
 };
 

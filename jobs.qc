@@ -861,7 +861,7 @@ void() GuerillaTossTouch =
 		return;
 	}
 
-	if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID) //CH if in wall or sky
+	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID) //CH if in wall or sky
 	{
 		self.health = 0; //CH needed for tesla
 		// OfN CAUSES ANY PROBLEM? Is this needed?

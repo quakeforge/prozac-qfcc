@@ -710,18 +710,18 @@ float() Sentry_Fire =
 float(vector vec) BadSpot =
 {
 	/*
-	if (pointcontents(vec) == CONTENT_SOLID)
+	if (pointcontents(vec) == CONTENTS_SOLID)
 		sprint(self.real_owner,PRINT_HIGH,"SOLID Point\n");
-	else if (pointcontents(vec) == CONTENT_EMPTY)
+	else if (pointcontents(vec) == CONTENTS_EMPTY)
 		sprint(self.real_owner,PRINT_HIGH,"EMPTY Point\n");
-	else if (pointcontents(vec) == CONTENT_SKY)
+	else if (pointcontents(vec) == CONTENTS_SKY)
 		sprint(self.real_owner,PRINT_HIGH,"SKY Point\n");
-	else if (pointcontents(vec) == CONTENT_WATER)
+	else if (pointcontents(vec) == CONTENTS_WATER)
 		sprint(self.real_owner,PRINT_HIGH,"WATER Point\n");
 	else
 		sprint(self.real_owner,PRINT_HIGH,"BUG: Other Point\n");
 	*/
-	if (pointcontents(vec) == CONTENT_SKY)
+	if (pointcontents(vec) == CONTENTS_SKY)
 		return TRUE;
 	return FALSE;
 };
@@ -731,7 +731,7 @@ float(vector vec) BadSpot =
 void() Sentry_Touch =
 {
 	//WK Check for blockage
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		sprint(self.real_owner, PRINT_HIGH, "Your sentry gun flew away.\n");
 		Sentry_Die();

@@ -3127,11 +3127,11 @@ void() tfgoalitem_dropthink =
 	{
 		pos = pointcontents(self.origin); // find the location of the Item
 	
-		if (pos == CONTENT_SLIME)
+		if (pos == CONTENTS_SLIME)
 			self.nextthink = time + (self.pausetime / 4);	
-		else if (pos == CONTENT_LAVA)
+		else if (pos == CONTENTS_LAVA)
 			self.nextthink = time + 5;
-		else if (pos == CONTENT_SOLID || pos == CONTENT_SKY) // oh shit!
+		else if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY) // oh shit!
 			self.nextthink = time + 2;
 		else
 			self.nextthink = time + self.pausetime;	
@@ -3158,11 +3158,11 @@ void() tfgoalitem_dropthink2 =
 //	{
 		pos = pointcontents(self.origin); // find the location of the Item
 	
-		if (pos == CONTENT_SLIME)
+		if (pos == CONTENTS_SLIME)
 			self.nextthink = time + (self.pausetime / 4);	
-		else if (pos == CONTENT_LAVA)
+		else if (pos == CONTENTS_LAVA)
 			self.nextthink = time + 5;	
-		else if (pos == CONTENT_SOLID || pos == CONTENT_SKY) // oh shit!
+		else if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY) // oh shit!
 			self.nextthink = time + 2;	
 		else
 			self.nextthink = time + self.pausetime;	
@@ -3178,11 +3178,11 @@ void() tfgoalitem_dropthink2 =
 //	{
 		pos = pointcontents(self.origin); // find the location of the Item
 	
-		if (pos == CONTENT_SLIME)
+		if (pos == CONTENTS_SLIME)
 			setorigin(self, self.oldorigin);	
-		else if (pos == CONTENT_LAVA)
+		else if (pos == CONTENTS_LAVA)
 			setorigin(self, self.oldorigin);	
-		else if (pos == CONTENT_SOLID || pos == CONTENT_SKY) // oh shit!
+		else if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY) // oh shit!
 			setorigin(self, self.oldorigin);	
 		else
 			setorigin(self, self.origin);	
@@ -3613,7 +3613,7 @@ void() CTF_FlagCheck =
 		{
 			pos = pointcontents(te.origin); // find the location of the Flag
 		
-			if (pos == CONTENT_SOLID || pos == CONTENT_SKY) 
+			if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY) 
 			{
 				RPrint("*****BUG*****\nFlag(s) outside world.\nPlease report this.\n");
 				te.nextthink = time + 0.2;
@@ -3626,7 +3626,7 @@ void() CTF_FlagCheck =
 		{
 			pos = pointcontents(te.origin); // find the location of the Flag
 		
-			if (pos == CONTENT_SOLID || pos == CONTENT_SKY) 
+			if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY) 
 			{
 				RPrint("*****BUG*****\nFlag(s) outside world.\nPlease report this.\n");
 				te.nextthink = time + 0.2;

@@ -527,7 +527,7 @@ void() FlareGrenadeTouch =
 	if (other == self.owner)
 		return;		// don't bounce on owner
 
-    if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID) // if in wall or sky
+    if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID) // if in wall or sky
 	{
        dremove(self);
        return;

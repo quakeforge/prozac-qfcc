@@ -321,26 +321,26 @@ void() MotionSensorTossTouch =
 {
 	if (other != world || other == self.real_owner)
 		return;
-	if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin + '0 0 2') == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID)
+	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
 	{
 		MotionSensorDie();
 		return;
 	}
 	//CH sees where landed and adjusts to proper things
-	if (pointcontents(self.origin + '0 0 1') == CONTENT_SOLID)
+	if (pointcontents(self.origin + '0 0 1') == CONTENTS_SOLID)
 		self.origin = self.origin - '0 0 12';
-	if (pointcontents(self.origin - '0 0 1') == CONTENT_SOLID)
+	if (pointcontents(self.origin - '0 0 1') == CONTENTS_SOLID)
 		self.origin = self.origin + '0 0 4';
-	if (pointcontents(self.origin + '0 1 0') == CONTENT_SOLID)
+	if (pointcontents(self.origin + '0 1 0') == CONTENTS_SOLID)
 		self.origin = self.origin - '0 16 0';
-	if (pointcontents(self.origin - '0 1 0') == CONTENT_SOLID)
+	if (pointcontents(self.origin - '0 1 0') == CONTENTS_SOLID)
 		self.origin = self.origin + '0 16 0';
-	if (pointcontents(self.origin + '1 0 0') == CONTENT_SOLID)
+	if (pointcontents(self.origin + '1 0 0') == CONTENTS_SOLID)
 		self.origin = self.origin - '16 0 0';
-	if (pointcontents(self.origin + '1 0 0') == CONTENT_SOLID)
+	if (pointcontents(self.origin + '1 0 0') == CONTENTS_SOLID)
 		self.origin = self.origin + '16 0 0';
 	setorigin (self, self.origin);
-	if (pointcontents(self.origin) == CONTENT_SKY || pointcontents(self.origin + '0 0 2') == CONTENT_SKY || pointcontents(self.origin) == CONTENT_SOLID)
+	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
 	{
 		MotionSensorDie();
 		return;

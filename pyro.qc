@@ -801,7 +801,7 @@ void() T_IncendiaryTouch =
 	if (other == self.owner)
 		return;		// don't explode on owner
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		remove(self);
 		return;

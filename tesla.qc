@@ -635,7 +635,7 @@ void() Tesla_Touch =
 	cheater = FALSE;
 
 	//WK Check for blockage
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		sprint(self.real_owner, PRINT_HIGH, "Your sentry gun flew away.\n");
 		Tesla_Die();
@@ -676,15 +676,15 @@ void() Tesla_Touch =
 	if (self.tf_items & NIT_TURRET && self.movetype == MOVETYPE_FLY) 
 	{
 		//WK Check to see if we are blocked
-		if (pointcontents(self.origin) == CONTENT_SKY || 
-			//pointcontents(self.origin - '0 0 10') == CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 5') == CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 10') == CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 15') == CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 20') == CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 30') == CONTENT_SKY ||
-			//pointcontents(self.origin + '0 0 40') == CONTENT_SKY ||
-            pointcontents(self.origin + '0 0 70') == CONTENT_SKY) //- OfN
+		if (pointcontents(self.origin) == CONTENTS_SKY || 
+			//pointcontents(self.origin - '0 0 10') == CONTENTS_SKY ||
+			//pointcontents(self.origin + '0 0 5') == CONTENTS_SKY ||
+			//pointcontents(self.origin + '0 0 10') == CONTENTS_SKY ||
+			//pointcontents(self.origin + '0 0 15') == CONTENTS_SKY ||
+			//pointcontents(self.origin + '0 0 20') == CONTENTS_SKY ||
+			//pointcontents(self.origin + '0 0 30') == CONTENTS_SKY ||
+			//pointcontents(self.origin + '0 0 40') == CONTENTS_SKY ||
+            pointcontents(self.origin + '0 0 70') == CONTENTS_SKY) //- OfN
 		{
 			sprint(self.real_owner, PRINT_HIGH, "Your tesla flew away.\n");
 			Tesla_Die();

@@ -936,8 +936,8 @@ void(float cost, float type) BuyGren2 =
 //Functions for our new grenades
 void() fragspike_touch =
 {
-	//if (pointcontents(self.origin) == CONTENT_SKY)
-	if (pointcontents(self.origin) != CONTENT_EMPTY)
+	//if (pointcontents(self.origin) == CONTENTS_SKY)
+	if (pointcontents(self.origin) != CONTENTS_EMPTY)
 	{
 		dremove(self);
 		return;

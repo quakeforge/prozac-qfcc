@@ -849,7 +849,7 @@ local float		rs;
 	}
 
 	// water pain sounds
-	if (self.watertype == CONTENT_WATER && self.waterlevel == 3)
+	if (self.watertype == CONTENTS_WATER && self.waterlevel == 3)
 	{
 		DeathBubbles(1);
 		if (random() > 0.5)
@@ -860,7 +860,7 @@ local float		rs;
 	}
 	
 	// slime pain sounds
-	if (self.watertype == CONTENT_SLIME)
+	if (self.watertype == CONTENTS_SLIME)
 	{
 		// FIX ME	put in some steam here
 		if (random() > 0.5)
@@ -870,7 +870,7 @@ local float		rs;
 		return;
 	}
 
-	if (self.watertype == CONTENT_LAVA)
+	if (self.watertype == CONTENTS_LAVA)
 	{
 		if (random() > 0.5)
 			sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);

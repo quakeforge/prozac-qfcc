@@ -172,7 +172,7 @@ void() Teleporter_heat_think =
 		loc_y = loc_y + ((rint(random() * 3 + 1) * 16) - 32);
 
 		pos = pointcontents(loc);
-		if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
+		if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
 		{
 			TF_T_Damage(self, world, world, self.health+1, 0, 0);
 			sprint (self.real_owner, PRINT_HIGH, "Not enough space for teleportation.\n");

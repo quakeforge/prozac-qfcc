@@ -288,7 +288,7 @@ void () Anchor_Grapple =
 	//	return;
 
 	// Don't stick the the sky.
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		Reset_Grapple (self);
 		return;

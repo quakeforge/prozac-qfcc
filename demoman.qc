@@ -344,7 +344,7 @@ void() TeamFortress_DetpackExplode =
 
 	// Check the pointcontents to prevent detpack outside the world
 	pos = pointcontents(self.origin); 
-	if (pos != CONTENT_SOLID && pos != CONTENT_SKY) 
+	if (pos != CONTENTS_SOLID && pos != CONTENTS_SKY) 
 	{
 		deathmsg = DMSG_DETPACK;
 		T_RadiusDamage (self, self.owner, WEAP_DETPACK_SIZE, world);

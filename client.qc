@@ -2320,9 +2320,9 @@ void() PlayerJump =
 
 	if (self.waterlevel >= 2)
 	{
-		if (self.watertype == CONTENT_WATER)
+		if (self.watertype == CONTENTS_WATER)
 			self.velocity_z = 100;
-		else if (self.watertype == CONTENT_SLIME)
+		else if (self.watertype == CONTENTS_SLIME)
 			self.velocity_z = 80;
 		else
 			self.velocity_z = 50;
@@ -2435,7 +2435,7 @@ void() WaterMove =
 		return;
 	}
 
-	if (self.watertype == CONTENT_LAVA)
+	if (self.watertype == CONTENTS_LAVA)
 	{	// do damage
 		if (self.dmgtime < time)
 		{
@@ -2448,7 +2448,7 @@ void() WaterMove =
 			TF_T_Damage (self, world, world, 10*self.waterlevel, 0, TF_TD_FIRE);
 		}
 	}
-	else if (self.watertype == CONTENT_SLIME)
+	else if (self.watertype == CONTENTS_SLIME)
 	{	// do damage
 		if (self.dmgtime < time && self.radsuit_finished < time)
 		{
@@ -2462,11 +2462,11 @@ void() WaterMove =
 	{	
 		// player enter water sound
 		if (!(self.cutf_items & CUTF_STEALTH))
-			if (self.watertype == CONTENT_LAVA)
+			if (self.watertype == CONTENTS_LAVA)
 				sound (self, CHAN_BODY, "player/inlava.wav", 1, ATTN_NORM);
-			else if (self.watertype == CONTENT_WATER)
+			else if (self.watertype == CONTENTS_WATER)
 				sound (self, CHAN_BODY, "player/inh2o.wav", 1, ATTN_NORM);
-			else if (self.watertype == CONTENT_SLIME)
+			else if (self.watertype == CONTENTS_SLIME)
 				sound (self, CHAN_BODY, "player/slimbrn2.wav", 1, ATTN_NORM);
 
 		self.flags = self.flags + FL_INWATER;
@@ -2524,7 +2524,7 @@ void() PlayerPreThink =
 
 	if (self.is_feigning && self.waterlevel == 1)
 	{
-		self.watertype = CONTENT_WATER;
+		self.watertype = CONTENTS_WATER;
 		self.waterlevel = 3;
 	}
 
@@ -2991,7 +2991,7 @@ void() PlayerPostThink =
 	// check to see if player landed and play landing sound	
 	if (self.takedamage && (self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
 	{
-		if (self.watertype == CONTENT_WATER)
+		if (self.watertype == CONTENTS_WATER)
 		{
 			if (!(self.cutf_items & CUTF_STEALTH))
 				sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);

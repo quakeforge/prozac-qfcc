@@ -664,7 +664,7 @@ void() GasGrenadeExplode =
 
 	// Check the pointcontents to prevent detpack outside the world
 	pos = pointcontents(self.origin); 
-	if (pos == CONTENT_EMPTY) 
+	if (pos == CONTENTS_EMPTY) 
 	{
 		te = spawn();
 		te.think = GasGrenadeMakeGas;
@@ -920,7 +920,7 @@ void() T_TranqDartTouch =
 	if (other.solid == SOLID_TRIGGER)
 		return;	// trigger field, do nothing
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		dremove(self);
 		return;

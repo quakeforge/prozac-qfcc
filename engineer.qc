@@ -75,7 +75,7 @@ void() LaserBolt_Touch =
 	if (other == self.enemy && self.enemy != world)
 		return;		// don't explode on same person twice
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		dremove(self);
 		return;
@@ -471,7 +471,7 @@ float(entity obj, entity builder) CheckArea =
 
 	// Check the origin
 	pos = pointcontents(obj.origin);
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
+	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
 		return FALSE;
 
 	// Check the surrounding area
@@ -480,7 +480,7 @@ float(entity obj, entity builder) CheckArea =
 	src_z = obj.origin_z + obj.maxs_z + 16;  // check upwards more
 
 	pos = pointcontents(src);
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
+	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
 		return FALSE;
 
 	end_x = obj.origin_x + obj.mins_x - 16;
@@ -491,7 +491,7 @@ float(entity obj, entity builder) CheckArea =
 		return FALSE;
 
 	pos = pointcontents(end);
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
+	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
 		return FALSE;
 
 	// extend the size a little
@@ -500,7 +500,7 @@ float(entity obj, entity builder) CheckArea =
 	src_z = obj.origin_z + obj.maxs_z + 16;
 
 	pos = pointcontents(src);
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
+	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
 		return FALSE;
 
 	end_x = obj.origin_x + obj.maxs_x + 16;
@@ -513,7 +513,7 @@ float(entity obj, entity builder) CheckArea =
 		return FALSE;
 
 	pos = pointcontents(end);
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
+	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
 		return FALSE;
 
 	// Trace a line from the player to the object too

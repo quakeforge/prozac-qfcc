@@ -1593,7 +1593,7 @@ void() T_MissileTouch =
 	local float	damg;
 	local float	bonus;
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		dremove(self);
 		return;
@@ -2238,7 +2238,7 @@ void() superspike_touch =
 	if (other.solid == SOLID_TRIGGER)
 		return;	// trigger field, do nothing
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		dremove(self);
 		return;
@@ -2351,7 +2351,7 @@ void() spike_touch =
 	if (other.solid == SOLID_TRIGGER)
 		return;	// trigger field, do nothing
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		dremove(self);
 		return;
@@ -4972,7 +4972,7 @@ void() HIP_LaserTouch =
 
    self.owner = world;
    self.cnt = self.cnt + 1;
-   if (pointcontents(self.origin) == CONTENT_SKY)
+   if (pointcontents(self.origin) == CONTENTS_SKY)
    {
 	  remove(self);
 	  return;

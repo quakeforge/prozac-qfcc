@@ -563,7 +563,7 @@ void() demon_fire_touch =
 {
 	local float fire_dmg;
 	fire_dmg = 60 + random()*40;
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		dremove(self);
 		return;
