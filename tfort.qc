@@ -153,9 +153,6 @@ void() UseSpecialSkill =
 void() TeamFortress_ChangeClass =
 {
 	local entity spot, te;
-	local float tc;
-	local string st;
-	local string scratch;
 
 	//WK - Handle Custom Class Restarting
 	if (self.playerclass == PC_CUSTOM && (self.done_custom & CUSTOM_BUILDING)) {
@@ -1499,7 +1496,6 @@ float(float pc) IsLegalClass =
 // Alter the player's Movement based on class
 void(entity p) TeamFortress_SetSpeed =
 {
-	local string sp;
 	local float tf;
 	local entity te;
 
@@ -1838,7 +1834,6 @@ void() TeamFortress_SetEquipment =
 {
 	local entity te;
 	local entity automan;
-	local string st;
 	local float kept_items;
 	local float tc, tc2;
 
@@ -2527,7 +2522,6 @@ float(entity Retriever, float WeaponType) TeamFortress_CanGetWeapon =
 //CH returns number effected
 float(entity Player, float Armorclass) TeamFortress_DescribeArmor =
 {
-	local string st;
 	local float num;
 	num = 0;
 	if (Armorclass == 0)
@@ -2818,7 +2812,7 @@ void() TeamFortress_RemoveTimers =
 // Setup the Respawn delays for this player
 void(float Suicided) TeamFortress_SetupRespawn =
 {
-	local float restime,teamsup;
+	local float restime;
 	local string db;
 
 	if (self.respawn_time > time)
@@ -3308,8 +3302,6 @@ void(float tno) decrement_team_ammoboxes =
 // Assault Cannon selection function
 void() TeamFortress_AssaultWeapon =
 {
-	local	float	it;
-	
 	self.impulse = 0;
 
     if (self.tfstate & TFSTATE_RELOADING)
@@ -3345,8 +3337,6 @@ void() TeamFortress_AssaultWeapon =
 // If this gets called, the players holding onto an exploding grenade :)
 void() TeamFortress_ExplodePerson =
 {
-	local entity te;
-
 	// Removes the owners grenade
 	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_GRENPRIMED);
 
@@ -3753,7 +3743,6 @@ void() CyberAugSleep =
 
 void() TeamFortress_RegenerateCyber =
 {
-	local entity te;
 	if (self.is_abouttodie)
 		return;
 	

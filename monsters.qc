@@ -530,7 +530,6 @@ void() monster_death_use =
 
 void() walkmonster_start_go =
 {
-	local entity	etemp;
 //	local float		failure;
 //	local vector	test;
 

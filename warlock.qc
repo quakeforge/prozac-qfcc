@@ -22,7 +22,7 @@ void (entity themonster) PutMonsterWalk;
 
 void() Menu_Demon =
 {
-	local string str1,st,st3,st2,st4,st5;
+	local string str1,st,st3,st2;
 	
 	str1 = ftos(self.demon_blood);
 
@@ -120,10 +120,7 @@ void() SummonThink =
 
 void(float inp) Menu_Demon_Input =
 {
-	local float r;
 	local entity SummonTimer;
-	local float cost;
-	local entity te;
 	local float points;
 
 	self.demon_choice = 0; // reset demon choice var
@@ -524,11 +521,6 @@ void(entity demon) custom_demon_name =
 
 void (float points) custom_demon_create = 
 {
-	local vector direction;
-	local float r;
-	local entity te;
-	local vector tmp1, tmp2;
-	local string happy, str1;
 	local float points;
 
 	//Play random summoning sound here

@@ -203,8 +203,6 @@ Set "sounds" to one of the following:
 void() func_plat =
 
 {
-local entity t;
-
 	if (CheckExistence() == FALSE)
 	{
 		dremove(self);

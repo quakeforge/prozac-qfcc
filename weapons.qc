@@ -369,7 +369,7 @@ W_FireSpanner
 void() W_FireSpanner =
 {
 	local vector source;
-	local vector org, def;
+	local vector org;
 	local float healam;
 	local entity te;
 
@@ -890,7 +890,6 @@ void() W_FireBioweapon =
 {
 	local	vector	source;
 	local	vector	org;
-	local	float healam;	
 
 	local 	entity BioInfection;
 
@@ -1656,8 +1655,6 @@ void() T_MissileTouch =
 //CH rocket tracker (taken from shalrath.qc)
 void() Rocket_Track_Dot =
 {
-	local vector olorigin;
-
 	if (time > self.has_sentry) {
 		self.think = SUB_Remove;
 	}
@@ -2288,8 +2285,7 @@ void() superspike_touch =
 void() W_FireSuperSpikes =
 {
 	local vector	dir;
-	local entity	old;
-	
+
 	sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 	Attack_Finished(0.2);
 	self.currentammo = self.ammo_nails = self.ammo_nails - 2;
@@ -2313,8 +2309,7 @@ void(float ox) W_FireSpikes =
 	}
     
     local vector	dir;
-	local entity	old;
-	
+
 	if (self.classname == "player")
 		makevectors (self.v_angle);
 	else
@@ -2428,9 +2423,6 @@ PLAYER WEAPON USE
 
 void() W_SetCurrentAmmo =
 {
-
-	local string st;
-
 	if (self.health <= 0 || self.current_weapon == 0)
 		return;		// get out of any weapon firing states
 
@@ -3052,9 +3044,7 @@ void()  player_chain5;
 
 void() W_Attack =
 {
-	local float	 r, tc;
-	local entity tcool;
-	local string st;
+	local float	 r;
 
 	if (!W_CheckNoAmmo ())
 		return;
@@ -4983,7 +4973,6 @@ void() HIP_LaserTouch =
 	local vector org;
    local vector spot1,spot2;
    local vector oldvel;
-   local float mag;
    //local float r;
 
    self.owner = world;

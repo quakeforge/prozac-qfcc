@@ -607,7 +607,6 @@ void(float class) TeamFortress_SpyChangeSkin =
 void(float teamno) TeamFortress_SpyChangeColor =
 {
 	local entity te;
-	local string st;
 	local float tc, tc2;
 
 	// If they're returning their color to their own team, just reset it
@@ -658,7 +657,6 @@ void() GasGrenadeTouch =
 // Gas grenade explosion. Throws up the particle cloud.
 void() GasGrenadeExplode =
 {
-	local vector tmpv;
 	local entity te;
 	local float pos;
 
@@ -1045,9 +1043,7 @@ void() TranquiliserTimer2 =
 // Reset spy skin and color or remove invisibility
 void(entity spy) Spy_RemoveDisguise =
 {
-	local string st;
 	local float tc, tc2;
-	local float reset;
 
 	if (invis_only != TRUE)
 	{

@@ -1213,8 +1213,6 @@ void() SBHackDotTimerThink =
 
 void() JobHacker =
 {
-    local entity te;
-	local float r, hackThis;
 	local vector source;
 	
 	if (self.is_haxxxoring)

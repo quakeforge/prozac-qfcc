@@ -157,9 +157,6 @@ void()	lvl3_sentry_atk5 =[	$lvl3_stand1,	lvl3_sentry_atk4	]
 //=============
 void() Sentry_Rotate =
 {
-	local string st;
-	local float blah;
-
 	if (self.is_malfunctioning & SCREWUP_ONE)
 	{
 		self.ideal_yaw = self.ideal_yaw + 10;

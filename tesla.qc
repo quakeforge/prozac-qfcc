@@ -405,8 +405,6 @@ float (vector where) DoorsAt =
 
 float() Tesla_Fire =
 {
-    local vector dir;
-	local float hit;
 	local float damage;
 	local float cheater = FALSE;
 	local vector below;
@@ -804,8 +802,6 @@ float() ReturnTeslaDelay =
 entity(entity scanner, float scanrange) Tesla_RadiusScan =
 {
 	local entity head;
-	local entity list_head;
-	local entity list;
 	local float gotatarget;
 
 	head = findradius(scanner.origin, scanrange);

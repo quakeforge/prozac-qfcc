@@ -152,8 +152,6 @@ to light in the out position.
 */
 void() func_button =
 {
-	local float		gtemp, ftemp;
-
 	if (CheckExistence() == FALSE)
 	{
 		dremove(self);

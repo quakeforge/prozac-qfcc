@@ -73,7 +73,6 @@ void() JobHacker;
 */
 void() JobThief =
 {
-	local float vel;
 	local entity te;
 	//local string st;
 	if (self.job & JOB_ACTIVE) { //We are hiding
@@ -302,7 +301,6 @@ void() ChaplanGuides = {
 
 void() ChaplanThink = {
 	local entity oself;
-	local string temp; //REMOVEME
 	oself = self;
 	self = self.owner;
 
@@ -383,7 +381,6 @@ void() JobChaplan =
 void() MartyrThink =
 {
 	//Self.owner is the guy who became a martyr
-	local entity oself;
 
 	//Clean these up so we can kill him
 	//self.job = self.job - (self.job & JOB_ACTIVE);
@@ -955,7 +952,6 @@ void() JobCrusader;
 void() UseJobSkill =
 {
 	local float myjob;
-	local string sx,sy,sz;
 
 	//Make sure they can do it
 	if (self.done_custom & CUSTOM_BUILDING) return;

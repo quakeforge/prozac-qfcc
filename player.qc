@@ -117,8 +117,6 @@ PLAYER
 void() player_touch =
 {
 	local entity Bio;
-	local entity te;
-	local float v1, v2;
 
 	// Spies and Scouts can uncloak enemy spies
 	// WK Or those with Spy kits & Scanners
@@ -691,8 +689,6 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 // Cannon Firing 2
 void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 {
-	local string st;
-
 	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
 	{
 		stuffcmd(self, "v_idlescale 0\n");
@@ -725,8 +721,6 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 // Cannon powering down
 void() player_assaultcannondown1   =[$nailatt1, player_assaultcannondown1  ] 
 {
-	local entity tcool;
-
 	if (self.count == 1)
 		sound (self, CHAN_WEAPON, "weapons/asscan3.wav", 1, ATTN_NORM);
 

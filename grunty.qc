@@ -195,8 +195,6 @@ void() grunty_stand = // We need two stand sections for axe and weapon
 // Again we have a choice of which animation to use
 void() grunty_run =
 {
-	local string st;
-
 	if (self.health > 0) self.think = grunty_run;
 
 	self.weaponframe = 0; //needed?
@@ -496,7 +494,7 @@ void() grunty_nail4 = [$nailatt2, grunty_nail1]
 
 vector () Grunty_LeadShot =
 {
-	local vector pvel, dir, loc, lead;
+	local vector pvel, dir, loc;
 	local vector src, targ;
 	
 	src = self.origin + '0 0 16';
@@ -586,8 +584,6 @@ entity (entity scanner) LookAroundGrunty =
     
     local entity		scanner;
 	local entity		client;
-	local entity		list_client;
-	local entity		list;
 	local float			gotatarget;
 
 	client = findradius(scanner.origin, 2500);
@@ -674,7 +670,6 @@ entity () GruntyPharse =
 void() GruntyScanTargets =
 {
 	local entity	targ; // our hapless foe
-	local string	st;
 	targ = world;
 	
 	if (self.enemy != world)
@@ -1071,7 +1066,6 @@ void (float angle, float dist) botmovedist =
 { 
     
     local float success;
-	local float suitable;
 	
     //- OfN - Don't annoy owner if following him! heh
     #ifndef MAD_GRUNTY

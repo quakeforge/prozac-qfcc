@@ -109,9 +109,7 @@ void (float foo)  DebugSprintFloat =
 
 void() DropToCustomClassGen =
 {
-	local entity te;
 	local float sell_no;
-	local string st;
 	sell_no = 0;
 
 	self.gravity = 1;
@@ -226,8 +224,6 @@ void(vector org) spawn_tfog;
 
 void() DropFromCustomClassGen =
 {
-	local string scratch;
-
     //
 	self.is_killed = FALSE;
     //
@@ -768,7 +764,6 @@ void(float cost, float type) BuyJob =
 
 void (float cost, float type) BuyGren =
 {
-	local string talk;
 	///local float level; // This is the level of legs we have.
 	
 	if (type == 0) // if type is 0 we are buying the NULL GRENADE(tm)
@@ -1022,7 +1017,6 @@ void() FragGrenadeTouch =
 void() FragGrenadeExplode =
 {
 	local float shraps;
-	local string happy;
 	local entity newmis;
 
 //Small explosive radius
@@ -1097,7 +1091,7 @@ void() KracGrenadeTouch =
 
 void() KracGrenadeExplode =
 {
-	local entity te,newmis;
+	local entity te;
 	local entity oldself;
 	te = findradius(self.origin, 150);
 	while (te)
@@ -1193,7 +1187,6 @@ void(entity immuner,float timeimmune) makeImmune =
 void() BastardTimer =
 {
 	local entity te;
-	local string st;
 	local float tc, tc2;
 	te = self.owner;
 
@@ -1374,7 +1367,6 @@ void() Autoitem_think =
 
 void() custom_lay =
 {
-	local string st;
 	if (self.last_saveme_sound < time) {
 		bprint(PRINT_HIGH,self.netname);
 		bprint(PRINT_HIGH,"'s legs were broken when he tried to 'lay'\n");

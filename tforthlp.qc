@@ -25,7 +25,6 @@ void() bprintline;
 //=========================================================================
 void() TeamFortress_MOTD =
 {
-	local string ya;
 	local string st;
 
 	// check if player already has aliases

@@ -20,7 +20,6 @@ void () BadTinker = {
 
 void () DoTinker = {
 		local float prob, thresh, enough;
-                local entity te;
 
 		if (self.building.has_sentry > 0) {
 			sprint(self,PRINT_HIGH,"You have to fully upgrade before tinkering\n");

@@ -100,9 +100,8 @@ void() sham_smash7     =[      $smash7,       sham_smash8    ] {ai_charge(0);};
 void() sham_smash8     =[      $smash8,       sham_smash9    ] {ai_charge(0);};
 void() sham_smash9     =[      $smash9,       sham_smash10   ] {ai_charge(0);};
 void() sham_smash10    =[      $smash10,      sham_smash11   ] {
-local vector	delta, smack_origin, source;
+local vector	delta;
 local float 	ldmg;
-local entity	head;
 
 	if (!self.enemy)
 		return;
@@ -134,9 +133,7 @@ void() sham_swingr1;
 void(float side) ShamClaw =
 {
 local vector	delta;
-local vector	smack_origin, source;
 local float 	ldmg;
-local entity	head;
 
 
 	if (!self.enemy)
@@ -495,8 +492,6 @@ float () CheckShamLightning =
 
 float()	ShamCheckAttack =
 {
-	local	vector	vec;
-	
 // if close enough for slashing, go for it
 	if (CheckShamMelee ())
 	{

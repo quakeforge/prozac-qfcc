@@ -217,8 +217,6 @@ void() NapalmGrenadeTouch =
 
 void() NapalmGrenadeExplode =
 {
-	local float i;
-
 	sound (self, CHAN_AUTO, "weapons/flmgrexp.wav", 1, ATTN_NORM);  // bounce sound
 
 	// Launch flames
@@ -474,7 +472,7 @@ void() OnPlayerFlame_touch =
 void() WorldFlame_touch =
 {
 	local entity flame;
-	local vector dir,vtemp;
+	local vector vtemp;
 
 	deathmsg = DMSG_FLAME;
 	TF_T_Damage(other, self, self.enemy, 2, TF_TD_NOTTEAM, TF_TD_FIRE);
@@ -543,7 +541,7 @@ void() Flamer_stream_touch =
 {
 
 	local entity flame;
-	local vector dir,vtemp;
+	local vector vtemp;
 
 	if (other.classname == "fire")
 		return;
@@ -638,7 +636,7 @@ void() Napalm_touch =
 {
 
 	local entity flame;
-	local vector dir,vtemp;
+	local vector vtemp;
 
 	if (other.classname == "fire")
 		return;
@@ -794,9 +792,7 @@ Touch function for incendiary cannon rockets
 void() T_IncendiaryTouch =
 {
 	local 	float	damg;
-	local	float 	points;
 	local	entity	head; 
-	local	vector	org;
 
 	if (other == self.owner)
 		return;		// don't explode on owner

@@ -445,8 +445,6 @@ float()	CheckDemonJump =
 
 float()	DemonCheckAttack =
 {
-	local	vector	vec;
-	
 // if close enough for slashing, go for it
 	if (CheckDemonMelee ())
 	{
@@ -514,7 +512,6 @@ void(float side)	Demon_Melee =
 void() demon_fire_touch;
 void(float side) Demon_Shoot_Fire =
 {
-	local	float	ldmg;
 	local vector	delta;
 	local	vector	offang;
 	local	vector	org, dir;

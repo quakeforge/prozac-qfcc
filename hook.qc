@@ -57,8 +57,6 @@ void (entity rhook) Reset_Grapple =
 //
 void () Grapple_Track =
 {
-        local   vector  spray;
-
         // drop the hook if owner is dead or has released the button
         if (!self.owner.on_hook || self.owner.health <= 0)
         {

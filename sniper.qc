@@ -22,8 +22,6 @@ void(float type) SniperSight_Create;
 // Sniper/Auto Rifle selection function
 void() TeamFortress_SniperWeapon =
 {
-	local	float	it;
-	
 	self.impulse = 0;
 
     if (self.tfstate & TFSTATE_RELOADING)

@@ -94,8 +94,7 @@ void() FlashTimer =
 // Flash Grenade explode function, for when the PRIMETIME runs out
 void() FlashGrenadeExplode =
 {
-	local float expsize;
-	local entity te, oldself;
+	local entity te;
 
 	self.effects = self.effects | EF_BRIGHTLIGHT;
 
@@ -262,9 +261,6 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 	local float enemy_detected;
 	local float any_detected;
 
-	local vector vf, vr, e;  // transformed versions of v_forward, v_right and the enemy vector
-	local float res1, res2, res3; // for the vector work
-	local float vf_e_angle, vr_e_angle; // results
 
 	// prevent scan impulse from triggering anything else
 	self.impulse = 0;
@@ -638,7 +634,6 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 	local	float 	points;
 	local	entity	head, te;
 	local	vector	org;
-	local	string	st;
 
 	head = findradius(inflictor.origin, bounce+40);
 	

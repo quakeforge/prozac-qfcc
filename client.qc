@@ -184,9 +184,6 @@ void() SetNewParms =
 // turn autoteam on.
 void() autoteam_think =
 {
-	local float loopc;
-	local entity other,oself;
-	
 //	if (chris)
 //		SetUpChrisRound();
 //	if (!chris)
@@ -810,7 +807,6 @@ returns the next intermission point
 entity (entity start_point) FindNextIntermission =
 {
 	local	entity spot;
-	local	float cyc;
 
 	if (deathmatch)
 	{
@@ -1292,9 +1288,6 @@ void() execute_changelevel =
 
 void() changelevel_touch =
 {
-	local entity pos;
-	local float ne;
-
 	if (other.classname != "player")
 		return;
 
@@ -1788,7 +1781,6 @@ void(entity p) TeamFortress_SetSkin;
 
 void() PutClientInServer =
 {
-	local string st;
 	local float iszoom, oldclass;
 	local entity spot, te;
 
@@ -2290,7 +2282,6 @@ void() CheckRules =
 
 void() PlayerDeathThink =
 {
-	local entity	old_self;
 	local float		forward;
 
 	if ((self.flags & FL_ONGROUND))
@@ -2348,8 +2339,6 @@ void() PlayerDeathThink =
 
 void() PlayerJump =
 {
-	local vector start, end;
-
 	if (self.flags & FL_WATERJUMP)
 		return;
 
@@ -2551,7 +2540,6 @@ Called every frame before physics are run
 */
 void() PlayerPreThink =
 {
-	local float	mspeed, aspeed, r;
 	local vector src;
 	//WK -- For LPB calculation
 	local string foo;
@@ -3008,9 +2996,6 @@ Called every frame after physics are run
 */
 void() PlayerPostThink =
 {
-	local	float	mspeed, aspeed;
-	local	float	r;
-
 	if (self.view_ofs == '0 0 0')
 		return;		// intermission or finale
 	if (infokey(world,"ceasefire")=="on") //Cyto
@@ -3177,7 +3162,6 @@ called when a player disconnects from a server
 */
 void() ClientDisconnect =
 {
-	local float teamsup;
 	local entity te;
 
     local string st;

@@ -571,7 +571,6 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 	local	float 	points;
 	local	entity	head, te;
 	local	vector	org;
-	local	string	st;
 	
 	head = findradius(inflictor.origin, bounce+40);
 	
@@ -642,8 +641,6 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 
 void() AntiGravGrenadeTimer =
 {
-	local string st;
-
 	if (self.owner.invincible_finished > time)
 	{
 		self.owner.gravity = 1;

@@ -362,12 +362,6 @@ void(float inp) Menu_Army_Input2 =
 
 void(float inp) Menu_Army_Input1 =
 {
-	local float r;
-	local entity SummonTimer;
-	local float cost;
-	local entity te;
-	local float points;
-
 	//self.demon_choice = 0; // reset demon choice var
 	
 	if (inp == 10) // NOTHING

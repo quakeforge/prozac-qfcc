@@ -142,7 +142,6 @@ void(entity Goal) UpdateAbbreviations =
 // Place the Goal Item
 void() TF_PlaceItem =
 {
-	local float	oldz;
 	local vector temp1;
 	local vector temp2;
 
@@ -222,8 +221,6 @@ void() TF_StartItem =
 // Place the Goal 
 void() TF_PlaceGoal =
 {
-	local float	oldz;
-
 	if (self.classname != "info_tfgoal_timer")
 	{
 		// Only give touch functions to goals that can be activated by touch
@@ -885,8 +882,6 @@ float(entity Goal, entity Player, entity AP) IsAffectedBy =
 void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 {
 	local entity oldself, te, oldte;
-	local float tc;
-	local string st;
 
 	stuffcmd(Player, "bf\n");
 
@@ -1304,7 +1299,6 @@ float(entity Goal, entity AP) APMeetsCriteria =
 {
 	local float gotone, temp;
 	local entity te;
-	local string db;
 
 #ifdef MAP_DEBUG
 	RPrint("==========================\n");
@@ -1700,7 +1694,6 @@ float(entity Goal, entity AP) Activated =
 void(entity Goal, entity AP, entity ActivatingGoal) AttemptToActivate =
 {
 	local entity te;
-	local string st;
 
 	if (Activated(Goal, AP))
 	{
@@ -2141,8 +2134,7 @@ void() DelayedResult =
 // Do the results for the Timer/Goal/Item
 void(entity Goal, entity AP, float addb) DoResults =
 {
-    local entity te, oldself;
-	local string st;
+    local entity te;
 	local float winners;
 
 	// Is the goal already activated?
@@ -2638,7 +2630,6 @@ void() item_tfgoal_touch =
     if (infokey(world,"ceasefire")=="on") //OfN
 	    return;
     
-    local string st;
 	local entity te;
 
 	if (other.classname != "player")
@@ -2764,8 +2755,6 @@ void() item_tfgoal_touch =
 // Give the GoalItem to a Player. 
 void(entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer =
 {
-	local string sp;
-
 #ifdef MAP_DEBUG
 	RPrint("Giving ");
 	RPrint(Item.netname);
@@ -2914,7 +2903,6 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	local float lighton, slowon;
 	local float key1on, key2on;
 	local float spyoff;
-	local string db1;
 	local entity DelayReturn;
 
 	if (Item == world)
@@ -3262,7 +3250,6 @@ void() tfgoalitem_settouchandthink =
 void() tfgoalitem_remove =
 {
 	local entity te;
-	local vector temp1, temp2;
 
 #ifdef MAP_DEBUG
 	RPrint("RemoveItem for ");
@@ -3372,7 +3359,6 @@ void() tfgoalitem_checkoriginagain3 =
 // Activate a goal when this item is removed, if needed
 void(entity Item) tfgoalitem_checkgoalreturn =
 {
-	local string st;
 	local entity te;
 
 	// Do we need to activate a goal somewhere?
@@ -3393,7 +3379,6 @@ void(entity Item) tfgoalitem_checkgoalreturn =
 // Displays the state of a GoalItem
 void(entity Goal, entity Player, entity Item) DisplayItemStatus = 
 {
-	local string ac;
 
 	if (Item.goal_state == TFGS_ACTIVE)
 	{

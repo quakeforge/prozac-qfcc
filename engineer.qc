@@ -785,10 +785,7 @@ void() DispenserThink =
 
 void() TeamFortress_FinishedBuilding =
 {
-	local entity tmpself;
 	local entity oldself;
-	local float current_yaw;
-	local vector source;
 
 	if (self.owner.is_building != 1)
 		return;

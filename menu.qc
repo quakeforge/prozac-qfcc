@@ -967,9 +967,6 @@ void() Menu_Spy =
 
 void(float inp) Menu_Spy_Input =
 {
-	local float tc;
-	local string st;
-	
 	if (inp == 1 || inp == 2)
 	{
 		if (self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT))
@@ -1478,8 +1475,6 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 	}
 	else if (inp == 3)
 	{
-		local string f1;
-
 		metalcost = (self.building.max_health - self.building.health) / 5;
 
 		if (metalcost > self.ammo_cells)
@@ -1726,8 +1721,7 @@ void() Menu_EngineerFix_Sensor =
 void(float inp) Menu_EngineerFix_Sensor_Input =
 {
 //*ch
-	local float am, metalcost;
-	local string st;
+	local float metalcost;
 
 	if (self.classname != "player" || self.building == world)
 		return;
@@ -1783,8 +1777,7 @@ void() Menu_EngineerFix_Camera =
 void(float inp) Menu_EngineerFix_Camera_Input =
 {
 //*ch
-	local float am, metalcost;
-	local string st;
+	local float metalcost;
 
 	if (self.classname != "player" || self.building == world)
 		return;
@@ -1840,8 +1833,7 @@ void() Menu_EngineerFix_Teleporter =
 void(float inp) Menu_EngineerFix_Teleporter_Input =
 {
 //*ch
-	local float am, metalcost;
-	local string st;
+	local float metalcost;
 
 	if (self.classname != "player" || self.building == world)
 		return;
@@ -1910,8 +1902,7 @@ void() Menu_EngineerFix_FieldGen =
 };
 void(float inp) Menu_EngineerFix_FieldGen_Input =
 {
-	local float am, metalcost;
-	local string st;
+	local float metalcost;
 
 	if (self.classname != "player" || self.building == world)
 		return;
@@ -2239,9 +2230,8 @@ void() Menu_EngineerFix_Tesla =
 };
 void(float inp) Menu_EngineerFix_Tesla_Input =
 {
-	local string temp;
 	local float cost = 0;
-	local float maxcells;
+
 	if (self.classname != "player" || self.building == world)
 		return;
 
@@ -2378,9 +2368,8 @@ void() Menu_EngineerFix_Tesla2 =
 };
 void(float inp) Menu_EngineerFix_Tesla_Input2 =
 {
-	local string temp;
 	local float cost = 0;
-	local float maxcells;
+
 	if (self.classname != "player" || self.building == world)
 		return;
 
@@ -2690,7 +2679,6 @@ void() Menu_PrimaryWeapon =
 	temp = ftos(self.money);
 	
 	local string msg_custom;
-	local string msg_upgrade;
 	local string l1,l2,l3,l4;
 
 		l1 = mstr(self.weapons_carried, WEAP_SNIPER_RIFLE, WEAP_ASSAULT_CANNON,

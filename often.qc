@@ -905,7 +905,7 @@ float() GetNoPlayers =
 
 entity() GetBestPlayer =
 {
-    local float bestscore, tempscore;
+    local float bestscore;
     local entity theplayer, search;
 
     theplayer = world;
@@ -929,7 +929,7 @@ entity() GetBestPlayer =
 
 entity() GetBestKiller =
 {
-    local float bestscore, tempscore;
+    local float bestscore;
     local entity theplayer, search;
 
     theplayer = world;

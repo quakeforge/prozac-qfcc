@@ -581,8 +581,6 @@ entity (entity scanner) LookAround =
 
     local entity		scanner;
 	local entity		client;
-	local entity		list_client;
-	local entity		list;
 	local float			gotatarget;
 
 	client = findradius(scanner.origin, 2500);
@@ -693,8 +691,6 @@ slower noticing monsters.
 float() FindTarget =
 {
 	local entity	client;
-	local float		r;
-	local float		gotatarget;
 
 // if the first spawnflag bit is set, the monster will only wake up on
 // really seeing the player, not another monster getting angry
@@ -911,7 +907,6 @@ The monster is walking it's beat
 void(float dist) ai_walk =
 {
     AI_Check_Contents(self); //CH check if in lava
-	local vector		mtemp;
 	
 	if (self.tfstate & TFSTATE_TRANQUILISED)
 		movedist = dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN); //Tranq
@@ -1148,9 +1143,6 @@ The monster has an enemy it is trying to kill
 void(float dist) ai_run =
 {
 	AI_Check_Contents(self); //CH check if in lava
-	local	vector	delta;
-	local	float	axis;
-	local	float	direct, ang_rint, ang_floor, ang_ceil;
 	
 	if (self.tfstate & TFSTATE_TRANQUILISED)
 		movedist = dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN); //Tranq

@@ -64,7 +64,6 @@ void () TeamFortress_CheckForSpeed =
 {
 	local vector tempvec;
 	local float max, dist, check, immune;
-	local string ip;	
 	local string nospeed;
 	local float off;
 

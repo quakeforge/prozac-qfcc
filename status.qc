@@ -167,8 +167,6 @@ void(entity pl) RefreshStatusBar1 =
 {
 	local string s1, s2, s3, s4;
 	local string s5, s6, s7;
-	local string val;
-	local float num;
 	local entity sent;
 	sent = world;
 
@@ -235,8 +233,6 @@ void(entity pl) RefreshStatusBar4 =
 {
 	local string s1, s2, s3, s4;
 	local string s5, s6, s7;
-	local string val;
-	local float num;
 	local entity sent;
 	sent = world;
 
@@ -303,8 +299,6 @@ void(entity pl) RefreshStatusBar5 =
 {
 	local string s1, s2, s3, s4;
 	local string s5, s6, s7;
-	local entity tg;
-	local float num;
 
 	if (pl.StatusBarSize == 0)
 	{
@@ -387,7 +381,7 @@ void(entity pl) RefreshStatusBar5 =
 void(entity pl) RefreshStatusBar2 =
 {
 	local string s1, s2, s3, s4;
-	local string s5, s6, s7;
+	local string s5;
 
 	if (pl.StatusBarSize == 0)
 	{
@@ -454,8 +448,7 @@ void(entity pl) RefreshStatusBar2 =
 void(entity pl) RefreshStatusBar3 =
 {
 	local string s1, s2, s3, s4;
-	local string s5, s6, s7;
-	local entity tg;
+	local string s5, s6;
 	local float num;
 
 	if (pl.StatusBarSize == 0)

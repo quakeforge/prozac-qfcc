@@ -46,8 +46,6 @@ enemy as activator.
 */
 void() monster_death_use =
 {
-	local entity 	ent, otemp, stemp;
-
 	// fall to ground
 	if (self.flags & FL_FLY)
 		self.flags = self.flags - FL_FLY;
@@ -202,7 +200,6 @@ void(entity targ, entity attacker) Killed =
     /////////////////////////////////////
     
     local entity oself;
-	local string db;
 
 //WK Have cursed person respawn immediately
 	if (targ.classname == "player") {

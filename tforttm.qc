@@ -557,7 +557,6 @@ void (entity pl, float topcolor, float bottomcolor) SetPlayerColor =
 void (string key, string value) UserInfoCallback =
 { // FIXME: remove the cheat poller
 	local string oldval;
-	local string st;
 	oldval = infokey(self, key);
 
 	if(value == oldval) { // generic reject
@@ -1206,8 +1205,6 @@ float(float tno) TeamFortress_TeamGetIllegalClasses =
 // Return TRUE if this team is restricted to Civilian class
 float(float tno) TeamFortress_TeamIsCivilian =
 {
-	local entity te;
-
 	if (tno == 1)
 	{
 		if (civilianteams & TEAM1_CIVILIANS)

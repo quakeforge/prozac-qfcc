@@ -264,8 +264,6 @@ void() trigger_secret =
 
 void() counter_use =
 {
-	local string junk;
-
 	self.count = self.count - 1;
 	if (self.count < 0)
 		return;
@@ -367,8 +365,6 @@ void(vector org) spawn_tfog =
 
 void() tdeath_touch =
 {
-	local entity spot;
-
 	if (other == self.owner)
 		return;
 
