@@ -1056,9 +1056,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 			// Apply any powerups
 			if (Goal.invincible_finished > 0)
 			{
-				Player.items = Player.items | IT_INVULNERABILITY;
-			 	Player.invincible_time = 1;
-				Player.invincible_finished = time + Goal.invincible_finished;
+				GivePent (Player, Goal.invincible_finished);
 				// if its a GoalItem, powerup is permanent, so we use TFSTATE flags
 				if (Goal.classname == "item_tfgoal")
 				{
@@ -1082,9 +1080,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 			{
 				//WK Remove Inspiration when we get the real thing
 				Player.tfstate = Player.tfstate - (Player.tfstate & TFSTATE_INSPIRED);
-				Player.items = Player.items | IT_QUAD;
-			 	Player.super_time = 1;
-				Player.super_damage_finished = time + Goal.super_damage_finished;
+				GiveQuad (Player, Goal.super_damage_finished);
 				// if its a GoalItem, powerup is permanent, so we use TFSTATE flags
 				if (Goal.classname == "item_tfgoal")
 				{
@@ -3071,7 +3067,9 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 		else if (Item.goal_activation & TFGI_DROP)
 		{
 			tfgoalitem_drop(Item);
+			Item.owner = NIL;
 			AP.effects |= EF_GlowColor(AP);
+			Item.owner = AP;
 		}
 		else
 		{

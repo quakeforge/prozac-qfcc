@@ -97,6 +97,8 @@
 #define IT_QUAD			4194304 
 #define IT_HOOK			8388608
 
+#define IT_ITEMS (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD)
+
 // point content values
 
 #define CONTENTS_EMPTY	-1 
@@ -188,6 +190,8 @@
 #define EF_ANYGLOW (EF_BRIGHTLIGHT | EF_DIMLIGHT |  EF_RED | EF_BLUE)
 
 float (entity e) EF_GlowColor;
+void (entity e, float secs) GivePent;
+void (entity e, float secs) GiveQuad;
 
 // network writes.  argument to Write*
 #define MSG_ONE			1 		// reliable to one (msg_entity)

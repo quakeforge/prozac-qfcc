@@ -1672,8 +1672,7 @@ void() powerup_touch =
 	
 	if (self.classname == "item_artifact_invulnerability")
 	{
-		other.invincible_time = 1;
-		other.invincible_finished = time + 30;
+		GivePent (other, 30);
 	}
 	
 	if (self.classname == "item_artifact_invisibility")
@@ -1684,14 +1683,8 @@ void() powerup_touch =
 
 	if (self.classname == "item_artifact_super_damage")
 	{
-		other.super_time = 1;
-		other.super_damage_finished = time + 30;
-		//WK Remove Inspiration when we get the real thing
-		other.tfstate = other.tfstate - (other.tfstate & TFSTATE_INSPIRED);
+		GiveQuad (other, 30);
 	}	
-
-	other.effects &= ~EF_ANYGLOW;
-	other.effects |= EF_GlowColor (other);
 
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets

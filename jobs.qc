@@ -213,7 +213,7 @@ void() JobWarlock =
 */
 #define GUIDE_TIME 1 //Period of how often lightning guides are shown. Must be less than...
 #define CHAPLAN_TIME 1 //Period of seconds how often it fires
-#define INSPIRE_TIME 6 //How long someone stays inspired
+//#define INSPIRE_TIME 6 //How long someone stays inspired
 #define CHAPLAN_RADIUS 320 //About the radius of brightglow
 #define CHAPLAN_HEAL 50    //If you have a medikit you'll heal friends this much
 #define CHAPLAN_HEAL_DELAY 3 //You can't have been shot in last three seconds to be healed
@@ -248,19 +248,14 @@ void() ChaplanInspire = {
 		else if (head.classname == "player" &&	//Person who is...
 			   Teammate(head.team_no,self.team_no) && //Same Team
 			   head != self &&			//Not me
-			   !(head.is_undercover)  &&		//Not a spy
 			   !(head.job & JOB_CHAPLAN)  &&	//Not a chaplan
 			   head.playerclass != PC_CIVILIAN &&  //KK
 			   //... and not Quadded
 			   !(head.items & IT_QUAD && !(head.tfstate & TFSTATE_INSPIRED))
 			)
 		{
-			head.items = head.items | IT_QUAD;
 			head.inspirator = self; //We are their designated preacherman
-			head.super_time = 1;
-			if (head.super_damage_finished < time + INSPIRE_TIME)
-				head.super_damage_finished = time + INSPIRE_TIME;
-			head.tfstate = head.tfstate | TFSTATE_INSPIRED;
+			head.tfstate |= TFSTATE_INSPIRED;
 			//Heal them if we have automedic too
 			//SB amended to medikit since there is no automedic now
 			if ((self.weapons_carried & WEAP_MEDIKIT) && (self.last_attacked_time < time + CHAPLAN_HEAL_DELAY)) {
@@ -278,6 +273,8 @@ void() ChaplanInspire = {
 
 //Draws lightning bolts towards all the friendlies we're inspiring
 //entity(entity start, .string fld, string match) find = #18;
+//Let's not and say we did, too confusing with scanner -GR
+#if 0
 void() ChaplanGuides = {
 	local entity head;
 	head = find(NIL,classname,"player");
@@ -300,13 +297,13 @@ void() ChaplanGuides = {
 			head = find(head,classname,"player");
 	}
 };
+#endif
 
 void() ChaplanThink = {
 	local entity oself;
 	oself = self;
 	self = self.owner;
 
-	ChaplanGuides();
 	oself.nextthink = time + GUIDE_TIME;
 	oself.frags = oself.frags + GUIDE_TIME;
 	if (oself.frags >= CHAPLAN_TIME) { //Do the full thing every second
@@ -414,9 +411,7 @@ void() JobMartyr =
 	martyr_time = MARTYR_TIME; // don't need FORCED stuff since it's always automatic
 	
 	sprint(self,PRINT_HIGH,"Beginning your suicide run...\n");
-	self.items = self.items | IT_INVULNERABILITY;
-	self.invincible_time = 1;
-	self.invincible_finished = time + martyr_time + 1; //Overlap so we can't die till end
+	GivePent (self, martyr_time + 1);
 	self.job = self.job | JOB_ACTIVE; //why not?
 	
 	tWeapon = spawn();

@@ -401,10 +401,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		output = ftos(dist);
 		if (dist > CHAPLAN_RADIUS) { //We've strayed from the flock
 			sprint(attacker,PRINT_HIGH,"You have strayed from the flock\n");
-			attacker.tfstate = attacker.tfstate - TFSTATE_INSPIRED;
-			attacker.super_damage_finished = 0;
-			attacker.items = attacker.items & ~IT_QUAD;
-			attacker.effects &= ~EF_ANYGLOW;
+			attacker.tfstate &= ~TFSTATE_INSPIRED;
 		}
 	}
 	if (targ.classname == "player" && targ.tfstate & TFSTATE_INSPIRED) {
@@ -412,30 +409,25 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		if (dist > CHAPLAN_RADIUS) { //We've strayed from the flock
 			sprint(targ,PRINT_HIGH,"You have strayed from the flock\n");
 			targ.tfstate = targ.tfstate - TFSTATE_INSPIRED;
-			targ.super_damage_finished = 0;
-			targ.items = targ.items & ~IT_QUAD;
-			targ.effects &= ~EF_ANYGLOW;
 		}
 	}
 
 	// QUAD DAMAGE
 	if (attacker.super_damage_finished > time) {
-		if (attacker.tfstate & TFSTATE_INSPIRED)
-			damage = damage * 1.5;
 		if (attacker.job & JOB_BERSERKER && attacker.job & JOB_ACTIVE)
-            damage = damage * 2;
-        else
+			damage = damage * 2;
+		else
 			damage = damage * 4;
 	}
 
-   	if (attacker.aura == AURA_POWER)
+	if ((attacker.tfstate & TFSTATE_INSPIRED) || (attacker.aura == AURA_POWER))
 		damage = damage * 1.5;
 	
 	if (targ.aura == AURA_RESISTANCE) {
 		damage = damage * 0.66;
-		if (self.invincible_sound < time) {
+		if (targ.invincible_sound < time) {
 			sound (targ, CHAN_ITEM, "auras/aura1.wav", 1, ATTN_NORM);
-			self.invincible_sound = time + 1.5;
+			targ.invincible_sound = time + 1.5;
 		}
 	}
 
@@ -449,7 +441,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			damage = damage * 0.66;
 		//WK Ping fairness code. LPB is < 200 ping
 		//haha, yeah right.
-#if 0
+#ifdef OVER_MY_DEAD_BODY //GR
 		if (attacker.classname == "player" && targ.classname == "player" && attacker != targ)
 		{
 			foo = infokey(attacker,"ping");

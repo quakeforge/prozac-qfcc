@@ -2136,9 +2136,7 @@ void() PutClientInServer =
 	//WK Give them invincibility if they are a normal class or bought it
 	if ((self.playerclass >= PC_SCOUT && self.playerclass <= PC_RANDOM) ||
 	self.tf_items & NIT_RESPAWN_GUARD) {
-		self.items = self.items & IT_INVULNERABILITY;
-		self.invincible_time = 1;
-		self.invincible_finished = time + RESPAWN_GUARD_TIME;
+		GivePent (self, RESPAWN_GUARD_TIME);
 		if (self.custom_speed > 300)
 			self.invincible_finished = self.invincible_finished - 1;			
 		if (self.custom_speed > 400)
@@ -2987,7 +2985,7 @@ void() CheckPowerups =
 		if (self.tfstate & TFSTATE_INVINCIBLE)
 		{
 			if (self.invincible_finished < time + 10)
-				self.invincible_finished = time + 666;
+				GivePent (self, 666);
 		}
 
 		// sound and screen flash when items starts to run out
@@ -3025,8 +3023,8 @@ void() CheckPowerups =
 		// If this is being given by a goalitem, extend the time
 		if (self.tfstate & TFSTATE_QUAD)
 		{
-			if (self.super_damage_finished == time + 10)
-				self.super_damage_finished = time + 666;
+			if (self.super_damage_finished < time + 10) // was ==, WTF?
+				GiveQuad (self, 666);
 		}
 
 		// sound and screen flash when items starts to run out

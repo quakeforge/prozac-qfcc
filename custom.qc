@@ -396,9 +396,7 @@ void() DropFromCustomClassGen =
 
 	//Make them invincible if they bought respawn protection
 	if (self.tf_items & NIT_RESPAWN_GUARD) {
-		self.items = self.items & IT_INVULNERABILITY;
-		self.invincible_time = 1;
-		self.invincible_finished = time + RESPAWN_GUARD_TIME;
+		GivePent (self, RESPAWN_GUARD_TIME);
 		if (self.custom_speed > 300)
 			self.invincible_finished = self.invincible_finished - 1;			
 		if (self.custom_speed > 400)

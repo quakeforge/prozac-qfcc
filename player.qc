@@ -1530,8 +1530,7 @@ float(entity e) EF_GlowColor =
 {
 	local float ret = 0;
 
-	if (e.classname == "player")
-	{
+	if (e.classname == "player") {
 		local entity te = NIL;
 
 		te = find(NIL, classname, "item_tfgoal");
@@ -1540,14 +1539,7 @@ float(entity e) EF_GlowColor =
 		{
 			if (te.owner == e && (te.goal_activation & TFGI_GLOW))
 			{
-				local float teamno = 0;
-
-				if (te.owned_by == 1)
-					ret |= EF_BLUE;
-				else if (te.owned_by == 2)
-					ret |= EF_RED;
-				else if (!ret)
-					ret = EF_DIMLIGHT;
+				ret |= EF_GlowColor (e);
 			}
 
 			te = find(te, classname, "item_tfgoal");
@@ -1558,15 +1550,15 @@ float(entity e) EF_GlowColor =
 		if (e.invincible_finished)
 			ret |= EF_RED;
 		if ((e.job & (JOB_CHAPLAN | JOB_ACTIVE)) == (JOB_CHAPLAN | JOB_ACTIVE))
-			ret |= EF_BLUE | EF_BRIGHTLIGHT;
+			ret |= EF_BRIGHTLIGHT;
 
 		if (ret & (EF_BLUE | EF_RED))
 			ret &= ~EF_DIMLIGHT;
 
+		e.effects |= ret;
+
 		return ret;
-	}
-	else if (e.classname == "item_tfgoal")
-	{
+	} else if (e.classname == "item_tfgoal") {
 		if (e.owned_by)
 		{
 			if (e.owned_by == 1)
@@ -1584,4 +1576,22 @@ float(entity e) EF_GlowColor =
 		
 		return EF_DIMLIGHT;			
 	}
+};
+
+void(entity e, float secs) GivePent =
+{
+	e.items |= IT_INVULNERABILITY;
+	e.invincible_finished = time + secs;
+	e.invincible_time = 1;
+	e.effects &= ~EF_ANYGLOW;
+	e.effects |= EF_GlowColor (e);
+};
+
+void(entity e, float secs) GiveQuad =
+{
+	e.items |= IT_QUAD;
+	e.super_damage_finished = time + secs;
+	e.super_time = 1;
+	e.effects &= ~EF_ANYGLOW;
+	e.effects |= EF_GlowColor (e);
 };
