@@ -1539,7 +1539,7 @@ float(entity e) EF_GlowColor =
 		{
 			if (te.owner == e && (te.goal_activation & TFGI_GLOW))
 			{
-				ret |= EF_GlowColor (e);
+				ret |= EF_GlowColor (te);
 			}
 
 			te = find(te, classname, "item_tfgoal");
