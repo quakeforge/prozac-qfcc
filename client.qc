@@ -2543,7 +2543,12 @@ void() WaterMove =
 			if (self.watertype == CONTENTS_LAVA)
 				sound (self, CHAN_BODY, "player/inlava.wav", 1, ATTN_NORM);
 			else if (self.watertype == CONTENTS_WATER)
-				sound (self, CHAN_BODY, "player/inh2o.wav", 1, ATTN_NORM);
+			{
+				if (self.movedir_z > -300)
+					sound (self, CHAN_BODY, "player/inh2o.wav", 1, ATTN_NORM);
+				else
+					sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
+			}
 			else if (self.watertype == CONTENTS_SLIME)
 				sound (self, CHAN_BODY, "player/slimbrn2.wav", 1, ATTN_NORM);
 
@@ -3112,12 +3117,7 @@ void() PlayerPostThink =
 	{
 		if (self.flags & FL_ONGROUND)
 		{
-			if (self.watertype == CONTENTS_WATER)
-			{
-				if (!(self.cutf_items & CUTF_STEALTH))
-					sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
-			}
-			else if (self.movedir_z < -650)
+			if (self.movedir_z < -650)
 			{
 				if (!(self.cutf_items & CUTF_STEALTH)) { //WK Judo teaches falling... SB ceaf judo
 					self.deathtype = "falling";
@@ -3130,7 +3130,7 @@ void() PlayerPostThink =
 			}
 			else if (self.movedir_z < -300)
 				if (!(self.cutf_items & CUTF_STEALTH)) //WK Judo teaches falling... SB ceaf judo
-					sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
+					sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);	
 
 		}
 		else 
