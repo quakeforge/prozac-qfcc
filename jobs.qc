@@ -528,7 +528,7 @@ void() JudokaRearm =
 			oself = self;
 			self = self.enemy;
 			stuffcmd(self, "v_idlescale 0\n");
-			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
+			self.tfstate &= ~TFSTATE_ASSAULTCANNON;
 			TeamFortress_SetSpeed(self);
 			self.weaponframe = 0;
 			self.count = 1;
@@ -661,7 +661,7 @@ void() JobJudoka =
 				oself = self;
 				self = trace_ent;
 				stuffcmd(self, "-attack;v_idlescale 0\n");
-				self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
+				self.tfstate &= ~TFSTATE_ASSAULTCANNON;
 				TeamFortress_SetSpeed(self);
 				self.weaponframe = 0;
 				self.count = 1;
@@ -864,16 +864,15 @@ void() GuerillaTossTouch =
 		return;
 	}
 
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID) //CH if in wall or sky
-	{
+	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID) {		//CH if in wall or sky
 		self.health = 0; //CH needed for tesla
 		// OfN CAUSES ANY PROBLEM? Is this needed?
-        
-        self.owner.num_mines = self.owner.num_mines - 1;
-        if (self.owner.num_mines < 0)
-           self.owner.num_mines = 0;
 
-        dremove(self);
+		self.owner.num_mines = self.owner.num_mines - 1;
+		if (self.owner.num_mines < 0)
+			self.owner.num_mines = 0;
+
+	        dremove(self);
 		return;
 	}
 
@@ -888,7 +887,7 @@ void() GuerillaTossTouch =
 void() JobGuerilla =
 {
 	if (self.ammo_rockets < MINE_COST) {
-		sprint(self,PRINT_HIGH,"every mine needs 4 rockets to work!\n");		
+		sprint(self, PRINT_HIGH, "every mine needs 4 rockets to work!\n");
 		self.job_finished = time + 1;
 		return;
 	}
@@ -896,26 +895,26 @@ void() JobGuerilla =
 	if (self.num_mines >= max_mines) {
 		local string st;
 		st = ftos(max_mines);
-		sprint(self,PRINT_HIGH,"you can set upto ");
-		sprint(self,PRINT_HIGH,st);
-		sprint(self,PRINT_HIGH," mines!\n");
+		sprint(self, PRINT_HIGH, "you can set upto ");
+		sprint(self, PRINT_HIGH, st);
+		sprint(self, PRINT_HIGH, " mines!\n");
 		self.job_finished = time + 1;
 		return;
 	}
 
-    self.ammo_rockets = self.ammo_rockets - MINE_COST;
+	self.ammo_rockets = self.ammo_rockets - MINE_COST;
 	self.job_finished = time + JOB_DELAY;
-	
-    // OfN - I created the field num_mines to store the number of mines the player has
-    self.num_mines = self.num_mines + 1;
 
-    sprint(self,PRINT_HIGH,"you place a mine...\n");
+	// OfN - I created the field num_mines to store the number of mines the player has
+	self.num_mines = self.num_mines + 1;
+
+	sprint(self,PRINT_HIGH,"you place a mine...\n");
     
-    teamprefixsprint(self.team_no,self);
-    teamsprint(self.team_no,self,self.netname);
-    teamsprint(self.team_no,self," places a mine\n");
+	teamprefixsprint(self.team_no,self);
+	teamsprint(self.team_no,self,self.netname);
+	teamsprint(self.team_no,self," places a mine\n");
 
-    //Set all the critical crap on the mine
+	//Set all the critical crap on the mine
 	newmis = spawn();
 	newmis.movetype = MOVETYPE_BOUNCE;
 	newmis.solid = SOLID_BBOX;
@@ -923,26 +922,25 @@ void() JobGuerilla =
 	newmis.classname = "grenade";
 	newmis.netname   = "land_mine";
 	setsize (newmis, '0 0 0', '0 0 0');		
-	//setsize (newmis, '-0.5 -0.5 -0.5', '1 1 1');		
+//	setsize (newmis, '-0.5 -0.5 -0.5', '1 1 1');		
 	setorigin (newmis, self.origin);
 	newmis.owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '300 300 300';
 	newmis.velocity = v_forward*600 + v_up * 200 + v_right*10 + v_up*10;
 	newmis.angles = vectoangles(newmis.velocity);
-	//newmis.skin = self.team_no - 1;
-    newmis.skin = 1;
-	//setmodel (newmis, "progs/lndmine.mdl");
-    setmodel (newmis, "progs/biggren.mdl");
+//	newmis.skin = self.team_no - 1;
+	newmis.skin = 1;
+//	setmodel (newmis, "progs/lndmine.mdl");
+	setmodel (newmis, "progs/biggren.mdl");
 
 	newmis.heat = time; //Controls when mine can first go off
 	newmis.has_tesla = 0; // OfN flag to Control what to sprint to owner of the mine when it exlodes
-    newmis.last_attacked_time = time; //Time that you were last shot at
+	newmis.last_attacked_time = time; //Time that you were last shot at
 	newmis.health = MINE_DURATION; //Max time for mine to live
 	newmis.touch = GuerillaTossTouch;
 	newmis.think = GuerillaThink;
 	newmis.nextthink = time + ACTIVATE_TIME;
-
 };
 
 void() JobCrusader;
@@ -960,16 +958,13 @@ void() UseJobSkill =
 		JobThief();
 	else if (myjob & JOB_RUNNER)
 		JobRunner();
-	else if (myjob & JOB_WARLOCK)
-	{
-		if (HasFlag(self.team_no) == FALSE)
-		{
+	else if (myjob & JOB_WARLOCK) {
+		if (HasFlag(self.team_no) == FALSE) {
 			CenterPrint(self, "No demons until your team has the flag!\n");
 			return;		
 		}
 		JobWarlock();
-	}
-	else if (myjob & JOB_CHAPLAN)
+	} else if (myjob & JOB_CHAPLAN)
 		JobChaplan();
 	else if (myjob & JOB_BERSERKER)
 		JobBerserker();
@@ -979,11 +974,11 @@ void() UseJobSkill =
 		JobJudoka();
    	else if (myjob & JOB_HACKER)
 		JobHacker();
-    else if (myjob & JOB_MARTYR)
+	else if (myjob & JOB_MARTYR)
 		JobMartyr();
-    else if (myjob & JOB_ARMY)
+	else if (myjob & JOB_ARMY)
 		JobArmy();
-    else if (myjob & JOB_CRUSADER)
+	else if (myjob & JOB_CRUSADER)
 		JobCrusader();
 	else {
 		sprint(self,PRINT_HIGH,"You don't have a job. Go get employed.\n");
@@ -995,7 +990,8 @@ void() UseJobSkill =
 #define EXPOSURE_NOHIDE_TIME 20
 #define EXPOSURE_NORELOAD_TIME 7
 #define FULLH_NORELOAD_TIME 1.5
-void (entity targ, float pain) RevealThief = {
+void (entity targ, float pain) RevealThief =
+{
 	if (targ.classname != "player")
 		return;
 
@@ -1010,8 +1006,7 @@ void (entity targ, float pain) RevealThief = {
 			sprint(targ,PRINT_HIGH,"You have been uncovered!\n");
 		targ.attack_finished = time + EXPOSURE_NORELOAD_TIME;
 		targ.job_finished = time + EXPOSURE_NOHIDE_TIME;
-	}
-	else {
+	} else {
 		if (targ.invisible_time)
 			sprint (targ, PRINT_HIGH, "Leaving shadows... just as soon as this ring wears off...\n");
 		else
@@ -1024,4 +1019,3 @@ void (entity targ, float pain) RevealThief = {
 	targ.job = targ.job - (targ.job & JOB_ACTIVE);
 	TeamFortress_SetSpeed(targ);
 };
-

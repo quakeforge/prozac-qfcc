@@ -4629,7 +4629,7 @@ void() W_WeaponFrame =
 	    self.fire_held_down = FALSE;
 
 		// Let him/her walk again
-		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
+		self.tfstate &= ~TFSTATE_ASSAULTCANNON;
 		TeamFortress_SetSpeed(self);
 
 		player_run ();

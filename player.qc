@@ -571,11 +571,10 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
 	{
 		// Let him/her walk again
-		//if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed()
-        //{
-            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
-		    TeamFortress_SetSpeed(self);
-        //}
+//		if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed() {
+		self.tfstate &= ~TFSTATE_ASSAULTCANNON;
+		TeamFortress_SetSpeed(self);
+//		}
 
 		self.count = 1;
 		self.heat = 0;
@@ -613,11 +612,10 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
 	{
 		// Let him/her walk again
-		//if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed()
-        //{
-            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
-		    TeamFortress_SetSpeed(self);
-        //}
+//		if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed() {
+        	self.tfstate &= ~TFSTATE_ASSAULTCANNON;
+		TeamFortress_SetSpeed(self);
+//		}
 
 		self.count = 1;
 		self.heat = 0;
@@ -659,7 +657,7 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 	{
 		stuffcmd(self, "v_idlescale 0\n");
 		// Let him/her walk again
-        self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
+        self.tfstate &= ~TFSTATE_ASSAULTCANNON;
         TeamFortress_SetSpeed(self);
     
 		self.weaponframe = 0;
@@ -689,13 +687,12 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 // Cannon Firing 2
 void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 {
-	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
-	{
+	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running) {
 		stuffcmd(self, "v_idlescale 0\n");
 		// Let him/her walk again
-	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
-	    TeamFortress_SetSpeed(self);
-    
+		self.tfstate &= ~TFSTATE_ASSAULTCANNON;
+		TeamFortress_SetSpeed(self);
+
 		self.weaponframe = 0;
 		self.count = 1;
 		player_assaultcannondown1();
@@ -724,17 +721,15 @@ void() player_assaultcannondown1   =[$nailatt1, player_assaultcannondown1  ]
 	if (self.count == 1)
 		sound (self, CHAN_WEAPON, "weapons/asscan3.wav", 1, ATTN_NORM);
 
-	if (self.count >= 15)
-	{
+	if (self.count >= 15) {
 		self.heat = 0;
-	    self.fire_held_down = FALSE;
+		self.fire_held_down = FALSE;
 
 		// Let him/her walk again
-	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
-	    TeamFortress_SetSpeed(self);
-     
-		if (self.ammo_shells < 1 || self.ammo_cells < 6)
-		{
+		self.tfstate &= ~TFSTATE_ASSAULTCANNON;
+		TeamFortress_SetSpeed(self);
+
+		if (self.ammo_shells < 1 || self.ammo_cells < 6) {
 			self.current_weapon = W_BestWeapon();
 			W_SetCurrentAmmo();
 			W_PrintWeaponMessage();
@@ -745,8 +740,7 @@ void() player_assaultcannondown1   =[$nailatt1, player_assaultcannondown1  ]
 		return;
 	}
 
-	if (self.count != 8 && self.count != 10 && self.count != 12 && self.count != 14)  
-	{
+	if (self.count != 8 && self.count != 10 && self.count != 12 && self.count != 14) {
 		if (self.weaponframe == 3)
 			self.weaponframe = 0;
 		else
@@ -763,8 +757,10 @@ void() player_light1   =[$light1, player_light2  ]
 {
 	muzzleflash();
 
-	if (!self.button0 || intermission_running)
-		{player_run ();return;}
+	if (!self.button0 || intermission_running) {
+		player_run ();
+		return;
+	}
 	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe == 5)
 		self.weaponframe = 1;
@@ -772,10 +768,13 @@ void() player_light1   =[$light1, player_light2  ]
 	W_FireLightning();
 	Attack_Finished(0.2);
 };
+
 void() player_light2   =[$light2, player_light1  ]
 {
-	if (!self.button0 || intermission_running)
-		{player_run ();return;}
+	if (!self.button0 || intermission_running) {
+		player_run ();
+		return;
+	}
 	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe == 5)
 		self.weaponframe = 1;
@@ -790,24 +789,29 @@ void() player_light2   =[$light2, player_light1  ]
 
 void() player_light_assault1   =[$light1, player_light_assault2  ] 
 {
-	//muzzleflash();
+//	muzzleflash();
 
-    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
-		{player_run ();return;}
+	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING) {
+		player_run ();
+		return;
+	}
 
-    muzzleflash(); //- oFn moved
+	muzzleflash(); //- oFn moved
     
-    self.weaponframe = self.weaponframe + 1;
+	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe == 5)
 		self.weaponframe = 1;
 	SuperDamageSound();
 	W_FireLightAssault();
 	Attack_Finished(0.2);
 };
+
 void() player_light_assault2   =[$light2, player_light_assault1  ]
 {
-	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
-		{player_run ();return;}
+	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING) {
+		player_run ();
+		return;
+	}
 	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe == 5)
 		self.weaponframe = 1;
@@ -817,9 +821,7 @@ void() player_light_assault2   =[$light2, player_light_assault1  ]
 };
 //End WK
 
-
 //============================================================================
-
 
 void() player_rocket1   =[$rockatt1, player_rocket2  ] {self.weaponframe=1;	muzzleflash();};
 void() player_rocket2   =[$rockatt2, player_rocket3  ] {self.weaponframe=2;};
@@ -1086,11 +1088,10 @@ void(string gibname, float dm) ThrowGib =
 	newmis.frame = 0;
 	newmis.flags = 0;
 
-    if (gibname=="progs/tesgib4.mdl" || gibname=="progs/t2gib4.mdl")
-    {
-        newmis.skin=dm;
-        newmis.velocity = VelocityForDamage (-70);
-    }
+	if (gibname=="progs/tesgib4.mdl" || gibname=="progs/t2gib4.mdl") {
+		newmis.skin=dm;
+		newmis.velocity = VelocityForDamage (-70);
+	}
 };
 
 void(string gibname, float dm) ThrowHead =
@@ -1109,24 +1110,18 @@ void(string gibname, float dm) ThrowHead =
 	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.avelocity = crandom() * '0 600 0';
 
-    /*
-    if (self.classname == "player")
-    {
-        self.classname = "player_head";
-        self.think = SUB_Remove;
-        self.nextthink = time + 20 + 20 * random();
-    }
-    else
-    {
-        self.classname = "monster_head";
-        self.think = SUB_Remove;
-        self.nextthink = time + 20 + 20 * random();
-    }
-    
-    */
-    
-    //-OfN
-    
+/*
+	if (self.classname == "player") {
+		self.classname = "player_head";
+		self.think = SUB_Remove;
+		self.nextthink = time + 20 + 20 * random();
+	} else {
+		self.classname = "monster_head";
+		self.think = SUB_Remove;
+		self.nextthink = time + 20 + 20 * random();
+	}
+*/
+	//-OfN
 };
 
 void(string gibname) HeadShotThrowHead =
@@ -1153,79 +1148,68 @@ void() KillPlayer =
 
 void() GibPlayer =
 {
-  //- OfN now this can be turned on/off with the headless localinfo -//
-  // Decapitation ------------------------------------------------------//
-  if (headless == 1)
-  {
-	if (deathmsg == DMSG_SNIPERHEADSHOT) //- Ofn - I don't like this:  || deathmsg == DMSG_BACKSTAB)
-	{
-		//if (deathmsg == DMSG_SNIPERHEADSHOT)
+	//- OfN now this can be turned on/off with the headless localinfo -//
+	// Decapitation ------------------------------------------------------
+	if (headless == 1) {
+		if (deathmsg == DMSG_SNIPERHEADSHOT) {
+		//- Ofn - I don't like this:  || deathmsg == DMSG_BACKSTAB) {
+//			if (deathmsg == DMSG_SNIPERHEADSHOT)
 			HeadShotThrowHead("progs/h_player.mdl");
-		//else
-		//	ThrowHead("progs/h_player.mdl", -60);
+//			else
+//				ThrowHead("progs/h_player.mdl", -60);
 
-		newmis = spawn();
-		newmis.solid = SOLID_NOT;
-        newmis.movetype = MOVETYPE_STEP;
+			newmis = spawn();
+			newmis.solid = SOLID_NOT;
+			newmis.movetype = MOVETYPE_STEP;
+			newmis.angles = self.angles;
 
-        newmis.angles = self.angles;
+			setsize(newmis, '0 0 0', '0 0 0');
+			setorigin(newmis, self.origin);   
 
-        setsize(newmis, '0 0 0', '0 0 0');
-		setorigin(newmis, self.origin);   
+			newmis.colormap = self.colormap;
+//			newmis.color = self.color
+//			newmis.skin = self.skin;
 
-        newmis.colormap = self.colormap;
-//        newmis.color=self.color
-		//newmis.skin = self.skin;
-        
-        setmodel(newmis, "progs/headless.mdl");
-		     		
-		newmis.think = Headless_Think;
-		newmis.nextthink = time + 0.1;
-		if (self.current_weapon <= WEAP_AXE)
-			newmis.frame = 0;
-		else
-			newmis.frame = 8;
+			setmodel(newmis, "progs/headless.mdl");
 
-        ThrowGib ("progs/zom_gib.mdl", self.health); //- lol, looks cool 
-	}
-	else
-	{
-    	ThrowHead ("progs/h_player.mdl", self.health);
+			newmis.think = Headless_Think;
+			newmis.nextthink = time + 0.1;
+			if (self.current_weapon <= WEAP_AXE)
+				newmis.frame = 0;
+			else
+				newmis.frame = 8;
+
+			ThrowGib ("progs/zom_gib.mdl", self.health); //- lol, looks cool 
+		} else {
+			ThrowHead ("progs/h_player.mdl", self.health);
+			ThrowGib ("progs/gib1.mdl", self.health);
+			ThrowGib ("progs/gib2.mdl", self.health);
+			ThrowGib ("progs/gib3.mdl", self.health);
+			ThrowGib ("progs/gib3.mdl", self.health); //-added
+//			ThrowGib ("progs/zom_gib.mdl", self.health); //-added
+		}
+	} else {
+		ThrowHead ("progs/h_player.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib2.mdl", self.health);
 		ThrowGib ("progs/gib3.mdl", self.health);
-        ThrowGib ("progs/gib3.mdl", self.health); //-added
-        //ThrowGib ("progs/zom_gib.mdl", self.health); //-added
-
+//		ThrowGib ("progs/gib3.mdl", self.health); //-added
 	}
-  }
-  else
-  {
-   	ThrowHead ("progs/h_player.mdl", self.health);
-	ThrowGib ("progs/gib1.mdl", self.health);
-	ThrowGib ("progs/gib2.mdl", self.health);
-	ThrowGib ("progs/gib3.mdl", self.health);
-    //ThrowGib ("progs/gib3.mdl", self.health); //-added
-  }
 
 	// Why do we need this? What are we doing that's clobbering _something_
 	// within a second after a trigger_hurt kills the player?
-	if (deathmsg == DMSG_TRIGGER)
-	{
+	if (deathmsg == DMSG_TRIGGER) {
 		newmis = spawn();
 		newmis.owner = self;
 		newmis.think = KillPlayer;
 		newmis.nextthink = time + 1;
-	}
-	else
-	{
+	} else {
 		self.deadflag = DEAD_DEAD;
 	}
 
 	TeamFortress_SetupRespawn(FALSE);
 
-	if (damage_attacker.classname == "teledeath")
-	{
+	if (damage_attacker.classname == "teledeath") {
 		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 
 		// if telefragged, extend respawn delay to prevent chaining telefrags
@@ -1234,8 +1218,7 @@ void() GibPlayer =
 		return;
 	}
 
-	if (damage_attacker.classname == "teledeath2")
-	{
+	if (damage_attacker.classname == "teledeath2") {
 		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 
 		// if telefragged, extend respawn delay to prevent chaining telefrags
@@ -1257,33 +1240,30 @@ void() PlayerDie =
 	//WK Stop orff
 	sound (self, CHAN_MUSIC, "items/r_item1.wav", 0.1, ATTN_NORM);
 	//WK Stop glows!
-	self.flags = self.flags - (self.flags & (EF_BRIGHTLIGHT | EF_DIMLIGHT));
-      self.effects = 0;
-    // make dead guy release hook (wedge)
-    if (self.hook_out)
-    {
-	    Reset_Grapple (self.hook);
-    	Attack_Finished(0.75);
-//	    self.hook_out = TRUE;	// PutClientInServer will reset this
-    }
-        self.items = self.items & ~(IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD);
-        self.invisible_finished = 0;    // don't die as eyes
-        self.invincible_finished = 0;
-        self.super_damage_finished = 0;
-        self.radsuit_finished = 0;
-        self.modelindex = modelindex_player;    // don't use eyes
+	self.flags &= ~(EF_BRIGHTLIGHT | EF_DIMLIGHT);
+	self.effects = 0;
+	// make dead guy release hook (wedge)
+	if (self.hook_out) {
+		Reset_Grapple (self.hook);
+		Attack_Finished(0.75);
+//		self.hook_out = TRUE;	// PutClientInServer will reset this
+	}
+
+	self.items &= ~(IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD);
+	self.invisible_finished = 0;		// don't die as eyes
+	self.invincible_finished = 0;
+	self.super_damage_finished = 0;
+	self.radsuit_finished = 0;
+	self.modelindex = modelindex_player;	// don't use eyes
 	// If infected, give the medic a frag
 	finished = TRUE;
-	if (self.tfstate & TFSTATE_INFECTED && self == self.enemy)
-	{
+	if (self.tfstate & TFSTATE_INFECTED && self == self.enemy) {
 		te = find(NIL, classname, "timer");
-		while (te)
-		{
-			if (te.owner == self && te.think == BioInfection_Decay)
-			{
+		while (te) {
+			if (te.owner == self && te.think == BioInfection_Decay) {
 				logfrag(te.enemy, self);
 				te.enemy.real_frags = te.enemy.real_frags + 1;
-			 	if (!(toggleflags & TFLAG_TEAMFRAGS))
+				if (!(toggleflags & TFLAG_TEAMFRAGS))
 					te.enemy.frags = te.enemy.real_frags;
 				finished = TRUE;
 			}
@@ -1298,18 +1278,16 @@ void() PlayerDie =
 
 	// Restore player's speed
 #ifdef RESTORE_DEAD_SPEEDS
-
-    stuffcmd(self,"cl_backspeed 1000\n");
+	stuffcmd(self,"cl_backspeed 1000\n");
 	stuffcmd(self,"cl_forwardspeed 1000\n");
 	stuffcmd(self,"cl_sidespeed 1000\n");
 	stuffcmd(self,"cl_movespeedkey 2\n");
-
 #endif
 
 	if (deathmatch || coop)
 		DropBackpack();
 	
-	self.weaponmodel="";
+	self.weaponmodel = "";
 	self.view_ofs = '0 0 -8';
 	self.deadflag = DEAD_DYING;
 	self.solid = SOLID_NOT;
@@ -1318,8 +1296,7 @@ void() PlayerDie =
 
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;
-	if (self.health < -40)
-	{
+	if (self.health < -40) {
 		GibPlayer ();
 		return;
 	}
@@ -1329,14 +1306,13 @@ void() PlayerDie =
 	self.angles_x = 0;
 	self.angles_z = 0;
 
-	if (self.current_weapon <= WEAP_AXE)
-	{
+	if (self.current_weapon <= WEAP_AXE) {
 		player_die_ax1 ();
 		TeamFortress_SetupRespawn(FALSE);
 		return;
 	}
 
-	i = 1 + floor(random()*6);
+	i = 1 + floor(random() * 6);
 	
 	if (i == 1)
 		player_diea1();
@@ -1380,7 +1356,7 @@ void()	player_diea7	=	[	$deatha7,	player_diea8	] {};
 void()	player_diea8	=	[	$deatha8,	player_diea9	] {};
 void()	player_diea9	=	[	$deatha9,	player_diea10	] {};
 void()	player_diea10	=	[	$deatha10,	player_diea11	] {};
-void()	player_diea11	=	[	$deatha11,	player_diea11 ] {PlayerDead();};
+void()	player_diea11	=	[	$deatha11,	player_diea11	] {PlayerDead();};
 
 void()	player_dieb1	=	[	$deathb1,	player_dieb2	] {};
 void()	player_dieb2	=	[	$deathb2,	player_dieb3	] {};
@@ -1442,8 +1418,7 @@ void() Headless_Think =
 {
 	self.frame = self.frame + 1;
 
-	if (self.frame == 7 || self.frame == 18)
-	{
+	if (self.frame == 7 || self.frame == 18) {
 		self.nextthink = time + 30 + random()*10;
 		self.think = SUB_Remove;
 		return;
@@ -1452,8 +1427,7 @@ void() Headless_Think =
 	self.nextthink = time + 0.1;
 };
 
-//===========================================================
-// Airgun player stuff
+// Airgun player stuff ========================================================
 
 void() player_airgun1   =[$rockatt1, player_airgun2  ] {self.weaponframe=1;};
 void() player_airgun2   =[$rockatt2, player_airgun3  ] {self.weaponframe=2;};
@@ -1467,40 +1441,46 @@ void() player_failedairgun1   =[$nailatt1, player_failedairgun2  ] {self.weaponf
 void() player_failedairgun2   =[$nailatt2, player_failedairgun3  ] {self.weaponframe=7;};
 void() player_failedairgun3   =[$nailatt2, player_run  ] {self.weaponframe=0;};
 
-//================================================================0
-// Laser cannon player stuff
+// Laser cannon player stuff ==================================================
 
 void() player_laser1   =[$nailatt1, player_laser2  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
-		{player_run ();return;}
+	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING) {
+		player_run ();
+		return;
+	}
 
-    self.attack_finished = time + 0.2;
-    self.weaponframe=1;
-    HIP_FireLaser(0);
+	self.attack_finished = time + 0.2;
+	self.weaponframe=1;
+	HIP_FireLaser(0);
 };
+
 void() player_laser2   =[$nailatt2, player_laser3  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
-		{player_run ();return;}
-
-    self.weaponframe=2;
+	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING) {
+		player_run ();
+		return;
+	}
+	self.weaponframe=2;
 };
+
 void() player_laser3   =[$nailatt2, player_laser4  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
-		{player_run ();return;}
+	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING) {
+		player_run ();
+		return;
+	}
 
-    self.attack_finished = time + 0.2;
-    self.weaponframe=4;
-    HIP_FireLaser(1);
+	self.attack_finished = time + 0.2;
+	self.weaponframe=4;
+	HIP_FireLaser(1);
 };
+
 void() player_laser4   =[$nailatt1, player_laser1  ] 
 {
-    if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING)
-		{player_run ();return;}
-
-    self.weaponframe=5;
+	if (!self.button0 || intermission_running || self.tfstate & TFSTATE_RELOADING) {
+		player_run ();
+		return;
+	}
+	self.weaponframe=5;
 };
-
-//____________________________________________________//
