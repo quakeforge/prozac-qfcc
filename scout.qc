@@ -108,7 +108,7 @@ void() FlashGrenadeExplode =
 				if (ft > 0)
 					te.FlashTime = ft;
 
-				stuffcmd (te, "v_cshift 255 255 255 245; wait;wait;wait; bf\n"); // big white flash
+				stuffcmd (te, "v_cshift 255 255 255 245; bf\n"); // big white flash
 			}
 		}
 
@@ -209,8 +209,10 @@ void() ConcussionGrenadeTimer =
 
 	if (self.health == 0)
 	{
-		sprint (self.owner, PRINT_HIGH, "Your head feels normal again\n");
+		sprint (self.owner, PRINT_HIGH, "Your head better now\n");
+#ifdef OLD_CONC_GRENADE
 		stuffcmd (self.owner, "v_idlescale 0\n");
+#endif
 		self.owner.mangle = '0 0 0';
 		self.owner.tfstate &= ~TFSTATE_CONCUSSIONED;
 		dremove(self);
@@ -272,6 +274,9 @@ void() ConcussionGrenadeTimer =
 	{
 		local float vel = vlen (self.owner.velocity);
 
+		x = random() * amount;
+		y = amount - x;
+
 		if (random() < 0.5)
 			self.owner.velocity_x += x * GR_CONCUSS_KICK * vel;
 		else
@@ -280,7 +285,7 @@ void() ConcussionGrenadeTimer =
 		if (random() < 0.5)
 			self.owner.velocity_y += y * GR_CONCUSS_KICK * vel;
 		else
-			self.owner.velocity_y += y * GR_CONCUSS_KICK * vel;
+			self.owner.velocity_y -= y * GR_CONCUSS_KICK * vel;
 	}
 
 	//sprint (self.owner, PRINT_HIGH, "mangle: " + vtos (self.owner.mangle) + "\n");
@@ -724,16 +729,16 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 						{
 							te.health += GR_CONCUSS_AMOUNT;
 #ifdef OLD_CONC_GRENADE
-							stuffcmd(head, "v_idlescale " + ftos (te.health) + "\n");
+							stuffcmd(head, "v_idlescale " +
+									ftos (te.health * GR_CONCUSS_IDLE) + "\n");
 #endif
 							te.nextthink = time + GR_CONCUSS_TIME;
 						}
 						else
 						{
 #ifdef OLD_CONC_GRENADE
-							stuffcmd(head,"v_idlescale " + ftos (GR_CONCUSS_AMOUNT) + "\n");
-#else
-							stuffcmd(head,"v_idlescale 10\n");
+							stuffcmd(head,"v_idlescale " + 
+									ftos (GR_CONCUSS_AMOUNT * GR_CONCUSS_IDLE)+ "\n");
 #endif
 							stuffcmd(head,"bf\n");
 							// Create a timer entity
