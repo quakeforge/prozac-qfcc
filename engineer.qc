@@ -643,6 +643,11 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy the dispenser before you can build it.\n");
 			return;
 		}
+		if (self.ammo_cells < BUILD_COST_DISPENSER) {
+			sprint (self, PRINT_HIGH, "Not enough cells.\n");
+			return;
+		}
+
 		obj.mins = '-8 -8 0';
 		obj.maxs = '8 8 40';
 
@@ -668,6 +673,10 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy a sentrygun before you can build one.\n");
 			return;
 		}
+		if (self.ammo_cells < BUILD_COST_SENTRYGUN) {
+			sprint (self, PRINT_HIGH, "Not enough cells.\n");
+			return;
+		}
 
 		obj.mins = '-16 -16 0';
 		obj.maxs = '16 16 48';
@@ -689,6 +698,11 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy a tesla sentry before you can build one.\n");
 			return;
 		}
+		if (self.ammo_cells < BUILD_COST_TESLA) {
+			sprint (self, PRINT_HIGH, "Not enough cells.\n");
+			return;
+		}
+
 
 //		obj.mins = '-16 -16 0'; //- OfN commented by
         obj.mins = '-16 -16 -25';
@@ -728,6 +742,11 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy a teleporter before you can build one.\n");
 			return;
 		}
+		if (self.ammo_cells < BUILD_COST_TELEPORTER) {
+			sprint (self, PRINT_HIGH, "Not enough cells.\n");
+			return;
+		}
+
 
 		obj.mins = '-16 -16 0';
 		obj.maxs = '16 16 4';
@@ -748,6 +767,11 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy a field generator before you can build one.\n");
 			return;
 		}
+		if (self.ammo_cells < BUILD_COST_FIELDGEN) {
+			sprint (self, PRINT_HIGH, "Not enough cells.\n");
+			return;
+		}
+
 
 		obj.mins = '-6 -6 0';
 		obj.maxs = '6 6 54';
