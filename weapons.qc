@@ -3846,12 +3846,8 @@ void() ImpulseCommands =
 			TeamFortress_CTF_FlagInfo();
 		else
 			TeamFortress_DisplayDetectionItems();
-	} else if (self.impulse == TF_DISPLAYLOCATION)
-		display_location();
-		
-	/*else if (self.impulse == 199)
-		CameraSwitchView();
-*/
+	}
+
 #ifdef DEMO_STUFF
 	// Camera Impulses
 	else if (self.playerclass == PC_UNDEFINED && self.impulse == TF_CAM_TARGET)
@@ -3916,8 +3912,8 @@ void() DeadImpulses =
         sprint(self,PRINT_MEDIUM,"Stock player classes are disabled\n");
         return;
     }
-
-    if (self.impulse == 69 && infokey(NIL, "lock_cheat") == "yes")
+#ifdef DEBUG
+    if (self.impulse == 69 && infokey(NIL, "allow_debug") == "yes")
     {
         self.demon_blood = MAX_KNIFE_BLOOD;
 	self.job = self.job | JOB_BLOODY_KNIFE;
@@ -3925,7 +3921,7 @@ void() DeadImpulses =
         return;
     }
 
-	if (self.impulse == 18)
+	if (self.impulse == 18 && infokey(NIL, "allow_debug") == "yes")
 	{
 		sprint(self, PRINT_HIGH, "Your origin is: '", ftos(self.origin_x), " ", ftos(self.origin_y));
 		sprint(self, PRINT_HIGH, " ", ftos(self.origin_z), "'\n");
@@ -3933,6 +3929,9 @@ void() DeadImpulses =
 		return;
 	}
 
+	if (self.impulse == 195 && !debug_target && infokey(NIL, "allow_debug") == "yes")
+		debug_target = self;
+#endif
 
 //<CH>
 	if (self.impulse == I_CHEAT_ONE) {

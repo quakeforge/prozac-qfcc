@@ -301,23 +301,38 @@ void() Field_touch_SUB =
 			}
 		}
 		
-		// excludes entities that shouldnt be moved, doors plats etc..
-		if(other.movetype == MOVETYPE_NONE 
-			|| other.movetype == MOVETYPE_PUSH)
-			//|| other.movetype == MOVETYPE_NOCLIP
-			return;
-		if (IsBuilding(other))
-			return;
 
 	}
 
-	other.velocity_x = -other.velocity_x;
-	other.velocity_y = -other.velocity_y;
+	if(other.movetype != MOVETYPE_NONE && other.movetype != MOVETYPE_PUSH && other.movetype != MOVETYPE_BOUNCE && other.movetype != MOVETYPE_BOUNCEMISSILE)
+	{
+		checkmove(other.origin, other.mins, other.maxs, other.origin + '0 0 1', MOVE_NORMAL, other);
 
-	other.velocity += 200*normalize(other.velocity);
+		if (trace_fraction == 1)
+		{
+			local vector forward = crossproduct(normalize(self.demon_one.origin - self.demon_two.origin), '0 0 1');
+			
+			if (crossproduct (normalize(self.origin - other.origin), normalize(self.demon_one.origin -self.demon_two.origin))
+				* '0 0 1' > 0)
+				other.velocity = -300 * forward;
+			else
+				other.velocity = 300 * forward;			
+
+			other.velocity_z += 50;
+
+			setorigin(other, other.origin + '0 0 1');
+		}
+
+		else if (IsBuilding(other))
+		{
+			sprint(other.real_owner, PRINT_HIGH, "The forcefield short-circuits your structure\n");
+			TF_T_Damage(other, NIL, NIL, 9999, TF_TD_IGNOREARMOUR, 0);
+		}
+	}
 
 	FieldExplosion(self,other.origin,other);
 	PutFieldWork(self);
+
 };
 
 #ifdef FIELD_FORCEMODE
@@ -573,7 +588,7 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
 	tfield.mins = -tfield.maxs;
 	tfield.origin = AVG (gen1.origin, gen2.origin);
-	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
+	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z - 1;
 	tfield.forcefield_offset = (gen2.origin - gen1.origin);
 
 	local vector right, forward, up;

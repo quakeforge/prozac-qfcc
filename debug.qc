@@ -10,7 +10,7 @@ float() CheckExistence;
 entity(float gno) Findgoal;
 
 //- OfN -
-void (string msg) RPrint;
+void (string msg) Real_RPrint;
 void(entity who) MakeMeDebug;
 
 //==============================================================
@@ -49,14 +49,6 @@ void(entity te) dremove =
 
 //==============================================================
 // A command which just dumps your current location to the screen
-void() display_location =
-{
-	local string st;
-
-	st = vtos(self.origin);
-	sprint (self, PRINT_HIGH, st);
-	sprint (self, PRINT_HIGH, "\n");
-};
 
 //- OfN
 // any client can remotely debug the server after using impulse 195 if "allow_debug" is set to 1 
@@ -64,7 +56,7 @@ void() display_location =
 // then RPrints will be sprinted to him also
 // i coded this cause i dont have access to console in prozac server and wanted to see the dprints
 // all the dprints in the code were replaced with RPrints
-void (string msg) RPrint =
+void (string msg) Real_RPrint =
 {
     dprint(msg);
     
@@ -77,13 +69,13 @@ void (string msg) RPrint =
 void (float oneline) printtrace =
 {
 	local string sep = oneline ? "  " : "\n";
-	dprint ("allsolid: " + ftos (trace_allsolid) + sep);
-	dprint ("startsolid: " + ftos (trace_startsolid) + sep);
-	dprint ("fraction: " + ftos (trace_fraction) + sep);
-	dprint ("endpos: " + vtos (trace_endpos) + sep);
-	dprint ("plane_normal: " + vtos (trace_plane_normal) + sep);
-	dprint ("plane_dist: " + ftos (trace_plane_dist) + sep);
-	dprint ("ent: " + (trace_ent ? "yes" : "no") + sep);
-	dprint ("inopen: " + ftos (trace_inopen) + sep);
-	dprint ("inwater: " + ftos (trace_inwater) + "\n");
+	RPrint ("allsolid: " + ftos (trace_allsolid) + sep);
+	RPrint ("startsolid: " + ftos (trace_startsolid) + sep);
+	RPrint ("fraction: " + ftos (trace_fraction) + sep);
+	RPrint ("endpos: " + vtos (trace_endpos) + sep);
+	RPrint ("plane_normal: " + vtos (trace_plane_normal) + sep);
+	RPrint ("plane_dist: " + ftos (trace_plane_dist) + sep);
+	RPrint ("ent: " + (trace_ent ? "yes" : "no") + sep);
+	RPrint ("inopen: " + ftos (trace_inopen) + sep);
+	RPrint ("inwater: " + ftos (trace_inwater) + "\n");
 };

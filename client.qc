@@ -965,7 +965,7 @@ float() DoExtraCycle =
     } else if (already_chosen_map == MAP_LOADCYCLE) {
 		local string st = infokey (NIL, "loopcycle");
 		if (st != "0" && st != "off") {
-			dprint ("No map loaded, restarting map cycle\n");
+			RPrint ("No map loaded, restarting map cycle\n");
 			SetNextMapNum (0);
 		}
 	}
@@ -2298,7 +2298,7 @@ void() CheckRules =
 		localcmd ("serverinfo cyclenow \"\"\n");
 		localcmd ("localinfo cyclenow \"\"\n");
     
-		dprint ("Cycling Map.\n");
+		RPrint ("Cycling Map.\n");
 
 		NextLevel ();
 	}

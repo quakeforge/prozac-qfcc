@@ -563,9 +563,9 @@ void(float objtobuild) TeamFortress_Build =
 	// get an origin
 	makevectors(self.v_angle);
 	v_forward_z = 0;
-	v_forward = normalize(v_forward) * 64;
-	
-	obj.origin = self.origin + v_forward;
+	v_forward = normalize(v_forward);
+
+	obj.origin = self.origin + v_forward * 35;
 
 	//WK Cheat Fix
 	if (self.is_feigning) {
@@ -705,43 +705,67 @@ void(float objtobuild) TeamFortress_Build =
 		btime = time + BUILD_TIME_FIELDGEN;
 	}
 	
-	if (objtobuild != BUILD_SECURITY_CAMERA)
-	{
-		local vector startpos, endpos;
-		startpos = obj.origin;
-		startpos_z = self.absmin_z - obj.mins_z + 50;
-		endpos = obj.origin;
-		endpos_z = self.absmin_z - obj.mins_z - 40;
-		checkmove(startpos, obj.mins, obj.maxs, endpos, MOVE_NORMAL, self);
+	if (objtobuild == BUILD_SECURITY_CAMERA)
+		return;
 
-		if (trace_fraction == 1) {
-			sprint (self, PRINT_HIGH, "Not enough room to build here\n");
+	local vector startpos, endpos;
+
+	startpos = obj.origin;
+	startpos_z = self.absmin_z - obj.mins_z + 60;
+
+	// build right up against the wall if there's a wall there
+	checkmove(startpos, obj.mins, obj.maxs, startpos + v_forward*30, MOVE_NORMAL, obj);
+
+	RPrint ("Builder origin: " + vtos(self.origin) + "\n");
+	RPrint ("First checkmove: ");
+	printtrace( 1 );
+	RPrint ("Distance from builder: ");
+	RPrint (ftos(vlen(trace_endpos - self.origin)));
+	RPrint ("\n");
+
+	startpos = trace_endpos;
+
+	endpos = obj.origin;
+	endpos_z = self.absmin_z - obj.mins_z - 40;
+
+	checkmove(startpos, obj.mins, obj.maxs, endpos, MOVE_NORMAL, obj);
+
+	RPrint("Second checkmove: ");
+	printtrace( 1 );
+	RPrint("Distance from builder: ");
+	RPrint(ftos(vlen(trace_endpos - self.origin)));
+	RPrint("\n");
+
+	if (trace_fraction == 1 && !trace_allsolid) {
+		sprint (self, PRINT_HIGH, "No buildable surfaces\n");
+		dremove (obj);
+		return;
+	}
+
+	if (trace_allsolid || trace_fraction == 0) {
+		sprint (self, PRINT_HIGH, "Not enough room to build\n");
+		dremove (obj);
+		return;
+	}
+
+	if (trace_ent.classname == "force_field") // make it collide with ff
+		trace_endpos_z--;
+
+	obj.origin = trace_endpos;
+	obj.flags = obj.flags | FL_ONGROUND;
+	obj.movetype = MOVETYPE_TOSS;
+
+#ifdef		DISALLOW_BLOCKED_TELE
+	if (objtobuild == BUILD_TELEPORTER) {
+		checkmove (obj.origin + '0 0 32', '-16 -16 -24', '16 16 32',
+				   obj.origin + '0 0 30', MOVE_NOMONSTERS, self);
+		if (trace_startsolid || trace_fraction != 1) {
+			sprint (self, PRINT_HIGH, "Not enough room for teleportation\n");
 			dremove (obj);
 			return;
-		} else if (trace_startsolid) {
-			checkmove (trace_endpos, obj.mins, obj.maxs, trace_endpos,
-					   MOVE_NORMAL, self);
-			//printtrace (TRUE); // annoying
-			if (trace_startsolid) {
-				sprint (self, PRINT_HIGH, "Not enough room to build here\n");
-				dremove (obj);
-				return;
-			}
 		}
-
-		obj.origin = trace_endpos;
-        obj.flags = obj.flags | FL_ONGROUND;
-        obj.movetype = MOVETYPE_TOSS;
-
-		if (objtobuild == BUILD_TELEPORTER) {
-			checkmove (obj.origin + '0 0 32', '-16 -16 -24', '16 16 32',
-					   obj.origin + '0 0 30', MOVE_NOMONSTERS, self);
-			if (trace_startsolid || trace_fraction != 1) {
-				sprint (self, PRINT_HIGH, "Not enough room for teleportation\n");
-				dremove (obj);
-				return;
-			}
-		}
+	}
+#endif
 
         obj.owner = self;
         obj.classname = "timer";
@@ -757,13 +781,14 @@ void(float objtobuild) TeamFortress_Build =
         setsize (obj, obj.mins, obj.maxs);
         setorigin (obj, obj.origin);
 
-		if (objtobuild == BUILD_TELEPORTER)
-			if (Teleporter_CheckBlocked (obj)) {
-				sprint (self, PRINT_HIGH, "Not enough room for " +
-										  "teleportation.\n");
-				dremove (obj);
-				return;
-			}
+#ifdef DISALLOW_BLOCKED_TELE
+	if (objtobuild == BUILD_TELEPORTER)
+		if (Teleporter_CheckBlocked (obj)) {
+			sprint (self, PRINT_HIGH, "Not enough room for teleportation.\n");
+			dremove (obj);
+			return;
+		}
+#endif
 
         if (objtobuild==BUILD_TESLA)
         {
@@ -784,7 +809,6 @@ void(float objtobuild) TeamFortress_Build =
         self.weaponframe = 0;
 
         TeamFortress_SetSpeed(self);
-	}
 
 	if (objtobuild == BUILD_FIELDGEN)
 		WhereGen(obj.origin);
@@ -931,7 +955,7 @@ void() TeamFortress_FinishedBuilding =
 		sound (oldself, CHAN_ITEM, "weapons/turrset.wav", 1, ATTN_NORM);
 		newmis.solid = SOLID_BBOX;
 		setmodel(newmis, newmis.mdl);
-		setsize (newmis, '-16 -16 0', '16 16 48'); 
+		setsize (newmis, '-16 -16 4', '16 16 48'); //don't make it encompass the base
 		setorigin(newmis, oldself.origin + '0 0 8'); 
 		newmis.real_owner = oldself.real_owner;	// The Engineer owns this item
 		newmis.trigger_field = oldself;

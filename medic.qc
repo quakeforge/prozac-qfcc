@@ -188,7 +188,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 		}
 		else
 		{
-			dprint("Warning: Error in Hallucination Timer logic.\n");
+			RPrint("Warning: Error in Hallucination Timer logic.\n");
 		}
 	}
 
@@ -227,7 +227,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 		}
 		else
 		{
-			dprint("Warning: Error in Tranquilisation Timer logic.\n");
+			RPrint("Warning: Error in Tranquilisation Timer logic.\n");
 		}
 	}
 	

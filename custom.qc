@@ -775,7 +775,7 @@ void (float cost, float type) BuyGren =
 	if (type == 0) // if type is 0 we are buying the NULL GRENADE(tm)
 	{
 		sprint(self, PRINT_HIGH, "Congratulations. You have just attempted to buy a null grenade.\n");
-		dprint("WARNING: Attempted purchase of NULL GRENADE. BUG BUG BUG BUG BUG BUG BUG\n");
+		RPrint("WARNING: Attempted purchase of NULL GRENADE. BUG BUG BUG BUG BUG BUG BUG\n");
 		return;
 	}
 	// Check whether we're allowing gren purchase.

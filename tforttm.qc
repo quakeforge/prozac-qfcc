@@ -567,8 +567,8 @@ void (string key, string value) UserInfoCallback =
 //	dprint ("[[" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 
 	else if (key == "topcolor") { // FIXME: some topcolors may be allowed
-		dprint ("items: " + ftos (self.cutf_items & CUTF_SPY_KIT) + "  ");
-		dprint ("skin: " + ftos (self.is_undercover) + "\n");
+		RPrint ("items: " + ftos (self.cutf_items & CUTF_SPY_KIT) + "  ");
+		RPrint ("skin: " + ftos (self.is_undercover) + "\n");
 		if ((self.cutf_items & CUTF_SPY_KIT) && self.is_undercover) {
 			setinfokey(self, "topcolor", oldval);
 			stuffcmd(self, "color \"" + oldval + "\"\n");
@@ -587,7 +587,7 @@ void (string key, string value) UserInfoCallback =
 	} else {
 		// accept everything else
 		setinfokey (self, key, value);
-//		dprint ("[default [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
+//		RPrint ("[default [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 	}
 };
 

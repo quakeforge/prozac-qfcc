@@ -4,12 +4,13 @@ X = done
 M = more testing
 I = in progress
 W = waiting on other work
+- = not pertinent anymore
 
  o  Fix assault cannon death while firing = can't fire again until re-AC bug.
- o  Can't switch from LG with 0 cells to airfist.
+ X  Can't switch from LG with 0 cells to airfist.
  X  Scout while customizing bug.
  o  teleporting grunty bug
- o  Fix sensor stick bug! VERY abusable and annoying.
+ X  Fix sensor stick bug! VERY abusable and annoying.
  o  Fix getting stuck on nail grenades while they rise.
 
  M  make changing skin/color force the proper color instead of kicking
@@ -23,10 +24,10 @@ W = waiting on other work
  X  add a define to disable abusive admin commands (eg stuffcmd)
  X  the thief skill should set the "invisible" face
  o  "slave teslas"
- o  instead of not allowing two fastest legs when upgraded, restrict the
+ X  instead of not allowing two fastest legs when upgraded, restrict the
     health/armor you're allowed when you have fast legs
  o  make a seperate menu for detonating engineer buildings
- o  remove RPrint, since it's really kinda pointless and just makes the code
+ ?  remove RPrint, since it's really kinda pointless and just makes the code
     uglier
  o  change the color defines (eg DARKBLUE) to be the exact number, not
     number + 1
@@ -35,7 +36,7 @@ W = waiting on other work
  o  only allow people to use certain topcolors
  o  allow more variation in skins
  o  Make it so '1' repairs/reloads on all building menus
- o  Teammates should be able to destroy fieldgens when they've been hacked to
+ -  Teammates should be able to destroy fieldgens when they've been hacked to
     hurt teammates
  o  Possibly berserker shouldn't make detpacks do more damage
  o  give airborn pipebombs a different death message

@@ -1084,21 +1084,21 @@ void() GRun =
 				if (dist < desired_min) {
 					if (statehack != -1) {
 //						dprint ("me: " + vtos (self.origin) + "  goal: " + vtos (self.goalentity.origin) + "\n");
-						dprint (diststring + "back off\n");
+						RPrint (diststring + "back off\n");
 						statehack = -1;
 					}
 					botmovedist (vectoyaw (v_forward), dist * -0.1); // back off
 				} else if (dist > desired_max) {
                     if (statehack != 1) {
 //                        dprint ("me: " + vtos (self.origin) + "  goal: " + vtos (self.goalentity.origin) + "\n");
-                        dprint (diststring + "close in\n");
+                        RPrint (diststring + "close in\n");
                         statehack = 1;
                     }
 					botmovedist (vectoyaw (v_forward), dist); // close in
 				} else {
                     if (statehack != 0) {
 //                        dprint ("me: " + vtos (self.origin) + "  goal: " + vtos (self.goalentity.origin) + "\n");
-                        dprint (diststring + "do nothing *cough*\n");
+                        RPrint (diststring + "do nothing *cough*\n");
                         statehack = 0;
                     }
 					if (random () < 0.1)
