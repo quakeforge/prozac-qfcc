@@ -2522,10 +2522,15 @@ void(entity Goal, entity AP, float addb) DoResults =
 	#endif
 #endif
 
-	// Setup for Respawn
-	// Items and Triggers do their own respawn work
-	if (Goal.classname == "info_tfgoal")
-		SetupRespawn(Goal);
+	if (Goal.killtarget && Goal.killtarget == Goal.targetname) {
+		// self destructive trigger
+		remove (Goal);
+	} else {
+		// Setup for Respawn
+		// Items and Triggers do their own respawn work
+		if (Goal.classname == "info_tfgoal")
+			SetupRespawn(Goal);
+	}
 };
 
 //=========================================================================
