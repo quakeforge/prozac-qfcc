@@ -1800,6 +1800,7 @@ void() PutClientInServer =
 	local float iszoom, oldclass;
 	local entity spot, te;
 
+	self.fire_held_down = 0;
 	self.touch = player_touch;
 	self.classname = "player";
 	if (self.playerclass != PC_CUSTOM)
