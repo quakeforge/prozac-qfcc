@@ -273,7 +273,7 @@ void() launch_horn =
       // Convert distance to a percentage.
       percent = (inRange - dist) / inRange;
 
-      if (e.flags & #FL_ONGROUND)
+      if (e.flags & #FL_ONGROUND && !(e.classname == "player" && e.cutf_items & #CUTF_HWGUY))
       {
       	// If there on the ground, raise them up so that the velocity will
         // take affect.
@@ -294,6 +294,9 @@ void() launch_horn =
         if (delta_z < 100)
           delta_z = 100;
       }
+
+      if (e.classname == "player" && e.cutf_items & #CUTF_HWGUY)
+        delta = '0 0 0';
 
       // calculate the velocity adjustment.
       delta = normalize(delta);
