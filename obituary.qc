@@ -1010,9 +1010,12 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		} else if (deathmsg == DMSG_INCENDIARY) {
 			deathstring = " gets well done by ";
 			deathstring2 = "'s incendiary rocket\n";
+		} else if (deathmsg == DMSG_MARTYR) {
+			deathstring = " brings down the martyr ";
+			deathstring2 = "\n";
 		} else {
-			deathstring = " has a BUG death (";
-			deathstring2 = ")\n";
+			deathstring = " has a BUG death by ";
+			deathstring2 = " (deathmsg = " + ftos (deathmsg) + ")\n";
 		}
 
 		bprint (PRINT_MEDIUM, targ.netname);
@@ -1163,9 +1166,12 @@ void (entity targ, entity attacker) Obituary_Player_by_SentryTesla =
 				deathstring = " decides ";
 				deathstring2 = "'s sentry isn't so cuddly after all!\n";
 			}
+		} else if (deathmsg == DMSG_MARTYR) {
+			deathstring = " plays cat and mouse with ";
+			deathstring2 = "'s sentry\n";
 		} else {
 			deathstring = " is given a BUG death from ";
-			deathstring2 = "'s sentry\n";
+			deathstring2 = "'s sentry (deathmsg = " + ftos (deathmsg) + ")\n";
 		}
 
 		bprint (PRINT_MEDIUM, targ.netname);

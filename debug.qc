@@ -33,7 +33,7 @@ void(entity te) dremove =
 		RPrint("***BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG***\n"); 
 		return;
 	}
-
+#if 0
 	if (te.is_removed == TRUE)
 	{
 		RPrint("***BUG BUG BUG BUG BUG BUG BUG***\n");
@@ -41,6 +41,7 @@ void(entity te) dremove =
 		RPrint("***BUG BUG BUG BUG BUG BUG BUG***\n"); 
 		return;
 	}
+#endif
 
 	te.is_removed = TRUE;
 	remove(te);

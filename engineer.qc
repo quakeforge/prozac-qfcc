@@ -685,9 +685,9 @@ void(float objtobuild) TeamFortress_Build =
 	{
 		local vector startpos, endpos;
 		startpos = obj.origin;
-		startpos_z = self.absmin_z - obj.mins_z + 30;
+		startpos_z = self.absmin_z - obj.mins_z + 50;
 		endpos = obj.origin;
-		endpos_z = self.absmin_z - obj.mins_z - 20;
+		endpos_z = self.absmin_z - obj.mins_z - 40;
 		checkmove(startpos, obj.mins, obj.maxs, endpos, MOVE_NORMAL, self);
 
 		if (trace_fraction == 1) {
