@@ -1,2 +1,12 @@
-make changing skin/color force the proper color instead of kicking
-make sure team/color is cleared when a client connects
+o = todo
+X = done
+? = maybe but not likely
+M = more testing
+I = in progress
+W = waiting on other work
+
+I  make changing skin/color force the proper color instead of kicking
+I  make sure team/color is cleared when a client connects
+o  allow lay mode if purchased
+o  various drop items
+o  move from *preqcc to cpp
