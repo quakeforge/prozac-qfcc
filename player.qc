@@ -19,7 +19,7 @@ firings get shunted through here.
 
 // Prototypes
 void() bubble_bob;
-void() W_FireAssaultCannon;
+void(float num) W_FireAssaultCannon;
 void() W_FireLightAssault;
 
 void() Throw_Grapple;
@@ -602,6 +602,10 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 		sound (self, CHAN_WEAPON, "weapons/asscan1.wav", 1, ATTN_NORM);
 
 	SuperDamageSound();
+	if (self.heat > 7) {
+		W_FireAssaultCannon (self.heat);
+		sound (self, CHAN_WEAPON, "weapons/asscan2.wav", 1, ATTN_NORM);
+	}
 	Attack_Finished(0.1);
 
 	if (self.heat != 2 && self.heat != 4)
@@ -613,7 +617,7 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 	}
 
 	self.heat = self.heat + 1;
-	if (self.heat >= 7)
+	if (self.heat >= 10)
 	{
 		self.heat = 0;
 		player_assaultcannon1();
@@ -638,6 +642,10 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 	}
 
 	SuperDamageSound();
+	if (self.heat > 4) {
+		sound (self, CHAN_WEAPON, "weapons/asscan2.wav", 1, ATTN_NORM);
+		W_FireAssaultCannon (self.heat);
+	}
 	Attack_Finished(0.1);
 
 	if (self.heat != 2 && self.heat != 4 && self.heat != 7)
@@ -651,8 +659,9 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 	}
 
 	self.heat = self.heat + 1;
-	if (self.heat >= 13)
+	if (self.heat >= 10)
 	{
+		sound (self, CHAN_AUTO, "weapons/asscan4.wav", 1, ATTN_NORM);
 		self.heat = 0;
 		player_assaultcannon1();
 	}
@@ -669,7 +678,7 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 
 	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
 	{
-		stuffcmd(self, "v_idlescale 0\n");
+		// stuffcmd(self, "v_idlescale 0\n"); // GR NO
 		// Let him/her walk again
         self.tfstate &= ~TFSTATE_ASSAULTCANNON;
         TeamFortress_SetSpeed(self);
@@ -685,7 +694,7 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 	else
 		self.weaponframe = 2;
 	SuperDamageSound();
-	W_FireAssaultCannon();
+	W_FireAssaultCannon(7);
 
 	// Shake the screen
 	// Not with idlescale -GR
@@ -700,8 +709,8 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 #else
 	local vector off = self.v_angle;
 
-	off_x -= (random () * 2) + 2;
-	off_y -= (random () * 2) - 1;
+	off_x -= (random () + 0.5);
+	off_y -= ((random () * 0.6) - 0.3);
 
 	msg_entity = self;
 	WriteByte (MSG_ONE, SVC_SETANGLE);
@@ -726,12 +735,13 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 		return;
 	}
 
-	if (self.weaponframe == 2)
-		self.weaponframe = 4;
-	else
+	self.weaponframe++;
+	if (self.weaponframe == 4)
 		self.weaponframe = 2;
+	else
+		self.weaponframe = 4;
 	SuperDamageSound();
-	W_FireAssaultCannon();
+	W_FireAssaultCannon(7);
 
 	// increase the heat of the cannon
 	self.heat = self.heat + 0.1;
@@ -739,8 +749,8 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 	// Not with idlescale
 #if 0
 	stuffcmd(self, "v_idlescale 0\n");
-	stuffcmd(self, "bf\n");
-#endif
+#endif	
+	stuffcmd (self, "bf\n");
 
 	Attack_Finished(0.1);
 };
@@ -749,7 +759,7 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 void() player_assaultcannondown1   =[$nailatt1, player_assaultcannondown1  ] 
 {
 	if (self.count == 1)
-		sound (self, CHAN_WEAPON, "weapons/asscan3.wav", 1, ATTN_NORM);
+		sound (self, CHAN_AUTO, "weapons/asscan3.wav", 1, ATTN_NORM);
 
 	if (self.count >= 15) {
 		self.heat = 0;

@@ -244,7 +244,7 @@ void() EMPGrenadeExplode =
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
 	local float range = 300;
-	local float dmg = 0.3;
+	local float dmg = 0.8;
 
 	local float numcells = 0;
 	local float numrockets = 0;
@@ -278,6 +278,7 @@ void() EMPGrenadeExplode =
 		dist = vlen(self.origin - te.origin);
 		mult = 0.90 - (0.75 * dist / range) + (0.10 * random());
 		mult *= dmg;
+		numshells = numcells = numrockets = numgren1 = numgren2 = expsize = 0;
 
 		if (IsBuilding(te))
 		{
@@ -323,8 +324,9 @@ void() EMPGrenadeExplode =
 		else if (te.classname == "ammobox")
 		{
 			expsize = 0;
-			expsize = expsize + (te.ammo_rockets * 5);
-			expsize = expsize + (te.ammo_cells * 1.4);
+			expsize = expsize + (te.ammo_rockets * 3);
+			expsize = expsize + (te.ammo_cells * 1.5);
+			expsize += expsize * te.ammo_shells / 500;
 
 			if (expsize > 0)
 			{
@@ -333,8 +335,8 @@ void() EMPGrenadeExplode =
 				// Damage player and explode
 				deathmsg = DMSG_GREN_EMP;
 				total_exp = total_exp + expsize;
-				if (expsize > 300) //CH so they are not too powerfull //WK was 500
-					expsize = 300;
+				if (expsize > 500)
+					expsize = 500;
 
 				T_RadiusDamage(te, self.owner, expsize, te);
 
@@ -370,10 +372,7 @@ void() EMPGrenadeExplode =
 					numrockets = te.ammo_rockets;
 	
 				if (te.weapons_carried & WEAP_SPANNER && te.classname == "player")
-				{
-					if (numcells > (te.maxammo_cells - 200))
-						numcells = te.maxammo_cells - 200;
-				}
+					numcells = 0;
 			}
 
 			numcells = floor(numcells);
@@ -381,7 +380,7 @@ void() EMPGrenadeExplode =
 
 			expsize = 0;
 			// calculate explosion size
-			expsize = numcells * 1.5 + numrockets * 5; // ouch, this hurts
+			expsize = numcells * 1.5 + numrockets * 3; // ouch, this hurts
 
 			if (te.classname == "player")
 			{
@@ -418,22 +417,22 @@ void() EMPGrenadeExplode =
 				//WK Make players not explode radially! GR why not?
 				if (te.touch != BackpackTouch)
 				{
-					T_RadiusDamage(te, self.owner, expsize, te);
+					T_RadiusDamage(te, self.owner, expsize / 2, te);
 					
 					deathmsg = DMSG_GREN_EMP;
-					TF_T_Damage (te, te, self.owner, 2 * expsize / 3, 0, TF_TD_IGNOREARMOUR);
-					TF_T_Damage (te, te, self.owner, expsize / 3, 0, TF_TD_EXPLOSION);
+					TF_T_Damage (te, te, self.owner, expsize, 0, TF_TD_EXPLOSION);
 
 					// Remove ammo
 					te.ammo_cells -= numcells;
 					te.ammo_rockets -= numrockets;
+					te.ammo_shells -= numshells;
 
 					if (te.classname == "player")
 					{
 						if (te.tp_grenades_1 == GR_TYPE_MIRV)
-							te.no_grenades_1 -= 3 * mult;
+							te.no_grenades_1 -= numgren1;
 						if (te.tp_grenades_2 == GR_TYPE_MIRV)
-							te.no_grenades_2 -= 3 * mult;
+							te.no_grenades_2 -= numgren2;
 					
 					// Update console
 						oldself = self;

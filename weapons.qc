@@ -1080,17 +1080,6 @@ void (float damage, vector dir) TraceAttack =
 	} else {
 		puff_org = org;
 		puff_count++;
-
-		msg_entity = self;
-
-		WriteByte (MSG_ONE, SVC_TEMPENTITY);
-		WriteByte (MSG_ONE, TE_GUNSHOT);
-		WriteByte (MSG_ONE, 1.0);
-
-		WriteCoord (MSG_ONE, trace_endpos_x);
-		WriteCoord (MSG_ONE, trace_endpos_y);
-		WriteCoord (MSG_ONE, trace_endpos_z);
-
 	if (trace_ent.classname == "force_field") { //- OfN - Makes field explosion b4 removing it
 		FieldExplosion(trace_ent,trace_endpos,trace_ent);
 		PutFieldWork(trace_ent);
@@ -1110,6 +1099,17 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 {
 	local vector direction;
 	local vector src;
+	local string st = infokey (NIL, "numpuffs");
+	local float puffdiv = 0;
+
+	if (st)
+		puffdiv = stof (st) - 1;
+
+	if (puffdiv <= 0)
+		puffdiv = 0;
+	else
+		puffdiv = shotcount / puffdiv;
+
 	makevectors (self.v_angle);
 
 	src = self.origin + v_forward * 10;
@@ -1126,6 +1126,11 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 			TraceAttack (0, direction);
 		else
 			TraceAttack (6, direction); //WK 4
+
+		if (puffdiv) {
+			if (shotcount % puffdiv == 0)
+				Multi_Finish (TRUE);
+		}
 
 		shotcount--;
   	}
@@ -1432,7 +1437,7 @@ void() W_FireAutoRifle =
 TeamFortress : W_FireAssaultCannon
 ================
 */
-void() W_FireAssaultCannon =
+void(float num) W_FireAssaultCannon =
 {
 	local vector dir;
 
@@ -1441,7 +1446,7 @@ void() W_FireAssaultCannon =
 	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 	dir = aim (self, 100000);
 	deathmsg = DMSG_ASSAULTCANNON;
-	FireBullets (7, dir, '0.06 0.06 0');
+	FireBullets (num, dir, '0.01 0.01 0' * num);
 };
 
 /*
