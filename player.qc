@@ -1460,10 +1460,10 @@ void() player_airgun4   =[$rockatt3, player_airgun5  ] {self.weaponframe=4;};
 void() player_airgun5   =[$rockatt4, player_airgun6  ] {self.weaponframe=5;};
 void() player_airgun6   =[$rockatt4, player_airgun7  ] {self.weaponframe=6;};
 void() player_airgun7   =[$rockatt5, player_airgun8  ] {self.weaponframe=7;};
-void() player_airgun8   =[$rockatt6, player_run  ] {self.weaponframe = 8;};
+void() player_airgun8   =[$rockatt6, player_run  ] {self.weaponframe = 0;};
 void() player_failedairgun1   =[$nailatt1, player_failedairgun2  ] {self.weaponframe=6;};
 void() player_failedairgun2   =[$nailatt2, player_failedairgun3  ] {self.weaponframe=7;};
-void() player_failedairgun3   =[$nailatt2, player_run  ] {self.weaponframe=8;};
+void() player_failedairgun3   =[$nailatt2, player_run  ] {self.weaponframe=0;};
 
 //================================================================0
 // Laser cannon player stuff
