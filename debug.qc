@@ -80,4 +80,9 @@ void (float oneline) printtrace =
 	RPrint ("ent: " + (trace_ent ? "yes" : "no") + sep);
 	RPrint ("inopen: " + ftos (trace_inopen) + sep);
 	RPrint ("inwater: " + ftos (trace_inwater) + "\n");
+
+	if (trace_ent.solid == SOLID_NOT)
+		RPrint ("SV_Move on crack: clipped on SOLID_NOT.");
+	else if (trace_ent.solid == SOLID_TRIGGER)
+		RPrint ("SV_Move on crack: clipped on SOLID_TRIGGER.");
 };

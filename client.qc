@@ -2825,7 +2825,9 @@ void() PlayerPreThink =
 		if (trace_startsolid)
 		{
 			if (trace_ent.classname != "force_field") // hack, stuck in forcefield is okay here
-				self.stucktime++;	
+				self.stucktime++;
+
+			printtrace(0);
 	
 			deathmsg = DMSG_PHYSICS;
 			if (self.stucktime >= 10) // one second until you die
