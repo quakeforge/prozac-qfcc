@@ -602,7 +602,7 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 		sound (self, CHAN_WEAPON, "weapons/asscan1.wav", 1, ATTN_NORM);
 
 	SuperDamageSound();
-	if (self.heat > 7) {
+	if (self.heat > 3) {
 		W_FireAssaultCannon (self.heat);
 		sound (self, CHAN_WEAPON, "weapons/asscan2.wav", 1, ATTN_NORM);
 	}
@@ -617,7 +617,7 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 	}
 
 	self.heat = self.heat + 1;
-	if (self.heat >= 10)
+	if (self.heat >= 7)
 	{
 		self.heat = 0;
 		player_assaultcannon1();
@@ -642,7 +642,7 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 	}
 
 	SuperDamageSound();
-	if (self.heat > 4) {
+	if (self.heat > 5) {
 		sound (self, CHAN_WEAPON, "weapons/asscan2.wav", 1, ATTN_NORM);
 		W_FireAssaultCannon (self.heat);
 	}
@@ -659,7 +659,7 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 	}
 
 	self.heat = self.heat + 1;
-	if (self.heat >= 10)
+	if (self.heat >= 7)
 	{
 		sound (self, CHAN_WEAPON, "weapons/asscan4.wav", 1, ATTN_NORM);
 		self.heat = 0;
