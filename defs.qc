@@ -842,6 +842,12 @@ void(vector where, float set) multicast 	= #82;  // sends the temp message to a 
 												// of clients, possibly in PVS or PHS
 #endif
 void (entity ent, string key, string value) setinfokey = #102;
+float (string path, string mode) cfopen = #103;
+void (float desc) cfclose = #104;
+string (float desc) cfread = #105;
+float (float desc, string buf) cfwrite = #106;
+float (float desc) cfeof = #107;
+float () cfquota = #108;
 
 //============================================================================
 
@@ -1013,7 +1019,8 @@ float(entity targ, entity inflictor) CanDamage;
 .float	weaponmode;			// Used for multiple mode weapons
 
 //WK 152 Default, must be > 6.
-#define MOTD_FINISHED 242 		//Delay in 1/10th seconds for motd to show
+//#define MOTD_FINISHED 242 		//Delay in 1/10th seconds for motd to show
+#define MOTD_FINISHED 150
 .float	motd; 			// Used to display MOTD
 .float  current_menu;			// is set to the number of the current menu, is 0 if they are not in a menu
 .float  menu_count;			// keeps track of display times for menus

@@ -966,12 +966,122 @@ void() SetCycleTimer =
     newmis.think = cycle_timer_think;
 };
 
-void() GotoNextMap =
+float() GetNextMapNum =
+{
+	local float desc;
+	local string st;
+	local string infostring;
+	local float infonum;
+
+	infostring = infokey (world, "n");
+	infonum = stof(infostring);
+
+	if (infostring != "") // always use info when available
+		return infonum;
+
+	if (cvar("crudefile_quota") < 0)
+		return infonum;
+
+	desc = cfopen("nextmapnum", "r");
+	if (desc < 0)
+		return infonum;
+
+	st = cfread(desc);
+	if (st == "")
+	{
+		cfclose(desc);
+		return infonum;
+	}
+
+	cfclose(desc);
+	return stof(st);
+};
+
+void(float mapnum) SetNextMapNum =
+{
+	local float desc;
+	local string mapstring;
+
+	mapstring = ftos (mapnum);
+
+	if (cvar("crudefile_quota") >= 0)
+	{
+		desc = cfopen ("nextmapnum", "w");
+		// if nextmapnum has a num in it, but we can't modify it.. stuck in a loop
+		if (desc >= 0)
+		{
+			cfwrite (desc, mapstring);
+			cfclose (desc);
+		}
+	}
+
+	localcmd("serverinfo n \"\"\n"); // use localinfo instead
+	localcmd("localinfo n ");
+	localcmd(mapstring);
+	localcmd("\n");
+};
+
+void() LoadNextMap =
 {
     local float nextlevel;
-	local string sl;
-	local entity te;
 	local string cyc;
+	local float desc;
+	local float mapcount;
+	local string map;
+
+	nextlevel = GetNextMapNum();
+	nextlevel = nextlevel + 1;  // next level
+	SetNextMapNum(nextlevel);
+
+	// get count of maps
+	mapcount = 0;
+	desc = cfopen ("mapcycle", "r");
+	while (cfread(desc) != "")
+		mapcount = mapcount + 1;
+	cfclose ("mapcycle");
+
+	if (mapcount > 0)
+	{
+		if (nextlevel > mapcount)
+		{
+			while (nextlevel > mapcount)
+				nextlevel = nextlevel - mapcount;
+			SetNextMapNum (nextlevel);
+		}
+
+		desc = cfopen ("mapcycle", "r");
+		local float i;
+		i = 0;
+		while (i < nextlevel)
+		{
+			i = i + 1;
+			map = cfread(desc);
+		}
+		if (map == "")
+			mapcount = 0; // fall back to old mapcycle method
+		else
+			localcmd ("map " + map + "\n");
+	}
+
+	if (mapcount == 0)
+	{
+		cyc = infokey(world, "cycledir");
+		if ( cyc == string_null )
+			cyc = "qwmcycle";
+
+		localcmd("exec ");
+		localcmd(cyc);
+		localcmd("/map");
+
+		localcmd(ftos(nextlevel));
+		localcmd(".cfg\n");
+
+		already_chosen_map = #CYCLED;
+	}
+};
+
+void() GotoNextMap =
+{
 
 	if (nextmap != mapname)
 	{
@@ -989,37 +1099,9 @@ void() GotoNextMap =
 
 	//- OfN - super new map cycling code :)
 	if (already_chosen_map == #FALSE)
-	{
-        // ------- - ------- //
-		sl = infokey(world, "n");
-		nextlevel = stof(sl);
+		LoadNextMap();
 
-		nextlevel = nextlevel + 1;  // next level
-		sl = ftos(nextlevel);
-		localcmd("serverinfo n \"\"\n"); // use localinfo instead
-		localcmd("localinfo n ");
-		localcmd(sl);
-		localcmd("\n");
-        
-        
-		// change map
-        cyc = infokey(world, "cycledir");
-        if ( cyc == string_null )
-            localcmd("exec qwmcycle/map");
-        else
-        {
-            localcmd("exec ");
-            localcmd(cyc);
-            localcmd("/map");
-        } //.................//
-
-		localcmd(sl);
-		localcmd(".cfg\n");
-
-		already_chosen_map = #CYCLED;
-	}
-
-	if (infokey(world, "n") == "0")
+	if (GetNextMapNum() == 0)
         already_chosen_map = #FALSE;
 
     if (already_chosen_map == #FALSE) // nothing was done yet, so set the damn timer..
@@ -2225,6 +2307,8 @@ void() NextLevel =
 	o.nextthink = time + 0.1;
 };
 
+float cyclenow;
+
 /*
 ============
 CheckRules
@@ -2234,9 +2318,23 @@ Exit deathmatch games upon conditions
 */
 void() CheckRules =
 {
-	if (timelimit && time >= timelimit)
+	local string st;
+	st = infokey (world, "cyclenow");
+
+	if (!cyclenow && (st == "1" || st == "on"))
+	{
+		cyclenow = 1;
+    
+		localcmd ("serverinfo cyclenow \"\"\n");
+		localcmd ("localinfo cyclenow \"\"\n");
+    
+		dprint ("Cycling Map.\n");
+
 		NextLevel ();
-	else if (fraglimit && self.frags >= fraglimit)
+	}
+	else if (cyclenow
+		|| (timelimit && time >= timelimit)
+		|| (fraglimit && self.frags >= fraglimit))
 		NextLevel ();
 };
 

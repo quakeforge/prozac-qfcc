@@ -10,3 +10,5 @@ I  make sure team/color is cleared when a client connects
 o  allow lay mode if purchased
 o  various drop items
 o  move from *preqcc to cpp
+o  add more variety to tinkering
+o  add a way to edit the respawn ammo entities

@@ -193,12 +193,17 @@ void() worldspawn =
 		if (st == "1" || st == "on")
 			st = "mapcfg";
 
+		localcmd("exec mapcfg.cfg\n"); // generic stuff
+
 		localcmd("exec \"");
 		localcmd(st);
 		localcmd("/");
-		localcmd(infokey(world, "map")); // FIXME: this is safe chaining, right?
+		localcmd(infokey(world, "map"));
 		localcmd(".cfg\"\n");
 	}
+
+	if (!cvar("sv_gc"))
+		cvar_set ("sv_gc", "10");
 
 // custom map attributes
 #ifndef QUAKE_WORLD
