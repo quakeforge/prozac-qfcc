@@ -604,7 +604,7 @@ void() JobJudoka =
  		if (self.cutf_items & CUTF_CLOSECOMBAT)
 		    chance -= 0.25;
 
-		if (random() > chance)
+		if (random() > chance || trace_ent.invincible_finished > time)
 		{
 		    sprint (self, PRINT_HIGH, "Your strike is parried!\n");
 		    Attack_Finished(3);
