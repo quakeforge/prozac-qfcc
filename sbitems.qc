@@ -370,7 +370,7 @@ void() MotionSensorIdle =
 
 float() MotionSensorFindTarget =
 {
-	local entity client;
+	local entity client = world;
 	local float	r, gotone, loopc;
 
 	// Try a few checks to make it react faster

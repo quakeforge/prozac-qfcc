@@ -32,7 +32,7 @@ void() Security_Camera_Idle =
 //========
 float() Security_Camera_FindTarget =
 {
-	local entity client;
+	local entity client = world;
 	local float	r, gotone, loopc;
 
 	if (self.is_malfunctioning & SCREWUP_TWO) // SB how tragic, camera can't see
@@ -103,7 +103,7 @@ float() Security_Camera_FindTarget =
 
 float() Security_Camera_FindFakeTarget =
 {
-	local entity client;
+	local entity client = world;
 	local float	r, gotone, loopc;
 
 	if (self.is_malfunctioning & SCREWUP_THREE) // SB how tragic, camera can't see

@@ -249,7 +249,7 @@ float() Sentry_FindTarget =
 	if (infokey(world,"ceasefire")=="on")
 		return FALSE;
     
-    local entity client;
+    local entity client = world;
 	local float	r, gotone, loopc;
 
 	//WK Hack to get floating sentry working

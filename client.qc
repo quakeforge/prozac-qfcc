@@ -1049,7 +1049,7 @@ void() LoadNextMap =
 	local string cyc;
 	local float desc;
 	local float mapcount;
-	local string map;
+	local string map = "";
 
 	nextlevel = GetNextMapNum();
 	nextlevel = nextlevel + 1;  // next level
