@@ -3604,7 +3604,7 @@ l2 = mstr(self.cutf_items, CUTF_SENSOR, CUTF_HOLO,
 	"  •.. Motion sensor   ­  450\n  –.. Holo device     ­  600\n",
 	"* •.. Motion sensor   ­  450\n  –.. Holo device     ­  600\n",
 	"  •.. Motion sensor   ­  450\n* –.. Holo device     ­  600\n",
-	"* •.. Motion sensor   ­  450\n* –.. Holo device     ­  600\n");
+	"* •.. Motion sensor   ­  450\n* –.. Holo device        600\n");
     */
 
 l2 = mstr(self.cutf_items, CUTF_SENSOR, CUTF_FIELDGEN,
@@ -4500,11 +4500,11 @@ l2 = mstr(self.tf_items,NIT_HOVER_BOOTS, NIT_HOVER_BOOTS_UPGRADE,
 	"  •.. Hover Boots     ­  850\n* –..   Boot Upgrade  ­  350\n",
 	"* •.. Hover Boots     ­  850\n* –..   Boot Upgrade  ­  350\n");
 
-l3 = mstr2(self.tf_items, self.cutf_items, NIT_RL_LASER_SIGHT, CUTF_OTR,
-	"  —.. Laser Guided RL ­ 1000\n  ˜.. OTR Bullets     ­ 1850\n",
-	"* —.. Laser Guided RL ­ 1000\n  ˜.. OTR Bullets     ­ 1850\n",  //..   Boot Upgrade  ­  350
-	"  —.. Laser Guided RL ­ 1000\n* ˜.. OTR Bullets     ­ 1850\n",
-	"* —.. Laser Guided RL ­ 1000\n* ˜.. OTR Bullets     ­ 1850\n");
+l3 = mstr2(self.tf_items, self.cutf_items, NIT_RL_LASER_SIGHT, CUTF_HOLO,
+	"  —.. Laser Guided RL ­ 1000\n  ˜.. Holo device     ­  600\n",
+	"* —.. Laser Guided RL ­ 1000\n  ˜.. Holo device     ­  600\n",  //..   Boot Upgrade  ­  350
+	"  —.. Laser Guided RL ­ 1000\n* ˜.. Holo device        600\n",
+	"* —.. Laser Guided RL ­ 1000\n* ˜.. Holo device    ­   600\n");
 
 l4 =	"  ™.. Cluster Rockets ­ 3250\nš.. Ðòåö    \n›..         \n.. Äïîå!   \n";
 
@@ -4521,14 +4521,7 @@ void(float inp) Menu_Option_Input =
         BuyItem(25,NIT_RESPAWN_GUARD);
     }
     if (inp == 6) { 
-        if (no_otr==1)
-        {
-            sprint(self,PRINT_HIGH,"OTR bullets are disabled\n");
-            self.impulse=0;
-            return;
-        }
-        else
-          BuyCuTF(1850,CUTF_OTR);
+        BuyCuTF(600,CUTF_HOLO);
     }
     if (inp == 3) {
         BuyItem(850,NIT_HOVER_BOOTS);
