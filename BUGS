@@ -1,3 +1,4 @@
 - info string length exceeded :/
 - duplicate connects
 - the curse color is rejected by the color changing code
+- the map cycler (including if you set nmap) just sit there if it doesn't change map.  instead, it should have failsafe behavior
