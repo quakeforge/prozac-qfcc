@@ -12,7 +12,7 @@
 - intercepting your sentry when it turrets kills you, but stops the sentry
 - if you judo an assault cannon your speed isn't restored when it's returned
 - I've been told that if you're a thief and you start setting a detpack you won't get revealed until it's finished
-- sentries/teslas should check their pointcontents every frame, and blow up if they're out of the map
+- sentries/teslas should check their pointcontents every frame, and blow up if they're out of the map. "foo had a lesson in physics"
 - topcolor gets reset every time you respawn (?), even though it shouldn't be.  ditto for skin?
 - prematch shouldn't force autoteam when it's done
 - sometimes ID doesn't work.  this may be because impulses are unreliable though :/

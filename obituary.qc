@@ -1189,7 +1189,7 @@ void (entity targ, entity attacker) Obituary_Player_Misc =
 //	logfrag (targ, targ);
 
 	if (pointcontents (self.origin) == CONTENTS_SOLID) {
-		deathstring = " left the map\n";
+		deathstring = " gets a lesson in spatial physics\n";
 	} else if (targ.watertype == CONTENTS_WATER) {
 		local float rnum = random ();
 

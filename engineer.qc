@@ -684,8 +684,8 @@ void(float objtobuild) TeamFortress_Build =
 	
 	if (objtobuild != BUILD_SECURITY_CAMERA)
 	{
-		checkmove(obj.origin + '0 0 8', mins, maxs, obj.origin - '0 0 128', 0, self);
-		if (trace_fraction == 1 || trace_allsolid) {
+		checkmove(obj.origin + '0 0 8', mins, maxs, obj.origin - '0 0 64', 0, self);
+		if (trace_startsolid || trace_fraction == 1) {
             sprint(self, PRINT_HIGH, "Not enough room to build here\n");
             dremove(obj);
             return;
@@ -697,7 +697,7 @@ void(float objtobuild) TeamFortress_Build =
 
 		if (objtobuild == BUILD_TELEPORTER) {
 			checkmove (obj.origin, '-32 -32 8', '32 32 72', obj.origin - '0 0 128', 0, self);
-			if (trace_fraction == 1 || trace_allsolid) {
+			if (trace_startsolid || trace_fraction == 1) {
 				sprint (self, PRINT_HIGH, "Not enough room for teleportation\n");
 				dremove (obj);
 				return;

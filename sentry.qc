@@ -157,6 +157,19 @@ void()	lvl3_sentry_atk5 =[	$lvl3_stand1,	lvl3_sentry_atk4	]
 //=============
 void() Sentry_Rotate =
 {
+/*
+	// don't let them exist in walls/doors
+	// FIXME: pointcontents is wrong for doors
+	local vector testpoint = self.origin;
+	if (self.tf_items & NIT_TURRET)
+		testpoint_z -= 40;
+	if (pointcontents (testpoint) == CONTENTS_SOLID) {
+		TF_T_Damage (self, world, world, self.health + 100,
+					 TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		return;
+	}
+*/
+
 	if (self.is_malfunctioning & SCREWUP_ONE)
 	{
 		self.ideal_yaw = self.ideal_yaw + 10;
