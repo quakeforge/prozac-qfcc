@@ -651,7 +651,7 @@ entity (entity scanner) LookAroundGrunty =
 
 entity () GruntyPharse =
 {
-    local entity retarg;
+    local entity retarg = world;
     local float r;
 	r = random();
     
