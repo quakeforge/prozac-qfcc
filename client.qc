@@ -214,6 +214,8 @@ void () PrematchBegin =
 			other.invincible_finished = 0;
 			other.effects &= ~EF_ANYGLOW;
 			TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			other.real_frags = 0;
+			other.frags = 0;
 			other = find(other, classname, "player");
 		}
 		
