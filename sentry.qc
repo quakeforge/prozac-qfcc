@@ -449,11 +449,14 @@ void() Sentry_HuntTarget =
 
 void(entity attacker, float damage) Sentry_Pain =
 {
+	if (self.health < 0)
+		return;
+
 	// Update the owner's status bar
 	self.real_owner.StatusRefreshTime = time + 0.2;
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 1;
-	if (self.attack_finished < time)
+	if (self.attack_finished < time && self.enemy == NIL)
 	{
 	    self.enemy = attacker;
 	    Sentry_FoundTarget();

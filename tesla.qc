@@ -329,15 +329,18 @@ void() Tesla_FoundTarget =
 
 void(entity attacker, float damage) Tesla_Pain =
 {
+	if (self.health < 0)
+		return;
+
 	// Update the owner's status bar
 	self.real_owner.StatusRefreshTime = time + 0.2;
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 4;
 
-	if (!self.waitmax && self.health > 0)
+	if (!self.waitmax)
 	{
 	    self.enemy = attacker;
-	    self.waitmax = 1;
+	    self.waitmax = TRUE;
 	    Tesla_FoundTarget();
 	}
 };
