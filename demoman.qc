@@ -157,6 +157,11 @@ void(float timer) TeamFortress_SetDetpack =
 	if (self.ammo_detpack <= 0)
 		return;
 
+	if (infokey (world, "no_spam") == "on")
+	{
+		sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+		return;
+	}
 	// Cant set detpack if you're in the air
 	if (!(self.flags & FL_ONGROUND))
 	{

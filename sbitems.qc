@@ -116,7 +116,12 @@ void() SwitchFromCamera =
 void() PrimeC4Det =
 {
 	local entity te;
-	
+
+	if (infokey (world, "no_spam") == "on")
+	{
+		sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
+		return;
+	}	
 	if (!(self.cutf_items & CUTF_TOSSABLEDET))
 	{
 		sprint (self, PRINT_HIGH, "You do not have the C4 tossable detpack.\n");
