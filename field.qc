@@ -507,11 +507,6 @@ void() Field_touch =
     Field_touch_SUB();
 };
 
-float(float a, float b) avg =
-{
-	return a + (b - a) / 2;
-};
-
 //===================================================================================
 // creates the force field between the 2 generators (only if none currently on)
 
@@ -574,7 +569,7 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
 	tfield.mins = tfield.maxs * -1; // FIXME: -1 * only did first float
 	tfield.origin = gen1.origin + (gen2.origin - gen1.origin) * 0.5;
-	tfield.origin_z = avg (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
+	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
 	tfield.absmax = tfield.origin + tfield.maxs;
 	tfield.absmin = tfield.origin + tfield.mins;
 //	tfield.angles = gen2.origin - gen1.origin; // for rotation?

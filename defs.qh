@@ -1300,3 +1300,5 @@
 #define AURA_INVIS		4
 
 #include "ofndefs.qh"
+
+#define AVG(a,b) (((a) + (b)) * 0.5)
