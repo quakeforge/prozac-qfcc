@@ -1688,6 +1688,7 @@ void() item_artifact_invulnerability =
 	setmodel (self, "progs/invulner.mdl");
 	self.netname = "Pentagram of Protection";
 	self.items = IT_INVULNERABILITY;
+	self.effects |= EF_BLUE;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
@@ -1764,6 +1765,7 @@ void() item_artifact_super_damage =
 	setmodel (self, "progs/quaddama.mdl");
 	self.netname = "Quad Damage";
 	self.items = IT_QUAD;
+	self.effects |= EF_BLUE;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
 };
