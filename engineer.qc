@@ -690,13 +690,17 @@ void(float objtobuild) TeamFortress_Build =
 		endpos_z = self.absmin_z - obj.mins_z - 20;
 		checkmove(startpos, obj.mins, obj.maxs, endpos, MOVE_NORMAL, self);
 
-		if (trace_startsolid || trace_fraction == 1) {
+		if (trace_fraction == 1) {
+			sprint (self, PRINT_HIGH, "Not enough room to build here\n");
+			dremove (obj);
+			return;
+		} else if (trace_startsolid) {
 			checkmove (trace_endpos, obj.mins, obj.maxs, trace_endpos,
 					   MOVE_NORMAL, self);
 			printtrace (TRUE);
 			if (trace_startsolid) {
-				sprint(self, PRINT_HIGH, "Not enough room to build here\n");
-				dremove(obj);
+				sprint (self, PRINT_HIGH, "Not enough room to build here\n");
+				dremove (obj);
 				return;
 			}
 		}
