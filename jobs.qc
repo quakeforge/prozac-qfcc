@@ -94,8 +94,13 @@ void() JobThief =
 			self.modelindex = modelindex_null;
 			self.job = self.job | JOB_FULL_HIDE;
 		} */
-		sprint(self, PRINT_HIGH, "Leaving shadows...\n");
-		self.modelindex = modelindex_player;
+		if (self.invisible_time)
+			sprint (self, PRINT_HIGH, "Leaving shadows... just as soon as this ring wears off...\n");
+		else {
+			sprint (self, PRINT_HIGH, "Leaving shadows...\n");
+			self.items = self.items - (self.items & IT_INVISIBILITY);
+			self.modelindex = modelindex_player;
+		}
 		self.job = self.job - JOB_ACTIVE;
 		self.job = self.job - (self.job & JOB_FULL_HIDE);
 		self.job_finished = time + 2;
@@ -113,13 +118,17 @@ void() JobThief =
 			return;
 		}
 		*/
-		sprint(self,PRINT_HIGH,"Entering shadows...\n");
+		if (self.invisible_time)
+			sprint (self, PRINT_HIGH, "Entering shadows... well not really...\n");
+		else
+			sprint (self, PRINT_HIGH, "Entering shadows...\n");
 		self.frame = 0;
 		self.weaponframe = 0;
 		self.modelindex = modelindex_eyes;
 		self.job = self.job | JOB_ACTIVE;
 		self.job_finished = time + 2;
 		TeamFortress_SetSpeed(self);
+		self.items = self.items | IT_INVISIBILITY;
 
 		te = spawn();
 		te.nextthink = time + PC_SPY_CELL_REGEN_TIME;
@@ -994,15 +1003,26 @@ void() UseJobSkill =
 #define EXPOSURE_NORELOAD_TIME 7
 #define FULLH_NORELOAD_TIME 1.5
 void (entity targ, float pain) RevealThief = {
-	if (targ.classname != "player") return;
-	targ.modelindex = modelindex_player;
+	if (targ.classname != "player")
+		return;
+
+	if (!targ.invisible_time) {
+		targ.modelindex = modelindex_player;
+		targ.items = targ.items - (targ.items & IT_INVISIBILITY);
+	}
 	if (pain) {
-		sprint(targ,PRINT_HIGH,"You have been uncovered!\n");
+		if (targ.invisible_time)
+			sprint (targ, PRINT_HIGH, "You have been uncovered, or would have if you didn't have that ring.\n");
+		else
+			sprint(targ,PRINT_HIGH,"You have been uncovered!\n");
 		targ.attack_finished = time + EXPOSURE_NORELOAD_TIME;
 		targ.job_finished = time + EXPOSURE_NOHIDE_TIME;
 	}
 	else {
-		sprint(targ,PRINT_HIGH,"Leaving shadows...\n");
+		if (targ.invisible_time)
+			sprint (targ, PRINT_HIGH, "Leaving shadows... just as soon as this ring wears off...\n");
+		else
+			sprint (targ, PRINT_HIGH, "Leaving shadows...\n");
 		targ.job_finished = time + NOHIDE_TIME;
 		if (targ.job & JOB_FULL_HIDE)
 			targ.attack_finished = time + FULLH_NORELOAD_TIME;

@@ -36,11 +36,9 @@ void(entity te) dremove =
 
 	if (te.is_removed == TRUE)
 	{
-	/*
 		RPrint("***BUG BUG BUG BUG BUG BUG BUG***\n");
 		RPrint("  Entity has been removed twice. \n");
 		RPrint("***BUG BUG BUG BUG BUG BUG BUG***\n"); 
-	*/
 		return;
 	}
 
