@@ -531,7 +531,7 @@ void() JudokaRearm =
 			oself = self;
 			self = self.enemy;
 			stuffcmd(self, "v_idlescale 0\n");
-			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
 			TeamFortress_SetSpeed(self);
 			self.weaponframe = 0;
 			self.count = 1;

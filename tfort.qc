@@ -1643,7 +1643,7 @@ void(entity p) TeamFortress_SetSpeed =
 
 	// 8th, check if they're firing an Assault Cannon
 	if (p.tfstate & TFSTATE_ASSAULTCANNON)
-		p.maxspeed /= 8;
+		p.maxspeed /= 4;
 
 	stuffcmd(p,"cl_backspeed 1000\n");
 	stuffcmd(p,"cl_forwardspeed 1000\n");
