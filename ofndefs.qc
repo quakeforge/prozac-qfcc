@@ -1,0 +1,90 @@
+
+#pragma DONT_COMPILE_THIS_FILE
+
+/*=======================================================//
+// ofndefs.QC - CustomTF 3.2.OfN           - 30/1/2001 - //
+// by Sergio Fumaña Grunwaldt - OfteN aka superCOCK2000  //
+=========================================================//
+ Flags defined to test something and other stuff
+=========================================================*/
+
+//#define VERBOSE_GRUNTY
+#define WARLOCK_TEST // free summon
+//#define ARMY_TEST // only 5 seconds for tele the soldier
+
+//- attack owner?
+//#define MAD_GRUNTY  //for testing purposes
+#define MAD_MONSTERS // for testing
+//#define MAD_TESLA // for testing
+
+//#define GRUNTY_EXTRA_WEAPONS #WEAP_ROCKET_LAUNCHER | #WEAP_SUPER_SHOTGUN // 0
+
+//--- additional global defines ----------------------//
+#define MSG_OFTEN_CUTFVERSION "Running progs build 111 Û05¯09¯2001Ý\n"
+
+#define MOTD_REFRESHRATE        1
+
+#define MAX_KNIFE_BLOOD        12 // maximum of knife kill points that can be accumulated by warlocks
+
+#define GRUNTY_HP             600 // initial HP for soldier
+#define GRUNT_MAX_HP         1200 // OfN - Max health for the damn soldier, no 5000 hp grunts anymore! =)
+
+#define SHAMBLER_HP          2600 // 2000 - 3000 - 2600
+#define HKNIGHT_HP           2200 //
+#define DEMON_HP             1800 // 1200 - 2000 - 1400
+#define KNIGHT_HP            1400 //
+#define SCRAG_HP             1000 // 800
+
+#define SCRAG_DMG              29 // damage the scrag does
+
+#define WAYPOINT_LIFE         240 // 120 after this amount of seconds any unused waypoint will be removed
+#define OTR_DMGFACTOR           1.10 // *damage facter for the OTR armed sniper rifle (MUST BE GREATER THAN 1!!!)
+#define SENTRY_UNLOCKTIME       2.5 // (must be greater than 1.1) time for the sentries to begin to rotate after they have no target (+/- 1 second)
+#define HAX_UNSTABLEDIST      300 // distance at which enemy hacks take longer cause of "unstable connection"
+#define WAYPOINT_AI_LIFE       10 // life for grunty ai created waypoints - last seen enemy mark
+#define ATTN_MONSTERDIE #ATTN_NONE // #ATTN_NORM
+#define MINE_SCANRATE           0.6 // mines look again for nearby enemy after this time - it was 1 which caused high ping players to not trigger mines sometimes walking around them fast
+#define EXPBODY_DMG           160 // damage exp. body does /was 140
+#define MINE_DMG              200 // was 240 /215
+
+#define BERSERKER_HP_COST    30
+
+#define LASER_CANNON_DMG        26 // was 28
+#define RE_LASER_CANNON_TIME	1.5
+#define RE_LASER_CANNON		    10
+
+#define GRUNTY_SEEKTIME         8
+
+#define BIO_GREN_RADIUS       200 // was 150
+
+// field generator ranges
+#define FIELDGEN_RANGE          275 // max distance between the to generators to work
+#define FIELDGEN_HACKEDRANGE    450 // hacked generator distance
+//#define FIELDGEN_HACKEDRANGE2   600 // Range for both gens hacked
+
+#define FGTRAP_DMG           300 // damage the field generator trapped explosion does
+#define FIELD_FORCEMODE    // coment to get rid of the mode switch of the force field
+
+// monster HP regeneration
+#define SCRAG_REGEN      3
+#define SCRAG_REGRATE    1.5
+#define FIEND_REGEN      3
+#define FIEND_REGRATE    1.5
+#define SHAMBLER_REGEN   3
+#define SHAMBLER_REGRATE 1.5
+
+// FLAG DEFINES
+#define extra_detpack_explosions
+#define detpack_earthquake
+#define EXTRA_DETEXPOSIONS           5 // was 6
+#define DETPACK_EARTHQUAKE_RANGE  1200
+
+#define no_tf_monsters // uncoment this to compile with the standard quake models
+#define no_new_dispenser // enables/disables new dispenser model and gib (dox models)
+#define ceasefire_allows_to_move
+
+#define pushable_scrag // scrag pushable by the airfist?
+#define pushable_army
+#define pushable_fiend
+
+#define HUNTED_YELLOWTEAM_FACTOR 0.5 // this multiplied to current red players is max for yellow team on huntedr
