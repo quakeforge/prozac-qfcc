@@ -562,7 +562,7 @@ void(entity gen1, entity gen2) Create_Field =
 	// set pos and size
 	tfield.size_x = vlen (gen1.origin - gen2.origin) - 10;
 	tfield.size_y = 4;
-	tfield.size_z = 48; // was 64, but this looks more realistic
+	tfield.size_z = 48; // was 64, but 48 is more realistic
 	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
 	tfield.mins = -tfield.maxs;
 	tfield.origin = gen1.origin + (gen2.origin - gen1.origin) * 0.5;
