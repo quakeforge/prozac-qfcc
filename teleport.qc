@@ -10,6 +10,7 @@ Functions for the teleporters
 void() Teleporter_touch;
 void() Teleporter_Die;
 void() Teleporter_heat_think;
+integer (entity ent) Teleporter_CheckBlocked;
 float(entity targ) Teleporter_check_person;
 
 #define TELEPORTER_CELLS	8 //How many cells to use on teleport
@@ -145,9 +146,6 @@ float(entity targ) Teleporter_check_person =
 void() Teleporter_heat_think =
 {
 //CH used to reduce the heat and check pos
-	local float pos, num;
-	local vector loc;
-
 	if (self.heat <= 0)
 		self.heat = 0;
 	else
@@ -155,33 +153,41 @@ void() Teleporter_heat_think =
 
 	self.think = Teleporter_heat_think; //keep in loop
 	self.nextthink = time + 1;
+	if (Teleporter_CheckBlocked(self)) {
+		sprint (self.real_owner, PRINT_HIGH, "Not enough space for teleportation.\n");
+		TF_T_Damage (self, world, world, self.health + 1, 0, 0);
+	}
+};
+
+integer (entity ent) Teleporter_CheckBlocked =
+{
+	local float pos, num;
+	local vector loc;
 
 //CH if spawnflags is >0 do extensive height checks b/c the pad just spawned.
-	if (self.spawnflags > 0) {
-		self.spawnflags = self.spawnflags - 1;
+	if (ent.spawnflags > 0) {
+		ent.spawnflags = ent.spawnflags - 1;
 		num = 0; //16 checks
 	}
 	else
 		num = 15; //1 check
 	while (num < 16)
 	{
-		//sprint (self.real_owner, PRINT_HIGH, "Checking space!\n");
-		loc = self.origin;
-		loc_z = loc_z + (rint(random() * 8 + 1) * 8); //1-8 * 8  x+8 -> x+64
+		//sprint (ent.real_owner, PRINT_HIGH, "Checking space!\n");
+		loc = ent.origin;
 		loc_x = loc_x + ((rint(random() * 3 + 1) * 16) - 32);
 		loc_y = loc_y + ((rint(random() * 3 + 1) * 16) - 32);
+		loc_z = loc_z + (rint(random() * 8 + 1) * 8); //1-8 * 8  x+8 -> x+64
 
 		pos = pointcontents(loc);
 		if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
-		{
-			TF_T_Damage(self, world, world, self.health+1, 0, 0);
-			sprint (self.real_owner, PRINT_HIGH, "Not enough space for teleportation.\n");
-			num = 100; //Get out of loop
-		}
+			return TRUE;
 		num = num + 1;
 	}
-	
+	return FALSE;
 };
+
+
 //================
 void() Teleporter_Die =
 {

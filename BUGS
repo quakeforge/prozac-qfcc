@@ -4,7 +4,6 @@
 - "has_sentry" should be a counter, not a flag (allows a second build if you hack and it gets roasted)
 - there appears to be a window between when a teamkill curse respawn is disabled and when they're killed.  it should be removed.
 - through some combination of respawning, respawn guard, and teleporters (not necesarily needed), it's possible to get stuck on another person
-- if you build your teleporter too close to a wall, and it blows up, you get "tried to sprint to a non-client"
 - hacked forcefields get you teamkills
 - the "speed cheat" checker needs to be ripped out, it's kinda useless
 - sometimes rockets go through armor..

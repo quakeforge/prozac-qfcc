@@ -527,8 +527,6 @@ float(entity obj, entity builder) CheckArea =
 	return TRUE;
 };
 
-
-
 //////////////////////////////////////////////////////////////////////////
 // rehashed version of TF_Build 
 void(float objtobuild) TeamFortress_Build =
@@ -695,7 +693,16 @@ void(float objtobuild) TeamFortress_Build =
 
 		obj.origin = trace_endpos;
         obj.flags = obj.flags | FL_ONGROUND;
-        obj.movetype = MOVETYPE_TOSS;    
+        obj.movetype = MOVETYPE_TOSS;
+
+		if (objtobuild == BUILD_TELEPORTER) {
+			checkmove (obj.origin, '-32 -32 8', '32 32 72', obj.origin - '0 0 128', 0, self);
+			if (trace_fraction == 1 || trace_allsolid) {
+				sprint (self, PRINT_HIGH, "Not enough room for teleportation\n");
+				dremove (obj);
+				return;
+			}
+		}
 
         obj.owner = self;
         obj.classname = "timer";
@@ -710,6 +717,13 @@ void(float objtobuild) TeamFortress_Build =
         setmodel (obj, obj.mdl);
         setsize (obj, mins, maxs);
         setorigin (obj, obj.origin);
+
+		if (objtobuild == BUILD_TELEPORTER)
+			if (Teleporter_CheckBlocked (obj)) {
+				sprint (self, PRINT_HIGH, "Not enough room for teleportation.\n");
+				dremove (obj);
+				return;
+			}
 
         if (objtobuild==BUILD_TESLA)
         {
