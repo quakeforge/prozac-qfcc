@@ -1262,7 +1262,7 @@ void() PlayerDie =
     {
 	    Reset_Grapple (self.hook);
     	Attack_Finished(0.75);
-	    self.hook_out = TRUE;	// PutClientInServer will reset this
+//	    self.hook_out = TRUE;	// PutClientInServer will reset this
     }
         self.items = self.items & ~(IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD);
         self.invisible_finished = 0;    // don't die as eyes

@@ -32,6 +32,7 @@ Morning Star. Depending on latency, performance should be near exact.
 
 // prototypes for WEAPONS.QC functions
 float() crandom;
+void (entity base) Remove_Chain;
 
 //
 // Reset_Grapple - Removes the hook and resets its owner's state.
@@ -40,11 +41,17 @@ float() crandom;
 void (entity rhook) Reset_Grapple =
 {
 	sound (rhook.owner, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NONE);
+
+	if (rhook.goalentity) {
+		Remove_Chain (rhook.goalentity);
+	}
+
 	rhook.owner.on_hook = FALSE;
 	rhook.owner.hook_out = FALSE;
 	rhook.owner.fire_held_down = FALSE;
 	rhook.owner.weaponframe = 0;
 	rhook.owner.gravity = 1; // FIXME: interferes with other gravity stuff
+	rhook.owner.hook = NIL;
 
 	rhook.think = SUB_Remove;
 	rhook.nextthink = time;
@@ -60,28 +67,23 @@ void () Grapple_Track =
 {
 	// drop the hook if owner is dead or has released the button
 	if (!self.owner.on_hook || self.owner.health <= 0) {
-		Reset_Grapple (self);
+		Reset_Grapple (self.owner.hook);
 		return;
 	}
 
 	if (self.owner.health <= 0 || self.owner.has_disconnected) { //CH does a real check if dead
-		self.think = SUB_Remove;
-		self.nextthink = time;
-		if (self.goalentity) {
-			self.goalentity.think = SUB_Remove;
-			self.goalentity.nextthink = time;
-			if (self.goalentity.goalentity) {
-				self.goalentity.goalentity.think = SUB_Remove;
-				self.goalentity.goalentity.nextthink = time;
-			}
-		}
-		Reset_Grapple (self);
+		Reset_Grapple (self.owner.hook);
+		return;
+	}
+
+	if (!self.enemy.solid) {
+		Reset_Grapple (self.owner.hook);
 		return;
 	}
 
 //WK
 	if (self.enemy.classname == "player" && Teammate(self.enemy.team_no, self.owner.team_no)) {
-		Reset_Grapple (self);
+		Reset_Grapple (self.owner.hook);
 		return;
 	}
 
@@ -89,7 +91,7 @@ void () Grapple_Track =
 	if (self.enemy.classname == "player") {
 		T_Damage (self.enemy, self, self.owner, 2);
 		if (self.enemy.health <= 0) {
-			Reset_Grapple (self);
+			Reset_Grapple (self.owner.hook);
 			return;
 		}
 	}
@@ -108,19 +110,19 @@ void () Grapple_Track =
 //
 entity () MakeLink =
 {
-        newmis = spawn ();
+	newmis = spawn ();
 
-        newmis.movetype = MOVETYPE_FLYMISSILE;
-        newmis.solid = SOLID_NOT;
-        newmis.owner = self;// SELF is the hook!
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_NOT;
+	newmis.owner = self;// SELF is the hook!
 
-        newmis.avelocity = '200 200 200';
+	newmis.avelocity = '200 200 200';
 
-        setmodel (newmis, "progs/s_spike.mdl");
-        setorigin (newmis, self.origin);
-        setsize (newmis, '0 0 0' , '0 0 0');
+	setmodel (newmis, "progs/s_spike.mdl");
+	setorigin (newmis, self.origin);
+	setsize (newmis, '0 0 0' , '0 0 0');
 
-        return  newmis;
+	return  newmis;
 };
 
 //
@@ -129,22 +131,20 @@ entity () MakeLink =
 //                to remove the chain. Only one function required to
 //                remove all links.
 //
-void () Remove_Chain =
+void (entity base) Remove_Chain =
 {
-	self.think = SUB_Remove;
-	self.nextthink = time;
-
-	if (self.goalentity)
-	{
-        self.goalentity.think = SUB_Remove;
-        self.goalentity.nextthink = time;
-
-        if (self.goalentity.goalentity)
-        {
-                self.goalentity.goalentity.think = SUB_Remove;
-                self.goalentity.goalentity.nextthink = time;
-        }
+	base.think = SUB_Remove;
+	base.nextthink = time;
+	if (base.goalentity) {
+		base.goalentity.think = SUB_Remove;
+		base.goalentity.nextthink = time;
+		if (base.goalentity.goalentity) {
+			base.goalentity.goalentity.think = SUB_Remove;
+			base.goalentity.goalentity.nextthink = time;
+		}
 	}
+
+	base.owner.hook.goalentity = NIL;
 };
 
 //
@@ -158,32 +158,23 @@ void () Update_Chain =
 
 	if (!self.owner.hook_out)
 	{
-		self.think = Remove_Chain;
-		self.nextthink = time;
+//		Remove_Chain (self);
 		return;
 	}
 
-	if (vlen(self.origin - self.owner.origin) >= 3000)
-	{
-		Reset_Grapple (self);
-		return;
-	}
 	//CH Using a show grapple loc thing,  it was updating while dead.
 	if (self.owner.health <= 0 || self.owner.has_disconnected)
 	{
-		self.think = SUB_Remove;
-		self.nextthink = time;
-		if (self.goalentity)
-		{
-			self.goalentity.think = SUB_Remove;
-			self.goalentity.nextthink = time;
-			if (self.goalentity.goalentity)
-			{
-				self.goalentity.goalentity.think = SUB_Remove;
-				self.goalentity.goalentity.nextthink = time;
-			}
-		}
-		Reset_Grapple (self);
+		Reset_Grapple (self.owner.hook);
+		return;
+	}
+
+	// reset if it gets insane
+	if (vlen (self.origin - self.owner.origin) >= 3000) {
+		Reset_Grapple (self.owner.hook);
+		return;
+	} else if (!self.owner.on_hook && vlen (self.owner.hook.velocity) < 10) {
+		Reset_Grapple (self.owner.hook);
 		return;
 	}
 
@@ -194,6 +185,9 @@ void () Update_Chain =
 	setorigin (self, self.owner.origin + temp * 0.25);
 	setorigin (self.goalentity, self.owner.origin + temp * 0.5);
 	setorigin (self.goalentity.goalentity, self.owner.origin + temp * 0.75);
+	self.velocity = '0 0 0';
+	self.goalentity.velocity = '0 0 0';
+	self.goalentity.goalentity.velocity = '0 0 0';
 
 	self.nextthink = time + 0.1;
 };
@@ -203,13 +197,16 @@ void () Update_Chain =
 //
 void () Build_Chain =
 {
-        self.goalentity = MakeLink();
-        self.goalentity.think = Update_Chain;
-        self.goalentity.nextthink = time + 0.1;
-        self.goalentity.owner = self.owner;
+	self.goalentity = MakeLink();
+	self.goalentity.think = Update_Chain;
+	self.goalentity.nextthink = time + 0.1;
+	self.goalentity.owner = self.owner;
 
-        self.goalentity.goalentity = MakeLink();
-        self.goalentity.goalentity.goalentity = MakeLink();
+	self.goalentity.goalentity = MakeLink();
+	self.goalentity.goalentity.owner = self.owner;
+
+	self.goalentity.goalentity.goalentity = MakeLink();
+	self.goalentity.goalentity.goalentity.owner = self.owner;
 };
 
 //
@@ -219,48 +216,48 @@ void () Build_Chain =
 //
 float () Check_Overhead =
 {
-        local   vector  src;
-        local   vector  end;
+	local   vector  src;
+	local   vector  end;
 
-        makevectors (self.owner.angles);
+	makevectors (self.owner.angles);
 
-        // The following comparisons could be optimized by doing away with
-        // SRC and END, and plugging the values directly into the traceline
-        // function calls. Using SRC and END made debugging easier. You
-        // decide if it's worth it.
+	// The following comparisons could be optimized by doing away with
+	// SRC and END, and plugging the values directly into the traceline
+	// function calls. Using SRC and END made debugging easier. You
+	// decide if it's worth it.
 
-        // quick check right above head
-        src = self.owner.origin - '0 0 24';
-        end = self.owner.origin - '0 0 24';
-        traceline (src, end, FALSE, self.owner);
-        if (trace_fraction != 1.0)
-                return FALSE;
+	// quick check right above head
+	src = self.owner.origin - '0 0 24';
+	end = self.owner.origin - '0 0 24';
+	traceline (src, end, FALSE, self.owner);
+	if (trace_fraction != 1.0)
+		return FALSE;
 
-        src = self.owner.origin - '0 0 24' - v_forward * 16;
-        end = self.owner.origin - '0 0 24' - v_forward * 16 + '0 0 58';
-        traceline (src, end, FALSE, self.owner);
-        if (trace_fraction != 1.0)
-                return FALSE;
+	src = self.owner.origin - '0 0 24' - v_forward * 16;
+	end = self.owner.origin - '0 0 24' - v_forward * 16 + '0 0 58';
+	traceline (src, end, FALSE, self.owner);
+	if (trace_fraction != 1.0)
+		return FALSE;
 
-        src = self.owner.origin - '0 0 24' + v_forward * 16;
-        end = self.owner.origin - '0 0 24' + v_forward * 16 + '0 0 58';
-        traceline (src, end, FALSE, self.owner);
-        if (trace_fraction != 1.0)
-                return FALSE;
+	src = self.owner.origin - '0 0 24' + v_forward * 16;
+	end = self.owner.origin - '0 0 24' + v_forward * 16 + '0 0 58';
+	traceline (src, end, FALSE, self.owner);
+	if (trace_fraction != 1.0)
+		return FALSE;
 
-        src = self.owner.origin - '0 0 24' - v_right * 16;
-        end = self.owner.origin - '0 0 24' - v_right * 16 + '0 0 58';
-        traceline (src, end, FALSE, self.owner);
-        if (trace_fraction != 1.0)
-                return FALSE;
+	src = self.owner.origin - '0 0 24' - v_right * 16;
+	end = self.owner.origin - '0 0 24' - v_right * 16 + '0 0 58';
+	traceline (src, end, FALSE, self.owner);
+	if (trace_fraction != 1.0)
+		return FALSE;
 
-        src = self.owner.origin - '0 0 24' + v_right * 16;
-        end = self.owner.origin - '0 0 24' + v_right * 16 + '0 0 58';
-        traceline (src, end, FALSE, self.owner);
-        if (trace_fraction != 1.0)
-                return FALSE;
+	src = self.owner.origin - '0 0 24' + v_right * 16;
+	end = self.owner.origin - '0 0 24' + v_right * 16 + '0 0 58';
+	traceline (src, end, FALSE, self.owner);
+	if (trace_fraction != 1.0)
+		return FALSE;
 
-        return TRUE;
+	return TRUE;
 };
 
 
@@ -278,7 +275,12 @@ void () Anchor_Grapple =
 	// if you create new types of projectiles, make sure you use one of the
 	// classnames below or write code to exclude your new classname so
 	// grapples will not stick to them.
-	if (other.classname == "missile" || other.classname == "grenade" || other.classname == "spike" || other.classname == "hook" || other.classname == "pipebomb") //CH maybe fix crash?
+	if (other.classname == "missile"
+		|| other.classname == "grenade"
+		|| other.classname == "spike"
+		|| other.classname == "hook"
+		|| other.classname == "pipebomb"
+		|| other.classname == "force_field") //CH maybe fix crash?
 			return;
 
 	//if (isBuilding(other)) //WK don't hook onto buildings?
@@ -349,37 +351,37 @@ void () Anchor_Grapple =
 //
 void () Throw_Grapple =
 {
-        if (self.hook_out)// reject subsequent calls from player.qc
-                return;
+	if (self.hook_out)// reject subsequent calls from player.qc
+		return;
 
 		KickPlayer(-1, self);
 
-        // chain out sound (loops)
+	// chain out sound (loops)
 
-        newmis = spawn();
-        newmis.movetype = MOVETYPE_FLYMISSILE;
-        newmis.solid = SOLID_BBOX;
-        newmis.owner = self;// newmis belongs to me
-        self.hook = newmis;// This is my newmis
-        newmis.classname = "hook";
+	newmis = spawn();
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_BBOX;
+	newmis.owner = self;// newmis belongs to me
+	self.hook = newmis;// This is my newmis
+	newmis.classname = "hook";
 
-        makevectors (self.v_angle);
-        newmis.velocity = v_forward * 800;
-//      newmis.avelocity = '0 0 -500';
+	makevectors (self.v_angle);
+	newmis.velocity = v_forward * 800;
+//	newmis.avelocity = '0 0 -500';
 
-		// set the facing of the grapple
-		newmis.angles = vectoangles(newmis.velocity);
+	// set the facing of the grapple
+	newmis.angles = vectoangles(newmis.velocity);
 
-        newmis.touch = Anchor_Grapple;
-        newmis.think = Build_Chain;
-        newmis.nextthink = time + 0.1;// don't jam newmis and links into same packet
+	newmis.touch = Anchor_Grapple;
+	newmis.think = Build_Chain;
+	newmis.nextthink = time + 0.1;// don't jam newmis and links into same packet
 
-        setmodel (newmis,"progs/hook.mdl");
-        setorigin (newmis, self.origin + v_forward * 16 + '0 0 16');
-        setsize(newmis, '0 0 0' , '0 0 0 ');
+	setmodel (newmis,"progs/hook.mdl");
+	setorigin (newmis, self.origin + v_forward * 16 + '0 0 16');
+	setsize(newmis, '0 0 0' , '0 0 0 ');
 
-        self.hook_out = TRUE;
-        self.fire_held_down = TRUE;
+	self.hook_out = TRUE;
+	self.fire_held_down = TRUE;
 };
 
 //
@@ -387,41 +389,40 @@ void () Throw_Grapple =
 //
 void () Service_Grapple =
 {
-        local   vector  hook_dir;
+	local   vector  hook_dir;
 
-		self.gravity = 0;
+	self.gravity = 0;
 
-        // drop the hook if player lets go of button
-        if (!self.button0)
-        {
-                self.fire_held_down = FALSE;
-                
-                if (self.current_weapon == WEAP_HOOK)
-	                Reset_Grapple (self.hook);
-        }
-        // If hooked to a player, track them directly!
-        if (self.hook.enemy.classname == "player")
-                hook_dir = (self.hook.enemy.origin - self.origin);
-        // else, track to hook
-        else
-                hook_dir = (self.hook.origin - self.origin);
+	// drop the hook if player lets go of button
+	if (!self.button0)
+	{
+		self.fire_held_down = FALSE;
 
-		// set the facing of the grapple
-//		self.hook.angles = vectoangles(self.hook.velocity);
+		if (self.current_weapon == WEAP_HOOK) {
+			Reset_Grapple (self.hook);
+			return;
+		}
+	}
+	// If hooked to a player, track them directly!
+	if (self.hook.enemy.classname == "player")
+		hook_dir = (self.hook.enemy.origin - self.origin);
+	else // else, track to hook
+		hook_dir = (self.hook.origin - self.origin);
 
-        self.velocity = normalize(hook_dir) * self.maxspeed * 1.5;
+	// set the facing of the grapple
+//	self.hook.angles = vectoangles(self.hook.velocity);
 
-        if ( vlen(hook_dir) <= 100 && self.lefty)	// cancel chain sound
-        {
-                // If there is a chain, ditch it now. We're
-                // close enough. Having extra entities lying around
-                // is never a good idea.
-                if (self.hook.goalentity)
-                { 
-                        self.hook.goalentity.think = Remove_Chain;
-                        self.hook.goalentity.nextthink = time;
-                }
+	self.velocity = normalize(hook_dir) * self.maxspeed * 1.5;
 
-        		self.lefty = FALSE;	// we've reset the sound channel.
-        }
+	if (vlen(hook_dir) <= 100 && self.lefty)	// cancel chain sound
+	{
+		// If there is a chain, ditch it now. We're
+		// close enough. Having extra entities lying around
+		// is never a good idea.
+		if (self.hook.goalentity) {
+			Remove_Chain (self.hook.goalentity);
+		}
+
+		self.lefty = FALSE;	// we've reset the sound channel.
+	}
 };

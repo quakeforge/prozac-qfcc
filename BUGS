@@ -26,3 +26,4 @@
 - multicast isn't called as often as it should be
 - nail grenades need a cap on their tempentity creation, in the range of 50 - 100
 - hover boots fuel usage should be affected by how fast you're moving, and you should go up faster when you're not moving.  the "empty" penalty should be smaller.
+- taking over a tesla should set the colormap (?) to the new owner

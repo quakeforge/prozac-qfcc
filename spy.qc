@@ -343,7 +343,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 	    {
 		    Reset_Grapple (self.hook);
 	    	Attack_Finished(0.75);
-		    self.hook_out = TRUE;	// PutClientInServer will reset this
+//		    self.hook_out = TRUE;	// PutClientInServer will reset this
 	    }
 
 		if (self.undercover_team == 0 && self.undercover_skin == 0)

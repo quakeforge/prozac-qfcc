@@ -33,4 +33,7 @@ o  Make 50 frag (upgrade from frags?  maybe not) teslas change color or do somet
 o  Medikits should trigger buttons
 o  Fix Sentry movement on platforms.  (Make the top the only real entity, and the bottom one purely visual and adjusted to match it's position every frame)
 o  MegaTF-style caltrops.  (requested by Misty-chan)
-
+o  specs should have access to admin commands, ceasefire, and query
+o  chance for detpack disarm/krak to set it off
+o  random damage from detpacks
+o  random timer too?
