@@ -147,7 +147,6 @@ void() TeamFortress_DropItems;
 
 //- OfN -
 void(entity player) ActivateHolo;
-void(entity who) MakeMeDebug;
 void(vector org, vector dir) grunty_spike;
 void () UpdateInfos;
 void() launch_horn;
@@ -3550,14 +3549,9 @@ float(float inp) BuildingImpulses =
 	if (inp == TF_TEAM_ENUM) return TRUE;
 	if (inp == TF_ID) return TRUE;
 	if (inp == TF_SELL) return TRUE;
-	if (inp >= TF_ADMIN_KICK_CYCLE && inp <= TF_ADMIN_CEASEFIRE) return TRUE;
 	if (inp == I_CHEAT_ONE) return TRUE;
 	if (inp == I_CHEAT_TWO) return TRUE;
 	if (inp == I_CHEAT_THREE) return TRUE;
-    if (inp == IMPULSE_DEBUG) return TRUE; //- OfN -
-    if (inp == IMPULSE_UPDATEINFO) return TRUE; //- OfN -
-    if (inp == IMPULSE_CHECKADMIN) return TRUE; //- OfN -
-    if (inp == IMPULSE_STUFFCMD) return TRUE; //- OfN - 
 	return FALSE;
 };
 
@@ -3947,35 +3941,6 @@ void() DeadImpulses =
 		self.StatusBarSize = 0;
 	} else if (self.impulse >= TF_STATUSBAR_RES_START && self.impulse <= TF_STATUSBAR_RES_END) {
 		StatusRes(self.impulse - 71);
-	}
-	//CH Admin controls
-    else if (self.impulse == IMPULSE_DEBUG && allow_debug == 1) {
-		MakeMeDebug(self);
-	} else if (self.impulse == IMPULSE_STUFFCMD) {
-		Admin_Cmd();
-	} else if (self.impulse == IMPULSE_UPDATEINFO) {
-        if (Is_Admin(self)) {
-            RPrint("Admin ");
-            RPrint(self.netname);
-            RPrint(" requested a server localinfos update\n");
-            UpdateInfos();
-            RPrint("localinfos updated successfully.\n");
-			if (debug_target != self)
-				sprint(self, PRINT_HIGH, "localinfos updated succesfully.\n");
-		} else {
-            RPrint(self.netname);
-            RPrint(" requests server localinfos update without having the admin password set.\n");
-       }
-	} else if (self.impulse == IMPULSE_CHECKADMIN) {
-        Check_Admin_Password(self);
-	} else if (self.impulse == TF_ADMIN_KICK_CYCLE) {
-		Admin_Kick_Cycle();
-	} else if (self.impulse == TF_ADMIN_KICK_PERSON) {
-		Admin_Kick_Person();
-	} else if (self.impulse == TF_ADMIN_BAN_PERSON) {
-		Admin_Ban_Person();
-	} else if (self.impulse == TF_ADMIN_CEASEFIRE) {
-		Admin_Call_Ceasefire();
 	}
 	// TeamFortress Alias checking
 	else if (self.impulse == TF_ALIAS_CHECK) {

@@ -2604,9 +2604,6 @@ void() PlayerPreThink =
 
 		CenterPrint(self,"Ceasefire Applies");
 	
-    	if (!Good_Impulse(self.impulse)) //See admin.qc
-	    	self.impulse = 0;
-
   		self.button0 = 0;
     	self.button1 = 0;
 	    self.button2 = 0;
@@ -3023,9 +3020,6 @@ void() PlayerPostThink =
 {
 	if (self.view_ofs == '0 0 0')
 		return;		// intermission or finale
-	if (infokey(NIL,"ceasefire")=="on") //Cyto
-		if (!Good_Impulse(self.impulse)) //See admin.qc
-			self.impulse = 0;
 	if (self.deadflag)
 	{
 		DeadImpulses();	 // check for dead-only commands

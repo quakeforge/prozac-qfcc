@@ -449,11 +449,6 @@
 //#define IMPULSE_INTERFACE	192 // now its a profession
 #define IMPULSE_HOLO	192 //- OfN
 
-#define IMPULSE_CHECKADMIN  193
-#define IMPULSE_UPDATEINFO  194
-#define IMPULSE_DEBUG       195
-#define IMPULSE_STUFFCMD    219
-
 //#define SWITCH_CAMERA		199
 
 // Medic!! 
@@ -482,12 +477,6 @@
 #define TF_LAY			201 //MegaTFer killer
 
 #define TF_DROPITEMS		202 //CH
-
-//Admin controls
-#define TF_ADMIN_KICK_CYCLE	  208 //'getplayer' -- Cycles through people
-#define TF_ADMIN_KICK_PERSON  209 //'kick' -- kicks current one
-#define TF_ADMIN_BAN_PERSON	  210 //'ban' -- bans current one
-#define TF_ADMIN_CEASEFIRE	  211 //ceasefire
 
 #define TF_BITSTART	250
 #define TF_BIT0		251

@@ -312,11 +312,6 @@ void () Alias_SetBatch =
 		//CH allow dropitems
 		//TeamFortress_Alias("dropitems", TF_DROPITEMS, 0);
 	} else if (num == 15) {
-        //TeamFortress_Alias("get", TF_ADMIN_KICK_CYCLE, 0);
-		//TeamFortress_Alias("kick", TF_ADMIN_KICK_PERSON, 0);
-		//TeamFortress_Alias("ban", TF_ADMIN_BAN_PERSON, 0);
-		//TeamFortress_Alias("ceasefire", TF_ADMIN_CEASEFIRE, 0);
-        //TeamFortress_Alias("cmnd", IMPULSE_STUFFCMD, 0);
 	} else if (num == 16) {
 #ifdef STATUSBAR
 		TeamFortress_Alias("sbar_on", TF_STATUSBAR_ON, 0);

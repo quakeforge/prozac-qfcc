@@ -74,42 +74,6 @@ void (string msg) RPrint =
     sprint(debug_target,PRINT_HIGH,msg);
 };
 
-float(entity person) Is_Admin;
-void(entity person) Check_Admin_Password;
-
-//====================================================================//
-// called when an impulse 195
-void(entity who) MakeMeDebug =
-{
-    if (debug_target==who)
-    {
-        sprint(debug_target,PRINT_HIGH,"You are already the remote debugger!\n");    
-        return;
-    }
-    
-    if (!Is_Admin(who))
-    {
-        RPrint(who.netname);
-        RPrint(" requests remote debugging without having the admin password set.\n");
-        return;
-    }
-
-    RPrint("(OfteN debug): ");
-    RPrint(who.netname);
-    RPrint(" requests remote debugging. Debug (dprints) messages will be sent to him/her too.\n");
-
-    if (debug_target)
-    {
-        sprint(debug_target,PRINT_HIGH,"(OfteN debug): You are not the remote debugger anymore.\n");
-        sprint(debug_target,PRINT_HIGH," New remote debugger is: '");
-        sprint(debug_target,who.netname);
-        sprint(debug_target,PRINT_HIGH,"'\n");
-    }
-    
-    debug_target=who;
-    sprint(debug_target,PRINT_HIGH,"(OfteN debug): Server debug messages (dprints) will be sent to you...\n");
-};
-
 void (float oneline) printtrace =
 {
 	local string sep = oneline ? "  " : "\n";
