@@ -661,7 +661,6 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 	self.heat = self.heat + 1;
 	if (self.heat >= 7)
 	{
-		sound (self, CHAN_WEAPON, "weapons/asscan4.wav", 1, ATTN_NORM);
 		self.heat = 0;
 		player_assaultcannon1();
 	}
