@@ -1735,11 +1735,11 @@ void(entity p) TeamFortress_SetSkin =
 	else
 		p.skin = p.playerclass;
 
+	st = "base"; // just in case
+
 #ifdef QUAKE_WORLD
 	if (p.skin != #PC_UNDEFINED)
 	{
-		stuffcmd(p, "skin ");
-
 	//WK Figure out what Mr.Custom Should look like
 		if (p.playerclass == #PC_CUSTOM && p.undercover_skin == 0)
 		{
@@ -1749,95 +1749,95 @@ void(entity p) TeamFortress_SetSkin =
 		if ( p.team_no == 4)
 		{
 			if ( p.skin == #PC_SCOUT )
-				stuffcmd(p, #TEAM4_SCOUT_SKIN);
+				st = #TEAM4_SCOUT_SKIN;
 			else if ( p.skin == #PC_SNIPER )
-				stuffcmd(p, #TEAM4_SNIPER_SKIN);
+				st = #TEAM4_SNIPER_SKIN;
 			else if ( p.skin == #PC_SOLDIER )
-				stuffcmd(p, #TEAM4_SOLDIER_SKIN);
+				st = #TEAM4_SOLDIER_SKIN;
 			else if ( p.skin == #PC_DEMOMAN )
-				stuffcmd(p, #TEAM4_DEMOMAN_SKIN);
+				st = #TEAM4_DEMOMAN_SKIN;
 			else if ( p.skin == #PC_MEDIC )
-				stuffcmd(p, #TEAM4_MEDIC_SKIN);
+				st = #TEAM4_MEDIC_SKIN;
 			else if ( p.skin == #PC_HVYWEAP )
-				stuffcmd(p, #TEAM4_HVYWEAP_SKIN);
+				st = #TEAM4_HVYWEAP_SKIN;
 			else if ( p.skin == #PC_PYRO )
-				stuffcmd(p, #TEAM4_PYRO_SKIN);
+				st = #TEAM4_PYRO_SKIN;
 			else if ( p.skin == #PC_SPY )
-				stuffcmd(p, #TEAM4_SPY_SKIN);
+				st = #TEAM4_SPY_SKIN;
 			else if ( p.skin == #PC_ENGINEER )
-				stuffcmd(p, #TEAM4_ENGINEER_SKIN);
+				st = #TEAM4_ENGINEER_SKIN;
 		}
 		else if ( p.team_no == 3)
 		{
 			if ( p.skin == #PC_SCOUT )
-				stuffcmd(p, #TEAM3_SCOUT_SKIN);
+				st = #TEAM3_SCOUT_SKIN;
 			else if ( p.skin == #PC_SNIPER )
-				stuffcmd(p, #TEAM3_SNIPER_SKIN);
+				st = #TEAM3_SNIPER_SKIN;
 			else if ( p.skin == #PC_SOLDIER )
-				stuffcmd(p, #TEAM3_SOLDIER_SKIN);
+				st = #TEAM3_SOLDIER_SKIN;
 			else if ( p.skin == #PC_DEMOMAN )
-				stuffcmd(p, #TEAM3_DEMOMAN_SKIN);
+				st = #TEAM3_DEMOMAN_SKIN;
 			else if ( p.skin == #PC_MEDIC )
-				stuffcmd(p, #TEAM3_MEDIC_SKIN);
+				st = #TEAM3_MEDIC_SKIN;
 			else if ( p.skin == #PC_HVYWEAP )
-				stuffcmd(p, #TEAM3_HVYWEAP_SKIN);
+				st = #TEAM3_HVYWEAP_SKIN;
 			else if ( p.skin == #PC_PYRO )
-				stuffcmd(p, #TEAM3_PYRO_SKIN);
+				st = #TEAM3_PYRO_SKIN;
 			else if ( p.skin == #PC_SPY )
-				stuffcmd(p, #TEAM3_SPY_SKIN);
+				st = #TEAM3_SPY_SKIN;
 			else if ( p.skin == #PC_ENGINEER )
-				stuffcmd(p, #TEAM3_ENGINEER_SKIN);
+				st = #TEAM3_ENGINEER_SKIN;
 		}
 		else if ( p.team_no == 2)
 		{
 			if ( p.skin == #PC_SCOUT )
-				stuffcmd(p, #TEAM2_SCOUT_SKIN);
+				st = #TEAM2_SCOUT_SKIN;
 			else if ( p.skin == #PC_SNIPER )
-				stuffcmd(p, #TEAM2_SNIPER_SKIN);
+				st = #TEAM2_SNIPER_SKIN;
 			else if ( p.skin == #PC_SOLDIER )
-				stuffcmd(p, #TEAM2_SOLDIER_SKIN);
+				st = #TEAM2_SOLDIER_SKIN;
 			else if ( p.skin == #PC_DEMOMAN )
-				stuffcmd(p, #TEAM2_DEMOMAN_SKIN);
+				st = #TEAM2_DEMOMAN_SKIN;
 			else if ( p.skin == #PC_MEDIC )
-				stuffcmd(p, #TEAM2_MEDIC_SKIN);
+				st = #TEAM2_MEDIC_SKIN;
 			else if ( p.skin == #PC_HVYWEAP )
-				stuffcmd(p, #TEAM2_HVYWEAP_SKIN);
+				st = #TEAM2_HVYWEAP_SKIN;
 			else if ( p.skin == #PC_PYRO )
-				stuffcmd(p, #TEAM2_PYRO_SKIN);
+				st = #TEAM2_PYRO_SKIN;
 			else if ( p.skin == #PC_SPY )
-				stuffcmd(p, #TEAM2_SPY_SKIN);
+				st = #TEAM2_SPY_SKIN;
 			else if ( p.skin == #PC_ENGINEER )
-				stuffcmd(p, #TEAM2_ENGINEER_SKIN);
+				st = #TEAM2_ENGINEER_SKIN;
 		}
 		else // if ( p.team_no == 1)
 		{
 			if ( p.skin == #PC_SCOUT )
-				stuffcmd(p, #TEAM1_SCOUT_SKIN);
+				st = #TEAM1_SCOUT_SKIN;
 			else if ( p.skin == #PC_SNIPER )
-				stuffcmd(p, #TEAM1_SNIPER_SKIN);
+				st = #TEAM1_SNIPER_SKIN;
 			else if ( p.skin == #PC_SOLDIER )
-				stuffcmd(p, #TEAM1_SOLDIER_SKIN);
+				st = #TEAM1_SOLDIER_SKIN;
 			else if ( p.skin == #PC_DEMOMAN )
-				stuffcmd(p, #TEAM1_DEMOMAN_SKIN);
+				st = #TEAM1_DEMOMAN_SKIN;
 			else if ( p.skin == #PC_MEDIC )
-				stuffcmd(p, #TEAM1_MEDIC_SKIN);
+				st = #TEAM1_MEDIC_SKIN;
 			else if ( p.skin == #PC_HVYWEAP )
-				stuffcmd(p, #TEAM1_HVYWEAP_SKIN);
+				st = #TEAM1_HVYWEAP_SKIN;
 			else if ( p.skin == #PC_PYRO )
-				stuffcmd(p, #TEAM1_PYRO_SKIN);
+				st = #TEAM1_PYRO_SKIN;
 			else if ( p.skin == #PC_SPY )
-				stuffcmd(p, #TEAM1_SPY_SKIN);
+				st = #TEAM1_SPY_SKIN;
 			else if ( p.skin == #PC_ENGINEER )
-				stuffcmd(p, #TEAM1_ENGINEER_SKIN);
+				st = #TEAM1_ENGINEER_SKIN;
 		}
 
 		if ( p.skin == #PC_CIVILIAN )
-			stuffcmd(p, "base\n"); // Need a civilian skin
+			st = "base\n"; // Need a civilian skin
 	}
-	else
-	{
-		stuffcmd(p, "skin base\n"); //WK Need a custom skin, or fake it
-	}
+	stuffcmd(p, "skin ");
+	stuffcmd(p, st);
+	stuffcmd(p, "\n");
+	setinfokey(p, "skin", st);
 #endif
 };
 

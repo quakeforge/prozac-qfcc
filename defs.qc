@@ -841,6 +841,7 @@ float(string s) stof				= #81;		// convert string to float
 void(vector where, float set) multicast 	= #82;  // sends the temp message to a set
 												// of clients, possibly in PVS or PHS
 #endif
+void (entity ent, string key, string value) setinfokey = #102;
 
 //============================================================================
 

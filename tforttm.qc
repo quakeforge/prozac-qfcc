@@ -207,10 +207,11 @@ void(entity p) SetTeamName =
 {
 	local string st;
 
-	stuffcmd(p, "team ");
 	st = GetTeamName(p.team_no);
+	stuffcmd(p, "team ");
 	stuffcmd(p, st);
 	stuffcmd(p, "\n");
+	setinfokey(p, "team", st);
 };
 #endif
 
@@ -295,7 +296,11 @@ float(float tno) TeamFortress_TeamSet =
 		// color command works.
 		makeImmune(self,time+10);
 		//self.immune_to_check = time + 10;
-
+// FOO
+		tc = TeamFortress_TeamGetColor(tno) - 1;
+		st = ftos(tc);
+		setinfokey(self, "color", st);
+/*
 		// Set the player's color
 		stuffcmd(self, "color ");
 		tc = TeamFortress_TeamGetColor(tno) - 1;
@@ -306,7 +311,7 @@ float(float tno) TeamFortress_TeamSet =
 
 		stuffcmd(self, st);
 		stuffcmd(self, "\n");
-
+*/
 		self.team_no = tno;
 		self.lives = TeamFortress_TeamGetLives(tno);
 
@@ -334,6 +339,12 @@ float(float tno) TeamFortress_TeamSet =
 	bprint(#PRINT_HIGH, st);
 	bprint(#PRINT_HIGH, ".\n");
 
+//FOO
+	tc = TeamFortress_TeamGetColor(tno) - 1;
+	st = ftos(tc);
+	setinfokey(self, "topcolor", st);
+	setinfokey(self, "bottomcolor", st);
+
 	// Set the player's color
 	stuffcmd(self, "color ");
 	tc = TeamFortress_TeamGetColor(tno) - 1;
@@ -348,7 +359,7 @@ float(float tno) TeamFortress_TeamSet =
 	self.team_no = tno;
 	// Prevent the cheatchecking mechanism from nabbing them b4 the 
 	// color command works.
-	makeImmune(self,time+10);
+//	makeImmune(self,time+10);
 	//self.immune_to_check = time + 10;
 	self.lives = TeamFortress_TeamGetLives(tno);
 
@@ -447,10 +458,12 @@ void() TeamFortress_CheckTeamCheats =
 
 				stuffcmd(self, st);
 				stuffcmd(self, "\n");
+				setinfokey(self, "topcolor", st);
+				setinfokey(self, "bottomcolor", st);
 
-				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-				sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
-				stuffcmd(self, "disconnect\n");
+//				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
+//				sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
+//				stuffcmd(self, "disconnect\n");
 				return;
 			}
 		}
@@ -466,10 +479,12 @@ void() TeamFortress_CheckTeamCheats =
 
 			stuffcmd(self, st);
 			stuffcmd(self, "\n");
+			setinfokey(self, "topcolor", st);
+			setinfokey(self, "bottomcolor", st);
 
-			bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-			sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
-			stuffcmd(self, "disconnect\n");
+//			bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
+//			sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
+//			stuffcmd(self, "disconnect\n");
 			return;
 		}
 	#else
@@ -496,10 +511,12 @@ void() TeamFortress_CheckTeamCheats =
 
 				stuffcmd(self, st);
 				stuffcmd(self, "\n");
+				setinfokey(self, "topcolor", st);
+				setinfokey(self, "bottomcolor", st);
 
-				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-				sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
-				stuffcmd(self, "disconnect\n");
+//				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
+//				sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
+//				stuffcmd(self, "disconnect\n");
 				return;
 			}
 		}
@@ -520,10 +537,12 @@ void() TeamFortress_CheckTeamCheats =
 
 			stuffcmd(self, st);
 			stuffcmd(self, "\n");
+			setinfokey(self, "topcolor", st);
+			setinfokey(self, "bottomcolor", st);
 
-			bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-			sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
-			stuffcmd(self, "disconnect\n");
+//			bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
+//			sprint(self, #PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
+//			stuffcmd(self, "disconnect\n");
 			return;
 		}
 
@@ -542,9 +561,9 @@ void() TeamFortress_CheckTeamCheats =
             {
    				TeamFortress_SetSkin(self);
 
-				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing skin.\n");
-				sprint(self, #PRINT_HIGH, "You have been kicked for changing your skin. Don't do it.\n");
-				stuffcmd(self, "disconnect\n");                
+//				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing skin.\n");
+//				sprint(self, #PRINT_HIGH, "You have been kicked for changing your skin. Don't do it.\n");
+//				stuffcmd(self, "disconnect\n");                
             }
 
 			if ((self.cutf_items & #CUTF_SPY_KIT) && self.undercover_skin != 0)
@@ -597,9 +616,9 @@ void() TeamFortress_CheckTeamCheats =
 
 				TeamFortress_SetSkin(self);
 
-				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing skin.\n");
-				sprint(self, #PRINT_HIGH, "You have been kicked for changing your skin. Don't do it.\n");
-				stuffcmd(self, "disconnect\n");
+//				bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing skin.\n");
+//				sprint(self, #PRINT_HIGH, "You have been kicked for changing your skin. Don't do it.\n");
+//				stuffcmd(self, "disconnect\n");
 			}
 
 		}
@@ -625,6 +644,44 @@ void() TeamFortress_CheckTeamCheats =
 		}
 		}
 	#endif
+	}
+};
+
+void(string key, string value) UserInfoCallback =
+{
+	local string oldval;
+	local string st;
+	oldval = infokey(self, key);
+
+	if(value == oldval) // generic reject
+	{
+		bprint(#PRINT_MEDIUM, "[oldval (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		return 1; // rejected!
+	}
+
+	if (key == "topcolor" || key == "bottomcolor")
+	{
+		// no changing colors allowed
+		st = infokey(self, "bottomcolor"); // make sure top is same as bottom
+		setinfokey(self, "topcolor", st);
+		stuffcmd(self, "color ");
+		stuffcmd(self, st);
+		stuffcmd(self, "\n");
+		bprint(#PRINT_MEDIUM, "[color (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		return 1;
+	}
+	else if (key == "skin")
+	{
+		stuffcmd(self, "skin ");
+		stuffcmd(self, oldval);
+		stuffcmd(self, "\n");
+		bprint(#PRINT_MEDIUM, "[skin (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		return 1;
+	}
+	else
+	{
+		bprint(#PRINT_MEDIUM, "[default (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		return 0; // accept everything else
 	}
 };
 
