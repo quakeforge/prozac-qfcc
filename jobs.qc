@@ -816,7 +816,7 @@ void() GuerillaThink = //Every second see if we have enemy nearby
            sprint(self.owner,PRINT_HIGH,"you currently have no mines active\n");
         self.has_tesla = 1; //- display no message on GuerillaExplode
 		GuerillaExplode();
-        finished = 1;
+		return;
 	}
 	head = findradius(self.origin,GUERILLA_RADIUS);//OfN it was 150
 	while (head != world && !finished) {
@@ -830,12 +830,12 @@ void() GuerillaThink = //Every second see if we have enemy nearby
                    sprint(self.owner,PRINT_HIGH,"'s face!\n");
                    self.has_tesla = 1; //- display no message on GuerillaExplode
                    GuerillaExplode();
-                   finished = 1;
+					return;
                } else if (head == self.owner) { // ourselves
                         
                    self.has_tesla = 1; //- display no message on GuerillaExplode
 		           GuerillaExplode();
-				   finished = 1;
+					return;
                }
             }
 		}
@@ -843,12 +843,10 @@ void() GuerillaThink = //Every second see if we have enemy nearby
 			T_Damage(head,self,self.owner,MINE_DMG); //Demons are vulnerable
             self.has_tesla = 1; //- display no message on GuerillaExplode
 			GuerillaExplode();
-			finished = 1;
+			return;
 		}
 		head = head.chain;
 	}
-	if (finished)
-		dremove(self);
 };
 
 void() GuerillaTouch = //What happens when someone runs it over
