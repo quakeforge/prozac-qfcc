@@ -77,7 +77,7 @@ void (float oneline) printtrace =
 	RPrint ("endpos: " + vtos (trace_endpos) + sep);
 	RPrint ("plane_normal: " + vtos (trace_plane_normal) + sep);
 	RPrint ("plane_dist: " + ftos (trace_plane_dist) + sep);
-	RPrint ("ent: " + (trace_ent ? "yes" : "no") + sep);
+	RPrint ("ent: " + (trace_ent ? trace_ent.classname : "no") + sep);
 	RPrint ("inopen: " + ftos (trace_inopen) + sep);
 	RPrint ("inwater: " + ftos (trace_inwater) + "\n");
 

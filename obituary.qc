@@ -72,7 +72,7 @@ It's cleaner that way.
 ===========
 */
 
-void(entity atk, entity targ) Give_Frags_Player =
+void(entity targ, entity atk) Give_Frags_Player =
 {
 	local float numfrags = 1,  chkvamp = 1;
 
@@ -115,7 +115,7 @@ void(entity atk, entity targ) Give_Frags_Player =
 };
 
 
-void (entity atk, entity targ) Give_Frags_Monster =
+void (entity targ, entity atk) Give_Frags_Monster =
 {
 	if (atk == targ)
 		return; // no neg frags to monsters
@@ -136,7 +136,7 @@ void (entity atk, entity targ) Give_Frags_Monster =
 	Give_Frags_Player(atk, targ);
 };
 
-void (entity atk, entity targ) Give_Frags_Building =
+void (entity targ, entity atk) Give_Frags_Building =
 {
 	if (atk == targ)
 		return;
