@@ -101,12 +101,16 @@ void(float aur) AddAura =
 			strung = "Aura of Resistance.\n";
 		else if (targ.aura == AURA_HASTE)
 			strung = "Aura of Haste.\n";
+		else
+			strung = "Aura of Bugginess.\n";
 		if (oldaur == AURA_POWER)
 			oldstrung = "Aura of Power";
 		else if (oldaur == AURA_RESISTANCE)
 			oldstrung = "Aura of Resistance";
 		else if (oldaur == AURA_HASTE)
 			oldstrung = "Aura of Haste";
+		else
+			oldstrung = "Aura of Bugginess.";
 		
 		if (oldaur == 0)
 			sprint(self, PRINT_HIGH, "You provide ", targ.netname, " with an ", strung);
