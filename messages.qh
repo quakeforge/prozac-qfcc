@@ -1,11 +1,11 @@
 // This file contains defines for some of the messages
 #define MSG_INTRO1 "Welcome to ÐÒÏÚÁÃ CustomÔÆ\na Quake ÔÆ MOD by ShakaUVM\nwww®telefragged®com¯shaka"
-#define MSG_INTRO2 "Based on the aussie ver by SB-1\nModified version by Clan Prozac"
+#define MSG_INTRO2 "Hacked by KK, then SB-1 then OfN, then the Quakeforge team, then Grievre"
 //#define MSG_INTRO3 "Get any files needed at:\n\nhttp:\^/\^/quake\^.prozac\^.net\^/"
 #define MSG_INTROBAR "\n\nžžžžžžžžžžžžžžžžžžžžžžžžžžŸ\n\n"
                                               //, aka óC”’’’
 //#define MSG_CUTFVERSION "CustomÔÆ version ö3®2®OfN"
-#define MSG_CUTFVERSION   "ÐÒÏÚÁÃ CustomÔÆ ö3®2®OfN4"
+#define MSG_CUTFVERSION   "ÐÒÏÚÁÃ CustomÔÆ ö3®2®OfN4-qfcc-GR3"
 
 // Comments CenterPrinted when a player gets the CTF flag
 #define MSG_CTF_FLAG_GRAB_TEAM1   "You got the enemy flag!\n\nFlee!"

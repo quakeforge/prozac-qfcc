@@ -533,6 +533,9 @@ void() walkmonster_start_go =
 //	local float		failure;
 //	local vector	test;
 
+	self.movetype = MOVETYPE_STEP;
+	self.solid = SOLID_SLIDEBOX;
+
 	self.origin_z = self.origin_z + 1;	// raise off floor a bit
 	droptofloor();
 	

@@ -106,8 +106,8 @@ void (vector org, entity shooter) MirvGrenadeLaunch =
 	local float xdir,ydir,zdir;
 
 	xdir = 150 * random() - 75;
-	ydir = 150 * random() - 75;
-	zdir = 40 * random();
+	ydir = 2 * (100 - fabs(xdir)) * random() - (75 - fabs(xdir));
+	zdir = 170 - (fabs(xdir) + fabs(ydir));
 
 	newmis = spawn ();
 	newmis.owner = shooter;
@@ -118,8 +118,8 @@ void (vector org, entity shooter) MirvGrenadeLaunch =
 	newmis.weapon = DMSG_GREN_MIRV;
 
 #ifdef NET_SERVER
-	newmis.touch = NormalGrenadeTouch;
-	newmis.think = NormalGrenadeExplode;
+	newmis.touch = GrenadeTouch;
+	newmis.think = GrenadeExplode;
 #else
 	newmis.touch = GrenadeTouch;
 	newmis.think = GrenadeExplode;
@@ -128,11 +128,11 @@ void (vector org, entity shooter) MirvGrenadeLaunch =
 	//WK 2 + random
 	newmis.nextthink = time + 0.75 + random();
 	
-	newmis.velocity_x = xdir * 2;
-	newmis.velocity_y = ydir * 2;
-	newmis.velocity_z = zdir * 15;
+	newmis.velocity_x = xdir * 3;
+	newmis.velocity_y = ydir * 3;
+	newmis.velocity_z = zdir * 5;
 
-	newmis.avelocity='100 100 400';
+	newmis.avelocity='100 100 500';
 
 	setmodel (newmis, "progs/grenade2.mdl");
 	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);

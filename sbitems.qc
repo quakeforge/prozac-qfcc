@@ -320,26 +320,7 @@ void() MotionSensorTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
-	{
-		MotionSensorDie();
-		return;
-	}
-	//CH sees where landed and adjusts to proper things
-	if (pointcontents(self.origin + '0 0 1') == CONTENTS_SOLID)
-		self.origin = self.origin - '0 0 12';
-	if (pointcontents(self.origin - '0 0 1') == CONTENTS_SOLID)
-		self.origin = self.origin + '0 0 4';
-	if (pointcontents(self.origin + '0 1 0') == CONTENTS_SOLID)
-		self.origin = self.origin - '0 16 0';
-	if (pointcontents(self.origin - '0 1 0') == CONTENTS_SOLID)
-		self.origin = self.origin + '0 16 0';
-	if (pointcontents(self.origin + '1 0 0') == CONTENTS_SOLID)
-		self.origin = self.origin - '16 0 0';
-	if (pointcontents(self.origin + '1 0 0') == CONTENTS_SOLID)
-		self.origin = self.origin + '16 0 0';
-	setorigin (self, self.origin);
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
+	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 18') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
 	{
 		MotionSensorDie();
 		return;
@@ -485,18 +466,20 @@ void() MotionSensorSpawn =
 	self.has_sensor = TRUE;
 	newmis = spawn();
 	newmis.movetype = MOVETYPE_BOUNCE;
-	setsize (newmis, '0 0 0', '0 0 0');
+	setsize (newmis, '-16 -16 -6', '16 16 10');
 //	setsize (newmis, '-8 -8 -8', '8 8 8');
 	newmis.solid = SOLID_BBOX;
 	newmis.takedamage = DAMAGE_AIM;
 	newmis.classname = "building_sensor";
 	newmis.netname = "motion_sensor";
-	setorigin (newmis, self.origin);
+	newmis.origin = self.origin;
 	newmis.owner = NIL;
 	newmis.real_owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '0 0 0';
 	newmis.velocity = v_forward*800 + v_up * 200 + v_right*10 + v_up*10;
+	newmis.origin += normalize(newmis.velocity) * 20;
+	setorigin(newmis, newmis.origin);
 	newmis.angles = '0 0 0';
 	newmis.angles_y = anglemod(self.angles_y + 180);
 //	newmis.skin = 1;

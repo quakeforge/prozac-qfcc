@@ -371,6 +371,13 @@ void() tdeath_touch =
 // frag anyone who teleports in on top of an invincible player
 	if (other.classname == "player")
 	{
+		if (Teammate(self.owner.team_no, other.team_no))
+		{
+			other.invincible_finished = 0;
+			TF_T_Damage(other, self, self, other.health + 5000, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			return;
+		}
+
 		if (other.invincible_finished > time) {
 			self.classname = "teledeath2";
 			self.owner.invincible_finished = 0;
@@ -388,7 +395,7 @@ void() tdeath_touch =
 	
 	if (other.health)
 	{
-		T_Damage(other, self, self, 5000);
+		TF_T_Damage(other, self, self, other.health + 5000, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 	}
 };
 

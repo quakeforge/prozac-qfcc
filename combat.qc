@@ -301,10 +301,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	local string output;
 	local float knockem;
 
-	//WK -- For LPB calculation
-	local string foo;
-	local float ping;
-
 	mirror = 0;
 	if (infokey(NIL,"ceasefire")=="on") //Cyto
 		return;
@@ -420,11 +416,14 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 
 	//DAMAGE ADJUSTMENT
 	//- OfN - if (deathmsg != DMSG_MARTYR && targ.classname != "monster_demon1" && targ.classname != "monster_shambler" && targ.classname != "monster_army")
+
     if (deathmsg != DMSG_MARTYR && !IsMonster(targ))
 	{ 
 		if (targ.tfstate & TFSTATE_INSPIRED) //Chaplan defense
 			damage = damage * 0.66;
 		//WK Ping fairness code. LPB is < 200 ping
+		//haha, yeah right.
+#if 0
 		if (attacker.classname == "player" && targ.classname == "player" && attacker != targ)
 		{
 			foo = infokey(attacker,"ping");
@@ -436,6 +435,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			if (ping > 1.2) ping = 1.2;
 			damage = damage * ping;
 		}
+#endif
 		if (teamplay & (TEAMPLAY_LESSSCOREHELP | TEAMPLAY_LESSPLAYERSHELP))
 			damage = TeamEqualiseDamage(targ, attacker, damage);
 	}
@@ -500,43 +500,30 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	// SPECIAL ARMOR CALCULATIONS
 	if ((targ.armorclass != 0) && (T_AttackType != 0))
 	{
+		// OTR changed, it now just does less damage but ignores armor.
 		if ((targ.armorclass & AT_SAVESHOT) && (T_AttackType == TF_TD_SHOT)) {
 			damage = floor(damage * 0.5);
 			//WK Cap max damage you can take with kevlar on, like in Real Life(tm)
 			//WK The purpose being to cut down on the power of snipers
 			if(targ.classname == "player") // SB kevlar fixed so it caps damage now, also spacing much nicer :)
 			{
-				local float olddamage; //- OfN - special cap damage with otr! heh
-                olddamage=damage;
                 
-                if (light_damage)
+		                if (light_damage)
 				{
 					if (damage > 75)
 						damage = 75;
 				}
-				else
-                    if (damage > 100) damage = 100;
+				else if (damage > 100) damage = 100;
 
-				if (attacker.classname == "player" && (deathmsg == DMSG_SNIPERRIFLE || deathmsg == DMSG_SNIPERHEADSHOT || deathmsg == DMSG_SNIPERLEGSHOT))
-				{
-                    sprint(attacker,PRINT_HIGH,"You hit kevlar\n");
-                    if (attacker.cutf_items & CUTF_OTR) //- OfN -
-                    {
-                       if (olddamage > 100)
-                            olddamage=olddamage - ((olddamage - 100)*0.4);
-
-                       damage = olddamage; 
-                    }
-
-                }
 			}
 		}
 		else if ((targ.armorclass & AT_SAVEMELEE) && (deathmsg == DMSG_JUDOKA || deathmsg == DMSG_AXE || deathmsg == DMSG_BACKSTAB || deathmsg == DMSG_SPANNER))
 		{
+			// This crap should all be in the weapon function. Stupid morons.
 			damage = floor(damage * 0.5);
 			if ((targ.velocity_x > 0 || targ.velocity_y > 0 || targ.velocity_z > 0) && random() > 0.6)
 				return;
-			if (deathmsg == DMSG_BACKSTAB)
+			if (deathmsg == DMSG_BACKSTAB) // O_O, why is this here?
 				T_flags = T_flags - (T_flags & TF_TD_IGNOREARMOUR);
 		}
 		else if ((targ.armorclass & AT_SAVEEXPLOSION) && (T_AttackType == TF_TD_EXPLOSION))
@@ -563,6 +550,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			targ.armortype = 0;	// lost all armor
 			targ.armorclass = 0; // lost special armor
 			targ.items = targ.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			TeamFortress_SetSpeed(targ);
 		}
 		//WK Flags prevent armor damage too
 		if (T_flags & TF_TD_NOTTEAM)
@@ -595,6 +583,8 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		}
 		//		targ.armorvalue = targ.armorvalue - save;
 		take = ceil(damage-save);
+		if (targ.armorvalue > 0 && (targ.armorvalue + save > 100))
+		    TeamFortress_SetSpeed(targ); // speed up the less armor you have
 	}
 	// add to the damage total for clients, which will be sent as a single
 	// message at the end of the frame
@@ -743,9 +733,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	if (self.th_pain)
 	{
 		self.th_pain (attacker, take);
-		// nightmare mode monsters don't go into pain frames often
-		if (skill >= 3)
-			self.pain_finished = time + 5;		
 	}
 
 	self = oldself;

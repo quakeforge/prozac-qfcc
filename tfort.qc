@@ -1447,6 +1447,13 @@ void(entity p) TeamFortress_SetSpeed =
 	}
 
 	if (p.playerclass != PC_UNDEFINED) {
+		//before anything, speed reductions from armor (no speedy tanks)
+		if (p.armorvalue > 0)
+		  p.maxspeed *= (0.8 + (0.2 - p.armortype / 5));
+
+		if (p.armorvalue > 100 && p.maxspeed > 250) // really tanked? cap speed a little
+		  p.maxspeed -= (p.maxspeed - 250) * (p.armorvalue - 100) / 200;
+
 		//1st if we have scuba gear ...
 		if (p.tf_items & NIT_SCUBA) {
 			if (p.flags & FL_INWATER)	// and are underwater, increase speed

@@ -13,6 +13,7 @@ Functions for handling the custom class professions
 
 //WK - all of this
 
+void(float delay) Attack_Finished;
 void() DropToCustomClassGen; //Called when starting class generation
 void() DropFromCustomClassGen; //Called when finished class generation
 void() PrintMoney;
@@ -490,10 +491,6 @@ void() JobBerserker =
 //So we don't have to do error checking on those situations
 //Four special cases, Rifle, Medikit, AC and Grapple, have side effects
 // when you remove them. Need special cases to handle their theft
-#define DISARM_TIME 10
-#define CANT_ATTACK_TIME 5
-#define HIT_DELAY 8
-#define MISS_DELAY 1
 void() JudokaRearm =
 {
 	//Self.owner is the guy who had his weapon taken away
@@ -574,22 +571,48 @@ void() JobJudoka =
 	//Take the weapon of any person in front of you and force a reload
 	self.job_finished = time + MISS_DELAY; //Delay if we don't hit
 	local vector	source;
+	local vector dir;
+	local float chance;
 	local entity tWeapon,oself;
 	local entity te;
 	
 	makevectors(self.v_angle);
 	source = self.origin + '0 0 16';
-	traceline (source, source + v_forward*96, FALSE, self);
-	if (trace_fraction == 1.0) {
-		sprint (self, PRINT_HIGH, "You miss.\n");
-		return;
-	}
 
-	if (trace_ent.classname == "player" && !Teammate(trace_ent.team_no, self.team_no) && trace_ent.playerclass != PC_UNDEFINED)
+	if (self.cutf_items & CUTF_CLOSECOMBAT)
+	    traceline(source, source + v_forward*96, FALSE, self);
+	else
+	    traceline(source, source + v_forward*64, FALSE, self);
+
+	if (trace_fraction != 1.0 && trace_ent.classname == "player" && !Teammate(trace_ent.team_no, self.team_no) && trace_ent.playerclass != PC_UNDEFINED)
 	{
 		if (self.is_undercover) //Taking someone's weapon should give you away
 			Spy_RemoveDisguise(self);
 
+		// Let's not make it work all the time
+		dir = normalize (trace_ent.origin - self.origin);
+		makevectors(trace_ent.v_angle);
+		
+ 		chance = dir * normalize(v_forward);
+		chance *= 0.35;
+		if (chance > 0.25)
+		    chance = 0.25;
+		if (trace_ent.job & JOB_JUDOKA)
+		    chance += 0.2;
+		if (trace_ent.cutf_items & CUTF_CLOSECOMBAT)
+		    chance += 0.25;
+		if (trace_ent.current_weapon == WEAP_AXE && trace_ent.cutf_items & CUTF_KNIFE)
+		    chance += 0.1;
+ 		if (self.cutf_items & CUTF_CLOSECOMBAT)
+		    chance -= 0.25;
+
+		if (random() > chance)
+		{
+		    sprint (self, PRINT_HIGH, "Your strike is parried!\n");
+		    Attack_Finished(3);
+		    return;
+		}
+		
 		sprint (trace_ent, PRINT_HIGH, "You have been disarmed by ");
 		sprint (trace_ent, PRINT_HIGH, self.netname);
 		sprint (trace_ent, PRINT_HIGH, "\n");
@@ -690,9 +713,13 @@ void() JobJudoka =
 		}
 
 		self.job_finished = time + HIT_DELAY;
+		Attack_Finished(0.5);
 	}
 	else
+	{
 		sprint (self, PRINT_HIGH, "You miss.\n");
+		Attack_Finished(1.5);
+	}
 };
 
 

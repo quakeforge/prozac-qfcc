@@ -96,6 +96,17 @@ void() SniperSight_Update =
 	self.angles = vectoangles(v_forward);
     setorigin(self, trace_endpos);
 
+	self.v_angle_z = self.owner.v_angle_z;
+
+	local float diff = vlen(self.owner.v_angle - self.v_angle);
+
+	if (diff > 3) diff = 3;
+	
+	if (self.owner.heat < diff * 8)
+	   self.owner.heat = diff * 8;
+
+	self.v_angle = self.owner.v_angle;
+
 	self.nextthink = time + 0.1;
 };
 //CH used for the rl
@@ -147,6 +158,7 @@ void(float type) SniperSight_Create =
 	sight.owner = self;
 	sight.movetype = MOVETYPE_NOCLIP;
 	sight.solid = SOLID_NOT;
+	sight.v_angle = self.v_angle;
 
 	setmodel (sight, "progs/sight.spr");
 

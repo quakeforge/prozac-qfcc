@@ -80,6 +80,20 @@ float(float v) anglemod =
 };
 void(entity test) AI_Check_Contents =
 {
+	if (test.solid != SOLID_SLIDEBOX)
+	{
+	    bprint(PRINT_HIGH, "CRAZY! AI_Check_Contents, test.solid=");
+	    bprint(PRINT_HIGH, ftos(test.solid));
+	    bprint(PRINT_HIGH, "\n");
+	}
+	if (test.movetype != MOVETYPE_TOSS && test.movetype != MOVETYPE_STEP)
+	{
+	    bprint(PRINT_HIGH, "CRAZY! AI_Check_Contents, test.movetype=");
+	    bprint(PRINT_HIGH, ftos(test.movetype));
+	    bprint(PRINT_HIGH, "\n");
+	}
+	
+
 //CH demons (and other ai) can be hurt by liquids //- OfN completely changed!
 	if (pointcontents(test.origin) ==  CONTENTS_EMPTY && IsMonsterNonArmy(self) && self.health < self.max_health)
 	{	// Heal it
@@ -104,6 +118,11 @@ void(entity test) AI_Check_Contents =
                 heal = FIEND_REGEN;
                 rate = FIEND_REGRATE;
             }
+
+	    if (self.is_malfunctioning)
+	    {
+		heal = 0;
+	    }
 
             self.dmgtime = time + rate;
 			self.health = self.health + heal;//self.has_tesla - 2;
@@ -1186,6 +1205,8 @@ void(float dist) ai_run =
     {                                       
         enemy_vis=FALSE; 
 
+	self.enemy = NIL; // FindTarget ignores self.enemy, duh (fixes stuck monsters)
+
         if (self.movetarget)
         	self.th_walk ();
 		else
@@ -1231,7 +1252,7 @@ void(float dist) ai_run =
 		ai_run_melee ();
 		return;
 	}
-	if (self.attack_state == AS_FIREBALL && self.classname == "monster_demon1") //CH only for demons..
+	if (self.attack_state == AS_FIREBALL) //CH only for demons.. GR why?
 	{
 //RPrint ("ai_run_fire\n");
 		ai_run_fire ();

@@ -227,18 +227,20 @@ void() Security_Camera_Spawn =
 	self.has_camera = TRUE;
 	newmis = spawn();
 	newmis.movetype = MOVETYPE_BOUNCE;
-	setsize (newmis, '0 0 0', '0 0 0');
+	setsize (newmis, '-16 -16 -6', '16 16 10');
 //	setsize (newmis, '-8 -8 -8', '8 8 8');
 	newmis.solid = SOLID_BBOX;
 	newmis.takedamage = DAMAGE_AIM;
 	newmis.classname = "building_camera";
 	newmis.netname = "security_camera";
-	setorigin (newmis, self.origin);
+	newmis.origin = self.origin;
 	newmis.owner = NIL;
 	newmis.real_owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '0 0 0';
 	newmis.velocity = v_forward*800 + v_up * 200 + v_right*10 + v_up*10;
+	newmis.origin += (normalize(newmis.velocity) * 20);
+	setorigin(newmis, newmis.origin);
 	newmis.angles = '0 0 0';
 	newmis.angles_y = anglemod(self.angles_y + 180);
 //	newmis.skin = 1;
@@ -249,6 +251,9 @@ void() Security_Camera_Spawn =
 	newmis.team_no = self.team_no;
 	newmis.colormap = self.colormap;
 	newmis.heat = 0; //Beeps
+
+	newmis.think = Security_Camera_Die;
+	newmis.nextthink = time + 5;
 
 	newmis.health = newmis.max_health = BUILD_HEALTH_CAMERA;
 	newmis.touch = SecurityCameraTossTouch;
@@ -263,30 +268,12 @@ void() SecurityCameraTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
+	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 12') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
 	{
 		Security_Camera_Die();
 		return;
 	}
-	//CH sees where landed and adjusts to proper things
-	if (pointcontents(self.origin + '0 0 1') == CONTENTS_SOLID)
-		self.origin = self.origin - '0 0 12';
-	if (pointcontents(self.origin - '0 0 1') == CONTENTS_SOLID)
-		self.origin = self.origin + '0 0 4';
-	if (pointcontents(self.origin + '0 1 0') == CONTENTS_SOLID)
-		self.origin = self.origin - '0 16 0';
-	if (pointcontents(self.origin - '0 1 0') == CONTENTS_SOLID)
-		self.origin = self.origin + '0 16 0';
-	if (pointcontents(self.origin + '1 0 0') == CONTENTS_SOLID)
-		self.origin = self.origin - '16 0 0';
-	if (pointcontents(self.origin + '1 0 0') == CONTENTS_SOLID)
-		self.origin = self.origin + '16 0 0';
-	setorigin (self, self.origin);
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 2') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
-	{
-		Security_Camera_Die();
-		return;
-	}
+
 	sprint (self.real_owner, PRINT_HIGH, "You finish building the Security Camera.\n");
 
     teamprefixsprint(self.real_owner.team_no,self.real_owner); //- OfN

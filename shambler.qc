@@ -1,9 +1,12 @@
 #include "defs.qh"
-//void(float side) ShamFireball;
-//void() sham_fireballl1;
-//void() sham_fireballr1;
-//void() shambler_fire_touch;
+void(float side) ShamFireball;
+void() sham_fireballl1;
+void() sham_fireballr1;
+void() shambler_fire_touch;
+void() shambler_fire_think;
 float (entity targ, entity inflictor) CanDamage;
+
+void() Napalm_touch;
 /*
 ==============================================================================
 
@@ -61,27 +64,31 @@ void() sham_stand15	=[	$stand15,	sham_stand16] {ai_stand();};
 void() sham_stand16	=[	$stand16,	sham_stand17] {ai_stand();};
 void() sham_stand17	=[	$stand17,	sham_stand1	] {ai_stand();};
 
-void() sham_walk1		=[      $walk1,        sham_walk2 ] {ai_walk(10);};
-void() sham_walk2       =[      $walk2,        sham_walk3 ] {ai_walk(9);};
-void() sham_walk3       =[      $walk3,        sham_walk4 ] {ai_walk(9);};
-void() sham_walk4       =[      $walk4,        sham_walk5 ] {ai_walk(5);};
-void() sham_walk5       =[      $walk5,        sham_walk6 ] {ai_walk(6);};
-void() sham_walk6       =[      $walk6,        sham_walk7 ] {ai_walk(12);};
-void() sham_walk7       =[      $walk7,        sham_walk8 ] {ai_walk(8);};
-void() sham_walk8       =[      $walk8,        sham_walk9 ] {ai_walk(3);};
-void() sham_walk9       =[      $walk9,        sham_walk10] {ai_walk(13);};
-void() sham_walk10      =[      $walk10,       sham_walk11] {ai_walk(9);};
-void() sham_walk11      =[      $walk11,       sham_walk12] {ai_walk(7);};
-void() sham_walk12      =[      $walk12,       sham_walk1 ] {ai_walk(7);
+void() sham_walk1		=[      $walk1,        sham_walk2 ] {ai_walk(2*(self.has_tesla));};
+void() sham_walk2       =[      $walk2,        sham_walk3 ] {ai_walk(2*(self.has_tesla));};
+void() sham_walk3       =[      $walk3,        sham_walk4 ] {ai_walk(2*(self.has_tesla));};
+void() sham_walk4       =[      $walk4,        sham_walk5 ] {ai_walk(self.has_tesla);};
+void() sham_walk5       =[      $walk5,        sham_walk6 ] {ai_walk(1.5*(self.has_tesla));};
+void() sham_walk6       =[      $walk6,        sham_walk7 ] {ai_walk(5*self.has_tesla);};
+void() sham_walk7       =[      $walk7,        sham_walk8 ] {ai_walk(2*(self.has_tesla));};
+void() sham_walk8       =[      $walk8,        sham_walk9 ] {ai_walk(3*(self.has_tesla-4));};
+void() sham_walk9       =[      $walk9,        sham_walk10] {ai_walk(6*self.has_tesla);};
+void() sham_walk10      =[      $walk10,       sham_walk11] {ai_walk(3*self.has_tesla);};
+void() sham_walk11      =[      $walk11,       sham_walk12] {ai_walk(1.8*(self.has_tesla));};
+void() sham_walk12      =[      $walk12,       sham_walk1 ] {ai_walk(1.8*(self.has_tesla));
 if (random() > 0.8)
 	sound (self, CHAN_VOICE, "shambler/sidle.wav", 1, ATTN_IDLE);};
 
-void() sham_run1       =[      $run1,        sham_run2      ] {ai_run(20);};
-void() sham_run2       =[      $run2,        sham_run3      ] {ai_run(24);};
-void() sham_run3       =[      $run3,        sham_run4      ] {ai_run(20);};
-void() sham_run4       =[      $run4,        sham_run5      ] {ai_run(20);};
-void() sham_run5       =[      $run5,        sham_run6      ] {ai_run(24);};
-void() sham_run6       =[      $run6,        sham_run1      ] {ai_run(20);
+void() sham_run = {
+      sham_run1();
+};
+
+void() sham_run1       =[      $run1,        sham_run2      ] {ai_run(5*self.has_tesla);};
+void() sham_run2       =[      $run2,        sham_run3      ] {ai_run(6*self.has_tesla);};
+void() sham_run3       =[      $run3,        sham_run4      ] {ai_run(5*self.has_tesla);};
+void() sham_run4       =[      $run4,        sham_run5      ] {ai_run(5*self.has_tesla);};
+void() sham_run5       =[      $run5,        sham_run6      ] {ai_run(6*self.has_tesla);};
+void() sham_run6       =[      $run6,        sham_run1      ] {ai_run(5*self.has_tesla);
 if (random() > 0.8)
 	sound (self, CHAN_VOICE, "shambler/sidle.wav", 1, ATTN_IDLE);
 
@@ -104,15 +111,24 @@ local vector	delta;
 local float 	ldmg;
 
 	if (!self.enemy)
+	{
+		self.has_teleporter += 1;
 		return;
+	}
 	ai_charge(0);
 
 	delta = self.enemy.origin - self.origin;
 
 	if (vlen(delta) > 200)
+	{
+		self.has_teleporter += 1;
 		return;
+	}
 	if (!CanDamage (self.enemy, self))
+	{
+		self.has_teleporter += 1;
 		return;
+	}
 		
 	ldmg = (random() + random() + random()) * 200 + 30*self.has_tesla;
 	deathmsg = 0;
@@ -124,6 +140,7 @@ local float 	ldmg;
 	SpawnMeatSpray (self.origin + v_forward*16, crandom() * 100 * v_right);
 	SpawnMeatSpray (self.origin + v_forward*16, crandom() * 100 * v_right);
 
+	self.has_teleporter -= 1;
 };
 void() sham_smash11    =[      $smash11,      sham_smash12   ] {ai_charge(10 * (0.7 + self.has_tesla * 0.2));}; // spd dbl
 void() sham_smash12    =[      $smash12,      sham_run1	   ] {ai_charge(8 * (0.7 + self.has_tesla * 0.2));};
@@ -137,14 +154,21 @@ local float 	ldmg;
 
 
 	if (!self.enemy)
+	{
+		self.has_teleporter += 1;
 		return;
+	}
+
 	ai_charge(20 * (0.7 + self.has_tesla * 0.2)); //spd dbl
 
 	delta = self.enemy.origin - self.origin;
 
 	if (vlen(delta) > 200)
+	{
+		self.has_teleporter += 1;
 		return;
-		
+	}	
+
 	deathmsg = 0;
 	
 	ldmg = (random() + random() + random()) * 75 + 15*self.has_tesla;
@@ -168,6 +192,7 @@ local float 	ldmg;
 		SpawnMeatSpray (self.origin + v_forward*16, side * v_right);
 	}
 
+	self.has_teleporter -= 1;
 };
 
 void() sham_swingl1	=[      $swingl1,      sham_swingl2   ] {
@@ -201,7 +226,7 @@ self.enemy = NIL;
 void() sham_swingl8 =[      $swingl8,      sham_swingl9   ] {ai_charge(8);};
 void() sham_swingl9 =[      $swingl9,      sham_run1  ] {
 ai_charge(16);
-if (random()<0.5)
+if (self.enemy && random()<0.5)
 	self.think = sham_swingr1;
 };
 
@@ -235,7 +260,7 @@ self.enemy = NIL;
 };
 void() sham_swingr8 =[      $swingr8,      sham_swingr9   ] {ai_charge(6);};
 void() sham_swingr9 =[      $swingr9,      sham_run1  ] {ai_charge(2);
-if ((self.has_sensor && self.enemy.health > 0 && random()<0.5) || (!self.has_sensor && self.enemy.health <= 0 && random()<0.5))
+if ((self.enemy && random()<0.5))
 	self.think = sham_swingl1;
 };
 
@@ -245,9 +270,9 @@ void() sham_melee =
 	
 	chance = random();
 	self.has_sensor = 1;
-	if (chance > 0.7)
+	if (chance > 0.8)
 		sham_smash1 ();
-	else if (chance > 0.35)
+	else if (chance > 0.4)
 		sham_swingr1 ();
 	else
 		sham_swingl1 ();
@@ -267,7 +292,7 @@ void() CastLightning =
 
 	org = self.origin + '0 0 40';
 
-	dir = self.enemy.origin + '0 0 16' - org;
+	dir = (self.enemy.origin + '0 0 30') - org;
 	dir = normalize (dir);
 
     // OfN - Check for force field
@@ -289,11 +314,20 @@ void() CastLightning =
         WriteCoord (MSG_MULTICAST, trace_endpos_z);
         multicast (org, MULTICAST_PHS);
 
-        return;
+       
+	self.has_sentry += 1;
+	return;
     }
+
+    if (!trace_ent.takedamage)
+	self.has_sentry += 1;
+    else
+	self.has_sentry -= 1;
+    
+
     //_------------------------------------_//
 
-	traceline (org, self.origin + dir*3000, TRUE, self);
+	traceline (org, self.origin + dir*(3000 + self.has_tesla * 2), TRUE, self);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
@@ -305,8 +339,8 @@ void() CastLightning =
 	WriteCoord (MSG_MULTICAST, trace_endpos_y);
 	WriteCoord (MSG_MULTICAST, trace_endpos_z);
 
-	ldmg = 5 + self.has_tesla * 5;
-	if (self.has_tesla == 5)
+	ldmg = self.has_tesla * 2;
+	if (self.has_tesla > 5)
 		if (ldmg < self.enemy.health)
 			self.health = self.health + (ldmg / 10);
 		else
@@ -314,7 +348,7 @@ void() CastLightning =
 		if (self.health > self.max_health)
 			self.health = self.max_health;
 	
-	LightningDamage (org, trace_endpos, self, 5 + self.has_tesla * 5);
+	LightningDamage (org, trace_endpos, self, ldmg);
 
 };
 
@@ -357,7 +391,7 @@ void() sham_magic10    =[      $magic10,      sham_magic11   ]
 {CastLightning();};
 void() sham_magic11    =[      $magic11,      sham_magic12   ]
 {
-if (skill == 3)
+if (self.has_tesla > 5)
 	CastLightning();
 };
 void() sham_magic12    =[      $magic12,      sham_run1	   ] {self.effects = 0;};
@@ -379,13 +413,24 @@ void(entity attacker, float damage)	sham_pain =
     //self.real_owner.StatusRefreshTime = time + 0.2;
 	//self.real_owner.StatusBarScreen = 3;  
 
+    if (attacker.takedamage && self.has_tesla > 5 && attacker != self && !(IsMonsterNonArmy(attacker) && self.real_owner == attacker.real_owner))
+    {
+	if (self.enemy.classname != "player" || !Teammate(self.real_owner.team_no, self.enemy.team_no))
+   	    self.oldenemy = self.enemy;
+
+	if (attacker != self.enemy)  {
+	    self.enemy = attacker;
+	    HuntTarget();
+	}
+    }
+
     if (self.pain_finished > time)
 		return;
 
     if (self.health <= 0)
 		return;		// allready dying, don't go into pain frame
 	  
-    if (random()*100 > damage) // was 70
+    if (random()*self.has_tesla*100 > damage) // was 70
 		return;		// didn't flinch
 
     sound (self, CHAN_VOICE, "shambler/shurt2.wav", 1, ATTN_NORM);
@@ -417,7 +462,7 @@ void() custom_shambler_die =
 {
 	self.effects=0;
     
-    if (self.real_owner.classname == "player")
+    if (self.real_owner.classname == "player" && self.real_owner.demon_one == self)
 	{
 		sprint(self.real_owner,PRINT_HIGH,"Your shambler is dead.\n");
 		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
@@ -451,21 +496,69 @@ float () CheckShamMelee =
 	local vector dist;
 	local float d;
 	
+
+	if (self.has_teleporter < -2)
+		self.has_teleporter = -2;
+
+	if (self.has_teleporter > 2 && self.has_teleporter > (14 - 2*self.has_tesla))
+	{
+		self.has_teleporter -= 0.1;
+		return FALSE;
+	}
+
 	dist = self.enemy.origin - self.origin;
 	d = vlen(dist);
 	if (d < 150) //CH Check reach
 	{
-		self.attack_state = AS_MELEE;
 		return TRUE;
 	}
 	return FALSE;
 };
+
+float () CheckShamFireball =
+{
+	local	vector	dist;
+	
+	if (self.has_tesla <= 5)
+	{
+		return FALSE;
+	}
+
+	if (self.has_fieldgen < 0)
+		self.has_fieldgen *= 0.8;
+
+	if (self.has_fieldgen > 2 && (self.has_fieldgen > (14 - 2*self.has_tesla)))
+	{
+		self.has_fieldgen -= 0.1;
+		return FALSE;
+	}
+
+	dist = self.enemy.origin - self.origin;
+	
+	if (random() < (0.4 - (dist_z / 1000)))
+	{
+		return FALSE;
+	}
+
+
+	return TRUE;
+};
+
 
 float () CheckShamLightning =
 {
 	local	vector	dist;
 	local	float	d;
 	local 	float	d2;
+ 
+	if (self.has_sentry < 0)
+		self.has_sentry *= 0.8;
+
+	if (self.has_sentry > 2 && self.has_sentry > (14 - 2*self.has_tesla))
+	{
+		self.has_sentry -= 0.1;
+		return FALSE;
+	}
 
 	if (!visible2(self.enemy, self)) //If can see
 		return FALSE;
@@ -475,38 +568,104 @@ float () CheckShamLightning =
 	dist = self.enemy.origin - self.origin;
 	dist_x = dist_y = 0; //CH only need z
 	d = vlen(dist);
-	if (self.has_tesla == 1)
+	if (self.has_tesla > 6 && random() < 0.1)
+		return TRUE;
+	if (random() > self.has_tesla * (d2 / 300) * 0.07) //CH as not to fire all the time
 		return FALSE;
-	if (random() > self.has_tesla * 0.07) //CH as not to fire all the time
+	if (d2 < 1500 - self.has_tesla * 250 && d < 100)
 		return FALSE;
-	if (d2 < 1500 - self.has_tesla * 300 && d < 100)
+	if (d2 > 2000 + self.has_tesla * 200) //Sham has lots of lightning range
 		return FALSE;
-	if (d2 > 2000 + self.has_tesla * 200) //Min X,Y distance away before zap
-		return FALSE;
-    /*if (self.has_tesla > 3 && random() > 0.5) 
-		self.attack_state = AS_FIREBALL;
-	//else /// OFTEN*/
-		self.attack_state = AS_MISSILE;
+	
 	return TRUE;
+};
+
+float() CheckShamConvert = 
+{
+	if (self.has_tesla <= 6)
+	    return FALSE;
+	if (!IsMonsterNonArmy(self.enemy))
+	    return FALSE;
+	if (self.enemy.classname == "monster_shambler" && self.enemy.has_tesla > 6)
+	    return FALSE;
+	if (Teammate(self.real_owner.team_no, self.enemy.real_owner.team_no))
+	    return FALSE;
+	if (self.enemy.health > (self.enemy.max_health * 3 / 4))
+	    return FALSE;
+
+	if (self.enemy.classname == "monster_shambler" && self.enemy.has_tesla > 5)
+	{
+	    if (self.enemy.has_tesla > 6 || random() > 0.5)
+		    return FALSE;
+	}
+
+	if (random() * 4000 < self.enemy.health)
+	    return FALSE;
+
+	sound (self, CHAN_VOICE, "boss1/sight1.wav", 1, ATTN_NORM);
+	sprint (self.enemy.real_owner, PRINT_HIGH, "Your demon bows before its master!\n");
+
+	self.enemy.martyr_enemy = self.enemy.real_owner;
+	self.enemy.real_owner = self.real_owner;
+	self.enemy.owner = self.real_owner;
+	self.enemy.is_malfunctioning = TRUE;
+	self.enemy.enemy = NIL;
+	self.enemy.think = self.enemy.th_walk;
+	self.enemy.nextthink = time + 1;
+	self.enemy.goalentity = self.enemy;
+	//self.enemy.invincible_finished = self.enemy.nextthink;
+
+
+	if (self.enemy.martyr_enemy.demon_one == self.enemy)
+	{
+	    self.enemy.martyr_enemy.job -= (self.enemy.martyr_enemy.job & JOB_DEMON_OUT);
+	    self.enemy.martyr_enemy.demon_one = NIL;
+	}
+	
+	self.enemy = NIL;
+	if (self.movetarget)
+	    self.think = self.th_walk;
+	else
+	    self.think = self.th_stand;
 };
 
 float()	ShamCheckAttack =
 {
+	if (CheckShamConvert())
+	{
+		self.enemy = NIL;
+		return FALSE;
+	}
+
+	if (random() * 10 > self.has_tesla) //don't attack all the time, but do choose correctly if we're attacking.
+		return FALSE;
+
 // if close enough for slashing, go for it
 	if (CheckShamMelee ())
 	{
 		self.attack_state = AS_MELEE;
 		return TRUE;
 	}
-	if (CheckShamLightning ())
+	
+	if (CheckShamFireball ())
+	{
+		self.attack_state = AS_FIREBALL;
 		return TRUE;
+	}
+
+	if (CheckShamLightning ())
+	{
+		self.attack_state = AS_MISSILE;
+		return TRUE;
+	}
+
 
 	return FALSE;
 };
 
 // Shambler shoots fireballs!
 
-/*
+
 void() sham_fireball =
 {
 	local float		r;
@@ -532,8 +691,12 @@ void() sham_fireballl7 =[      $swingl7,      sham_fireballl8   ] {ai_charge(15 
 void() sham_fireballl8 =[      $swingl8,      sham_fireballl9   ] {ai_charge(12 * (0.7 + self.has_tesla * 0.2));};
 void() sham_fireballl9 =[      $swingl9,      sham_run1  ] {
 ai_charge(24 * (0.7 + self.has_tesla * 0.2));
-if (random() < 0.2)
-	self.think = sham_fireballr1;
+   if (random() < 0.2) {
+	    if (!CheckShamMelee())
+		self.think = sham_fireballr1;
+	    else
+		self.think = sham_swingr1;
+   }
 };
 
 void() sham_fireballr1	=[      $swingr1,      sham_fireballr2   ] {
@@ -547,71 +710,172 @@ void() sham_fireballr6 =[      $swingr6,      sham_fireballr7   ] {ai_charge(18 
 void() sham_fireballr7 =[      $swingr7,      sham_fireballr8   ] {ai_charge(18 * (0.7 + self.has_tesla * 0.2)); ShamFireball(-250);};
 void() sham_fireballr8 =[      $swingr8,      sham_fireballr9   ] {ai_charge(9 * (0.7 + self.has_tesla * 0.2));};
 void() sham_fireballr9 =[      $swingr9,      sham_run1  ] {ai_charge(30 * (0.7 + self.has_tesla * 0.2));
-if (random() < 0.2)
-	self.think = sham_fireballl1;
+if (random() < 0.4) {
+	if (!CheckShamMelee())
+	    self.think = sham_fireballl1;
+	else
+	    self.think = sham_swingl1;
+}
 };
 
 void(float side) ShamFireball =
 {
-	local	float	ldmg;
-	local	vector	delta;
-	local	vector	offang;
 	local	vector	org, dir;
-	
+	local	float	mult;	
+
 	ai_face ();
 
-	delta = self.enemy.origin - self.origin;
-	offang = vectoangles (delta);
-	makevectors (offang);
+#ifdef SHAMBLER_DEBUG
+	sprint(self.real_owner, PRINT_HIGH, "Throwing fireballs at ");
+	sprint(self.real_owner, PRINT_HIGH, self.enemy.classname);
+	sprint(self.real_owner, PRINT_HIGH, "\n");
+#endif
+
+	makevectors (self.angles); // was offang
 	
 	sound (self, CHAN_WEAPON, "hknight/attack1.wav", 1, ATTN_NORM); //Odd, it was already precached
 
-	if (side > 0) //CH cause to spawn on side of demon.
-		org = self.origin + (v_forward * 10) + (v_right * 20);
+	if (side > 0) //CH cause to spawn on side of demon. GR - and actually outside the bounding box too!
+		org = self.origin + (v_forward * 40) + (v_right * 20);
 	else
-		org = self.origin + (v_forward * 10) - (v_right * 20);
+		org = self.origin + (v_forward * 40) - (v_right * 20);
 
+	org_z += 32;
+#ifdef SHAMBLER_DEBUG
+	sprint(self.real_owner, PRINT_HIGH, "org is ");
+	sprint(self.real_owner, PRINT_HIGH, vtos(org));
+#endif
 // set missile speed
-	dir = normalize (v_forward);
 
 //CH demons are not good at throwing
-	dir_z = 0 - dir_z; //Random Z addage
-	//dir_x = dir_x + (random() - 0.5)*0.05; //Random X addage
-	//dir_y = dir_y + (random() - 0.5)*0.05; //Random Y addage
+//but shamblers are
+	//dir_z = 0 - dir_z; //Random Z addage
+	//dir_x = dir_x + (random() - 0.5)*0.20 / self.has_tesla; //Random X addage
+	//dir_y = dir_y + (random() - 0.5)*0.20 / self.has_tesla; //Random Y addage
 	
 	newmis = spawn ();
 	newmis.owner = self;
-	newmis.movetype = MOVETYPE_NOCLIP;
+	newmis.movetype = MOVETYPE_FLYMISSILE;
 	newmis.solid = SOLID_BBOX;
 
-	newmis.angles = vectoangles(dir);
+	newmis.angles = self.angles;
+	newmis.avelocity = '200 200 200';
+
+	dir = normalize(self.enemy.origin - org);
+	mult = 1300 + self.has_tesla*50; 
+	newmis.velocity = dir * mult;
 
 	newmis.touch = shambler_fire_touch;
 	newmis.weapon = DMSG_DEMON_FIRE;
 	newmis.classname = "demon_fire";
-	newmis.think = SUB_Remove;
-	newmis.nextthink = time + 10;
-	setmodel (newmis, "progs/lavaball.mdl");
-	setsize (newmis, '-8 -16 -8', '20 16 28'); //CH actual mdl bounds
-//	setsize (newmis, '0 0 0', '0 0 0');
-	setorigin (newmis, org);
-	newmis.velocity = dir * 1000 * (self.has_tesla - 3);
-};
-*/
 
-/*void() shambler_fire_touch = -OFN fireballs out!
+	newmis.think = shambler_fire_think;
+	newmis.nextthink = time + 0.1;
+	newmis.heat = time + 10;
+
+	newmis.oldorigin = self.enemy.origin;
+	setmodel (newmis, "progs/lavaball.mdl");
+//	setsize (newmis, '-4 -8 -4', '4 8 4'); //CH actual mdl bounds GR well not that big
+	setsize (newmis, '0 0 0', '0 0 0');
+	setorigin (newmis, org);
+
+#ifdef SHAMBLER_DEBUG
+	sprint(self.real_owner, PRINT_HIGH, ", newmis.origin is ");
+	sprint(self.real_owner, PRINT_HIGH, vtos(newmis.origin));
+	sprint(self.real_owner, PRINT_HIGH, ".\n");
+
+	sprint(self.real_owner, PRINT_HIGH, "self.enemy.origin is ");
+	sprint(self.real_owner, PRINT_HIGH, vtos(self.enemy.origin));
+	sprint(self.real_owner, PRINT_HIGH, ".\n");
+
+	sprint(self.real_owner, PRINT_HIGH, "newmis.velocity is ");
+	sprint(self.real_owner, PRINT_HIGH, vtos(newmis.velocity));
+	sprint(self.real_owner, PRINT_HIGH, ", dir is ");
+	sprint(self.real_owner, PRINT_HIGH, vtos(dir));
+	sprint(self.real_owner, PRINT_HIGH, ".\n");
+#endif
+};
+
+
+void() shambler_fire_think =
+{
+	local float speed;
+	local vector dir;
+
+	if (self.heat < time) {
+	    dremove(self);
+	    return;
+	}
+
+	if (vlen(self.oldorigin - self.origin) < vlen(self.velocity) / 3) {
+	    self.think = SUB_Remove;
+	    self.nextthink = self.heat;
+	    return;
+	}
+
+	speed = vlen(self.velocity);
+	dir = normalize(self.oldorigin - self.origin);
+
+	self.velocity = dir * speed;
+	self.nextthink = time + 0.1;
+};
+	
+
+void() shambler_fire_touch =
 {
 	local float fire_dmg;
-	fire_dmg = 10 + random() * 25;
-	fire_dmg = fire_dmg * self.owner.has_tesla;
-	if (pointcontents(self.origin) == CONTENT_SKY)
+	local entity head;
+
+	fire_dmg = (30 * self.has_tesla) + (random() * 25);
+
+#ifdef SHAMBLER_DEBUG
+	sprint(self.owner.real_owner, PRINT_HIGH, "fire_touch at ");
+	sprint(self.owner.real_owner, PRINT_HIGH, vtos(self.origin));
+	sprint(self.owner.real_owner, PRINT_HIGH, ".\n");
+#endif
+
+	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
+		self.owner.has_fieldgen += 1;
 		dremove(self);
 		return;
 	}
 
 	deathmsg = self.weapon;
-	T_RadiusDamage (self, self.owner, fire_dmg , self.owner);
+	T_RadiusDamage (self, self.owner, fire_dmg, self.owner);
+
+        head = findradius(self.origin, 10*self.owner.has_tesla);
+
+	if (!head)
+		self.owner.has_fieldgen += 1;
+
+        while (head)
+        {
+                 if (head.takedamage)
+                 {
+                        deathmsg = DMSG_FLAME;
+
+			if (head == self.owner)
+				self.owner.has_fieldgen += 2;
+			else if (head == self.owner.enemy)  // even if it's a teammate
+				self.owner.has_fieldgen -= 1;
+			else if (Teammate(head.team_no, self.owner.team_no))
+				self.owner.has_fieldgen += 1;
+			else
+				self.owner.has_fieldgen -= 1;
+
+                        // set 'em on fire
+                        other = head;  // i can't believe this works!
+                        Napalm_touch();
+			Napalm_touch(); // set them on a lot of fire
+                        if (other.classname == "player")
+                           stuffcmd(other, "bf\nbf\n");
+                        if (IsBuilding(other))
+                           TF_T_Damage (head, self, self.owner, 35, TF_TD_NOTTEAM, TF_TD_FIRE);
+                 }
+                head = head.chain;
+        }
+
 
 	self.origin = self.origin - 8*normalize(self.velocity); //???
 
@@ -629,6 +893,6 @@ void(float side) ShamFireball =
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
-*/
+
 
 

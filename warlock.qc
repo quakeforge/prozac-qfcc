@@ -138,29 +138,10 @@ void(float inp) Menu_Demon_Input =
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        if (self.demon_one.enemy)
-        {
-            if (visible2(self.demon_one,self.demon_one.enemy))
-            {
-                sprint(self,PRINT_HIGH,"Your ");
-                sprint(self,PRINT_HIGH,st);
-                sprint(self,PRINT_HIGH," is busy trying to kill!\n");
-                self.impulse=0;
-                return;
-            }
-        }
-
-        if (self.demon_one.goalentity == self) 
-        {
-            sprint(self,PRINT_HIGH,"Your ");
-            sprint(self,PRINT_HIGH,st);
-            sprint(self,PRINT_HIGH," is already trying to reach your position!\n");
-            self.impulse=0;
-            return;
-        }
-        
         self.demon_one.enemy=NIL;//
+	self.demon_one.oldenemy=NIL;
         self.demon_one.goalentity=self;
+	self.demon_one.movetarget=self;
         self.demon_one.nextthink=time+0.1;
 
         PutMonsterWalk(self.demon_one);
@@ -179,20 +160,10 @@ void(float inp) Menu_Demon_Input =
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        if (self.demon_one.enemy)
-        {
-            if (visible2(self.demon_one,self.demon_one.enemy))
-            {
-                sprint(self,PRINT_HIGH,"Your ");
-                sprint(self,PRINT_HIGH,st);
-                sprint(self,PRINT_HIGH," is busy tring to kill!\n");
-                self.impulse=0;
-                return;
-            }
-        }
-        self.demon_one.enemy=NIL;//
+	self.demon_one.enemy=NIL;
         self.demon_one.oldenemy=NIL;////
         self.demon_one.goalentity=self.demon_one;
+	self.demon_one.movetarget=self.demon_one;
         self.demon_one.nextthink=time+0.1;
         
         PutMonsterWalk(self.demon_one);
@@ -212,20 +183,10 @@ void(float inp) Menu_Demon_Input =
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        if (self.demon_one.enemy)
-        {
-            if (visible2(self.demon_one,self.demon_one.enemy))
-            {
-                sprint(self,PRINT_HIGH,"Your ");
-                sprint(self,PRINT_HIGH,st);
-                sprint(self,PRINT_HIGH," is busy tring to kill!\n");
-                self.impulse=0;
-                return;
-            }
-        }
         self.demon_one.enemy=NIL;//
         self.demon_one.oldenemy=NIL;////
         self.demon_one.goalentity=NIL;
+	self.demon_one.movetarget=NIL;
         self.demon_one.nextthink=time+0.1;
         
         PutMonsterStand(self.demon_one);
@@ -240,50 +201,38 @@ void(float inp) Menu_Demon_Input =
 		ResetMenu();
 		self.impulse = 0;
 	}
-	else if (inp == 2) // knight
+	else if (inp == 2) // fiend
 	{
 		self.demon_choice = 2;
 		ResetMenu();
 		self.impulse = 0;
 
 	}
-	else if (inp == 3) // fiend
+	else if (inp >= 3 && inp < 8) // shambler
 	{
-		self.demon_choice = 3;
+		self.demon_choice = inp;
 		ResetMenu();
 		self.impulse = 0;
 	}
-    /*else if (inp == 4) // hell knight
-	{
-		self.demon_choice = 4;
-		ResetMenu();
-		self.impulse = 0;
-	}
-    else if (inp == 5) // shambler
-	{
-		self.demon_choice = 5;
-		ResetMenu();
-		self.impulse = 0;
-	}*/
 	else if (inp == 8) // unsummon
 	{
 		if (self.job & JOB_DEMON_OUT)
-        {
-            local string MName;
-            MName=GetMonsterName(self.demon_one);    
-
-            teamprefixsprint(self.team_no, self);
-            teamsprint(self.team_no,self, self.netname);
-	        teamsprint(self.team_no,self, " unsummons his ");
+	        {
+	            local string MName;
+	       	     MName=GetMonsterName(self.demon_one);    
+	
+       			teamprefixsprint(self.team_no, self);
+       			teamsprint(self.team_no,self, self.netname);
+			teamsprint(self.team_no,self, " unsummons his ");
     
-            teamsprint(self.team_no,self, MName);
-            teamsprint(self.team_no,self, "\n");
+            		teamsprint(self.team_no,self, MName);
+            		teamsprint(self.team_no,self, "\n");
 
-            kill_my_demon();
-        }
-        else return;
+            		kill_my_demon();
+        	}
+        	else return;
 
-        ResetMenu();
+        	ResetMenu();
 		self.impulse = 0;
 		return;
 	}
@@ -301,9 +250,15 @@ void(float inp) Menu_Demon_Input =
 
 #ifndef WARLOCK_TEST
 
+    if (self.demon_blood < 8 && self.demon_choice >= 4)
+    {
+	self.impulse = 0;
+	return;
+    }
+
     if (self.demon_blood < 4 && self.demon_choice == 3)
     {
-        sprint (self, PRINT_HIGH, "You need to kill 5 enemies with your knife to summon a shambler.\n");
+        sprint (self, PRINT_HIGH, "You need to kill 4 enemies with your knife to summon a shambler.\n");
         //ResetMenu();
         self.impulse = 0;
         return;
@@ -349,8 +304,30 @@ void(float inp) Menu_Demon_Input =
 
     // TEMP
     points = 5;
-    
-    if (self.demon_choice == 3)
+
+    if (self.demon_choice == 5)
+    {
+	if (infokey(NIL, "shamking") == "off")
+	{
+	    self.impulse = 0;
+	    return;
+	}
+	points = 4 + self.demon_blood / 4;
+	self.demon_blood = 0;
+	self.demon_choice = 3;
+    }
+    else if (self.demon_choice == 4)
+    {
+	if (infokey(NIL, "bsham") == "off")
+	{
+	    self.impulse = 0;
+	    return;
+	}
+	points = 6;
+	self.demon_blood = self.demon_blood - 8;
+	self.demon_choice = 3;
+    }	
+    else if (self.demon_choice == 3)
         self.demon_blood = self.demon_blood - 4;
     else if (self.demon_choice == 2)
         self.demon_blood = self.demon_blood - 2;
@@ -379,7 +356,7 @@ void(float inp) Menu_Demon_Input =
     SummonTimer = spawn ();
     SummonTimer.classname = "timer";
     SummonTimer.owner = self;
-    SummonTimer.nextthink = time + 1.5; //Small delays are cool
+    SummonTimer.nextthink = time + (points * 1.5) - 6 ; //Small delays are cool
     SummonTimer.think = SummonThink;
     SummonTimer.has_tesla = points;
     SummonTimer.heat = 0;
@@ -566,7 +543,7 @@ void (float points) custom_demon_create =
         newmis.classname = "monster_hknight";
         newmis.mdl = "progs/hknight.mdl";
 	}*/
-	else if (self.demon_choice == 3)
+	else if (self.demon_choice >= 3)
 	{
 		newmis.classname = "monster_shambler";
 		#ifdef no_tf_monsters
@@ -628,7 +605,7 @@ void (float points) custom_demon_create =
         setsize (newmis, VEC_HULL2_MIN, VEC_HULL2_MAX);
 		setorigin (newmis, newmis.origin + '0 0 30');
 	}*/
-    else  if (self.demon_choice == 3)
+    else  if (self.demon_choice >= 3)
     {
         #ifdef no_tf_monsters
         setmodel (newmis, "progs/shambler.mdl");
@@ -760,25 +737,32 @@ void (float points) custom_demon_create =
 	}
 	else if ( newmis.classname == "monster_shambler" )
 	{
-		newmis.health = SHAMBLER_HP;//750 + points * 350; //WK 300
-		newmis.armorclass = 0;// ofn- AT_SAVEEXPLOSION | AT_SAVEMELEE;
+		newmis.health = (points * 2200) - 7000; //750 + points * 350; //WK 300
+		if (newmis.health < 300) newmis.health = 300;
+		newmis.armorclass = AT_SAVEEXPLOSION;// ofn- AT_SAVEEXPLOSION | AT_SAVEMELEE;
 		newmis.last_saveme_sound = 0;
 		newmis.has_tesla = points;
 		newmis.has_sentry = 0;
+		newmis.has_fieldgen = 0;
 		newmis.th_stand = sham_stand1;
 		newmis.th_walk = sham_walk1;
-		newmis.th_run = sham_run1;
+		newmis.th_run = sham_run;
 		newmis.th_die = custom_shambler_die;
 		newmis.th_melee = sham_melee;		// one of two attacks
 		newmis.th_missile = sham_magic1;
 		newmis.th_pain = sham_pain;
-		//newmis.th_fireball = sham_fireball; //- OfN - this, uglyness apart, didn't work anyway
+		newmis.th_fireball = sham_fireball; //- OfN - this, uglyness apart, didn't work anyway
 		newmis.think = walkmonster_start;
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
 		//newmis.touch = NIL;
 		////newmis.real_owner.demon_blood = 0; marduk bug
-		sprint(self, PRINT_HIGH, "You summon a shambler.\n");
+		if (newmis.has_tesla > 6)
+			sprint (self, PRINT_HIGH, "You summon a shambler king.\n");
+		else if (newmis.has_tesla == 6)
+			sprint (self, PRINT_HIGH, "You summon a battle shambler.\n");
+		else
+			sprint(self, PRINT_HIGH, "You summon a shambler.\n");
 	}
 	else
 	{
@@ -802,6 +786,7 @@ void (float points) custom_demon_create =
     }
 
     newmis.touch=MonsterTouch;
+    newmis.is_malfunctioning = 0;
 
     newmis.message = "XX"; // flag to identify monsters/army for sentry targetting
 
@@ -949,7 +934,7 @@ void () kill_my_demon =
 	
 	while (te)
 	{
-		if (te.real_owner == self)
+		if (te.real_owner == self && !te.is_malfunctioning)
 		{
 			oself = self;
 			self = te;
@@ -1084,21 +1069,21 @@ void () kill_my_demon =
 	{
 		if (te.real_owner == self)
 		{
-			oself = self;
-			self = te;
-			ThrowGib ("progs/h_shams.mdl", -100);
-			ThrowGib ("progs/gib1.mdl", -10);
-			ThrowGib ("progs/gib3.mdl", -30);
-			ThrowGib ("progs/gib3.mdl", -70);
-			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
-			te.think = SUB_Remove;
-			te.touch = NIL;
-			te.nextthink = time + 0.1;
-			self = oself;
+				oself = self;
+				self = te;
+				ThrowGib ("progs/h_shams.mdl", -100);
+				ThrowGib ("progs/gib1.mdl", -10);
+				ThrowGib ("progs/gib3.mdl", -30);
+				ThrowGib ("progs/gib3.mdl", -70);
+				sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
+				te.think = SUB_Remove;
+				te.touch = NIL;
+				te.nextthink = time + 0.1;
+				self = oself;	
 
-			//self.job = self.job - (self.job & JOB_DEMON_OUT);
-			sprint (self, PRINT_HIGH, "Your shambler is dead.\n");
-			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
+				//self.job = self.job - (self.job & JOB_DEMON_OUT);
+				sprint (self, PRINT_HIGH, "Your shambler is dead.\n");
+				//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_shambler");
 	}
@@ -1129,11 +1114,12 @@ void () kill_my_demon =
 		te = find(te, classname, "monster_wizard");
 	}   
 
-    self.job = self.job - (self.job & JOB_DEMON_OUT);
-    self.demon_one = NIL;
 
-    self.summon_one = NIL;
-    self.summon_two = NIL;
+    	self.job = self.job - (self.job & JOB_DEMON_OUT);
+    	self.demon_one = NIL;
+
+    	self.summon_one = NIL;
+	self.summon_two = NIL;
 };
 
 void() MonsterTouch =

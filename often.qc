@@ -685,7 +685,14 @@ string(entity themonster) GetMonsterName =
     if (themonster.classname == "monster_wizard")
         return "scrag";
     if (themonster.classname == "monster_shambler")
-        return "shambler";
+    {
+	if (themonster.has_tesla > 6)
+	    return "shambler king";
+	if (themonster.has_tesla == 6)
+	    return "battle shambler";
+        else
+            return "shambler";
+    }
     if (themonster.classname == "monster_demon1")
         return "fiend";
     if (themonster.classname == "monster_army")

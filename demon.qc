@@ -708,7 +708,7 @@ void() monster_demon_respawn =
 
 void () custom_demon_die = 
 {
-	if (self.real_owner.classname == "player")
+	if (self.real_owner.classname == "player" && self.real_owner.demon_one == self)
 	{
 		sprint(self.real_owner,PRINT_HIGH,"Your fiend is dead.\n");
 		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);

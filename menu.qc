@@ -2402,7 +2402,6 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 				sprint(self, PRINT_HIGH, "Gun is already deployed\n");
 			}
 			else {
-				self.building.origin_z = self.building.origin_z + 15; // +15//Elevate for the check
 				//Make sure the launch area is clear
 				if (FALSE) {
 				//if (CheckArea(self.building,self) == FALSE) {
@@ -2411,7 +2410,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 				}
 				else {
 					//self.building.origin_z = self.building.origin_z + 25; //+ 25 //Finish liftoff
-                    self.building.origin_z = self.building.origin_z - 25; //often fixes tesla not touchin ceiling//+ 25 //Finish liftoff
+                    self.building.origin_z = self.building.origin_z - 34; //often fixes tesla not touchin ceiling//+
 					sprint(self, PRINT_HIGH, "You turretize the tesla\n");
 
                     if (self.building.job == 1 && self.building.tf_items & NIT_TESLA_CLOAKING)

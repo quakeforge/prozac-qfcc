@@ -431,9 +431,10 @@ void (entity targ, entity attacker) Obituary_Player_by_Shambler =
 {
 	custom_demon_name (attacker); //CH
 
-	if (attacker.real_owner == targ) {
-		Give_Frags_Out (attacker.real_owner, attacker.real_owner, -2, 0, 1, 1, 0);
-
+	if (attacker.real_owner == targ || (attacker.is_malfunctioning && attacker.martyr_enemy == targ)) {
+	
+		if (!attacker.is_malfunctioning)
+			Give_Frags_Out (attacker.real_owner, attacker.real_owner, -2, 0, 1, 1, 0);
 		if (deathmsg == DMSG_LIGHTNING) {
 			bprint (PRINT_MEDIUM, attacker.netname);
 			bprint (PRINT_MEDIUM, " annihilates its owner ");
@@ -444,6 +445,14 @@ void (entity targ, entity attacker) Obituary_Player_by_Shambler =
 			bprint (PRINT_MEDIUM, " detonates its owner ");
 			bprint (PRINT_MEDIUM, targ.netname);
 			bprint (PRINT_MEDIUM, " with a fireball\n");
+		} else if (deathmsg == DMSG_FLAME && attacker.has_tesla > 5) {
+			bprint (PRINT_MEDIUM, targ.netname);
+			if (attacker.has_tesla == 6)
+				bprint (PRINT_MEDIUM, " was torched by his own battle shambler, ");
+			else
+				bprint (PRINT_MEDIUM, " was deep-fried by his ally, ");
+			bprint (PRINT_MEDIUM, attacker.netname);
+			bprint (PRINT_MEDIUM, "\n");
 		} else {
 			if (random () < FRAC (1, 2)) {
 				bprint (PRINT_MEDIUM, attacker.netname);
@@ -483,12 +492,24 @@ void (entity targ, entity attacker) Obituary_Player_by_Shambler =
 				bprint (PRINT_MEDIUM, ") lightning\n");
 			} else {
 				bprint (PRINT_MEDIUM, attacker.real_owner.netname);
-				bprint (PRINT_MEDIUM, "'s shambler, ");
+				if (attacker.has_tesla < 6)
+					bprint (PRINT_MEDIUM, "'s shambler, ");
+				else if (attacker.has_tesla == 6)
+					bprint (PRINT_MEDIUM, "'s battle shambler, ");
+				else
+					bprint (PRINT_MEDIUM, "'s shambler king, ");
 				bprint (PRINT_MEDIUM, attacker.netname);
 				bprint (PRINT_MEDIUM, ", teaches ");
 				bprint (PRINT_MEDIUM, targ.netname);
 				bprint (PRINT_MEDIUM, " to cook without gas\n");
 			}
+		} else if (deathmsg == DMSG_FLAME) {
+			bprint (PRINT_MEDIUM, targ.netname);
+			bprint (PRINT_MEDIUM, " is immolated by ");
+			bprint (PRINT_MEDIUM, attacker.netname);
+			bprint (PRINT_MEDIUM, " (");
+			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
+			bprint (PRINT_MEDIUM, ")'s hellfire\n");
 		} else if (deathmsg == DMSG_DEMON_FIRE) {
 			if (random () < FRAC (1, 2)) {
 				bprint (PRINT_MEDIUM, targ.netname);
@@ -2165,13 +2186,19 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Shambler =
 {
 	custom_demon_name (attacker);
 
-	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
+	if (attacker == targ && deathmsg == DMSG_FLAME)
+	{
+		bprint (PRINT_MEDIUM, attacker.netname);
+		bprint (PRINT_MEDIUM, " (");
+		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
+		bprint (PRINT_MEDIUM, ") sets itself on fire one too many times.\n");
+	} else if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
 		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
-		bprint (PRINT_MEDIUM, ") electrifies the friendly shambler ");
+		bprint (PRINT_MEDIUM, ") destroys the friendly shambler ");
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
@@ -2234,7 +2261,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Wizard =
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
-		bprint (PRINT_MEDIUM, ") kills the friendly soldier ");
+		bprint (PRINT_MEDIUM, ") nullifies the friendly shambler ");
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
@@ -2245,7 +2272,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Wizard =
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
-		bprint (PRINT_MEDIUM, ") had his army career truncated by the scrag ");
+		bprint (PRINT_MEDIUM, ") is destroyed by the scrag ");
 		//bprint (PRINT_MEDIUM, attacker.undercover_name);
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");

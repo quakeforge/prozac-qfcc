@@ -42,17 +42,18 @@ $frame ablast1 ablast2 ablast3 ablast4 ablast5 ablast6
 
 float (entity thing) canairpush =
 {
-	if (thing.classname == "player")
+	if (thing.classname == "player") {
 		return TRUE;
+	}
 	else if (thing.classname == "pipebomb")
-    {
+	{
 		thing.avelocity = '300 300 300';
         return TRUE;
-    }
+	}
 	else if (thing.classname == "spike")
 		return TRUE;
 	else if (thing.classname == "grenade")
-    {
+	{
 		thing.avelocity = '300 300 300';
         return TRUE;
     }
@@ -102,6 +103,7 @@ void() launch_horn =
 {
 	// Local variables used in the function
   local entity e;
+  local entity oself;
   local vector delta;
   local vector dir;
   local float eSpeed;
@@ -109,6 +111,7 @@ void() launch_horn =
   local float percent;
   local float ldmg;
   local float nearAWall;
+
 
   // Constants used in the control of how the AirFist is works
 
@@ -280,7 +283,15 @@ void() launch_horn =
         // take affect.
 
         // raise the bugger a bit
-        //setorigin(e, e.origin + '0 0 1'); // - OfN - And make them stuck in wall? :) nope..
+        setorigin(e, e.origin + '0 0 1'); // - OfN - And make them stuck in wall? :) nope..
+
+	oself = self;
+	self = e;
+
+	if (pointcontents(e.origin) == CONTENTS_SOLID)
+	   setorigin(e, e.origin - '0 0 1');
+
+	self = oself;
 
         // We biased the up direction when entity is on the ground.
         // Looks cooler and small entitys (heath, etc) go somewhere instead
@@ -298,6 +309,8 @@ void() launch_horn =
 
       if (e.classname == "player" && e.cutf_items & CUTF_HWGUY)
         delta = '0 0 0';
+      if (e.classname == "player" && e.cutf_items & CUTF_GYMNAST)
+	delta *= 2;
 
       // calculate the velocity adjustment.
       delta = normalize(delta);
@@ -342,6 +355,13 @@ void() launch_horn =
 
         // calculate the damage amount
         ldmg = percent * inDamage;
+
+	if (e.classname == "player") {
+	  if (e.cutf_items & CUTF_HWGUY) // hwguy can't get knocked, but it hurts more
+		ldmg *= 1.5;
+	  if (e.cutf_items & CUTF_GYMNAST) // gymnast goes with the flow, less damage
+		ldmg *= 0.3;
+	}
 
         // This section of code is to even of the "figure momentum add" in the
         // T_Damage function that recoils damaged entity's away from the attacker.
@@ -404,8 +424,10 @@ void() launch_horn =
     // take affect.
 
     // raise the bugger a bit 
-    //setorigin(self, self.origin + '0 0 1'); // - OfN - And make them stuck in wall? :) nope..
+    setorigin(self, self.origin + '0 0 1'); // - OfN - And make them stuck in wall? - GR No, but that screws it up
     self.flags = self.flags - FL_ONGROUND;
+    if (pointcontents(self.origin) == CONTENTS_SOLID)
+        setorigin(self, self.origin + '0 0 -1');
    }
 
   if(nearAWall)

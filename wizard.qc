@@ -356,7 +356,7 @@ void()	wiz_death8	=[	$death8,		wiz_death8	]
 
 void() wiz_die =
 {
-    if (self.real_owner.classname == "player")
+    if (self.real_owner.classname == "player" && self.real_owner.demon_one == self)
     {
 	    sprint(self.real_owner,PRINT_HIGH,"Your scrag is dead.\n");
 	    self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);

@@ -45,10 +45,10 @@ Functions for handling the custom class professions
 //So we don't have to do error checking on those situations
 //Four special cases, Rifle, Medikit, AC and Grapple, have side effects
 // when you remove them. Need special cases to handle their theft
-#define DISARM_TIME 10
-#define CANT_ATTACK_TIME 5
+#define DISARM_TIME 20
+#define CANT_ATTACK_TIME 3
 #define HIT_DELAY 8
-#define MISS_DELAY 1
+#define MISS_DELAY 3
 
 /*
 ** Guerilla Profession -
