@@ -1327,7 +1327,7 @@ float(float tno) TeamFortress_TeamIsCivilian =
 
 //=========================================================================
 // Sprints to all the members on one team except one 
-float(float tno, entity ignore, string st) teamsprint =
+void(float tno, entity ignore, string st) teamsprint =
 {
 	// Don't do teamprints in DM
 	if (tno == 0)

@@ -764,7 +764,7 @@ string(entity pl) ClipSizeToString100 =
 	}
 	else if (num >= 40)
 		return "\nγμιπ:40";
-	return num;
+	return ftos (num);
 };
 //==========
 string(entity te) SentryDetailsToString =

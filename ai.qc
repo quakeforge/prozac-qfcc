@@ -1040,7 +1040,7 @@ float()	ShamCheckAttack;
 float() CheckAnyAttack =
 {
 	if (!enemy_vis)
-		return;
+		return #FALSE;
 	if (self.classname == "monster_demon1")
 		return DemonCheckAttack ();
 /*	else if (self.classname == "monster_army")

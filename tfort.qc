@@ -2578,7 +2578,7 @@ float(entity Retriever, entity Items) TeamFortress_AddBackpackItems =
 	// weapons, then you may want them to be able to pick up weapons
 	// from backpacks. If so, this is where to do it.
 	// For now, return. 
-	return;
+	return 0;
 };
 
 //=========================================================================

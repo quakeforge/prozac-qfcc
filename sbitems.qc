@@ -22,7 +22,7 @@ void() CameraSwitchView;*/
 
 void() ConcussionGrenadeTouch;
 void() Security_Camera_Pain;
-float(float tno, entity ignore, string st) teamsprint;
+void(float tno, entity ignore, string st) teamsprint;
 void() TeamFortress_DetpackTouch;
 void() TeamFortress_DetpackCountDown;
 void() TeamFortress_DetpackExplode;

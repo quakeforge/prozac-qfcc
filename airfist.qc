@@ -39,7 +39,7 @@ $cd id1/progs/s_ablast
 $frame ablast1 ablast2 ablast3 ablast4 ablast5 ablast6
 
 
-void (entity thing) canairpush =
+float (entity thing) canairpush =
 {
 	if (thing.classname == "player")
 		return #TRUE;
