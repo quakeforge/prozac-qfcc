@@ -89,16 +89,6 @@ void() Teleporter_touch =
 //===============
 float(entity targ) Teleporter_check_person =
 {
-	if (self.ammo_cells < TELEPORTER_CELLS) {
-		if (Teammate(targ.team_no, self.team_no)) //only to team member
-			CenterPrint(other, "This teleporter is out of power.\n");
-		return FALSE;
-	}
-	if (self.real_owner.has_teleporter == 1) {
-		if (Teammate(targ.team_no, self.team_no)) //only to team member
-			CenterPrint(other, "There is no other teleporter!\n");
-		return FALSE;
-	}
 	if (infokey(NIL,"ceasefire")=="on") //To not cause loops
 		return FALSE;
 	if (!targ)//that would be bad.
@@ -121,6 +111,16 @@ float(entity targ) Teleporter_check_person =
 		return FALSE;
 	if (targ.is_detpacking)
 		return FALSE;
+	if (self.ammo_cells < TELEPORTER_CELLS) {
+		if (Teammate(targ.team_no, self.team_no)) //only to team member
+			CenterPrint(other, "This teleporter is out of power.\n");
+		return FALSE;
+	}
+	if (self.real_owner.has_teleporter == 1) {
+		if (Teammate(targ.team_no, self.team_no)) //only to team member
+			CenterPrint(other, "There is no other teleporter!\n");
+		return FALSE;
+	}
 	if (targ.playerclass == PC_CIVILIAN) {
 		CenterPrint(targ, "Civilian + Teleporter = No, NFC!\n");
 		return FALSE;
