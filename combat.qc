@@ -488,12 +488,16 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		if (mirror > 0 && !(targ.is_feigning || targ.is_undercover) && !(targ.penance_time > time)) //Hurt the jerk!
 			TF_T_Damage (attacker, attacker, attacker, mirror, 0, TF_TD_OTHER);
 	}
-	//WK Slight mirror demon protection
+	//WK Slight mirror demon protection GR Also do sentries here
 	//Do 2 points of damage to a friendly teammate shooting a friendly demon
 	//SB 2 damage? no way, we're doing the full mirror damage
 	//- Ofn- if ((targ.classname == "monster_demon1" || targ.classname == "monster_army" || targ.classname == "monster_shambler") && targ.real_owner)
-	if (IsMonster(targ) && targ.real_owner) {
+	if ((IsMonster(targ) || IsBuilding(targ)) && targ.real_owner) {
         targ.armorvalue = 1;
+#ifdef NO_BUILDING_TK
+		if (IsBuilding (targ) && attacker != targ.real_owner)
+			return;
+#endif
 		if (T_flags & TF_TD_NOTTEAM)
 		{
 			//Direct damage
