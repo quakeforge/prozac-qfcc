@@ -1857,12 +1857,9 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	deathmsg = DMSG_LIGHTNING;
 	if (trace_ent.takedamage)
 	{
-			LightningHit (from, damage);
-		if (self.classname == "player")
-		{
-			if (other.classname == "player")
-				trace_ent.velocity_z = trace_ent.velocity_z + 400;
-		}
+		LightningHit (from, damage);
+		if (self.classname == "player" && trace_ent.classname == "player")
+			trace_ent.velocity_z = trace_ent.velocity_z + 400;
 	}
 	e1 = trace_ent;
 
