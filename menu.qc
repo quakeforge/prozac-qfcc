@@ -1670,7 +1670,8 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		}
 		else if (self.ammo_cells < BUILD_COST_TURRET)
 		{
-			sprint(self, PRINT_HIGH, "Creating a turret costs BUILD_COST_TURRET metal\n");
+			sprint (self, PRINT_HIGH, "Creating a turret costs "
+					+ ftos (BUILD_COST_TURRET) + " metal\n");
 		}
 		else {
 			self.building.origin_z = self.building.origin_z + 15; //Elevate for the check

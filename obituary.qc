@@ -1011,8 +1011,11 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 			deathstring = " gets well done by ";
 			deathstring2 = "'s incendiary rocket\n";
 		} else if (deathmsg == DMSG_MARTYR) {
-			deathstring = " brings down the martyr ";
-			deathstring2 = "\n";
+			bprint (PRINT_MEDIUM, attacker.netname);
+			bprint (PRINT_MEDIUM, " brings down the martyr ");
+			bprint (PRINT_MEDIUM, targ.netname);
+			bprint (PRINT_MEDIUM, "\n");
+			return;
 		} else {
 			deathstring = " has a BUG death by ";
 			deathstring2 = " (deathmsg = " + ftos (deathmsg) + ")\n";
