@@ -24,6 +24,7 @@ void() SpectatorConnect =
 
     stuffcmd(self, "bind 9 \"impulse 9\"\n");
 	stuffcmd(self, "bind 0 \"impulse 10\"\n");
+	TeamFortress_Alias("id", #TF_ID, 0);
 
 	self.goalentity = world; // used for impulse 1 below
 };
@@ -63,6 +64,11 @@ void() SpectatorImpulseCommand =
 			self.angles = self.goalentity.angles;
 			self.fixangle = #TRUE;           // turn this way immediately
 		}
+	}
+	else if (self.impulse == #TF_ID)
+	{
+		makevectors(self.v_angle);
+		TeamFortress_ID(#FALSE);
 	}
 
 	self.impulse = 0; //cl_chasecam chasecam
