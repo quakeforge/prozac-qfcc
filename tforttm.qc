@@ -566,11 +566,11 @@ void (string key, string value) UserInfoCallback =
 	}
 //	dprint ("[[" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 
-	if (key == "topcolor") { // FIXME: some topcolors may be allowed
+/*	if (key == "topcolor") { // FIXME: some topcolors may be allowed
 		setinfokey(self, "topcolor", oldval);
 		stuffcmd(self, "color \"" + oldval + "\"\n");
 		return;
-	}
+	}*/
 	if (key == "bottomcolor") {
 		setinfokey (self, "bottomcolor", oldval);
 		stuffcmd (self, "bottomcolor \"" + oldval + "\"\n");

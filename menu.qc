@@ -1112,7 +1112,7 @@ void() Menu_Engineer =
 	else
 		st += "\n";
 
-	if (self.has_teleporter < 2 && self.ammo_cells >= BUILD_COST_TELEPORTER)
+	if (self.has_teleporter < 2 && self.ammo_cells >= BUILD_COST_TELEPORTER && self.tf_items & NIT_TELEPORTER)
 		st += "\x97.. Build a Teleporter Pad        \n";
 	else
 		st += "\n";
