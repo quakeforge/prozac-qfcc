@@ -2941,8 +2941,7 @@ void() W_Attack =
 
 	//WK Tranq does not remove disguise
 	//GR Spy can fire and keep their skin if not color-disguised.
-	if (self.is_undercover && (self.current_weapon != WEAP_TRANQ && self.current_weapon != WEAP_MAUSER)
-		&& (self.undercover_team != self.team_no))
+	if (self.undercover_team && (self.current_weapon != WEAP_TRANQ && self.current_weapon != WEAP_MAUSER))
 		Spy_RemoveDisguise(self);
 
 	if (self.job & JOB_THIEF && (self.job & JOB_ACTIVE || self.job & JOB_FULL_HIDE))
