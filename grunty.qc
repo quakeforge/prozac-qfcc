@@ -672,6 +672,7 @@ void() GruntyScanTargets =
 {
 	local entity	targ; // our hapless foe
 	local string	st;
+	targ = world;
 	
 	if (self.enemy != world)
 		if (self.enemy.health <= 0 || self.enemy.has_disconnected)
