@@ -315,3 +315,7 @@ void (void() thinkst) SUB_CheckRefire =
 	self.cnt = 1;
 	self.think = thinkst;
 };
+
+void () dont_think =
+{
+};

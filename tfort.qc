@@ -1283,7 +1283,7 @@ void() TeamFortress_GrenadePrimed =
 	newmis.angles = vectoangles(newmis.velocity);
 
 	// set the grenade's thinktime to when the PRIMETIME runs out
-	newmis.think = NIL;
+	newmis.think = dont_think;
 	newmis.nextthink = self.heat;
 
 	// set the think and touches to the appropriate grenade type
@@ -3353,7 +3353,7 @@ void() TeamFortress_ExplodePerson =
 	newmis.angles = vectoangles(newmis.velocity);
 	
 	// set the grenades thinktime to now
-	newmis.think = NIL;
+	newmis.think = dont_think;
 	newmis.nextthink = time + 0.1;
 
 	// set the think and touches to the appropriate grenade type

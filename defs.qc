@@ -598,6 +598,8 @@ void() SUB_CalcAngleMoveDone;
 void() SUB_UseTargets;
 void() SUB_Remove;
 
+void() dont_think;	// null function for think
+
 
 //
 //	combat.qc

@@ -10,7 +10,7 @@ cooperative mode functions
 void() DroppedKeyThink =
 {
 	// let the throwing player pick it up again
-	self.think = NIL;
+	self.think = dont_think;
 	self.touch = key_touch;
 	self.owner = NIL;
 };

@@ -967,10 +967,10 @@ void () kill_my_demon =
 			te.nextthink = time + 0.1;
 
             //-----------------------// NOT NEEDED
-            /*te.th_stand = NIL;
-            te.th_run = NIL;
-            te.th_missile = NIL;
-            te.th_pain = NIL;*/
+            /*te.th_stand = dont_think;
+            te.th_run = dont_think;
+            te.th_missile = dont_think;
+            te.th_pain = dont_think;*/
             //--------------------------//
 
 

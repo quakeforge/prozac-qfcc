@@ -523,7 +523,7 @@ void() teleport_use =
 {
 	self.nextthink = time + 0.2;
 	force_retouch = 2;		// make sure even still objects get hit
-	self.think = NIL;
+	self.think = dont_think;
 };
 
 /*QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY SILENT
