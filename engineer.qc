@@ -78,6 +78,8 @@ void() LaserBolt_Touch =
 		return;
 	}
 
+	self.velocity = self.mangle;
+
 	if (other == self.owner || other == self.real_owner)
 		return;
 
