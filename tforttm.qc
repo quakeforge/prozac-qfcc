@@ -182,7 +182,7 @@ string(float tno) GetTeamName =
 			return "teal";
 	}
 	else 
-		st = "\"\"";
+		st = "";
 
 	return st;
 };
@@ -208,9 +208,9 @@ void(entity p) SetTeamName =
 	local string st;
 
 	st = GetTeamName(p.team_no);
-	stuffcmd(p, "team ");
+	stuffcmd(p, "team \""); //careful about empty team
 	stuffcmd(p, st);
-	stuffcmd(p, "\n");
+	stuffcmd(p, "\"\n");
 	setinfokey(p, "team", st);
 };
 #endif
@@ -637,9 +637,9 @@ void() TeamFortress_CheckTeamCheats =
 
 			// Set the player's team
 			SetTeamName(self);
-			bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing team.\n");
-			sprint(self, #PRINT_HIGH, "You have been kicked for changing your team. Don't do it.\n");
-			stuffcmd(self, "disconnect\n");
+//			bprint2(#PRINT_MEDIUM, self.netname, " has been kicked for changing team.\n");
+//			sprint(self, #PRINT_HIGH, "You have been kicked for changing your team. Don't do it.\n");
+//			stuffcmd(self, "disconnect\n");
 			return;
 		}
 		}
