@@ -289,11 +289,24 @@ void() launch_horn =
         // If on the ground, makem go up, up, and away
 	// But this makes no sense..
 
-        if (delta_z < 0)
-          delta_z = delta_z / -5;
-        delta = delta * 0.7;
+	if (e.classname == "player" || IsMonster(e))
+	{	
+	        if (delta_z < 0)
+	       	   delta_z = delta_z / -5;
+	        delta = delta * 0.7;
+	} else {
+		if (delta_z < 0)
+		   delta_z = delta_z / -2;
+		delta = delta * 0.7;
+	
+		if (delta_z < 100)
+			delta_z = 100;
+	}
 
       }
+
+      delta = normalize(delta);
+      delta *= percent * strength;
 
       if (e.classname == "player") {
       	if (e.cutf_items & CUTF_HWGUY)
@@ -305,10 +318,6 @@ void() launch_horn =
 	delta *= 3;
       else if (!IsMonster(e))
 	delta *= 5;
-
-      // calculate the velocity adjustment.
-      delta = normalize(delta);
-      delta = delta * percent * strength;
 
 	  if(self.waterlevel > 2) // if under water, change the blast amount
       {
