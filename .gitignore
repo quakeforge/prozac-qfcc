@@ -1,5 +1,7 @@
 *.dat
 *.pqc
 *.sym
+.gdbinit
+.vimrc
 ChangeLog
 progdefs.h
