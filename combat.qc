@@ -332,14 +332,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	if ((inflictor.AIRG_Flags & 4) && inflictor != attacker && inflictor.AIRG_FlyTracker.classname == "player")
 	{
 		local entity targplayer = targ;
-		local float loopc = 0;
-		while (loopc < 5 && targplayer.classname != "player")
-		{
-			targplayer = targplayer.real_owner;
-			loopc++;
-		}
 
-		if (loopc < 5 && !Teammate(inflictor.AIRG_FlyTracker.team_no, targplayer.team_no) &&
+		if (targplayer.classname != "player")
+			targplayer = targplayer.real_owner;
+
+		if (!Teammate(inflictor.AIRG_FlyTracker.team_no, targplayer.team_no) &&
 		    Teammate(attacker.team_no, targplayer.team_no))
 			attacker = inflictor.AIRG_FlyTracker;
 	}
