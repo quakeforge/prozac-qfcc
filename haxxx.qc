@@ -31,8 +31,10 @@ void () Menu_Friend_Hax =
     st5="\n\n.. Hack-Repair       Ϋ8 secέ\n\n’.. Ξοτθιξη                  "; 
     st4="";
     st2="\n.. Add μεφεμ “ ICE  Ϋ20 secέ";
+	st = st3 = "";
 
-    if (!visible2x(self,self.demon_two)) st6="\n\nLost connection with target!\n";
+    if (!visible2x(self,self.demon_two))
+		st6="\n\nLost connection with target!\n";
 /*    else 
     {
         local float dist;

@@ -712,6 +712,8 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		local string deathstring;
 		local string deathstring2;
 
+		deathstring = deathstring2 = "WASN'T FALSE POSITIVE";
+
 		Give_Frags_Out (attacker, targ, 1, 1, 1, 1, 1);
 
 		if (attacker.tfstate & TFSTATE_INSPIRED) {
