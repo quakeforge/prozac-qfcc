@@ -1919,7 +1919,9 @@ void() PutClientInServer =
 	// Set the health for the player based on class
 	TeamFortress_SetHealth();
 	// Set the speed for the player based on class
+	self.tfstate |= TFSTATE_CANT_MOVE;
 	TeamFortress_SetSpeed(self);
+	self.tfstate &= ~TFSTATE_CANT_MOVE;
 	// Set the skin for the player based on class
 	TeamFortress_SetSkin(self);
 	stuffcmd(self, "v_idlescale 0\n");
