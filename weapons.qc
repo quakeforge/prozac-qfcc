@@ -2434,11 +2434,11 @@ void() W_SetCurrentAmmo =
 
 	player_run();
 
-	self.items = self.items - ( self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS) );
+	self.items = self.items & ~(IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS);
 	self.weapon = 0;
 
 	//WK Set armor here... update armor picture
-	self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));	
+	self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 	if (self.armortype >= 0.8)
 		self.items = self.items | IT_ARMOR3;
 	else if (self.armortype >= 0.6)

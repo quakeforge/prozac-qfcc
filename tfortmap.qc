@@ -933,7 +933,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 				if (Goal.invincible_finished < 0)
 				{
 					// KK allow goal to strip invinc cheats
-					Player.items = Player.items + IT_INVULNERABILITY;
+					Player.items = Player.items & ~IT_INVULNERABILITY;
 					Player.invincible_time = 0;
 					Player.invincible_finished = 0;
 				}	
@@ -2346,7 +2346,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 				}
 				bprint(PRINT_HIGH, AP.netname);
 				bprint(PRINT_HIGH, " цаптуред the ред flag!\n");
-				AP.items = AP.items - (AP.items & IT_KEY2);
+				AP.items = AP.items & ~IT_KEY2;
 
 			}
 			else if (Goal.goal_no == CTF_DROPOFF2)
@@ -2368,7 +2368,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 				}
 				bprint(PRINT_HIGH, AP.netname);
 				bprint(PRINT_HIGH, " цаптуред the блуе flag!\n");
-				AP.items = AP.items - (AP.items & IT_KEY1);
+				AP.items = AP.items & ~IT_KEY1;
 			}
 		}
 	}
@@ -2973,9 +2973,9 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 
 	// Remove the Light up of console icons
 	if (!key1on)
-		AP.items = AP.items - (AP.items & IT_KEY1);
+		AP.items = AP.items & ~IT_KEY1;
 	if (!key2on)
-		AP.items = AP.items - (AP.items & IT_KEY2);
+		AP.items = AP.items & ~IT_KEY2;
 
 	// Remove AP Modifications
 	// Go through all the players and do any results

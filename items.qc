@@ -307,7 +307,7 @@ void() item_megahealth_rot =
 
 	// it is possible for a player to die and respawn between rots, so don't
 	// just blindly subtract the flag off
-	other.items = other.items - (other.items & IT_SUPERHEALTH);
+	other.items = other.items & ~IT_SUPERHEALTH;
 	
 	if (self.classname == "medikit_rot")
 	{
@@ -332,7 +332,7 @@ ARMOR
 
 void() armor_touch =
 {
-	local float	type, value, bit;
+	local float	type, value, bit = 0;
 	local string s;
 	local entity oldself;
 	
@@ -456,7 +456,7 @@ void() armor_touch =
 		other.armortype = type;
 		other.armorvalue = value;
 
-		other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
+		other.items = other.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3) | bit;
 	}
 
 	self.solid = SOLID_NOT;

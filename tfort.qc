@@ -345,7 +345,7 @@ void() TeamFortress_ChangeClass =
 	TeamFortress_SetSkin(self);
 	//WK Give them invincibility if they are a normal class or bought it
 	if (self.playerclass >= PC_SCOUT && self.playerclass <= PC_RANDOM) {
-		self.items = self.items + IT_INVULNERABILITY;
+		self.items = self.items & IT_INVULNERABILITY;
 		self.invincible_time = 1;
 		self.invincible_finished = time + RESPAWN_GUARD_TIME;
 	}
@@ -2930,7 +2930,7 @@ void() TeamFortress_CheckClassStats =
 		T_Heal(self, (self.health - self.health), 0);
 
 	// Update armor picture
-	self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+	self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 	if (self.armortype >= 0.8)
 		self.items = self.items | IT_ARMOR3;
 	else if (self.armortype >= 0.6)
@@ -3887,7 +3887,7 @@ void() TeamFortress_RegenerateCells =
 			{
 				self.owner.is_undercover = 0;
 				self.owner.modelindex = modelindex_player;	// return to normal
-				self.owner.items = self.owner.items - (self.owner.items & IT_INVISIBILITY);
+				self.owner.items = self.owner.items & ~IT_INVISIBILITY;
 			}
 			else // Decrease cells
 			{

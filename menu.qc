@@ -1542,7 +1542,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1737,7 +1737,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1794,7 +1794,7 @@ void(float inp) Menu_EngineerFix_Sensor_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1851,7 +1851,7 @@ void(float inp) Menu_EngineerFix_Camera_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1919,7 +1919,7 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1989,7 +1989,7 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2384,7 +2384,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2525,7 +2525,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2658,7 +2658,7 @@ void(float inp) Menu_Dispenser_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2798,7 +2798,7 @@ void(float inp) Menu_PrimaryWeapon_Input =
 					//Clean up asbestos armor
 					if (!(self.tf_items & NIT_ASBESTOS))
 						self.money = self.money - 750; //Sync this with asbestos
-					self.tf_items = self.tf_items - (self.tf_items & NIT_ASBESTOS);
+					self.tf_items = self.tf_items & ~NIT_ASBESTOS;
 	
 					PrintRefund(PRICE);
 					self.weapons_carried = self.weapons_carried - WEAP_INCENDIARY;
@@ -3574,10 +3574,10 @@ void(float inp) Menu_Special_Input =
             //Clean up auto-medic (sync this with Custom.qc)
             if (self.tf_items & NIT_AUTOSCANNER)
                 self.money = self.money + 250; //Sync this with price below
-            self.tf_items = self.tf_items - (self.tf_items & NIT_AUTOSCANNER);
+            self.tf_items = self.tf_items & ~NIT_AUTOSCANNER;
 
             PrintRefund(PRICE);
-            self.tf_items = self.tf_items - NIT_SCANNER;
+            self.tf_items = self.tf_items & ~NIT_SCANNER;
             self.tf_items_flags = self.tf_items_flags - (self.tf_items & NIT_SCANNER_ENEMY);
         }
         else if (self.money >= PRICE) {

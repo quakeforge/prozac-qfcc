@@ -346,7 +346,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 	    }
 
 		if (self.undercover_team == 0 && self.undercover_skin == 0)
-			self.items = self.items - (self.items & IT_INVISIBILITY);
+			self.items = self.items & ~IT_INVISIBILITY;
 		self.invisible_finished = 0;
 		self.modelindex = modelindex_player;	// don't use eyes
 
@@ -415,7 +415,7 @@ void() TeamFortress_SpyGoUndercover =
 		{
 			self.is_undercover = 0;
 			self.modelindex = modelindex_player;	// return to normal
-//WK			self.items = self.items - (self.items & IT_INVISIBILITY);
+//WK			self.items = self.items & ~IT_INVISIBILITY;
 		}
 		else if (self.is_undercover == 2)	
 		{
@@ -582,7 +582,7 @@ void(float class) TeamFortress_SpyChangeSkin =
 
 		if (self.undercover_team == 0)
 		{
-//WK			self.items = self.items - (self.items & IT_INVISIBILITY);
+//WK			self.items = self.items & ~IT_INVISIBILITY;
 			self.is_undercover = 0;
 		}
 		return;
@@ -624,7 +624,7 @@ void(float teamno) TeamFortress_SpyChangeColor =
 
 		if (self.undercover_skin == 0)
 		{
-//WK			self.items = self.items - (self.items & IT_INVISIBILITY);
+//WK			self.items = self.items & ~IT_INVISIBILITY;
 			self.is_undercover = 0;
 		}
 		return;
@@ -1056,7 +1056,7 @@ void(entity spy) Spy_RemoveDisguise =
 			// Reset the Skin
 			if (spy.undercover_skin != 0)
 			{
-//WK				spy.items = spy.items - (spy.items & IT_INVISIBILITY);
+//WK				spy.items = spy.items & ~IT_INVISIBILITY;
 				makeImmune(spy,time + 4);
 				//spy.immune_to_check = time + 4;
 				spy.undercover_skin = 0;
@@ -1092,7 +1092,7 @@ void(entity spy) Spy_RemoveDisguise =
 			spy.modelindex = modelindex_player;	// return to normal
 			
 //WK			if (spy.items & IT_INVISIBILITY)
-//WK				spy.items = spy.items - IT_INVISIBILITY;
+//WK				spy.items = spy.items & ~IT_INVISIBILITY;
 
 			self.StatusRefreshTime = time + 0.1;
 		}

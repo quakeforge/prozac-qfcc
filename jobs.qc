@@ -98,7 +98,7 @@ void() JobThief =
 			sprint (self, PRINT_HIGH, "Leaving shadows... just as soon as this ring wears off...\n");
 		else {
 			sprint (self, PRINT_HIGH, "Leaving shadows...\n");
-			self.items = self.items - (self.items & IT_INVISIBILITY);
+			self.items = self.items & ~IT_INVISIBILITY;
 			self.modelindex = modelindex_player;
 		}
 		self.job = self.job - JOB_ACTIVE;
@@ -387,7 +387,7 @@ void() MartyrThink =
 
 	//Clean these up so we can kill him
 	//self.job = self.job - (self.job & JOB_ACTIVE);
-	self.owner.items = self.items - (self.items & IT_INVULNERABILITY);
+	self.owner.items = self.items & ~IT_INVULNERABILITY;
 	self.owner.invincible_time = 0;
 	self.owner.invincible_finished = 0;
 	self.owner.effects = self.owner.effects - (self.owner.effects & EF_DIMLIGHT);
@@ -1008,7 +1008,7 @@ void (entity targ, float pain) RevealThief = {
 
 	if (!targ.invisible_time) {
 		targ.modelindex = modelindex_player;
-		targ.items = targ.items - (targ.items & IT_INVISIBILITY);
+		targ.items = targ.items & ~IT_INVISIBILITY;
 	}
 	if (pain) {
 		if (targ.invisible_time)

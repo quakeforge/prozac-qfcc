@@ -61,7 +61,7 @@ void () DoTinker = {
 		}
 		else if (prob <= 0.35){
                         if (!(self.building.tf_items & NIT_SCANNER)){
-				self.building.tf_items = (self.building.tf_items | NIT_SCANNER);
+				self.building.tf_items = self.building.tf_items | NIT_SCANNER;
 				sprint(self,PRINT_HIGH,"The tesla gets a free improved targeter!\n");
                         }
 			else{
@@ -70,7 +70,7 @@ void () DoTinker = {
 		}
 		else if (prob <= 0.4){
 			if (!(self.building.tf_items & NIT_AUTOID)){
-				self.building.tf_items = (self.building.tf_items | NIT_AUTOID);
+				self.building.tf_items = self.building.tf_items | NIT_AUTOID;
 				sprint(self,PRINT_HIGH,"The tesla got a free spy detector!\n");
 			}
 			else{

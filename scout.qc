@@ -281,7 +281,7 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 			if (self.tf_items_flags & NIT_SCANNER_ENEMY)
 			{
 				sprint (self, PRINT_HIGH, "Enemy Scanning disabled.\n");
-				self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_ENEMY;
+				self.tf_items_flags = self.tf_items_flags & ~NIT_SCANNER_ENEMY;
 				return;
 			}
 			sprint (self, PRINT_HIGH, "Enemy Scanning enabled.\n");
@@ -295,7 +295,7 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 			if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
 			{
 				sprint (self, PRINT_HIGH, "Friendly Scanning disabled.\n");
-				self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_FRIENDLY;
+				self.tf_items_flags = self.tf_items_flags & ~NIT_SCANNER_FRIENDLY;
 				return;
 			}
 			sprint (self, PRINT_HIGH, "Friendly Scanning enabled.\n");

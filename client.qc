@@ -112,7 +112,7 @@ void() SetChangeParms =
  	}
 
 	// remove items
-	self.items = self.items - (self.items &	(IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD) );
+	self.items = self.items & ~(IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD);
 	
 	// cap super health
 	if (self.health > 100)
@@ -205,7 +205,7 @@ void () PrematchBegin =
 		while (other != world)
 		{
 			other.is_abouttodie = TRUE;
-			other.items = other.items - (other.items & IT_INVULNERABILITY);
+			other.items = other.items & ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects = other.effects - (other.effects & EF_DIMLIGHT);
@@ -218,7 +218,7 @@ void () PrematchBegin =
 		while (other != world)
 		{
 			other.is_abouttodie = TRUE;
-			other.items = other.items - (other.items & IT_INVULNERABILITY);
+			other.items = other.items & ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects = other.effects - (other.effects & EF_DIMLIGHT);
@@ -2036,7 +2036,7 @@ void() PutClientInServer =
 	//WK Give them invincibility if they are a normal class or bought it
 	if ((self.playerclass >= PC_SCOUT && self.playerclass <= PC_RANDOM) ||
 	self.tf_items & NIT_RESPAWN_GUARD) {
-		self.items = self.items + IT_INVULNERABILITY;
+		self.items = self.items & IT_INVULNERABILITY;
 		self.invincible_time = 1;
 		self.invincible_finished = time + RESPAWN_GUARD_TIME;
 		if (self.custom_speed > 300)
@@ -2791,7 +2791,7 @@ void() CheckPowerups =
 
 		if (self.invisible_finished < time)
 		{	// just stopped
-			self.items = self.items - (self.items & IT_INVISIBILITY);
+			self.items = self.items & ~IT_INVISIBILITY;
 			self.invisible_finished = 0;
 			self.invisible_time = 0;
 		}
@@ -2834,7 +2834,7 @@ void() CheckPowerups =
 		
 		if (self.invincible_finished < time)
 		{	// just stopped
-			self.items = self.items - IT_INVULNERABILITY;
+			self.items = self.items & ~IT_INVULNERABILITY;
 			self.invincible_time = 0;
 			self.invincible_finished = 0;
 		}
@@ -2890,7 +2890,7 @@ void() CheckPowerups =
 
 		if (self.super_damage_finished < time)
 		{	// just stopped
-			self.items = self.items - IT_QUAD;
+			self.items = self.items & ~IT_QUAD;
 			self.super_damage_finished = 0;
 			self.super_time = 0;
 			//WK If inspired, remove inspiration
@@ -2950,7 +2950,7 @@ void() CheckPowerups =
 
 		if (self.radsuit_finished < time)
 		{	// just stopped
-			self.items = self.items - IT_SUIT;
+			self.items = self.items & ~IT_SUIT;
 			self.rad_time = 0;
 			self.radsuit_finished = 0;
 		}
@@ -2960,7 +2960,7 @@ void() CheckPowerups =
         if (self.aura_time < time)
         {
             if (self.invisible_finished < time)
-                self.items = self.items - (self.items & IT_INVISIBILITY);
+                self.items = self.items & ~IT_INVISIBILITY;
             self.aura = 0;
         }
 

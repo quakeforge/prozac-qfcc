@@ -390,7 +390,7 @@ void() DropFromCustomClassGen =
 
 	//Make them invincible if they bought respawn protection
 	if (self.tf_items & NIT_RESPAWN_GUARD) {
-		self.items = self.items + IT_INVULNERABILITY;
+		self.items = self.items & IT_INVULNERABILITY;
 		self.invincible_time = 1;
 		self.invincible_finished = time + RESPAWN_GUARD_TIME;
 		if (self.custom_speed > 300)
@@ -556,12 +556,12 @@ void(float cost, float item) BuyWeapon =
 		if (item == WEAP_ROCKET_LAUNCHER && self.tf_items & NIT_RL_LASER_SIGHT)
 		{
 			self.money = self.money + 1000;
-			self.tf_items = self.tf_items - NIT_RL_LASER_SIGHT;
+			self.tf_items = self.tf_items & ~NIT_RL_LASER_SIGHT;
 		}
 		if (item == WEAP_ROCKET_LAUNCHER && self.tf_items & NIT_CLUSTER_ROCKETS)
 		{
 			self.money = self.money + 3250;
-			self.tf_items = self.tf_items - NIT_CLUSTER_ROCKETS;
+			self.tf_items = self.tf_items & ~NIT_CLUSTER_ROCKETS;
 		}
 		self.maxammo_shells = self.maxammo_shells - countshells(item);
 		self.maxammo_nails = self.maxammo_nails - countnails(item);

@@ -24,7 +24,7 @@ void() DropKey =
 	
 		if (self.items & IT_KEY1)
 		{	
-			self.items = self.items - (self.items & IT_KEY1);
+			self.items = self.items & ~IT_KEY1;
 			newmis.items = IT_KEY1;
 			if (world.worldtype == 0)
 			{
@@ -47,7 +47,7 @@ void() DropKey =
 		}
 		else if (self.items & IT_KEY2)
 		{	
-			self.items = self.items - (self.items & IT_KEY2);
+			self.items = self.items & ~IT_KEY2;
 			newmis.items = IT_KEY2;
 			if (world.worldtype == 0)
 			{

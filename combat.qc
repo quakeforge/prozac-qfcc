@@ -393,7 +393,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			sprint(attacker,PRINT_HIGH,"You have strayed from the flock\n");
 			attacker.tfstate = attacker.tfstate - TFSTATE_INSPIRED;
 			attacker.super_damage_finished = 0;
-			attacker.items = attacker.items - (attacker.items & IT_QUAD);
+			attacker.items = attacker.items & ~IT_QUAD;
 			attacker.effects = attacker.effects - (attacker.effects & EF_DIMLIGHT);
 		}
 	}
@@ -403,7 +403,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			sprint(targ,PRINT_HIGH,"You have strayed from the flock\n");
 			targ.tfstate = targ.tfstate - TFSTATE_INSPIRED;
 			targ.super_damage_finished = 0;
-			targ.items = targ.items - (targ.items & IT_QUAD);
+			targ.items = targ.items & ~IT_QUAD;
 			targ.effects = targ.effects - (targ.effects & EF_DIMLIGHT);
 		}
 	}
@@ -569,7 +569,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			save = targ.armorvalue;
 			targ.armortype = 0;	// lost all armor
 			targ.armorclass = 0; // lost special armor
-			targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			targ.items = targ.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 		//WK Flags prevent armor damage too
 		if (T_flags & TF_TD_NOTTEAM)
