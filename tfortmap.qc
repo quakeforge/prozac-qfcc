@@ -3040,6 +3040,10 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 			DelayReturn.enemy = Item;
 			DelayReturn.think = ReturnItem;
 			DelayReturn.nextthink = time + 0.5;
+
+			Item.owner = NIL;
+			TeamFortress_SetSpeed (AP);
+			AP.effects |= EF_GlowColor (AP);
 /*
 			Item.solid = SOLID_TRIGGER;
 			Item.touch = item_tfgoal_touch;
@@ -3052,6 +3056,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 		else if (Item.goal_activation & TFGI_DROP)
 		{
 			tfgoalitem_drop(Item);
+			AP.effects |= EF_GlowColor(AP);
 		}
 		else
 		{
@@ -3062,9 +3067,6 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 			AP.effects |= EF_GlowColor(AP);
 			return;
 		}
-		Item.owner = NIL;
-		TeamFortress_SetSpeed(AP);
-		AP.effects |= EF_GlowColor(AP);
 		return;
 	}
 
@@ -3216,12 +3218,10 @@ void(entity Item) tfgoalitem_drop =
 	
 	Item.movetype = MOVETYPE_TOSS;
 //CH set solid state
-//GR this can cause players to be trapped inside their items when they dropitems, do it later
-#if 0
+
 	if (Item.goal_activation & TFGI_GOAL_IS_SOLID)
 		Item.solid = SOLID_BBOX;
 	else
-#endif
 		Item.solid = SOLID_TRIGGER;
 	setorigin(Item, Item.origin);
 
@@ -3244,7 +3244,7 @@ void(entity Item) tfgoalitem_drop =
 		makevectors(Item.owner.v_angle);
 
 		Item.velocity = v_forward * 400 + v_up * 200;
-		Item.nextthink = time + 0.5; //CH wait a sec then make it pickupable GR half a sec
+		Item.nextthink = time + 0.75; //CH wait a sec then make it pickupable GR .75 to match tf 2.9
 		Item.think = tfgoalitem_settouchandthink;
 	}
 	else
@@ -3255,28 +3255,26 @@ void(entity Item) tfgoalitem_drop =
 		Item.goal_state = TFGS_INACTIVE;
 		Item.touch = item_tfgoal_touch;
 
-		if (Item.goal_activation & TFGI_GOAL_IS_SOLID)
-		{
-			Item.solid = SOLID_BBOX;
-			setorigin(Item, Item.origin);
-		}
+		Item.owner = NIL;
 	}
 };
 
 //CH brings the item online after 1 sec
 void() tfgoalitem_settouchandthink =
 {
-	self.nextthink = time + 4.0; 	    // give it five seconds
+	self.nextthink = time + 4.25; 	    // give it five seconds
 	self.think = tfgoalitem_dropthink;  // and then find where it ended up
 
 	self.goal_state = TFGS_INACTIVE;
 	self.touch = item_tfgoal_touch;
 
-	if (self.goal_activation & TFGI_GOAL_IS_SOLID)
-	{
-		self.solid = SOLID_BBOX;
-		setorigin(self, self.origin);
-	}
+	local entity o = self.owner;
+	
+	self.owner = NIL;
+
+	TeamFortress_SetSpeed (o);
+	o.effects &= ~EF_ANYGLOW;
+	o.effects |= EF_GlowColor (o);
 };
 
 //=========================================================================

@@ -240,7 +240,7 @@ void() EMPGrenadeExplode =
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
 	local float range = 300;
-	local float dmg = 0.8;
+	local float dmg = 0.3;
 
 	local float numcells = 0;
 	local float numrockets = 0;
@@ -272,7 +272,7 @@ void() EMPGrenadeExplode =
 	while (te)
 	{	
 		dist = vlen(self.origin - te.origin);
-		mult = 0.85 - (0.65 * dist / range) + (0.15 * random());
+		mult = 0.90 - (0.75 * dist / range) + (0.10 * random());
 		mult *= dmg;
 
 		if (IsBuilding(te))
@@ -414,11 +414,11 @@ void() EMPGrenadeExplode =
 				//WK Make players not explode radially! GR why not?
 				if (te.touch != BackpackTouch)
 				{
-					T_RadiusDamage(te, self.owner, expsize * 0.4, te);
+					T_RadiusDamage(te, self.owner, expsize, te);
 					
 					deathmsg = DMSG_GREN_EMP;
-					TF_T_Damage (te, te, self.owner, expsize / 3, 0, TF_TD_IGNOREARMOUR);
-					TF_T_Damage (te, te, self.owner, 2 * expsize / 3, 0, TF_TD_EXPLOSION);
+					TF_T_Damage (te, te, self.owner, 2 * expsize / 3, 0, TF_TD_IGNOREARMOUR);
+					TF_T_Damage (te, te, self.owner, expsize / 3, 0, TF_TD_EXPLOSION);
 
 					// Remove ammo
 					te.ammo_cells -= numcells;
