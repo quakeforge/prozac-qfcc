@@ -264,6 +264,7 @@ void() Field_touch_SUB =
 
 	if (other.classname == "player") // PLAYERS
 	{
+		//dprint (vtos (other.origin) + "\n");
 		if (other.playerclass == PC_UNDEFINED) // Observers
 			return;
 		
@@ -542,9 +543,15 @@ void() Field_touch =
 
 void(entity gen1, entity gen2) Create_Field =
 {
+	//local string foo;
+
 	if (gen1.fieldgen_hasfield || gen2.fieldgen_hasfield)
 		return;
 
+	//foo = "gen1: " + vtos (gen1.origin) + " " + vtos (gen1.absmin) + " " + vtos (gen1.absmax);
+	//dprint(foo + "\n");
+	//foo = "gen2: " + vtos (gen2.origin) + " " + vtos (gen2.absmin) + " " + vtos (gen2.absmax);
+	//dprint(foo + "\n");
 /*	dprint("gen1:\n");
 	eprint(gen1.fieldgen_field);
 	dprint("gen2:\n");
@@ -582,7 +589,7 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.size_z = 48; // was 64, but 48 is more realistic
 	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
 	tfield.mins = -tfield.maxs;
-	tfield.origin = gen1.origin + (gen2.origin - gen1.origin) * 0.5;
+	tfield.origin = AVG (gen1.origin, gen2.origin);
 	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
 	tfield.forcefield_offset = (gen2.origin - gen1.origin);
 
@@ -593,9 +600,9 @@ void(entity gen1, entity gen2) Create_Field =
 	forward = crossproduct (up, right);
 
 //	local string foo;
-//	foo = "right: " + vtos (right) + "	forward: " + vtos (forward)
-//		  + "  up: " + vtos (up) + "  mins: " + vtos (tfield.mins)
-//		  + "  maxs: " + vtos (tfield.maxs) + "\n";
+//	foo = "right: " + vtos (right) + "\nforward: " + vtos (forward)
+//		  + "\nup: " + vtos (up) + "\nmins: " + vtos (tfield.mins)
+//		  + "  maxs: " + vtos (tfield.maxs) + "\norigin: " + vtos (tfield.origin) + "\n";
 //	dprint (foo);
 	tfield.rotated_bbox = getboxhull();
 	rotate_bbox (tfield.rotated_bbox, right, forward, up, tfield.mins,
@@ -808,10 +815,10 @@ void(entity tfield) Field_MakeVisual =
 		WriteEntity (MSG_BROADCAST, tfield);
 		WriteCoord (MSG_BROADCAST, f_x);
 		WriteCoord (MSG_BROADCAST, f_y);
-		WriteCoord (MSG_BROADCAST, tfield.origin_z - 12);
+		WriteCoord (MSG_BROADCAST, tfield.origin_z + tfield.mins_z);
 		WriteCoord (MSG_BROADCAST, f_x);
 		WriteCoord (MSG_BROADCAST, f_y);
-		WriteCoord (MSG_BROADCAST, tfield.origin_z + 12);
+		WriteCoord (MSG_BROADCAST, tfield.origin_z + tfield.maxs_z);
 	}
 };
 
