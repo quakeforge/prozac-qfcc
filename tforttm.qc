@@ -557,41 +557,30 @@ void (entity pl, float topcolor, float bottomcolor) SetPlayerColor =
 void (string key, string value) UserInfoCallback =
 { // FIXME: remove the cheat poller
 	local string oldval;
-	oldval = infokey(self, key);
+	oldval = infokey (self, key);
 
-	if(value == oldval) { // generic reject
+	if (value == oldval) { // generic reject
 //		dprint ("[oldval [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return;
 	}
 //	dprint ("[[" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 
-/*	if (key == "topcolor") { // FIXME: some topcolors may be allowed
+/*	else if (key == "topcolor") { // FIXME: some topcolors may be allowed
 		setinfokey(self, "topcolor", oldval);
 		stuffcmd(self, "color \"" + oldval + "\"\n");
-		return;
-	}*/
-	if (key == "bottomcolor") {
+	}*/	else if (key == "bottomcolor") {
 		setinfokey (self, "bottomcolor", oldval);
 		stuffcmd (self, "bottomcolor \"" + oldval + "\"\n");
-		return;
-	}
-	else if (key == "skin") { // FIXME: some other skins may be allowed
+	} else if (key == "skin") { // FIXME: some other skins may be allowed
 		stuffcmd(self, "skin \"" + oldval + "\"\n");
-		return;
-	}
-	else if (key == "name") {
+	} else if (key == "name") {
 		self.netname = value;
 		setinfokey (self, key, value);
-		return;
-	}
-	else if (key == "team") {
+	} else if (key == "team") {
 		stuffcmd (self, "team \"" + oldval + "\"\n");
-		return;
-	}
-	else {
+	} else {
+		// accept everything else
 		setinfokey (self, key, value);
 //		dprint ("[default [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return; // accept everything else
 	}
 };
 

@@ -254,14 +254,16 @@ void() worldspawn =
 
 	team_with_flag = 0;		//KK initial global sets
 
-    //friends1_mask = stof(infokey(world,"friends1_mask"));
-	//friends2_mask = stof(infokey(world,"friends2_mask"));
-	//friends3_mask = stof(infokey(world,"friends3_mask"));
-	//friends4_mask = stof(infokey(world,"friends4_mask"));
-    friends1_mask = stof(self.noise1);
-    friends2_mask = stof(self.noise2);
-    friends3_mask = stof(self.noise3);
-    friends4_mask = stof(self.noise4);
+	// We load the masks from the map, overriding it with infokeys if
+	// they exist
+	st = infokey (world, "friends1_mask");
+	friends1_mask = stof (st ? st : self.noise1);
+	st = infokey (world, "friends2_mask");
+	friends2_mask = stof (st ? st : self.noise2);
+	st = infokey (world, "friends3_mask");
+	friends3_mask = stof (st ? st : self.noise3);
+	st = infokey (world, "friends4_mask");
+	friends4_mask = stof (st ? st : self.noise4);
 
 
 // the area based ambient sounds MUST be the first precache_sounds

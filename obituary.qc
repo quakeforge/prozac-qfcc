@@ -586,8 +586,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		// killed self
 		Give_Frags_Out (attacker, attacker, -1, 0, 1, 1, 1);
 
-		bprint (PRINT_MEDIUM, targ.netname);
-
 		if (deathmsg == DMSG_GREN_HAND)
 			deathstring = " grenades himself\n";
 		else if (deathmsg == DMSG_MARTYR)

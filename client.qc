@@ -986,30 +986,31 @@ float() GetNextMapNum =
 	local float desc;
 	local string st;
 	local string infostring;
-	local float infonum;
+	local float num;
+	local string maxmapnum;
 
 	infostring = infokey (world, "n");
-	infonum = stof(infostring);
+	num = stof (infostring);
+	maxmapnum = infokey (world, "maxmapnum");
 
-	if (infostring != "") // always use info when available
-		return infonum;
-
-	if (cvar("crudefile_quota") < 0)
-		return infonum;
-
-	desc = cfopen("nextmapnum", "r");
-	if (desc < 0)
-		return infonum;
-
-	st = cfread(desc);
-	if (st == "")
-	{
-		cfclose(desc);
-		return infonum;
+	if (!infostring) { // always use info when available
+		if (cvar ("crudefile_quota") >= 0) {
+			desc = cfopen ("nextmapnum", "r");
+			if (desc >= 0) {
+				st = cfread (desc);
+				if (st)
+					num = stof (st);
+				cfclose (desc);
+			}
+		}
 	}
 
-	cfclose(desc);
-	return stof(st);
+	if (!maxmapnum)
+		return num;
+	else if (num > stof (maxmapnum))
+		return 0;
+	else
+		return num;
 };
 
 void(float mapnum) SetNextMapNum =

@@ -1120,7 +1120,6 @@ void(entity hit, float damage) AddMultiDamage =
 
 void (integer big) Multi_Finish =
 {
-	/* WK Save spam SB ok, you save spam*/
 	if (puff_count)
 	{
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
@@ -1165,7 +1164,7 @@ void (float damage, vector dir) TraceAttack =
 	vel = vel + 2 * trace_plane_normal;
 	vel = vel * 200;
 
-	org = trace_endpos - dir * 4;
+	org = trace_endpos - v_forward * 4;
 
 	//WK Sweep mines at the end of the attack
 	GuerillaMineSweep (trace_endpos);
