@@ -1319,6 +1319,7 @@ void(entity bastard,float threshold) createBastard =
 
 	bastard.penance_time = time + 60;
 	stuffcmd(bastard, "name \"ÔåáíËéììåò (");
+//	stuffcmd(bartard, "name \"\<TeamKiller\> (");
 	stuffcmd(bastard, bastard.netname);
 	stuffcmd(bastard, ")\"\n");
 

@@ -3015,6 +3015,7 @@ void() PlayerPostThink =
 				sound (self, #CHAN_VOICE, "player/land.wav", 1, #ATTN_NORM);
 	}
 
+	self.netname = infokey(self, "name");
 
 	self.jump_flag = self.velocity_z;
 
