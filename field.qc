@@ -251,6 +251,7 @@ void() DisableField =
 void() Field_touch_SUB =
 {
     local float doFX;
+	local float shoulddamage;
     doFX = TRUE;
 
     if (FieldIsMalfunctioning(self) & SCREWUP_THREE) // reduce output
@@ -269,9 +270,12 @@ void() Field_touch_SUB =
         else
         {
             self.velocity = self.velocity - (self.velocity*4) + '0 0 1';
-            
-            if (Field_ShouldDamage(self,other))
-                TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+
+			shoulddamage = Field_ShouldDamage(self,other);
+			if (shoulddamage == 1)
+				TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+			else if (shoulddamage == 2) // hacked to hurt teammates
+				TF_T_Damage (other, self, world, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
         }
 
     }
@@ -284,8 +288,14 @@ void() Field_touch_SUB =
                 DisableField();
                 return;
             }
-            else if (Field_ShouldDamage(self,other))
-                TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+            else
+			{
+				shoulddamage = Field_ShouldDamage(self,other);
+				if (shoulddamage == 1)
+					TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+				else if (shoulddamage == 2) // hacked to hurt teammates
+					TF_T_Damage (other, self, world, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+			}
         }
         
         // excludes entities that shouldnt be moved, doors plats etc..
@@ -441,31 +451,35 @@ float(entity tfield, entity who) Field_ItCanPass =
 };
 
 //=========================================================================
-// returns TRUE if 'who' entity should be damaged by the field
+// returns 1 or 2 if 'who' entity should be damaged by the field
+// 1 if it's an enemy, 2 if a friendly and has been hacked
 
 float(entity tfield, entity who) Field_ShouldDamage =
 {
-    if (FieldIsMalfunctioning(tfield) & SCREWUP_ONE)
-        return TRUE;
+	local float fr;
+	if (FieldIsMalfunctioning(tfield) & SCREWUP_ONE)
+		fr = 2;
+	else
+		fr = 0;
 
-    if (who.classname == "player") // PLAYERS
-    {
-        if (who == tfield.real_owner) // field owner
-            return FALSE;
+	if (who.classname == "player") // PLAYERS
+	{
+		if (who == tfield.real_owner) // field owner
+			return fr;
 
-        if (Teammate(who.team_no, tfield.real_owner.team_no)) // teammate
-            return FALSE;
+		if (Teammate(who.team_no, tfield.real_owner.team_no)) // teammate
+			return fr;
 
-        if (Teammate(who.undercover_team, tfield.real_owner.team_no)) // spies disguised as our team
-            return FALSE;
-    }
-    else if (IsMonster(who))  // MONSTERS/ARMY
-    {
-        if (Teammate(who.real_owner.team_no, tfield.real_owner.team_no)) // team monster
-            return FALSE;
-    }
+		if (Teammate(who.undercover_team, tfield.real_owner.team_no)) // spies disguised as our team
+			return fr;
+	}
+	else if (IsMonster(who))  // MONSTERS/ARMY
+	{
+		if (Teammate(who.real_owner.team_no, tfield.real_owner.team_no)) // team monster
+			return fr;
+	}
 
-    return TRUE;
+	return 1;
 };
 
 //=============================================================================
@@ -553,8 +567,13 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.mins = tfield.maxs * -1; // FIXME: -1 * only did first float
 	tfield.origin = gen1.origin + (gen2.origin - gen1.origin) * 0.5;
 	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
-	tfield.absmax = tfield.origin + tfield.maxs;
-	tfield.absmin = tfield.origin + tfield.mins;
+	tfield.forcefield_offset = (gen2.origin - gen1.origin);
+	tfield.absmax_x = tfield.origin_x + max (tfield.forcefield_offset_x, -tfield.forcefield_offset_x);
+	tfield.absmax_y = tfield.origin_y + max (tfield.forcefield_offset_y, -tfield.forcefield_offset_y);
+	tfield.absmax_z = tfield.origin_z + max (tfield.forcefield_offset_z, -tfield.forcefield_offset_z);
+	tfield.absmin_x = tfield.origin_x + min (tfield.forcefield_offset_x, -tfield.forcefield_offset_x);
+	tfield.absmin_y = tfield.origin_y + min (tfield.forcefield_offset_y, -tfield.forcefield_offset_y);
+	tfield.absmin_z = tfield.origin_z + min (tfield.forcefield_offset_z, -tfield.forcefield_offset_z);
 
 	local vector right, forward, up;
 //	local string foo;
@@ -570,8 +589,6 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.rotated_bbox = getboxhull();
 	rotate_bbox (tfield.rotated_bbox, right, forward, up, tfield.mins,
 				 tfield.maxs);
-
-	tfield.forcefield_offset = (gen2.origin - gen1.origin);
 
     // apply stuff
     tfield.movetype = MOVETYPE_NONE;
