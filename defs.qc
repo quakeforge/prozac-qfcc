@@ -1071,6 +1071,7 @@ float num_team_ammoboxes_4;
 /*==================================================*/
 .float undercover_team;		// The team the Spy is pretending to be in
 .float undercover_skin;		// The skin the Spy is pretending to have
+.float undercover_job;		// The job "" ""
 .string undercover_name;   	// The name of the player the Spy is pretending to be
 
 

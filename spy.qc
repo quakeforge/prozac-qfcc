@@ -475,38 +475,48 @@ void() TeamFortress_SpyGoUndercover =
 void(entity spy) TeamFortress_SpyCalcName =
 {
 	local entity te;
+	local float teamnum;
 
 	spy.undercover_name = "";
 	// Find a player on the team the spy is disguised as to pretend to be
-	if (spy.undercover_team != 0)
+
+	// Don't get "Blahblah friendly spy" anymore :/
+	spy.undercover_job = -1;
+
+	if (!spy.undercover_team)
+		teamnum = spy.team_no;
+
+	te = find(NIL, classname, "player");
+	while (te)
+	{
+		// First, try to find a player with same color and skins
+		if (te.team_no == spy.undercover_team && te.skin == spy.undercover_skin)
+		{
+			spy.undercover_name = te.netname;
+			if (te.playerclass == PC_CUSTOM)
+				spy.undercover_job = te.job;
+
+			te = NIL;
+		}
+		else
+			te = find(te, classname, "player");
+	}
+
+	// If we couldn't, just find one of that team
+	if (!spy.undercover_name)
 	{
 		te = find(NIL, classname, "player");
 		while (te)
 		{
-			// First, try to find a player with same color and skins
-			if (te.team_no == spy.undercover_team && te.skin == spy.undercover_skin)
+			if (te.team_no == spy.undercover_team)
 			{
 				spy.undercover_name = te.netname;
+				if (te.playerclass == PC_CUSTOM)
+					spy.undercover_job = te.job;
 				te = NIL;
 			}
 			else
 				te = find(te, classname, "player");
-		}
-
-		// If we couldn't, just find one of that team
-		if (!spy.undercover_name)
-		{
-			te = find(NIL, classname, "player");
-			while (te)
-			{
-				if (te.team_no == spy.undercover_team)
-				{
-					spy.undercover_name = te.netname;
-					te = NIL;
-				}
-				else
-					te = find(te, classname, "player");
-			}
 		}
 	}
 };

@@ -225,52 +225,48 @@ void(float inAuto) TeamFortress_ID =
 
 			if (trace_ent.cutf_items & CUTF_SPY_KIT)
 			{
-				cls = TeamFortress_GetClassName(trace_ent.undercover_skin);
+				if (trace_ent.undercover_skin) {
+					if (trace_ent.undercover_job != -1) {
+						cls = TeamFortress_GetJobName (trace_ent.undercover_job);
+					} else {
+						cls = TeamFortress_GetClassName (trace_ent.undercover_skin);
+					}
+				} else if (trace_ent.playerclass == PC_CUSTOM) {
+					cls = TeamFortress_GetJobName (trace_ent.job);
+				} else {
+					cls = TeamFortress_GetClassName (trace_ent.playerclass); 
+				}
+
 				// Report a false name
 				if (self.team_no != 0 && (self.team_no == trace_ent.undercover_team))
 				{
 					if (self.weapons_carried & WEAP_MEDIKIT)
 					{
 						st = ftos(trace_ent.health);
-						if (trace_ent.undercover_skin != 0)
-							centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly ", cls, "\n\n", st, " health\n");
-						else
-							centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly Spy\n\n", st, " health\n");
+						centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly ", cls, "\n\n", st, " health\n");
 						return;
 					}
 					else if (self.weapons_carried & WEAP_SPANNER)
 					{
 						st = ftos(trace_ent.armorvalue);
-						if (trace_ent.undercover_skin != 0)
-							centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly ", cls, "\n\n", st, " armor\n");
-						else
-							centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly Spy\n\n", st, " armor\n");
+						centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly ", cls, "\n\n", st, " armor\n");
 						return;
 					}
 					else
 					{
 						st = ftos(trace_ent.armorvalue);
-						if (trace_ent.undercover_skin != 0)
-							centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly ", cls, "\n");
-						else
-							centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly Spy\n");
+						centerprint(self, spacer, trace_ent.undercover_name, "\n\nFriendly ", cls, "\n");
 						return;
 					}
 				}
 
 				if (trace_ent.undercover_name)
 				{
-					if (trace_ent.undercover_skin != 0)
-						centerprint(self, spacer, trace_ent.undercover_name, "\n\nΕξενω ", cls, "\n");
-					else
-						centerprint(self, spacer, trace_ent.undercover_name, "\n\nΕξενω Spy");
+					centerprint(self, spacer, trace_ent.undercover_name, "\n\nΕξενω ", cls, "\n");
 				}
 				else
 				{
-					if (trace_ent.undercover_skin != 0)
-						centerprint(self, spacer, trace_ent.netname, "\n\nΕξενω ", cls, "\n");
-					else
-						centerprint(self, spacer, trace_ent.netname, "\n\nΕξενω Spy");
+					centerprint(self, spacer, trace_ent.netname, "\n\nΕξενω ", cls, "\n");
 				}
 			}
 			else 
