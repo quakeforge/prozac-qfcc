@@ -17,7 +17,7 @@
 
 // field generator settings
 
-#define FIELDGEN_SHOCKTIME      4   // seconds the generators remains glowing and doing lightning after a shock
+#define FIELDGEN_SHOCKTIME      2   // seconds the generators remains glowing and doing lightning after a shock
 #define FIELDGEN_LINKTIME       3.5 // seconds between tries to link with other generator
 #define FIELDGEN_TIMEDISABLED   1   // was 3 // then 2
 #define FIELDGEN_CELLSCOST      2   // cells cost for each "FIELDGEN_ISWORKING" pass
@@ -32,12 +32,12 @@ EXPLANATION OF HOW THE ENTITY FIELDS ARE USED ( thnx? np.. =) )
 For field generator entity:
 ---------------------------
 
-.has_holo        - Holds current status of every field generator, FIELDGEN_XXXX determines
-.has_sensor      - Boolean value, determines if field generator is currently supporting a force field
+.fieldgen_status - Holds current status of every field generator, FIELDGEN_XXXX determines
+.fieldgen_hasfield - Boolean value, determines if field generator is currently supporting a force field
 .fieldgen_field  - This points to the force field, if none its always 'world'
 .no_grenades_1   - Controls delay between tries to link (only affects sound currently, it tries to link every frame)
 .no_grenades_1   - Controls delay for field to go up again after beeing disabled
-.type_grenades_1 - Controls delay of the WORKING status
+.tp_grenades_1   - Controls delay of the WORKING status
 .has_teleporter  - Used to flash generators when field is activated
 .has_camera      - Controls delay between cells take
 .has_tesla       - Boolean, forced status.
@@ -47,8 +47,8 @@ For force field entity:
 
 .demon_one      - Points to the first field generator
 .demon_two      - Points to the 2nd generator
-.has_holo       - Hum sound running, boolean
-.has_sensor     - Shield sound running, boolean
+.fieldgen_status       - Hum sound running, boolean
+.fieldgen_hasfield     - Shield sound running, boolean
 .has_tesla      - Controls delay between hums
 .has_sentry     - Controls delay between shield sounds
 .cnt            - Orientation of field (x or y)
@@ -116,13 +116,13 @@ void() Field_think =
     {
         if (IsValidFieldGen(self.demon_one))
         {
-            self.demon_one.has_sensor = #FALSE;
+            self.demon_one.fieldgen_hasfield = #FALSE;
             self.demon_one.fieldgen_field = world;
         }
 
         if (IsValidFieldGen(self.demon_two))
         {
-            self.demon_two.has_sensor = #FALSE;
+            self.demon_two.fieldgen_hasfield = #FALSE;
             self.demon_two.fieldgen_field = world;
         }
 
@@ -137,7 +137,7 @@ void() Field_think =
         self.nextthink = time + 0.25; // 4hz check
 
     if (IsValidFieldGen(self.demon_one))
-    if (self.demon_one.has_holo == #FIELDGEN_ISWORKING)
+    if (self.demon_one.fieldgen_status == #FIELDGEN_ISWORKING)
         Field_MakeVisual(self);        
    
     // checks for anything stuck in field :)
@@ -156,7 +156,8 @@ void() Field_think =
         if (te != self.demon_one)
         if (te != self.demon_two)
         if (te.velocity == '0 0 0')
-        if (te.classname != "force_field")
+//		if (!IsBuilding(te)) // no screwing with the buildings :)
+		if (te.classname != "force_field")
         if (EntsTouching2(te,self))
         {
             other = te;
@@ -229,13 +230,13 @@ void() DisableField =
 {
     if (IsValidFieldGen(self.demon_one))
     {
-        self.demon_one.has_holo = #FIELDGEN_ISDISABLED;
+        self.demon_one.fieldgen_status = #FIELDGEN_ISDISABLED;
         self.demon_one.no_grenades_2 = time + #FIELDGEN_TIMEDISABLED;            
     }
             
     if (IsValidFieldGen(self.demon_two))
     {
-        self.demon_two.has_holo = #FIELDGEN_ISDISABLED;
+        self.demon_two.fieldgen_status = #FIELDGEN_ISDISABLED;
         self.demon_two.no_grenades_2 = time + #FIELDGEN_TIMEDISABLED;
     }
 
@@ -290,6 +291,8 @@ void() Field_touch_SUB =
             || other.movetype == #MOVETYPE_PUSH)
             //|| other.movetype == #MOVETYPE_NOCLIP
             return;
+		if (IsBuilding(other))
+			return;
 
         other.velocity_z = other.velocity_z + 100;
         if (other.origin_x < self.origin_x)
@@ -507,7 +510,7 @@ void() Field_touch =
 
 void(entity gen1, entity gen2) Create_Field =
 {
-    if (gen1.has_sensor || gen2.has_sensor)
+    if (gen1.fieldgen_hasfield || gen2.fieldgen_hasfield)
         return;
 
 /*	dprint("gen1:\n");
@@ -523,11 +526,11 @@ void(entity gen1, entity gen2) Create_Field =
     /*if (!IsValidFieldGen(gen1) || !IsValidFieldGen(gen2))
         return;*/
         
-    gen1.has_holo = #FIELDGEN_ISENABLED;
-    gen2.has_holo = #FIELDGEN_ISENABLED;
+    gen1.fieldgen_status = #FIELDGEN_ISENABLED;
+    gen2.fieldgen_status = #FIELDGEN_ISENABLED;
 
-    gen1.has_sensor = #TRUE;
-    gen2.has_sensor = #TRUE;
+    gen1.fieldgen_hasfield = #TRUE;
+    gen2.fieldgen_hasfield = #TRUE;
 
     local entity tfield;
 
@@ -665,11 +668,11 @@ void(entity gen1, entity gen2) Remove_Field =
         {
             dremove(gen1.fieldgen_field);
 	}
-	gen1.has_sensor = #FALSE;
+	gen1.fieldgen_hasfield = #FALSE;
         gen1.fieldgen_field = world;
 	if (IsValidFieldGen(gen2))
 	{
-            gen2.has_sensor = #FALSE;
+            gen2.fieldgen_hasfield = #FALSE;
             gen2.fieldgen_field = world;
 	}
     }
@@ -679,7 +682,7 @@ void(entity gen1, entity gen2) Remove_Field =
         {
             dremove(gen2.fieldgen_field);
 	}
-        gen2.has_sensor = #FALSE;
+        gen2.fieldgen_hasfield = #FALSE;
         gen2.fieldgen_field = world;
     }
 };
@@ -711,37 +714,37 @@ float(entity field) IsValidFieldGen =
 
 void(entity tfield, entity gen1) Field_UpdateSounds =
 {
-    //has_holo : hum
-    //has_sensor : shield
+    //fieldgen_status : hum
+    //fieldgen_hasfield : shield
     
     if (IsValidField(tfield)) // only if there is a field currently
     {
         local float playhum, playshield;
         playhum = #FALSE; playshield = #FALSE;
 
-        /*if (gen1.has_holo == #FIELDGEN_ISOFF) // for some reason we r not working
+        /*if (gen1.fieldgen_status == #FIELDGEN_ISOFF) // for some reason we r not working
         {
             playhum = #FALSE;
             playshield = #FALSE;
         }
-        else if (gen1.has_holo == #FIELDGEN_ISIDLE) // awaiting for link
+        else if (gen1.fieldgen_status == #FIELDGEN_ISIDLE) // awaiting for link
         {
             playhum = #FALSE;
             playshield = #FALSE;
         }
-        else if (gen1.has_holo == #FIELDGEN_ISDISABLED) // teammate passing thru the field?
+        else if (gen1.fieldgen_status == #FIELDGEN_ISDISABLED) // teammate passing thru the field?
         {
             playhum = #FALSE;
             playshield = #FALSE;            
         }
         else*/
         
-        if (gen1.has_holo == #FIELDGEN_ISENABLED)
+        if (gen1.fieldgen_status == #FIELDGEN_ISENABLED)
         {
             playhum = #TRUE;
             playshield = #FALSE;
         }
-        else if (gen1.has_holo == #FIELDGEN_ISWORKING)
+        else if (gen1.fieldgen_status == #FIELDGEN_ISWORKING)
         {
             playhum = #TRUE;
             playshield = #TRUE;        
@@ -750,39 +753,39 @@ void(entity tfield, entity gen1) Field_UpdateSounds =
         // MAKE THE SHIT SOUND !
         if (!playhum)
         {
-            if (tfield.has_holo)
+            if (tfield.fieldgen_status)
             {
                 sound(tfield,#CHAN_MISC,"misc/null.wav",0.5,#ATTN_NORM);
-                tfield.has_holo = #FALSE;
+                tfield.fieldgen_status = #FALSE;
             }
         }
         else
         {
-            if (!tfield.has_holo || tfield.has_tesla < time)
+            if (!tfield.fieldgen_status || tfield.has_tesla < time)
             {
                 sound(tfield,#CHAN_MISC,"misc/ffhum.wav",0.3,#ATTN_NORM);
                 tfield.has_tesla = time + 1;
-                tfield.has_holo = #TRUE;
+                tfield.fieldgen_status = #TRUE;
             }
         }
 
         if(!playshield)
         {
-            if (tfield.has_sensor)
+            if (tfield.fieldgen_hasfield)
             {
                 sound(tfield,#CHAN_ITEM,"misc/null.wav",0.2,#ATTN_NORM);
-                tfield.has_sensor = #FALSE;
+                tfield.fieldgen_hasfield = #FALSE;
             }
         }
         else
         {
-            if (!tfield.has_sensor || tfield.has_sentry < time)
+            if (!tfield.fieldgen_hasfield || tfield.has_sentry < time)
             {
                 //TODO?: lower volume as (FIELDGEN_SHOCKTIME - time) decreases
                 
                 sound(tfield,#CHAN_ITEM,"misc/ffield.wav",0.4,#ATTN_NORM);
                 tfield.has_sentry = time + 1;
-                tfield.has_sensor = #TRUE;
+                tfield.fieldgen_hasfield = #TRUE;
             }
         }
     
@@ -840,16 +843,16 @@ void() FieldGen_think =
         Remove_Field(self,othergen); // checks redundancy itself
 
     // field main loop (ai? heh.. my cat is smarter than these force fields)
-    if (self.has_holo == #FIELDGEN_ISOFF) // for some reason we r not working
+    if (self.fieldgen_status == #FIELDGEN_ISOFF) // for some reason we r not working
     {
         self.effects = 0;
         self.skin = 0;
 
         if (FieldGen_CanIdle(self)) // can we go idle?
-            self.has_holo = #FIELDGEN_ISIDLE;
+            self.fieldgen_status = #FIELDGEN_ISIDLE;
 
     }
-    else if (self.has_holo == #FIELDGEN_ISIDLE) // awaiting for link
+    else if (self.fieldgen_status == #FIELDGEN_ISIDLE) // awaiting for link
     {
         self.effects = 0;
         self.skin = 0;
@@ -863,7 +866,7 @@ void() FieldGen_think =
         }
 
     }
-    else if (self.has_holo == #FIELDGEN_ISDISABLED) // teammate passing thru the field?
+    else if (self.fieldgen_status == #FIELDGEN_ISDISABLED) // teammate passing thru the field?
     {
         self.effects = 0;
         self.skin = 0;
@@ -871,12 +874,12 @@ void() FieldGen_think =
         // time check
         if (self.no_grenades_2 < time) // can we go idle?
         {    
-            self.has_holo = #FIELDGEN_ISIDLE;
+            self.fieldgen_status = #FIELDGEN_ISIDLE;
             self.tp_grenades_1 = 0;
         }
         
     }
-    else if (self.has_holo == #FIELDGEN_ISENABLED)
+    else if (self.fieldgen_status == #FIELDGEN_ISENABLED)
     {
         if (!self.has_teleporter)
         {
@@ -884,13 +887,13 @@ void() FieldGen_think =
             self.skin = 1;
         }
 
-        if (self.has_sensor == #FALSE)
-            self.has_holo = #FIELDGEN_ISIDLE;
+        if (self.fieldgen_hasfield == #FALSE)
+            self.fieldgen_status = #FIELDGEN_ISIDLE;
         
         if (self.tp_grenades_1 >= time)
-            self.has_holo = #FIELDGEN_ISWORKING;
+            self.fieldgen_status = #FIELDGEN_ISWORKING;
     }
-    else if (self.has_holo == #FIELDGEN_ISWORKING)
+    else if (self.fieldgen_status == #FIELDGEN_ISWORKING)
     {
         self.effects = #EF_DIMLIGHT;
         self.skin = 2;        
@@ -901,16 +904,16 @@ void() FieldGen_think =
             self.has_camera = time + 1;
         }
 
-        if (self.has_sensor == #FALSE)
-            self.has_holo = #FIELDGEN_ISIDLE;
+        if (self.fieldgen_hasfield == #FALSE)
+            self.fieldgen_status = #FIELDGEN_ISIDLE;
         else if (self.tp_grenades_1 <= time)
-            self.has_holo = #FIELDGEN_ISENABLED;
+            self.fieldgen_status = #FIELDGEN_ISENABLED;
     }
 
     Field_UpdateSounds(self.fieldgen_field, self); // update force field sounds
 
     if (!FieldGen_CanIdle(self)) // turn us off if needed
-        self.has_holo = #FIELDGEN_ISOFF;
+        self.fieldgen_status = #FIELDGEN_ISOFF;
    
     self.has_teleporter = #FALSE; // resets 'flash' status bypass
     self.nextthink = time + 0.1;
@@ -970,10 +973,10 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
     if (fieldgen1.origin_x != fieldgen2.origin_x && fieldgen1.origin_y != fieldgen2.origin_y)
         return #FALSE;
     
-    if (fieldgen1.has_holo == #FIELDGEN_ISDISABLED || fieldgen2.has_holo == #FIELDGEN_ISDISABLED)
+    if (fieldgen1.fieldgen_status == #FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == #FIELDGEN_ISDISABLED)
         return #FALSE;
 
-    if (fieldgen1.has_holo == #FIELDGEN_ISOFF || fieldgen2.has_holo == #FIELDGEN_ISOFF)
+    if (fieldgen1.fieldgen_status == #FIELDGEN_ISOFF || fieldgen2.fieldgen_status == #FIELDGEN_ISOFF)
         return #FALSE;
 
     if (FieldGen_CanIdle(fieldgen1) && FieldGen_CanIdle(fieldgen2))
@@ -990,8 +993,8 @@ void(entity field) Field_Built =
     field.touch = SUB_Null;
     field.think = FieldGen_think;
     field.nextthink = time + 0.1;
-    field.has_holo = #FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)
-    field.has_sensor = #FALSE;
+    field.fieldgen_status = #FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)
+    field.fieldgen_hasfield = #FALSE;
     field.no_grenades_1 = time + 3;
     field.fieldgen_field = world;
 };

@@ -949,6 +949,8 @@ float(entity targ, entity inflictor) CanDamage;
 .float reload_laser_cannon;
 
 // fieldgen fields
+.float	fieldgen_status;
+.float	fieldgen_hasfield;
 .entity	fieldgen_field;
 //----------------------------------------------//
 
