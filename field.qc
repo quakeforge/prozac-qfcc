@@ -507,6 +507,11 @@ void() Field_touch =
     Field_touch_SUB();
 };
 
+float(float a, float b) avg =
+{
+	return a + (b - a) / 2;
+};
+
 //===================================================================================
 // creates the force field between the 2 generators (only if none currently on)
 
@@ -546,92 +551,33 @@ void(entity gen1, entity gen2) Create_Field =
     tfield.touch = Field_touch;
     tfield.nextthink = time + 0.25;
 
-    // set pos and size
-    tfield.origin = gen1.origin + '0 0 32';
-    tfield.absmin_z = gen1.origin_z - 32;
-    tfield.absmax_z = gen1.origin_z + 32;
-
-    tfield.mins_z = 0 - 32;
-    tfield.maxs_z = 32;
-    tfield.size_z = 64;
-
-    local float diff;
-
-    if (gen1.origin_x == gen2.origin_x)
-    {
-        tfield.cnt = 0; 
-        
-        tfield.origin_x = gen1.origin_x;
-        tfield.absmin_x = gen1.origin_x - 2;
-        tfield.absmax_x = gen1.origin_x + 2;
-
-        tfield.maxs_x = 2;
-        tfield.mins_x = 0 - 2;
-        tfield.size_x = 4;
-
-        if (gen1.origin_y > gen2.origin_y)
-        {
-            diff = (gen1.origin_y - gen2.origin_y)/2;
-            
-            tfield.origin_y = gen1.origin_y - diff;
-            tfield.absmin_y = gen2.origin_y;
-            tfield.absmax_y = gen1.origin_y;
-
-            tfield.maxs_y = diff;
-            tfield.mins_y = 0 - diff;
-            tfield.size_y = diff * 2;
-        }
-        else
-        {
-            diff = (gen2.origin_y - gen1.origin_y)/2;
-
-            tfield.origin_y = gen2.origin_y - diff;
-            tfield.absmin_y = gen1.origin_y;
-            tfield.absmax_y = gen2.origin_y;
-
-            tfield.maxs_y = diff;
-            tfield.mins_y = 0 - diff;
-            tfield.size_y = diff * 2;
-        }
-    }
-    else
-    {
-        tfield.cnt = 1; 
-
-        tfield.origin_y = gen1.origin_y;
-        tfield.absmin_y = gen1.origin_y - 2;
-        tfield.absmax_y = gen1.origin_y + 2;
-        
-        tfield.maxs_y = 2;
-        tfield.mins_y = 0 - 2;
-        tfield.size_y = 4;
-
-        if (gen1.origin_x > gen2.origin_x)
-        {
-            diff = (gen1.origin_x - gen2.origin_x)/2;
-            
-            tfield.origin_x = gen1.origin_x - diff;
-            tfield.absmin_x = gen2.origin_x;
-            tfield.absmax_x = gen1.origin_x;
-
-            tfield.maxs_x = diff;
-            tfield.mins_x = 0 - diff;
-            tfield.size_x = diff * 2;
-
-        }
-        else
-        {
-            diff = (gen2.origin_x - gen1.origin_x)/2;
-            
-            tfield.origin_x = gen2.origin_x - diff;
-            tfield.absmin_x = gen1.origin_x;
-            tfield.absmax_x = gen2.origin_x;
-
-            tfield.maxs_x = diff;
-            tfield.mins_x = 0 - diff;
-            tfield.size_x = diff * 2;
-        }
-    }    
+	// set pos and size
+	if (gen1.origin_x == gen2.origin_x)
+	{
+		tfield.cnt = 0;
+		tfield.size_x = 4;
+		tfield.size_y = vlen (gen1.origin - gen2.origin) - 10;
+	}
+	else /* if (gen1.origin_y == gen2.origin_y) */
+	{
+		tfield.cnt = 1;
+		tfield.size_x = vlen (gen1.origin - gen2.origin) - 10;
+		tfield.size_y = 4;
+	}
+/*	else // for rotation.  not currently used.
+	{
+		tfield.cnt = 2;
+		tfield.size_x = vlen (gen1.origin - gen2.origin) - 10;
+		tfield.size_y = 4;
+	} */
+	tfield.size_z = 48; // was 64, but this looks more realistic
+	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
+	tfield.mins = tfield.maxs * -1; // FIXME: -1 * only did first float
+	tfield.origin = gen1.origin + (gen2.origin - gen1.origin) * 0.5;
+	tfield.origin_z = avg (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
+	tfield.absmax = tfield.origin + tfield.maxs;
+	tfield.absmin = tfield.origin + tfield.mins;
+//	tfield.angles = gen2.origin - gen1.origin; // for rotation?
 
     // apply stuff
     tfield.movetype = MOVETYPE_NONE;
@@ -972,8 +918,9 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
     if (fieldgen1.origin_z != fieldgen2.origin_z)
         return FALSE;
 
-    if (fieldgen1.origin_x != fieldgen2.origin_x && fieldgen1.origin_y != fieldgen2.origin_y)
-        return FALSE;
+// FIXME: comment out if we allow rotation
+	if (fieldgen1.origin_x != fieldgen2.origin_x && fieldgen1.origin_y != fieldgen2.origin_y)
+		return FALSE;
     
     if (fieldgen1.fieldgen_status == FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == FIELDGEN_ISDISABLED)
         return FALSE;
@@ -1031,6 +978,9 @@ entity(entity fieldgen) Find_OtherGen =
 
 vector(vector place) WhereGen =
 {
+// FIXME: remove function if we allow rotation
+//	return place;
+
     // if we have no field generator currently, it can be placed anywhere
     if (self.has_fieldgen == 0) return place;
 
