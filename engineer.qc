@@ -61,6 +61,20 @@ void() LaserBolt_Think =
 	self.think = SUB_Remove;
 };
 #endif
+
+// New railgun think function, needed to work right :/
+void() LaserBolt_Think =
+{
+	if (time > self.heat) {
+		dremove (self);
+		return;
+	}
+
+	setorigin (self, self.oldorigin);
+	setmodel (self, self.mdl);
+	self.velocity = self.mangle;
+};
+
 //=========================================================================
 // Laserbolt touch function. Just moves through the player and comes out
 // the other side.
@@ -69,21 +83,19 @@ void() LaserBolt_Touch =
 	local vector org;
 	
 	if (time > self.heat) {
-		dremove(self);	
+		dremove (self);	
 		return;
 	}
 
-	if (pointcontents(self.origin)==CONTENTS_SKY) {
-		dremove(self);
+	if (pointcontents(self.origin) == CONTENTS_SKY) {
+		dremove (self);
 		return;
 	}
-
-	self.velocity = self.mangle;
-
-	if (other == self.owner || other == self.real_owner)
-		return;
 
 	self.owner = other; // I understand this now
+
+	if (other == self.real_owner)
+		return;
 
 	if (other.classname == "force_field") { // ff can block rails, but not easily, loses cells
 		other.demon_one.ammo_cells -= 5;
@@ -94,9 +106,9 @@ void() LaserBolt_Touch =
 		if (other.demon_two.ammo_cells < 0)
 			other.demon_two.ammo_cells = 0;
 
-		FieldExplosion(other, self.origin, self);
-		PutFieldWork(other);
-		dremove(self);
+		FieldExplosion (other, self.origin, self);
+		PutFieldWork (other);
+		dremove (self);
 		return;
 	}
 
@@ -114,19 +126,14 @@ void() LaserBolt_Touch =
 		TF_T_Damage (other, self, self.real_owner, 50, 0, TF_TD_NAIL); // was electricity... WTF?
 		if (other.armortype)
 			other.armortype = armorsave;
-		setmodel(self, "progs/e_spike2.mdl");
+		self.mdl = "progs/e_spike2.mdl";
 	}
-	else if (!other || other.solid == SOLID_BSP) // Oh well, this never worked right, and it was stupid anyway
-	{
-		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-		WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
-		multicast (self.origin, MULTICAST_PHS);
 
-		dremove (self);
-	}
+	self.think = LaserBolt_Think;
+	self.nextthink = time + 0.1;
+	self.oldorigin = self.origin + normalize (self.velocity);
+
+	setmodel (self, "");
 };
 
 //=========================================================================
@@ -147,13 +154,14 @@ void() W_FireLaser =
 	newmis.real_owner = self;
 	newmis.movetype = MOVETYPE_FLYMISSILE;
 	newmis.solid = SOLID_TRIGGER;
+	newmis.mdl = "progs/e_spike1.mdl";
 
-	setmodel (newmis, "progs/e_spike1.mdl");
+	setmodel (newmis, newmis.mdl);
 	setsize (newmis, '0 0 0', '0 0 0');		
 
 	setorigin (newmis, org + '0 0 16');
 
-	newmis.mangle = vec*1500;
+	newmis.mangle = vec*300;
 	newmis.velocity = newmis.mangle;
 	newmis.angles = vectoangles(newmis.velocity);
 
