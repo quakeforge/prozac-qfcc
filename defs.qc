@@ -563,6 +563,7 @@ float(string s) stof				= #81;		// convert string to float
 void(vector where, float set) multicast 	= #82;  // sends the temp message
 													// to a set of clients,
 													// possibly in PVS or PHS
+vector (integer hull, integer max) getboxbounds = #94;
 integer () getboxhull = #95;
 void (integer hull) freeboxhull = #96;
 void (integer hull, vector right, vector forward, vector up,

@@ -564,24 +564,18 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.size_y = 4;
 	tfield.size_z = 48; // was 64, but this looks more realistic
 	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
-	tfield.mins = tfield.maxs * -1; // FIXME: -1 * only did first float
+	tfield.mins = -tfield.maxs;
 	tfield.origin = gen1.origin + (gen2.origin - gen1.origin) * 0.5;
 	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
 	tfield.forcefield_offset = (gen2.origin - gen1.origin);
-	tfield.absmax_x = tfield.origin_x + max (tfield.forcefield_offset_x, -tfield.forcefield_offset_x);
-	tfield.absmax_y = tfield.origin_y + max (tfield.forcefield_offset_y, -tfield.forcefield_offset_y);
-	tfield.absmax_z = tfield.origin_z + max (tfield.forcefield_offset_z, -tfield.forcefield_offset_z);
-	tfield.absmin_x = tfield.origin_x + min (tfield.forcefield_offset_x, -tfield.forcefield_offset_x);
-	tfield.absmin_y = tfield.origin_y + min (tfield.forcefield_offset_y, -tfield.forcefield_offset_y);
-	tfield.absmin_z = tfield.origin_z + min (tfield.forcefield_offset_z, -tfield.forcefield_offset_z);
 
 	local vector right, forward, up;
-//	local string foo;
 
 	up = '0 0 1';
 	right = normalize (gen2.origin - gen1.origin);
 	forward = crossproduct (up, right);
 
+//	local string foo;
 //	foo = "right: " + vtos (right) + "  forward: " + vtos (forward)
 //		  + "  up: " + vtos (up) + "  mins: " + vtos (tfield.mins)
 //		  + "  maxs: " + vtos (tfield.maxs) + "\n";
@@ -589,6 +583,12 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.rotated_bbox = getboxhull();
 	rotate_bbox (tfield.rotated_bbox, right, forward, up, tfield.mins,
 				 tfield.maxs);
+	tfield.absmax = tfield.origin + getboxbounds (tfield.rotated_bbox, 1);
+	tfield.absmin = tfield.origin + getboxbounds (tfield.rotated_bbox, 0);
+
+//	foo = "absmin: " + vtos (tfield.absmin)
+//		  + "  absmax: " + vtos (tfield.absmax) + "\n";
+//	dprint (foo);
 
     // apply stuff
     tfield.movetype = MOVETYPE_NONE;
