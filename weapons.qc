@@ -1450,9 +1450,9 @@ void(float num) W_FireAssaultCannon =
 
 	if (!(self.flags & FL_ONGROUND)) {
 		if (!self.waterlevel || (self.tf_items & NIT_SCUBA))
-			self.velocity -= 10 * num * dir;
+			self.velocity -= 5 * num * dir;
 		else
-			self.velocity -= 25 * num * dir;
+			self.velocity -= 10 * num * dir;
 	}
 };
 
