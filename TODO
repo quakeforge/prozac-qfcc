@@ -22,3 +22,6 @@ o  remove RPrint, since it's really kinda pointless and just makes the code ugli
 o  remove the old method for teleports checking if blocked, after confirming it's not needed.  (moving platforms block it?)
 o  only allow people to use certain topcolors
 o  allow more variation in skins
+o  Make it so '1' repairs/reloads on all building menus
+o  Teammates should be able to destroy fieldgens when they've been hacked to hurt teammates
+o  Possibly berserker shouldn't make detpacks do more damage

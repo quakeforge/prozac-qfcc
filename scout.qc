@@ -641,7 +641,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 	{
 		if (head != ignore)
 		{
-			if (head.takedamage)
+			if (head.takedamage && head.classname != "monster_shambler")
 			{
 				org = head.origin + (head.mins + head.maxs)*0.5;
 				points = 0.5*vlen (org - inflictor.origin);

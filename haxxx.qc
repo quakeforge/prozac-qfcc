@@ -220,6 +220,7 @@ void () Menu_Enemy_Hax =
     }
 
     local string st,st2,st3,st4,st5,st6,st7;
+	st=st2=st3=st4=st5=st6=st7="";
 
     st6="\n\nCom­Link åóôáâìéóèåä";
     st5="\n\n’.. Îïôèéîç                  ";
