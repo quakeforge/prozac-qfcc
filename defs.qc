@@ -433,41 +433,41 @@ float		deathmatch;
 // builtin functions
 //
 
-void(vector ang)	makevectors;		// sets v_forward, etc globals
-void(entity e, vector o) setorigin;
-void(entity e, string m) setmodel;		// set movetype and solid first
-void(entity e, vector min, vector max) setsize;
+void(vector ang)	makevectors			= #1;		// sets v_forward, etc globals
+void(entity e, vector o) setorigin		= #2;
+void(entity e, string m) setmodel		= #3;		// set movetype and solid first
+void(entity e, vector min, vector max) setsize = #4;
 // #5 was removed
-void() break;
-float() random;		// returns 0 - 1
-void(entity e, float chan, string samp, float vol, float atten) sound;
-vector(vector v) normalize;
-void(string e) error;
-void(string e) objerror;
-float(vector v) vlen;
-float(vector v) vectoyaw;
-entity() spawn;
-void(entity e) remove;
+void() break					= #6;
+float() random					= #7;		// returns 0 - 1
+void(entity e, float chan, string samp, float vol, float atten) sound = #8;
+vector(vector v) normalize			= #9;
+void(string e) error				= #10;
+void(string e) objerror				= #11;
+float(vector v) vlen				= #12;
+float(vector v) vectoyaw			= #13;
+entity() spawn					= #14;
+void(entity e) remove				= #15;
 
 // sets trace_* globals
 // nomonsters can be:
 // An entity will also be ignored for testing if forent == test,
 // forent->owner == test, or test->owner == forent
 // a forent of world is ignored
-void(vector v1, vector v2, float nomonsters, entity forent) traceline;	
+void(vector v1, vector v2, float nomonsters, entity forent) traceline = #16;	
 
-entity() checkclient;	// returns a client to look for
-entity(entity start, .string fld, string match) find;
-string(string s) precache_sound;
-string(string s) precache_model;
-void(entity client, string s)stuffcmd;
-entity(vector org, float rad) findradius;
+entity() checkclient				= #17;	// returns a client to look for
+entity(entity start, .string fld, string match) find = #18;
+string(string s) precache_sound		= #19;
+string(string s) precache_model		= #20;
+void(entity client, string s)stuffcmd 	= #21;
+entity(vector org, float rad) findradius  = #22;
 
 //void(float level, string s) bprint	= #23;
 //void(entity client, float level, string s) sprint = #24;
-void(...) bprint;
-void(...) sprint;
-/*
+void(...) bprint					= #23;
+void(...) sprint 					= #24;
+
 void(...) bprint2					= #23;
 void(...) sprint2 				= #24;
 
@@ -487,209 +487,99 @@ void(...) bprint7					= #23;
 void(...) sprint7 				= #24;
 
 void(...) bprint8					= #23;
-*/
-void(string s) dprint;
-string(float f) ftos;
-string(vector v) vtos;
-void() coredump;		// prints all edicts
-void() traceon;		// turns statment trace on
-void() traceoff;
-void(entity e) eprint;		// prints an entire edict
-float(float yaw, float dist) walkmove;	// returns #TRUE or #FALSE
+
+void(string s) dprint				= #25;
+string(float f) ftos				= #26;
+string(vector v) vtos				= #27;
+void() coredump					= #28;		// prints all edicts
+void() traceon					= #29;		// turns statment trace on
+void() traceoff					= #30;
+void(entity e) eprint				= #31;		// prints an entire edict
+float(float yaw, float dist) walkmove	= #32;	// returns #TRUE or #FALSE
 // #33 was removed
-float() droptofloor;	// #TRUE if landed on floor
-void(float style, string value) lightstyle;
-float(float v) rint;		// round to nearest int
-float(float v) floor;		// largest integer <= v
-float(float v) ceil;		// smallest integer >= v
+float() droptofloor= #34;	// #TRUE if landed on floor
+void(float style, string value) lightstyle = #35;
+float(float v) rint				= #36;		// round to nearest int
+float(float v) floor				= #37;		// largest integer <= v
+float(float v) ceil				= #38;		// smallest integer >= v
 // #39 was removed
-float(entity e) checkbottom;		// true if self is on ground
-float(vector v) pointcontents;		// returns a CONTENT_*
+float(entity e) checkbottom			= #40;		// true if self is on ground
+float(vector v) pointcontents			= #41;		// returns a CONTENT_*
 // #42 was removed
-float(float f) fabs;
-vector(entity e, float speed) aim;		// returns the shooting vector
-float(string s) cvar;		// return cvar.value
-void(string s) localcmd;		// put string into local que
-entity(entity e) nextent;		// for looping through all ents
-void(vector o, vector d, float color, float count) particle;// start a particle effect
-void() ChangeYaw;		// turn towards self.ideal_yaw
+float(float f) fabs 				= #43;
+vector(entity e, float speed) aim 		= #44;		// returns the shooting vector
+float(string s) cvar 				= #45;		// return cvar.value
+void(string s) localcmd 			= #46;		// put string into local que
+entity(entity e) nextent 			= #47;		// for looping through all ents
+void(vector o, vector d, float color, float count) particle = #48;// start a particle effect
+void() ChangeYaw 					= #49;		// turn towards self.ideal_yaw
 										// at self.yaw_speed
 // #50 was removed
-vector(vector v) vectoangles;
+vector(vector v) vectoangles			= #51;
 
 //
 // direct client message generation
 //
-void(float to, float f) WriteByte;
-void(float to, float f) WriteChar;
-void(float to, float f) WriteShort;
-void(float to, float f) WriteLong;
-void(float to, float f) WriteCoord;
-void(float to, float f) WriteAngle;
-void(float to, string s) WriteString;
-void(float to, entity s) WriteEntity;
+void(float to, float f) WriteByte		= #52;
+void(float to, float f) WriteChar		= #53;
+void(float to, float f) WriteShort		= #54;
+void(float to, float f) WriteLong		= #55;
+void(float to, float f) WriteCoord		= #56;
+void(float to, float f) WriteAngle		= #57;
+void(float to, string s) WriteString	= #58;
+void(float to, entity s) WriteEntity	= #59;
 
 
-void(float step) movetogoal;
+void(float step) movetogoal			= #67;
 
-string(string s) precache_file;	// no effect except for -copy
-void(entity e) makestatic;
-void(string s) changelevel;
+string(string s) precache_file		= #68;	// no effect except for -copy
+void(entity e) makestatic			= #69;
+void(string s) changelevel 			= #70;
 
 //#71 was removed
 
-void(string var, string val) cvar_set;	// sets cvar.value
+void(string var, string val) cvar_set 	= #72;	// sets cvar.value
 
 //void(entity client, string s) centerprint = #73;	// sprint, but in middle
-//void(...) centerprint = #73;
-void(...) centerprint;
+void(...) centerprint = #73;
 #ifndef STATUSBAR
-void(entity pl, string s1) CenterPrint;
-void(entity pl, string s1, string s2) CenterPrint2;
+void(entity pl, string s1) CenterPrint = #73;
+void(entity pl, string s1, string s2) CenterPrint2 = #73;
 #endif
 
-void(vector pos, string samp, float vol, float atten) ambientsound;
+void(vector pos, string samp, float vol, float atten) ambientsound = #74;
 
-string(string s) precache_model2;		// registered version only
-string(string s) precache_sound2;		// registered version only
-string(string s) precache_file2;		// registered version only
+string(string s) precache_model2		= #75;		// registered version only
+string(string s) precache_sound2		= #76;		// registered version only
+string(string s) precache_file2		= #77;		// registered version only
 
-void(entity e) setspawnparms;		// set parm1... to the
+void(entity e) setspawnparms			= #78;		// set parm1... to the
 												// values at level start
 												// for coop respawn
 
-void(entity killer, entity killee) logfrag;	// add to stats
-string(entity e, string key) infokey;		// get a key value (world = serverinfo)
-float(string s) stof;		// convert string to float
-void(vector where, float set) multicast;  // sends the temp message
+void(entity killer, entity killee) logfrag = #79;	// add to stats
+string(entity e, string key) infokey	= #80;		// get a key value (world = serverinfo)
+float(string s) stof				= #81;		// convert string to float
+void(vector where, float set) multicast 	= #82;  // sends the temp message
 													// to a set of clients,
 													// possibly in PVS or PHS
-entity (entity ent) testentitypos;
-integer (entity ent, vector mins, vector maxs, vector point) hullpointcontents;
-vector (integer hull, integer max) getboxbounds;
-integer () getboxhull;
-void (integer hull) freeboxhull;
+entity (entity ent) testentitypos = #92;
+integer (entity ent, vector mins, vector maxs, vector point) hullpointcontents = #93;
+vector (integer hull, integer max) getboxbounds = #94;
+integer () getboxhull = #95;
+void (integer hull) freeboxhull = #96;
 void (integer hull, vector right, vector forward, vector up,
-	  vector mins, vector maxs) rotate_bbox;
+	  vector mins, vector maxs) rotate_bbox = #97;
 void (vector start, vector mins, vector maxs, vector end, float type,
-	  entity passent) checkmove;				// Wrapper around SV_Move.
+	  entity passent) checkmove = #98;				// Wrapper around SV_Move.
 
-void (entity ent, string key, string value) setinfokey;
-float (string path, string mode) cfopen;
-void (float desc) cfclose;
-string (float desc) cfread;
-float (float desc, string buf) cfwrite;
-float (float desc) cfeof;
-float () cfquota;
-
-function (string name) checkfunction = #109; // returns #0 if not found
-function (string name) getfunction = #110; // halts program if not found
-
-integer has_initted;
-
-void () InitFunctions =
-{
-	if (has_initted)
-		return;
-	has_initted = 1;
-
-	makevectors = getfunction ("makevectors");
-	setorigin = getfunction ("setorigin");
-	setmodel = getfunction ("setmodel");
-	setsize = getfunction ("setsize");
-	break = getfunction ("break");
-	random = getfunction ("random");
-	sound = getfunction ("sound");
-	normalize = getfunction ("normalize");
-	error = getfunction ("error");
-	objerror = getfunction ("objerror");
-	vlen = getfunction ("vlen");
-	vectoyaw = getfunction ("vectoyaw");
-	spawn = getfunction ("spawn");
-	remove = getfunction ("remove");
-	traceline = getfunction ("traceline");
-	checkclient = getfunction ("checkclient");
-	find = getfunction ("find");
-	precache_sound = getfunction ("precache_sound");
-	precache_model = getfunction ("precache_model");
-	stuffcmd = getfunction ("stuffcmd");
-	findradius = getfunction ("findradius");
-
-	bprint = getfunction ("bprint");
-	sprint = getfunction ("sprint");
-	dprint = getfunction ("dprint");
-
-	ftos = getfunction ("ftos");
-	vtos = getfunction ("vtos");
-
-	coredump = getfunction ("coredump");
-	traceon = getfunction ("traceon");
-	traceoff = getfunction ("traceoff");
-
-	eprint = getfunction ("eprint");
-	walkmove = getfunction ("walkmove");
-	droptofloor = getfunction ("droptofloor");
-
-	lightstyle = getfunction ("lightstyle");
-	rint = getfunction ("rint");
-	floor = getfunction ("floor");
-	ceil = getfunction ("ceil");
-
-	checkbottom = getfunction ("checkbottom");
-	pointcontents = getfunction ("pointcontents");
-	fabs = getfunction ("fabs");
-	aim = getfunction ("aim");
-	cvar = getfunction ("cvar");
-
-	localcmd = getfunction ("localcmd");
-	nextent = getfunction ("nextent");
-	particle = checkfunction ("particle"); // actually want this to check the function
-	ChangeYaw = getfunction ("changeyaw");
-	vectoangles = getfunction ("vectoangles");
-
-	WriteByte = getfunction ("writebyte");
-	WriteChar = getfunction ("writechar");
-	WriteShort = getfunction ("writeshort");
-	WriteLong = getfunction ("writelong");
-	WriteCoord = getfunction ("writecoord");
-	WriteAngle = getfunction ("writeangle");
-	WriteString = getfunction ("writestring");
-	WriteEntity = getfunction ("writeentity");
-
-	movetogoal = getfunction ("movetogoal");
-	precache_file = getfunction ("precache_file");
-	makestatic = getfunction ("makestatic");
-	changelevel = getfunction ("changelevel");
-
-	cvar_set = getfunction ("cvar_set");
-	centerprint = getfunction ("centerprint");
-
-	ambientsound = getfunction ("ambientsound");
-	precache_model2 = getfunction ("precache_model"); // FIXME: blah
-	precache_sound2 = getfunction ("precache_sound");
-	precache_file2 = getfunction ("precache_file");
-
-	setspawnparms = getfunction ("setspawnparms");
-	logfrag = getfunction ("logfrag");
-	infokey = getfunction ("infokey");
-	stof = getfunction ("stof");
-	multicast = getfunction ("multicast");
-
-	testentitypos = getfunction ("testentitypos");
-	hullpointcontents = getfunction ("hullpointcontents");
-	getboxbounds = getfunction ("getboxbounds");
-	getboxhull = getfunction ("getboxhull");
-	freeboxhull = getfunction ("freeboxhull");
-	rotate_bbox = getfunction ("rotate_bbox");
-	checkmove = getfunction ("checkmove");
-	setinfokey = getfunction ("setinfokey");
-	cfopen = getfunction ("cfopen");
-	cfclose = getfunction ("cfclose");
-	cfread = getfunction ("cfread");
-	cfwrite = getfunction ("cfwrite");
-	cfeof = getfunction ("cfeof");
-	cfquota = getfunction ("cfquota");
-};
+void (entity ent, string key, string value) setinfokey = #102;
+float (string path, string mode) cfopen = #103;
+void (float desc) cfclose = #104;
+string (float desc) cfread = #105;
+float (float desc, string buf) cfwrite = #106;
+float (float desc) cfeof = #107;
+float () cfquota = #108;
 
 //============================================================================
 
