@@ -246,6 +246,7 @@
 //SB
 #define TFSTATE_C4THROW			524288 // we're priming the detpack
 #define TFSTATE_ASSAULTCANNON	1048576 // we're firing an assault cannon
+#define TFSTATE_DISARMED	2097152 // We've been disarmed.
 
 
 // Defines used by TF_T_Damage (see combat.qc)

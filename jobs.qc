@@ -560,6 +560,8 @@ void() JudokaRearm =
 		self.enemy.weaponframe = 0;
 	}
 
+	self.owner.tfstate &= ~TFSTATE_DISARMED;
+
 	self.think = SUB_Remove;
 	self.nextthink = time + 0.1;
 };
@@ -623,6 +625,10 @@ void() JobJudoka =
 		if (trace_ent.current_weapon == WEAP_AUTO_RIFLE)
 			trace_ent.current_weapon = WEAP_SNIPER_RIFLE;
 #endif
+
+		trace_ent.tfstate &= ~(TFSTATE_AIMING | TFSTATE_RL_LASER);
+
+		trace_ent.tfstate |= TFSTATE_DISARMED;
 
 		//If already reloading, remove that timer
 		te = find(NIL, netname, "reloadtimer");

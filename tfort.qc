@@ -1159,7 +1159,17 @@ void() TeamFortress_GrenadePrimed =
 
 	user = self.owner;
 
-	if (!(user.tfstate & TFSTATE_GRENTHROWING) && !user.deadflag) {
+	local float isdrop = FALSE;
+
+	if (((user.tfstate & TFSTATE_DISARMED) && user.attack_finished > time) || user.deadflag)
+		isdrop = TRUE;
+
+	local float isthrowing = FALSE;
+
+	if (isdrop || (user.tfstate & TFSTATE_GRENTHROWING))
+		isthrowing = TRUE;
+
+	if (!isthrowing) {
 		self.nextthink = time + 0.1;
 
 		if (!self.think)
@@ -1194,7 +1204,7 @@ void() TeamFortress_GrenadePrimed =
 	// set grenade speed
 	makevectors (user.v_angle);
 
-	if (user.deadflag) {
+	if (isdrop) {
 		// if user is dead, throw grenade directly up
 		newmis.velocity = '0 0 200';
 	} else {
