@@ -1073,10 +1073,10 @@ void (float damage, vector dir) TraceAttack =
 		puff_org = org;
 		puff_count++;
 
-        if (trace_ent.classname == "force_field") { //- OfN - Makes field explosion b4 removing it
-            FieldExplosion(trace_ent,trace_endpos,trace_ent);
-            PutFieldWork(trace_ent);
-        }
+	if (trace_ent.classname == "force_field") { //- OfN - Makes field explosion b4 removing it
+		FieldExplosion(trace_ent,trace_endpos,trace_ent);
+		PutFieldWork(trace_ent);
+		}
 	}
 };
 
@@ -1092,24 +1092,20 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 {
 	local vector direction;
 	local vector src;
-
 	makevectors (self.v_angle);
 
 	src = self.origin + v_forward * 10;
 	src_z = self.absmin_z + self.size_z * 0.7;
 
 	ClearMultiDamage ();
-
 	while (shotcount > 0) {
-		direction = dir;
-		direction += AVG (crandom(), crandom()) * spread_x * v_right;
-		direction += AVG (crandom(), crandom()) * spread_y * v_up;
-
+		
+		direction = dir + crandom() * spread_x * v_right + crandom() * spread_y * v_up;
 		if (self.current_weapon & WEAP_ASSAULT_CANNON)
 			traceline (src, src + direction * 2048, FALSE, self);
 		else
 			traceline (src, src + direction * 1024, FALSE, self);
-
+										
 		if (trace_fraction == 1.0)
 			TraceAttack (0, direction);
 		else if (self.current_weapon & WEAP_ASSAULT_CANNON) //WK Sinth's bugfix
@@ -1148,7 +1144,7 @@ void() W_FireShotgun =
 	}
 
 	deathmsg = DMSG_SHOTGUN;
-	FireBullets (6, dir, '0.02 0.02 0');
+	FireBullets (6, dir, '0.03 0.03 0');
 };
 
 
@@ -1179,8 +1175,7 @@ void() W_FireSuperShotgun =
 		dir = normalize (dir - self.origin);
 	}
 	deathmsg = DMSG_SSHOTGUN;
-	FireBullets (6, dir, '0.05 0.05 0'); //WK 14, 0.14, 0.08
-	FireBullets (6, dir, '0.05 0.05 0');
+	FireBullets (14, dir, '0.11 0.06 0'); //WK 14, 0.14, 0.08
 };
 
 /*
@@ -1386,17 +1381,10 @@ void() W_FireAssaultCannon =
 
 	KickPlayer(-4, self);
 
-	//WK Judoka's usually don't have enough ammo to shoot this thing...
-	if (!(self.job & JOB_JUDOKA && self.job & JOB_ACTIVE))
-		self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 	dir = aim (self, 100000);
 	deathmsg = DMSG_ASSAULTCANNON;
 	FireBullets (5, dir, '0.15 0.10 0');
-	//We want more of a cone of fire...
-//	FireBullets (5, dir, '0.2 0.1 0');
-//	FireBullets (5, dir, '0.4 0.1 0');
-//	FireBullets (7, dir, '0.16 0.12 0');
-//	FireBullets (3, dir, '0.12 0.09 0');
 };
 
 /*
@@ -1428,7 +1416,7 @@ void() W_FireLightAssault =
 
 	if (CheckForReload() == TRUE)
 		return;
-	FireBullets (5, dir, '0.15 0.10 0');
+	FireBullets (5, dir, '0.12 0.08 0');
 	Attack_Finished(0.2);
 };
 
@@ -1472,13 +1460,6 @@ void() T_MissileTouch =
 		if (self.owner.dmg != 0)
 			damg = self.owner.dmg;
 
-/*
-	if (self.owner)
-		if (self.owner.tf_items & NIT_RL_LASER_SIGHT) {
-			//RPrint("Laser rocket hit!\n");
-			damg = damg - 10;
-		}
-*/
 	if (self.has_tesla) //Cluster rockets do less
 		damg = damg - 25;
 
@@ -1761,33 +1742,20 @@ void() W_FireLightning =
 
 	KickPlayer(-2, self);
 
-	//WK Allow 6 seconds MAX of firing the lightning gun
-#define BIGLIGHT
-#ifdef BIGLIGHT
-	//We do this by capping the maximum ammo at 100, and using all
-	//cells above that in one tremendous shot
 	if (self.ammo_cells > 300) {
-		damage = 22;
-		self.ammo_cells -= 12;
+		damage = 25;
+		self.ammo_cells -= 15;
 	} else if (self.ammo_cells > 200) {
-		damage = 18;
-		self.ammo_cells -= 7;
+		damage = 20;
+		self.ammo_cells -= 10;
 	} else if (self.ammo_cells > 100) {
-		damage = 14;
-		self.ammo_cells -= 3;
+		damage = 17;
+		self.ammo_cells -= 4;
 	} else {
-		damage = 10;
-		self.ammo_cells -= 1;
+		damage = 12;
+		self.ammo_cells -= 1.2;
 	}
-#else
-	//Or this method, which consumes cells at a rate to ensure we run out
-	//In a few seconds, no matter what. But resupplying is a bitch.
-	self.ammo_cells = self.ammo_cells - ceil(self.maxammo_cells / 30);
-	if (self.ammo_cells < 0)
-		self.ammo_cells = 0;
-	//WK 30. Lowered damage to make it a $2200 weapon
-	damage = 12;
-#endif
+
 	self.currentammo = self.ammo_cells;
 
 	org = self.origin + '0 0 16';
