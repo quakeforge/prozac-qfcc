@@ -33,7 +33,7 @@ void() FlashGrenadeTouch =
 };
 
 #ifdef NET_SERVER
-	#define SMOOTH_FLASH 1
+	#define SMOOTH_FLASH 0.3
 #else
     #define SMOOTH_FLASH 0.1
 #endif
@@ -49,43 +49,19 @@ void() FlashTimer =
 
 	te.FlashTime = te.FlashTime - SMOOTH_FLASH;
 
-	if (te.FlashTime < 4)
+	if (te.FlashTime < 4 && te.FlashTime != -1)
 	{
 		te.FlashTime = 0;
-		stuffcmd(te, "v_cshift 0\n");
-		stuffcmd(te, "r_norefresh 0;wait;echo;wait;echo;wait;echo;wait;echo\n"); //WK
-        // OfN- now we use the centerprint replacement
-		//centerprint(te,"Your 	 eyes 	 finally 	 clear\n");
-        StatusPrint(te,2,"Your 	 eyes 	 finally 	 clear\n");
+		stuffcmd(te, "v_cshift 0 0 0 0\n");
 		return;
 	}
 
 	local string st;
 
-	st = ftos(te.FlashTime * 15); //WK Multiplier 10
+	// Sequential III math proved useful!  GR
+	st = ftos(-0.1 * (te.FlashTime - 5) * (te.FlashTime - 115));
 
-	stuffcmd(te, "v_cshift ");
-	stuffcmd(te, st);
-	stuffcmd(te, " ");
-	stuffcmd(te, st);
-	stuffcmd(te, " ");
-	stuffcmd(te, st);
-	stuffcmd(te, " ");
-	stuffcmd(te, st);
-	stuffcmd(te, "\n");
-	if (te.FlashTime > 15 || (te.FlashTime < 12 && te.FlashTime > 11) || (te.FlashTime < 9 && te.FlashTime > 7) || te.FlashTime < 5)
-		if (self.heat != 1) {
-			StatusPrint(te,2,"Your 	 eyes 	 burn\n		 with 		 the 		 pain\n	 of 	\n glowing phosphor\n			 			 			\n	 	 	 	 	\n");
-			stuffcmd(te, "r_norefresh 1;wait;echo;wait;echo;wait;echo;wait;echo\n");
-			self.heat = 1;
-		}
-	else
-		if (self.heat != 0) {
-			StatusPrint(te,2,"Your 	 eyes 	 water\n		 and 		 momentarily 		 lessen\n	 the 	\n Indescribable Pain\n			 			 			\n	 	 	 	 	\n");
-			stuffcmd(te, "r_norefresh 0;wait;echo;wait;echo;wait;echo;wait;echo\n");
-			self.heat = 0;
-		}
-
+	stuffcmd(te, "v_cshift 0 0 0 " + st + "\n");
 
 	self.nextthink = time + SMOOTH_FLASH;
 };
@@ -95,63 +71,48 @@ void() FlashTimer =
 void() FlashGrenadeExplode =
 {
 	local entity te;
+	local float loopc = 0;
 
 	self.effects = self.effects | EF_BRIGHTLIGHT;
 
-	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-	WriteByte (MSG_MULTICAST, TE_TAREXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
-	multicast (self.origin, MULTICAST_PHS);
+
+	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
 
 	// Find all people in area
-	te = findradius(self.origin, 200);
-	while (te)
+	while (loopc < 32)
 	{	
+		te = checkclient();
 		// Player?
-		if (te.classname == "player")
+		if (te && te.classname == "player")
 		{
+			makevectors(te.v_angle);
 			// Damage player and explode
-			deathmsg = DMSG_GREN_FLASH;
-			TF_T_Damage(te, self, self.owner, 60, 0, TF_TD_FIRE);
-
-			if (te.health > 0)
+			// no, don't damage
+			if (te.health > 0 && (normalize(self.origin - te.origin) * v_forward > -0.5))
 			{
+				local float ft = 60 - (vlen(self.origin - te.origin) * 6 / 50);
+
 				if (te.FlashTime == 0)
 				{
 					// create flash timer
 					newmis = spawn();
-
 					newmis.classname = "timer";
 					newmis.netname = "flashtimer";
 					newmis.team_no = self.owner.team_no;
 					newmis.owner = te;
 					newmis.think = FlashTimer;
-					newmis.nextthink = time + 1;
+					newmis.nextthink = time + 0.1;
 					newmis.heat = 1;
 				}
 
-				te.FlashTime = 16; //WK 24 for non-owners
+				if (ft > 0)
+					te.FlashTime = ft;
 
-				local string st;
-
-				st = ftos(te.FlashTime * 15);
-				stuffcmd(te, "v_cshift ");
-				stuffcmd(te, st);
-				stuffcmd(te, " ");
-				stuffcmd(te, st);
-				stuffcmd(te, " ");
-				stuffcmd(te, st);
-				stuffcmd(te, " ");
-				stuffcmd(te, st);
-				stuffcmd(te, "\n");
-				stuffcmd(te, "r_norefresh 1;wait;echo;wait;echo;wait;echo;wait;echo\n"); //WK
-			    StatusPrint(te,2,"Your 	 eyes 	 burn\n		 with 		 the 		 pain\n	 of 	\n glowing phosphor\n			 			 			\n	 	 	 	 	\n");
+				stuffcmd (te, "v_cshift 255 255 255 245\n"); // big white flash
 			}
 		}
 
-		te = te.chain;
+		loopc++;
 	}
 
 #ifdef DEMO_STUFF
