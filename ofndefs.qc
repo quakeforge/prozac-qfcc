@@ -14,7 +14,7 @@
 
 //- attack owner?
 //#define MAD_GRUNTY  //for testing purposes
-#define MAD_MONSTERS // for testing
+//#define MAD_MONSTERS // for testing
 //#define MAD_TESLA // for testing
 
 //#define GRUNTY_EXTRA_WEAPONS #WEAP_ROCKET_LAUNCHER | #WEAP_SUPER_SHOTGUN // 0

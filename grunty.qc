@@ -607,13 +607,13 @@ entity (entity scanner) LookAroundGrunty =
                 gotatarget = Pharse_Client(client, scanner, 1, 0, 0, 0);
 
                 if (client.is_undercover)
-                    if (client.cutf_items & #CUTF_JAMMER || !scanner.tf_items & #NIT_SCANNER)
+                    if ((client.cutf_items & #CUTF_JAMMER) || !(scanner.tf_items & #NIT_SCANNER))
                         gotatarget=0;
                 if (client.modelindex == modelindex_null)
-                    if (client.cutf_items & #CUTF_JAMMER || !scanner.tf_items & #NIT_SCANNER)
+                    if ((client.cutf_items & #CUTF_JAMMER) || !(scanner.tf_items & #NIT_SCANNER))
                         gotatarget=0;
                 if (client.modelindex == modelindex_eyes)
-                    if (client.cutf_items & #CUTF_JAMMER || !scanner.tf_items & #NIT_SCANNER)
+                    if ((client.cutf_items & #CUTF_JAMMER) || !(scanner.tf_items & #NIT_SCANNER))
                         if (random() < 2 - scanner.has_tesla * random())
                             gotatarget=0;		
             }
