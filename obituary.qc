@@ -640,7 +640,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		else if (deathmsg == DMSG_CALTROP)
 			deathstring = " stepped on too many of his own caltrops\n";
 		else if (deathmsg == DMSG_FLYCALTROP)
-			deathstring = " was spiked by his own catlrop\n";
+			deathstring = " was spiked by his own caltrop\n";
 		else if (deathmsg == DMSG_ROCKETL) {
 			if (random () < FRAC (1, 2))
 				deathstring = " becomes bored with life\n";
@@ -1254,16 +1254,20 @@ void (entity targ, entity attacker) Obituary_Player_Misc =
 	} else { //- OfN - unknown death by himself
 		local float rnum = random ();
 
-		if (rnum < FRAC (1, 5))
+		if (rnum < FRAC (1, 7))
 			deathstring = " died happily\n";
-		else if (rnum < FRAC (2, 5))
+		else if (rnum < FRAC (2, 7))
 			deathstring = " knows how to die with style\n";
-		else if (rnum < FRAC (3, 5))
+		else if (rnum < FRAC (3, 7))
 			deathstring = " simply dies\n";
-		else if (rnum < FRAC (4, 5))
+		else if (rnum < FRAC (4, 7))
 			deathstring = " had an original death\n";
-		else
+		else if (rnum < FRAC (5, 7))
 			deathstring = " wishes we had better death messages\n";
+		else if (rnum < FRAC (6, 7))
+			deathstring = " found a new way to die\n";
+		else 
+			deathstring = " didn't know he could die this way!\n";
 	}
 
 	bprint (PRINT_HIGH, targ.netname);
