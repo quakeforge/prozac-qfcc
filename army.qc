@@ -659,11 +659,11 @@ float() TeleSoldier =
 	newmis.custom_speed = 10; // 10
 	newmis.yaw_speed = 55;
 	
-    //#ifdef GRUNTY_EXTRA_WEAPONS
-    //newmis.weapons_carried = WEAP_AXE + WEAP_SHOTGUN + WEAP_NAILGUN + GRUNTY_EXTRA_WEAPONS;
-    //#else
-    newmis.weapons_carried = WEAP_AXE + WEAP_SHOTGUN + WEAP_NAILGUN;
-    //#endif
+    #ifdef GRUNTY_EXTRA_WEAPONS
+    newmis.weapons_carried = WEAP_AXE | WEAP_SHOTGUN | WEAP_NAILGUN | GRUNTY_EXTRA_WEAPONS;
+    #else
+    newmis.weapons_carried = WEAP_AXE | WEAP_SHOTGUN | WEAP_NAILGUN;
+    #endif
     
     newmis.tf_items = 0;
 	newmis.view_ofs = '0 0 22';

@@ -79,7 +79,7 @@ void() Menu_Demon =
                   
 
 
-        CenterPrint6(self, st,st2,st3,"\n\n’.. ־ןפטימח                  \n\nֻמיזו ֻיללף: ", str1,"¯MAX_KNIFE_BLOOD");
+        CenterPrint6(self, st,st2,st3,"\n\n’.. ־ןפטימח                  \n\nֻמיזו ֻיללף: ", str1,"\^/" + ftos (MAX_KNIFE_BLOOD));
 
     }
 
