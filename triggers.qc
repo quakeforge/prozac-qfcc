@@ -480,10 +480,7 @@ void() teleport_touch =
 		if (other.weapons_carried & WEAP_HOOK && other.hook_out)
 		{
 			sound (other, CHAN_WEAPON, "weapons/bounce2.wav", 1, ATTN_NORM);
-			other.on_hook = FALSE;
-			other.hook_out = FALSE;
-			other.fire_held_down = FALSE;
-			other.weaponframe = 0;
+			Reset_Grapple (other.hook);
 			other.attack_finished = time + 0.75;	// avoid instant rehook
 		}
 

@@ -27,3 +27,6 @@
 - nail grenades need a cap on their tempentity creation, in the range of 50 - 100
 - hover boots fuel usage should be affected by how fast you're moving, and you should go up faster when you're not moving.  the "empty" penalty should be smaller.
 - taking over a tesla should set the colormap (?) to the new owner
+- Crusader_FindIdiot needs to check for teammates, and should should use something saner for prioritizing
+- DISABLE_RCON_ABUSE somehow breaks the team1/2/3/4 commands?!
+- drowning bubbles should "burst" after hitting the surface

@@ -1848,9 +1848,8 @@ void() PutClientInServer =
 	makeImmune(self,time+5);
 
 	// grapple stuff
-	self.on_hook = FALSE;
-	self.hook_out = FALSE;
-	self.fire_held_down = FALSE;
+	if (self.hook_out)
+		Reset_Grapple (self.hook);
 
 	DecodeLevelParms ();
 
