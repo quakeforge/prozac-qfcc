@@ -304,7 +304,7 @@ void() worldspawn =
 
 	precache_sound ("zombie/z_shot1.wav");		// For grenade
 
-	precache_sound ("items/protect1.wav");
+	precache_sound ("items/protect.wav");
 	precache_sound ("items/protect2.wav");
 	precache_sound ("items/protect3.wav");
 
