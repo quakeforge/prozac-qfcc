@@ -403,12 +403,12 @@ void() Sentry_FoundTarget =
     }
 
 	Sentry_HuntTarget ();
-	if (self.super_damage_finished < time)
+	if (self.super_time < time)
 	{
-        self.super_damage_finished = time + 1.0; //WK Was at .5, which was too fast
+        self.super_time = time + 1.0; //WK Was at .5, which was too fast
         
         if (self.num_mines & IMPROVED_FOUR)
-            self.super_damage_finished = time + 0.65; //- OfN - improved circuits! heh
+            self.super_time = time + 0.65; //- OfN - improved circuits! heh
     }
 };
 
@@ -528,7 +528,7 @@ float() Sentry_Fire =
 	
 	// Only fire if they're within sight
 	dir = self.enemy.origin - self.origin;
-	if (vlen(dir) > 2048) //WK Don't fire if they're too far away
+	if (vlen(dir) > 2048 || !visible (self.enemy)) //WK Don't fire if they're too far away
 	{
 		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40;
 		return FALSE;
@@ -581,50 +581,24 @@ float() Sentry_Fire =
         //soffset = '0 0 20'; // non-turretized sentries correction
 	}
 
-	if (self.is_malfunctioning & SCREWUP_TWO)
-	{
-		miss_factor_z = random() * 200 - 100;
-		miss_factor_y = random() * 200 - 100;
-		miss_factor_x = random() * 200 - 100;
-		traceline (self.origin + soffset, self.enemy.origin + miss_factor, FALSE, self);
+	
+	local float num = 3;
+	local vector spread = '0.01 0.01 0.0';
+
+	if (self.weapon > 2 && self.ammo_shells >= 2) {
+		num = 6;
+		spread = '0.01 0.012 0.0';
+		self.ammo_shells--;
 	}
-	else
-		traceline (self.origin + soffset, self.enemy.origin, FALSE, self);
-	if (trace_fraction != 1.0 && trace_ent.takedamage && self.ammo_shells > 0) //Hit something and has shells
-	{
-		SpawnBlood (trace_endpos, 50);
-		
-        local float thedmg;
-        local float therange;
-
-        therange = rangesentry(trace_ent);
-        thedmg = 6;
-
-        // OfN - damage now depends on distance to target
-        if (therange == RANGE_MELEE)
-            thedmg = 12;
-        else if (therange == RANGE_NEAR)
-            thedmg = 6;
-        else if (therange == RANGE_MID)
-            thedmg = 4;
-        else if (therange == RANGE_FAR) // only circuit hacked sentries shot at this range
-            thedmg = 3;
-        else thedmg = 2; // this shouldnt happen ever (RANGE_VERYFAR)
-
-        // OfN - hacked sentries do more damage (improved circuits)
-        if (self.num_mines & IMPROVED_FOUR)
-            thedmg = thedmg * 1.25; // 1.25 too high?
-
-		TF_T_Damage (trace_ent, self, self, thedmg, TF_TD_NOTTEAM, TF_TD_SHOT);
+	
+	if (self.is_malfunctioning & SCREWUP_TWO) {
+		spread *= 10;
 	}
-    else if (trace_fraction != 1.0 && trace_ent.classname == "force_field")
-    {
-       FieldExplosion(trace_ent,trace_endpos,trace_ent);
-       PutFieldWork(trace_ent);
-    }
-    
 
-	//FireBullets (1, dir, '0.1 0.1 0');
+        if (self.num_mines & IMPROVED_FOUR) {
+		spread *= 0.8;
+	}
+
 	//CH if its not floating it needs this
 	if (!(self.tf_items & NIT_TURRET))
 	{
@@ -632,8 +606,12 @@ float() Sentry_Fire =
 	}
 /////////////
 
+	FireBullets (num, dir, spread);
+
+	self.ammo_shells --;
+
 	// Level 3 Turrets fire rockets every 3 seconds
-	if (self.weapon == 3 && self.ammo_rockets > 0 && self.super_damage_finished < time)
+	if (self.weapon == 3 && self.ammo_rockets > 0 && self.super_time < time)
 	{
 		//sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM); UGLY AND STOPS COOL SOUND
         // wtf happens here, why is this the supernailgun sound?
@@ -690,10 +668,10 @@ float() Sentry_Fire =
 		else
 			setorigin (newmis, self.origin + v_forward*8 + '0 0 16'); //CH make rocket 16 above
 
-		self.super_damage_finished = time + 3;
+		self.super_time = time + 3;
 
         // - OfN - if this sentry has enhanced circuits then delay between rockets firing is cut half
-        if (self.num_mines & IMPROVED_FOUR) self.super_damage_finished = time + 1.5;
+        if (self.num_mines & IMPROVED_FOUR) self.super_time = time + 1.5;
 
 		self.ammo_rockets = self.ammo_rockets - 1;
 
@@ -704,7 +682,7 @@ float() Sentry_Fire =
 	//WK if (self.ammo_shells == 0 && (random() < 0.1))
 	if ((self.ammo_shells == 0 && self.weapon != 3) || (self.ammo_shells == 0 && self.weapon == 3 && self.ammo_rockets > 0 && (random() < 0.05))) //CH .05 seems to be good.
 		sprint(self.real_owner, PRINT_HIGH, "Sentry Gun is out of shells.\n");
-	else if (self.ammo_shells == 20)
+	else if (self.ammo_shells == 20 || self.ammo_shells == 19)
 		sprint(self.real_owner, PRINT_HIGH, "Sentry Gun is low on shells.\n");
 
 	//WK < 0.1
