@@ -563,7 +563,7 @@ void() StartFrame =
 	local string timeleft;
 	timeleft = timelimit ? sprintf ("%.0f", (timelimit - time) / 60) : "";
 	if (timeleft != infokey (world, "timeleft"))
-		setinfokey (world, "timeleft", timeleft);
+		localcmd ("serverinfo timeleft " + timeleft + "\n");
 };
 
 /*
