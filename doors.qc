@@ -152,8 +152,10 @@ void() door_use =
 	local entity oself;
 
 	self.message = "";			// door message are for touch only
-	self.owner.message = "";	
-	self.enemy.message = "";
+	if (self.owner)
+		self.owner.message = "";
+	if (self.owner)
+		self.enemy.message = "";
 	oself = self;
 	self = self.owner;
 	door_fire ();
