@@ -1344,6 +1344,8 @@ void() W_FireSniperRifle =
 	src = self.origin + v_forward * 10;
 	src_z = self.absmin_z + self.size_z * 0.7;
 
+	dir = v_forward; //XXX is this correct?
+
 	use_this = FALSE;
     traceline (src, src + dir*8092, FALSE, self);
 	if (trace_fraction != 1.0)

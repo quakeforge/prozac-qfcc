@@ -1738,7 +1738,7 @@ void () GruntyPayThink =
 	// Consider buying a health pack
 	if (self.health < self.max_health && self.money >= GRUNTY_COST_HEALTHPACK)
 	{
-		local float loops, bought;
+		local float loops = 0, bought;
 		bought=0;
 
 		while (loops < (0.75+(self.has_sensor/4)) && self.money >= GRUNTY_COST_HEALTHPACK && self.max_health > self.health)
