@@ -330,7 +330,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	//Remember last person who shot us, so we can give him a frag
 	if (targ.cutf_items & CUTF_EXPBODY && !targ.is_abouttodie)
 	{
-		//if (targ.classname == "player" && attacker.classname == "player" && !Teammate(targ.team_no, attacker.team_no)) {
+		//if (targ.classname == "player" && attacker.classname == "player" && !Teammate(targ.team_no, attacker.team_no))
 		targ.martyr_enemy = attacker;
 		targ.stored_deathmsg = deathmsg; //- OfN - UNUSED?
 	}
@@ -474,7 +474,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	//WK Slight mirror demon protection
 	//Do 2 points of damage to a friendly teammate shooting a friendly demon
 	//SB 2 damage? no way, we're doing the full mirror damage
-	//- Ofn- if ((targ.classname == "monster_demon1" || targ.classname == "monster_army" || targ.classname == "monster_shambler") && targ.real_owner != world) {
+	//- Ofn- if ((targ.classname == "monster_demon1" || targ.classname == "monster_army" || targ.classname == "monster_shambler") && targ.real_owner != world)
 	if (IsMonster(targ) && targ.real_owner != world) {
         targ.armorvalue = 1;
 		if (T_flags & TF_TD_NOTTEAM)

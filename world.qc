@@ -219,7 +219,8 @@ void() worldspawn =
 		if (st == "")
 			localcmd("sv_gamedir fortress\n");
 		else
-			objerror("QW TF must be run with a gamedir of \"fortress\".\n");
+			objerror("QW TF must be run with a gamedir of \"fortress\", not \""
+					 + st + "\".\n");
 	}
 	
     //- OfteN globals -//
