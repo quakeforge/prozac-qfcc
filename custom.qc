@@ -71,6 +71,7 @@ float(float targteam, float attackteam) Teammate =
 {
 	local float teammask;
 
+	if ( !teamplay ) return #FALSE;
 	if ( !targteam ) return #FALSE;
 	if ( targteam == attackteam ) return #TRUE;
 	if ( number_of_teams < 3 ) return #FALSE;

@@ -1465,15 +1465,17 @@ void(entity person, string build) Add_Building_Teamkill =
 
 	st = infokey(world, "curse");
 	if (st != string_null)
-	threshold = stof(st);
+		threshold = stof(st);
 	person.ff_count = person.ff_count + 2; //Increase their bastard rating
 	//Increase the engineers bastard rating so they
 	//can't block everyone.
 	person.building.real_owner.ff_count = person.building.real_owner.ff_count + 0.5;
 	if (threshold >= 1)
 	{
-		if (person.ff_count >= threshold) createBastard(person,threshold);
-		if (person.building.real_owner.ff_count >= threshold) createBastard(person.building.real_owner,threshold);
+		if (person.ff_count >= threshold)
+			createBastard(person,threshold);
+		if (person.building.real_owner.ff_count >= threshold)
+			createBastard(person.building.real_owner,threshold);
 		if ((person.ff_count == threshold - 2) || (person.ff_count == threshold - 1.5) || (person.ff_count == threshold - 1) || (person.ff_count == threshold - 0.5))
 		{
 			sprint (person, #PRINT_MEDIUM, "One more dismantling and you will be cursed.\n");
