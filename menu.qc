@@ -1131,10 +1131,10 @@ void() Menu_Engineer =
     else
         st += "\n";
 
-	if (self.has_fieldgen < 2 && self.ammo_cells >= BUILD_COST_FIELDGEN)
+	if (self.has_fieldgen < 2 && self.ammo_cells >= BUILD_COST_FIELDGEN && self.cutf_items & CUTF_FIELDGEN)
 		st += "\x9a.. Build a Field Generator       \n";
 #ifdef FIELD_FORCEMODE
-	else if (self.has_fieldgen == 2)
+	else if (self.has_fieldgen == 2 && self.cutf_items & CUTF_FIELDGEN)
 		st += "\x9a.. Force field: " + (GetFieldForcedStatus() ? "\<Closed Mode\>      \n" : "\<Intelligent Mode\> \n");
 #endif
 	else
