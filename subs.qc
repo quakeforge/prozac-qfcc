@@ -179,9 +179,11 @@ void() SUB_CalcAngleMoveDone =
 
 void() DelayThink =
 {
+	local integer rem = self.killtarget != self.targetname;
 	activator = self.enemy;
 	SUB_UseTargets ();
-	dremove(self);
+	if (rem)
+		dremove(self);
 };
 
 /*
@@ -252,10 +254,11 @@ void() SUB_UseTargets =
 	// kill the killtagets
 	if (self.killtarget)
 	{
+		local string kt = self.killtarget;
 		t = NIL;
 		do
 		{
-			t = find (t, targetname, self.killtarget);
+			t = find (t, targetname, kt);
 			if (!t)
 				return;
 			remove (t);
