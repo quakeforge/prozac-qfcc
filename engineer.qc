@@ -92,12 +92,15 @@ void() LaserBolt_Touch =
 		return;
 	}
 
-	self.owner = other; // I understand this now
-
 	if (other == self.real_owner)
 		return;
 
 	if (other.classname == "force_field") { // ff can block rails, but not easily, loses cells
+		if (self.owner == other)
+			return;
+
+		self.owner = other;
+
 		other.demon_one.ammo_cells -= 5;
 		other.demon_two.ammo_cells -= 5;
 		
@@ -117,7 +120,7 @@ void() LaserBolt_Touch =
 
 	org = self.origin - 8*normalize(self.velocity);
 
-	if (other && other.takedamage)
+	if (other && other != self.owner && other.takedamage)
 	{
 		local float armorsave = other.armortype;
 		SpawnBlood (org, 15);
@@ -128,6 +131,8 @@ void() LaserBolt_Touch =
 			other.armortype = armorsave;
 		self.mdl = "progs/e_spike2.mdl";
 	}
+
+	self.owner = other; // I understand this now
 
 	self.think = LaserBolt_Think;
 	self.nextthink = time + 0.1;
@@ -161,7 +166,7 @@ void() W_FireLaser =
 
 	setorigin (newmis, org + '0 0 16');
 
-	newmis.mangle = vec*300;
+	newmis.mangle = vec*1500;
 	newmis.velocity = newmis.mangle;
 	newmis.angles = vectoangles(newmis.velocity);
 
@@ -254,7 +259,7 @@ void() EMPGrenadeExplode =
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
 	local float range = 300;
-	local float dmg = 0.8;
+	local float dmg = 1.0;
 
 	local float numcells = 0;
 	local float numrockets = 0;
@@ -390,7 +395,7 @@ void() EMPGrenadeExplode =
 
 			expsize = 0;
 			// calculate explosion size
-			expsize = numcells * 1.5 + numrockets * 3; // ouch, this hurts
+			expsize = numcells * 3 + numrockets * 5; // ouch, this hurts
 
 			if (te.classname == "player")
 			{
