@@ -68,106 +68,68 @@ $frame fire1 fire2 fire3 fire4 fire5 fire6
 void() Tesla_Check_Frags =
 {
 	if (self.has_teleporter == 0) { //no extra frags
-		if (self.frags >= 2) {
+		if (self.frags >= 10) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 1;
 		}
 	}
 	else if (self.has_teleporter == 1) {
-		if (self.frags >= 5) {
+		if (self.frags >= 20) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 2;
 		}
 	}
 	else if (self.has_teleporter == 2) {
-		if (self.frags >= 8) {
+		if (self.frags >= 30) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 3;
 		}
 	}
 	else if (self.has_teleporter == 3) {
-		if (self.frags >= 11) {
+		if (self.frags >= 40) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 4;
 		}
 	}
 	else if (self.has_teleporter == 4) {
-		if (self.frags >= 15) {
+		if (self.frags >= 50) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
+			bprint(PRINT_HIGH, self.real_owner.netname);
+			bprint(PRINT_HIGH, " is a master of tesla placement, his tesla has at least 50 kills!!\n");
 			self.has_teleporter = 5;
 		}
 	}
 	else if (self.has_teleporter == 5) {
-		if (self.frags >= 20) {
+		if (self.frags >= 60) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 6;
 		}
 	}
 	else if (self.has_teleporter == 6) {
-		if (self.frags >= 26) {
+		if (self.frags >= 70) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 7;
 		}
 	}
 	else if (self.has_teleporter == 7) {
-		if (self.frags >= 33) {
+		if (self.frags >= 80) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 8;
 		}
 	}
 	else if (self.has_teleporter == 8) {
-		if (self.frags >= 40) {
+		if (self.frags >= 90) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			self.has_teleporter = 9;
 		}
 	}
 
 	else if (self.has_teleporter == 9) {
-		if (self.frags >= 50) {
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			bprint(PRINT_HIGH, self.real_owner.netname);
-			bprint(PRINT_HIGH, " is a master of tesla placement, his tesla has over 50 kills!!\n");
-			self.has_teleporter = 10;
-		}
-	}
-	else if (self.has_teleporter == 10) {
-		if (self.frags >= 60) {
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			self.has_teleporter = 11;
-		}
-	}
-	else if (self.has_teleporter == 11) {
-		if (self.frags >= 70) {
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			self.has_teleporter = 12;
-		}
-	}
-	else if (self.has_teleporter == 12) {
-		if (self.frags >= 80) {
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			self.has_teleporter = 13;
-		}
-	}
-	else if (self.has_teleporter == 13) {
-		if (self.frags >= 90) {
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			self.has_teleporter = 14;
-		}
-	}
-	else if (self.has_teleporter == 14) {
 		if (self.frags >= 100) {
 			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
-			Tesla_Add_Rand_Upgrade(self, self.real_owner);
 			bprint(PRINT_HIGH, self.real_owner.netname);
-			bprint(PRINT_HIGH, " is a true legend at tesla placement, his tesla has over 100 kills!!\n");
-			self.has_teleporter = 15;
+			bprint(PRINT_HIGH, " is a true legend at tesla placement, his tesla has at least 100 kills!!\n");
+			self.has_teleporter = 10;
 		}
 	}
 };
