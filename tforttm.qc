@@ -639,8 +639,16 @@ float(string key, string value) UserInfoCallback =
 //		dprint ("[skin [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 0;
 	}
+/*	else if (key == "name") // I have a hacky-poll to do this atm
+	{
+		self.netname = value;
+		setinfokey (self, key, value);
+		dprint ("[name [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
+		return 1;
+	} */
 	else
 	{
+		setinfokey (self, key, value);
 //		dprint ("[default [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 1; // accept everything else
 	}
