@@ -44,6 +44,7 @@ void (entity rhook) Reset_Grapple =
 	rhook.owner.hook_out = FALSE;
 	rhook.owner.fire_held_down = FALSE;
 	rhook.owner.weaponframe = 0;
+	rhook.owner.gravity = 1; // FIXME: interferes with other gravity stuff
 
 	rhook.think = SUB_Remove;
 	rhook.nextthink = time;
@@ -57,51 +58,49 @@ void (entity rhook) Reset_Grapple =
 //
 void () Grapple_Track =
 {
-        // drop the hook if owner is dead or has released the button
-        if (!self.owner.on_hook || self.owner.health <= 0)
-        {
-                Reset_Grapple (self);
-                return;
-        }
-	if (self.owner.health <= 0 || self.owner.has_disconnected) //CH does a real check if dead
-        {
-		self.think = SUB_Remove;
-		self.nextthink = time;
-		if (self.goalentity)
-		{
-      		  self.goalentity.think = SUB_Remove;
-		        self.goalentity.nextthink = time;
-		        if (self.goalentity.goalentity)
-		        {
-            	    self.goalentity.goalentity.think = SUB_Remove;
-	                self.goalentity.goalentity.nextthink = time;
-      		  }
-		}
-		Reset_Grapple (self);
-            return;
-        }
-
-//WK
-	  if (self.enemy.classname == "player" && Teammate(self.enemy.team_no, self.owner.team_no)) {
+	// drop the hook if owner is dead or has released the button
+	if (!self.owner.on_hook || self.owner.health <= 0) {
 		Reset_Grapple (self);
 		return;
-	  }
+	}
 
-	  deathmsg = DMSG_HOOK;
-	  if (self.enemy.classname == "player") {
-        	    T_Damage (self.enemy, self, self.owner, 2);
-	  	    if (self.enemy.health <= 0) {
+	if (self.owner.health <= 0 || self.owner.has_disconnected) { //CH does a real check if dead
+		self.think = SUB_Remove;
+		self.nextthink = time;
+		if (self.goalentity) {
+			self.goalentity.think = SUB_Remove;
+			self.goalentity.nextthink = time;
+			if (self.goalentity.goalentity) {
+				self.goalentity.goalentity.think = SUB_Remove;
+				self.goalentity.goalentity.nextthink = time;
+			}
+		}
+		Reset_Grapple (self);
+		return;
+	}
+
+//WK
+	if (self.enemy.classname == "player" && Teammate(self.enemy.team_no, self.owner.team_no)) {
+		Reset_Grapple (self);
+		return;
+	}
+
+	deathmsg = DMSG_HOOK;
+	if (self.enemy.classname == "player") {
+		T_Damage (self.enemy, self, self.owner, 2);
+		if (self.enemy.health <= 0) {
 			Reset_Grapple (self);
 			return;
-		    }
-	  }
-	  // If the hook is not attached to the player, constantly
-        // copy the target's velocity. Velocity copying DOES NOT work properly
-        // for a hooked client. 
-        if (self.enemy.classname != "player")
-                self.velocity = self.enemy.velocity;
+		}
+	}
 
-        self.nextthink = time + 0.1;
+	// If the hook is not attached to the player, constantly
+	// copy the target's velocity. Velocity copying DOES NOT work properly
+	// for a hooked client. 
+	if (self.enemy.classname != "player")
+		self.velocity = self.enemy.velocity;
+
+	self.nextthink = time + 0.1;
 };
 
 //
@@ -390,6 +389,8 @@ void () Service_Grapple =
 {
         local   vector  hook_dir;
 
+		self.gravity = 0;
+
         // drop the hook if player lets go of button
         if (!self.button0)
         {
@@ -402,13 +403,14 @@ void () Service_Grapple =
         if (self.hook.enemy.classname == "player")
                 hook_dir = (self.hook.enemy.origin - self.origin);
         // else, track to hook
-        else if (self.hook.enemy.classname != "player")
+        else
                 hook_dir = (self.hook.origin - self.origin);
 
 		// set the facing of the grapple
 //		self.hook.angles = vectoangles(self.hook.velocity);
 
         self.velocity = normalize(hook_dir) * self.maxspeed * 1.5;
+
         if ( vlen(hook_dir) <= 100 && self.lefty)	// cancel chain sound
         {
                 // If there is a chain, ditch it now. We're
