@@ -1197,7 +1197,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Dispenser =
 {
 	if (!(attacker.is_malfunctioning & SCREWUP_TWO)
 		&& !(attacker.is_malfunctioning & SCREWUP_FOUR)) {
-		if (attacker.martyr_enemy == attacker.real_owner) {
+		if (attacker.martyr_enemy == attacker.real_owner || !attacker.martyr_enemy) {
 			if (targ == attacker.real_owner) {
 				bprint (PRINT_MEDIUM, targ.netname);
 				bprint (PRINT_MEDIUM, " dispenses with himself\n");
@@ -1290,6 +1290,8 @@ void (entity targ, entity attacker) Obituary_Player_by_SentryTesla =
 			deathstring = " crossed his sentry gun's line of fire\n";
 		else if (deathmsg == DMSG_BUG_ZAPPER)
 			deathstring = " was electrocuted by his own sentry\n";
+		else if (deathmsg == DMSG_LIGHTING && targ != attacker.enemy
+			deathstring = " completes the circuit\n";
 		else
 			deathstring = " let his sentry turn against him\n"; //CH
 
@@ -1309,10 +1311,18 @@ void (entity targ, entity attacker) Obituary_Player_by_SentryTesla =
 		} else if (deathmsg == DMSG_LIGHTNING) {
 			local float rnum = random ();
 
-			if (rnum < FRAC (2, 4)) {
+			if (targ != attacker.enemy) {
+				if (rnum < FRAC (1, 2)) {
+					deathstring = " receives conducting lessons from ";
+					deathstring2 = "'s tesla coil";
+				} else {
+					deathstring = " learns it is useless to be a resistor from ";
+					deathstring2 = "'s tesla coil";
+				}
+			} else if (rnum < FRAC (1, 3)) {
 				deathstring = " was electrocuted by ";
 				deathstring2 = "'s tesla coil\n";
-			} else if (rnum < FRAC (3, 4)) {
+			} else if (rnum < FRAC (2, 3)) {
 				deathstring = " was shocked to pieces by ";
 				deathstring2 = "'s tesla sentry\n";
 			} else {

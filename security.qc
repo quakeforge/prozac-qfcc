@@ -267,7 +267,7 @@ void() SecurityCameraTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
-	self.owner = NIL
+	self.owner = NIL;
 	local integer pc = entpointcontents(self);
 	if (pc == CONTENTS_SOLID || pc == CONTENTS_SKY)
 	{
