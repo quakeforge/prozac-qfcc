@@ -415,7 +415,10 @@ void() SBFireInterface =
 				else if (targ.classname == "building_teleporter")
 					sprint(self, PRINT_HIGH, "The teleporter will now strip the items off all who enter...\n");
 				else if (targ.classname == "building_fieldgen")
+				{
 					sprint(self, PRINT_HIGH, "The field generator is now rigged to hurt teammates...\n");
+					targ.martyr_enemy = self;
+				}
 			}
 			else if (hackThis == SCREWUP_TWO)
 			{

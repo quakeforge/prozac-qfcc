@@ -19,9 +19,9 @@
 
 // field generator settings
 
-#define FIELDGEN_SHOCKTIME		2	// seconds the generators remains glowing and doing lightning after a shock
+#define FIELDGEN_SHOCKTIME		3	// seconds the generators remains glowing and doing lightning after a shock
 #define FIELDGEN_LINKTIME		3.5 // seconds between tries to link with other generator
-#define FIELDGEN_TIMEDISABLED	1	// was 3 // then 2
+#define FIELDGEN_TIMEDISABLED	1.5	// was 3 // then 2
 #define FIELDGEN_CELLSCOST		2	// cells cost for each "FIELDGEN_ISWORKING" pass
 #define FIELDGEN_DMG			80	// normal damag when touching
 #define FIELDGEN_DMGINSIDE		120 // damage when trapped inside field
@@ -275,8 +275,14 @@ void() Field_touch_SUB =
 			if (shoulddamage == 1)
 				TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 			else if (shoulddamage == 2) // hacked to hurt teammates
-				TF_T_Damage (other, self, world, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
-		}
+			{
+				if (deathmsg == DMSG_FORCEFIELD)
+					deathmsg = DMSG_FF_HACKED;
+				else /* if (deathmsg == DMSG_FORCEFIELD_STUCK) */
+					deathmsg = DMSG_FF_STUCK_HACKED;
+				TF_T_Damage (other, self, self.martyr_enemy, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+			}
+        }
 
 	}
 	else // non player entities
@@ -294,7 +300,13 @@ void() Field_touch_SUB =
 				if (shoulddamage == 1)
 					TF_T_Damage (other, self, self.real_owner, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 				else if (shoulddamage == 2) // hacked to hurt teammates
-					TF_T_Damage (other, self, world, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+				{
+					if (deathmsg == DMSG_FORCEFIELD)
+						deathmsg = DMSG_FF_HACKED;
+					else /* if (deathmsg == DMSG_FORCEFIELD_STUCK) */
+						deathmsg = DMSG_FF_STUCK_HACKED;
+					TF_T_Damage (other, self, self.martyr_enemy, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+				}
 			}
 		}
 		
@@ -617,6 +629,13 @@ void(entity gen1, entity gen2) Create_Field =
 	gen2.effects = EF_DIMLIGHT;
 	gen2.has_teleporter = TRUE;
 	gen2.skin = 2;
+
+/*	// make sure the field goes off instantly if there's somebody in it
+	local entity oldself;
+	oldself = self;
+	self = tfield;
+	self.think ();
+	self = oldself; */
 };
 
 //=================================================================0
@@ -949,6 +968,7 @@ void(entity field) Field_Built =
 	field.fieldgen_hasfield = FALSE;
 	field.no_grenades_1 = time + 3;
 	field.fieldgen_field = world;
+	field.martyr_enemy = world;
 };
 
 //==============================================================

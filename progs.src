@@ -19,6 +19,7 @@ weapons.qc
 world.qc
 status.qc   
 client.qc
+obituary.qc
 player.qc
 doors.qc
 buttons.qc

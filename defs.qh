@@ -1276,6 +1276,8 @@
 #define DMSG_STUCK_FORCEFIELD   65
 #define DMSG_SPANNERFIELD       66
 #define DMSG_FGTRAP             67
+#define DMSG_FF_HACKED			68
+#define DMSG_FF_STUCK_HACKED	69
 
 //Defs for objects a spikeshooter can spawn  Misc.qc
 #define SPAWNFLAG_SUPERSPIKE	1 

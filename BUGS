@@ -1,6 +1,5 @@
 - info string length exceeded :/
 - duplicate connects
-- the curse color is rejected by the color changing code
 - the map cycler (including if you set nmap) just sit there if it doesn't change map.  instead, it should have failsafe behavior
 - "has_sentry" should be a counter, not a flag (allows a second build if you hack and it gets roasted)
 - there appears to be a window between when a teamkill curse respawn is disabled and when they're killed.  it should be removed.
