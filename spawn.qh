@@ -1,1 +1,2 @@
 entity () spawn;
+void (entity ent) initentity;

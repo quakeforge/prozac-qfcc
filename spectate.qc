@@ -19,6 +19,8 @@ called when a spectator connects to a server
 */
 void() SpectatorConnect =
 {
+	initentity (self);
+
 	bprint (PRINT_MEDIUM, "Spectator ");
 	bprint (PRINT_MEDIUM, self.netname);
 	bprint (PRINT_MEDIUM, " connected\n");
