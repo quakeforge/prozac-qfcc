@@ -705,7 +705,7 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 		st = "20";
 	stuffcmd(self, st);
 	stuffcmd(self, "\n");
-#else
+#elifdef ASSCAN_JERK
 	self.v_angle_x -= (random () + 0.5);
 	self.v_angle_y -= ((random () * 0.6) - 0.3);
 
