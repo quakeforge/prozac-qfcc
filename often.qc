@@ -310,7 +310,7 @@ string (float tno) TeamGetNiceColor =
 	if (tno == 4)
 		return "3 11";
 
-	return 0;
+	return "";
 };
 
 float (float tno, float theColor ) IsValidTopColor =
