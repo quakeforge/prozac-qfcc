@@ -158,12 +158,12 @@ void() TeamFortress_ChangeClass =
 	local string scratch;
 
 	//WK - Handle Custom Class Restarting
-	if (self.playerclass == PC_CUSTOM && self.done_custom & CUSTOM_BUILDING) {
+	if (self.playerclass == PC_CUSTOM && (self.done_custom & CUSTOM_BUILDING)) {
 		DropToCustomClassGen();	//Comatose state
 		return;
 	}
 
-	if (self.playerclass != PC_UNDEFINED && !(self.playerclass == PC_CUSTOM && (self.done_custom & CUSTOM_BUILDING)))
+	if (self.playerclass != PC_UNDEFINED)
 	{
 		// In Deathmatch 3, you can change class after you die
 		if (deathmatch != 3)
