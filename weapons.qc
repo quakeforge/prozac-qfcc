@@ -1915,23 +1915,28 @@ void() W_FireLightning =
 #ifdef BIGLIGHT
 	//We do this by capping the maximum ammo at 100, and using all
 	//cells above that in one tremendous shot
-	if (self.ammo_cells > 100) {
-		excess = self.ammo_cells - 100;
-		self.ammo_cells = 100;
-	}
-	else {
-		excess = 0;
-		self.ammo_cells = self.ammo_cells - 0.75;
+	if (self.ammo_cells > 300) {
+		excess = 22;
+		self.ammo_cells -= 8;
+	} else if (self.ammo_cells > 200) {
+		excess = 18;
+		self.ammo_cells -= 4;
+	} else if (self.ammo_cells > 100) {
+		excess = 14;
+		self.ammo_cells -= 2;
+	} else {
+		excess = 10;
+		self.ammo_cells -= 1;
 	}
 #else
 	//Or this method, which consumes cells at a rate to ensure we run out
 	//In a few seconds, no matter what. But resupplying is a bitch.
 	excess = 0;
 	self.ammo_cells = self.ammo_cells - ceil(self.maxammo_cells / 30);
-	if (self.ammo_cells < 0) self.ammo_cells = 0;
+	if (self.ammo_cells < 0)
+		self.ammo_cells = 0;
 #endif
 	self.currentammo = self.ammo_cells;
-	
 
 	org = self.origin + '0 0 16';
 	
@@ -1974,10 +1979,8 @@ void() W_FireLightning =
 	//WK Either way of firing the gun, we handle it here
 	//WK2 - Tone it down a LOT
 	if (excess) {
-		sprint(self,PRINT_HIGH,"You discharge your excess cells\n");
 		LightningDamage (self.origin, trace_endpos + v_forward*4, self, excess);
-	}
-	else
+	} else
 //WK 30. Lowered damage to make it a $2200 weapon
 		LightningDamage (self.origin, trace_endpos + v_forward*4, self, 12);
 };
