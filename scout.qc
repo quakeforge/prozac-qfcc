@@ -209,7 +209,7 @@ void() ConcussionGrenadeTimer =
 
 	if (self.health == 0)
 	{
-		sprint (self.owner, PRINT_HIGH, "Your head better now\n");
+		sprint (self.owner, PRINT_HIGH, "Your head feels better now\n");
 #ifdef OLD_CONC_GRENADE
 		stuffcmd (self.owner, "v_idlescale 0\n");
 #endif
@@ -259,15 +259,16 @@ void() ConcussionGrenadeTimer =
 	else
 		self.owner.mangle_y -= y * GR_CONCUSS_Y;
 
+	local float rat = self.health / GR_CONCUSS_MAX;
 
-	if (self.owner.mangle_x < -60)
-		self.owner.mangle_x = -60;
-	if (self.owner.mangle_x > 60)
-		self.owner.mangle_x = 60;
-	if (self.owner.mangle_y > 120)
-		self.owner.mangle_y = 120;
-	if (self.owner.mangle_y < -120)
-		self.owner.mangle_y = -120;
+	if (self.owner.mangle_x > GR_CONCUSS_MAX_X * rat)
+		self.owner.mangle_x = GR_CONCUSS_MAX_X * rat;
+	if (self.owner.mangle_x < GR_CONCUSS_MIN_X * rat)
+		self.owner.mangle_x = GR_CONCUSS_MIN_X * rat;
+	if (self.owner.mangle_y > GR_CONCUSS_MAX_Y * rat)
+		self.owner.mangle_y = GR_CONCUSS_MAX_Y * rat;
+	if (self.owner.mangle_y < GR_CONCUSS_MIN_Y * rat)
+		self.owner.mangle_y = GR_CONCUSS_MIN_Y * rat;;
 		
 
 	if (self.owner.waterlevel || (self.owner.flags & FL_ONGROUND))
