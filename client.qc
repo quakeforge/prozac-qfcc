@@ -2388,8 +2388,11 @@ void() PlayerJump =
 		return;
 	}
 
-	if (!(self.flags & FL_ONGROUND))
+	if (!(self.flags & FL_ONGROUND)) {
+		if (no_pogo_stick)
+			self.flags &= ~FL_JUMPRELEASED;
 		return;
+	}
 
 	if (!(self.flags & FL_JUMPRELEASED) )
 		return;		// don't pogo stick

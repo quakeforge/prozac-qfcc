@@ -1128,3 +1128,5 @@ float triggered_cycle;
 /*==================================================*/
 float deathmsg;		// Global, which is set before every T_Damage, to indicate
 					// the death message that should be used.
+
+float no_pogo_stick;

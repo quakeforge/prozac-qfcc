@@ -558,6 +558,7 @@ void() StartFrame =
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
 	deathmatch = cvar("deathmatch");
+	no_pogo_stick = cvar ("no_pogo_stick");
 	framecount = framecount + 1;
 
 	local string timeleft;
