@@ -662,7 +662,7 @@ void(float cost, float item) BuyItem =
 	{
 		if (item == NIT_HOVER_BOOTS && self.tf_items & NIT_HOVER_BOOTS_UPGRADE) {
 			self.money = self.money + 350; //sync with buying of upgrade
-			item = item + NIT_HOVER_BOOTS_UPGRADE;
+			item = item & NIT_HOVER_BOOTS_UPGRADE;
 		}
 
 		PrintRefund(cost);
