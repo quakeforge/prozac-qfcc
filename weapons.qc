@@ -1447,6 +1447,13 @@ void(float num) W_FireAssaultCannon =
 	dir = aim (self, 100000);
 	deathmsg = DMSG_ASSAULTCANNON;
 	FireBullets (num, dir, '0.01 0.01 0' * num);
+
+	if (!(self.flags & FL_ONGROUND)) {
+		if (!self.waterlevel || (self.tf_items & NIT_SCUBA))
+			self.velocity -= 10 * num * dir;
+		else
+			self.velocity -= 25 * num * dir;
+	}
 };
 
 /*
@@ -4174,16 +4181,6 @@ void() W_WeaponFrame =
 				W_Attack ();
 
 				TeamFortress_SetSpeed(self);
-			}
-		} else if (self.current_weapon == WEAP_ASSAULT_CANNON) {
-			// Only fire the Assault Cannon if the player is on the ground
-			// WK Or if you are a Scuba Commando Underwater!
-			if (self.flags & FL_ONGROUND || ((self.tf_items & NIT_SCUBA) && self.waterlevel)) {
-				SuperDamageSound ();
-				W_Attack ();
-			} else {
-				sprint(self, PRINT_MEDIUM, "You cannot fire the assault cannon without\nyour feet on the ground...\n");
-				stuffcmd (self, "-attack;\n"); // so that they don't get flooded
 			}
 		} else {
 			SuperDamageSound ();

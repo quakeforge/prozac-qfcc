@@ -582,7 +582,7 @@ void() player_nail4   =[ $nailatt2, player_nail1  ]
 // Cannon powering up
 void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ] 
 {
-	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running || !(self.flags & FL_ONGROUND))
+	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
 	{
 		// Let him/her walk again
 //		if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed() {
@@ -627,7 +627,7 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 // Cannon powering up 2
 void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ] 
 {
-	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running || !(self.flags & FL_ONGROUND))
+	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
 	{
 		// Let him/her walk again
 //		if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed() {
