@@ -1188,7 +1188,9 @@ void (entity targ, entity attacker) Obituary_Player_Misc =
 	Give_Frags_Out (targ, targ, -1, 1, 1, 1, 0);
 //	logfrag (targ, targ);
 
-	if (targ.watertype == CONTENTS_WATER) {
+	if (pointcontents (self.origin) == CONTENTS_SOLID) {
+		deathstring = " left the map\n";
+	} else if (targ.watertype == CONTENTS_WATER) {
 		local float rnum = random ();
 
 		if (rnum < FRAC (1, 4))

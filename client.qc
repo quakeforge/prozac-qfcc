@@ -2755,6 +2755,10 @@ void() PlayerPreThink =
 				self.hover_time = (MAX_HOVER_FUEL * 2);
 		}
 	}
+
+	if (self.health > 0 && pointcontents (self.origin) == CONTENTS_SOLID)
+		TF_T_Damage (self, world, world, self.health + 100,
+					 TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 };
 	
 /*
