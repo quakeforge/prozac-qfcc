@@ -2752,6 +2752,7 @@ void() PlayerPreThink =
 			local vector angle = self.angles;
 			angle_x = -angle_x;
 			makevectors(angle);
+			v_up = '0 0 1' // angle thing is broken for now
 
 			self.hover_time = self.hover_time - 0.5; //0.1 == tick time
 			if (self.hover_time <= 0) {
