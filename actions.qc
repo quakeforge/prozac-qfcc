@@ -704,12 +704,12 @@ void() TeamFortress_ReloadCurrentWeapon =
 void() TeamFortress_DropItems =
 {
 	local entity tg;
-
-	local string st = infokey(NIL, "ad");
 	local float always = FALSE;
+	local string st;
 
+	st = infokey(NIL, "flag_drop");
 	if (!st)
-		st = infokey(NIL, "always_drop");
+		st = infokey(NIL, "fd");
 	if (st == "on" || st == "yes" || st == "1")
 		always = TRUE;
 
