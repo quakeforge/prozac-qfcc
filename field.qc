@@ -25,6 +25,7 @@
 #define FIELDGEN_CELLSCOST		2	// cells cost for each "FIELDGEN_ISWORKING" pass
 #define FIELDGEN_DMG			80	// normal damag when touching
 #define FIELDGEN_DMGINSIDE		120 // damage when trapped inside field
+#define FIELDGEN_MAXZ			10
 
 /*===============================================================================================
 
@@ -956,13 +957,8 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
 	if (r > FIELDGEN_RANGE && !(fieldgen1.num_mines & IMPROVED_FOUR || fieldgen2.num_mines & IMPROVED_FOUR))
 		return FALSE;
 
-	if (fieldgen1.origin_z != fieldgen2.origin_z)
+	if (fabs(fieldgen1.origin_z - fieldgen2.origin_z) > FIELDGEN_MAXZ)
 		return FALSE;
-
-#ifdef ALIGNED_FIELDGENS
-	if (fieldgen1.origin_x != fieldgen2.origin_x && fieldgen1.origin_y != fieldgen2.origin_y)
-		return FALSE;
-#endif
 
 	if (fieldgen1.fieldgen_status == FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == FIELDGEN_ISDISABLED)
 		return FALSE;
@@ -1018,80 +1014,65 @@ entity(entity fieldgen) Find_OtherGen =
 //=========================================================================================
 // returns the place where field gen could be built related to player current pos and yaw
 // called on engineer.qc, place is the origin passed where other kind of buildings are built
+// FIXME: changed to allow placing anywhere.  comments need updating
 
-vector(vector place) WhereGen =
+void (vector place) WhereGen =
 {
-#ifndef ALIGNED_FIELDGENS
-	return place;
-#endif
-
 	// if we have no field generator currently, it can be placed anywhere
-	if (self.has_fieldgen == 0) return place;
+	if (self.has_fieldgen == 0)
+		return;
 
-	local vector retval;
-	local float r, distx, disty, foundit;
-	local entity te;
+	local float r, foundit;
+	local entity te = world;
 
 	foundit = FALSE;
 
 	// find the other generator
-	te = find(world, classname, "building_fieldgen");
+	do {
+		te = find (te, classname, "building_fieldgen");
+		if (te.real_owner == self)
+			foundit = TRUE;
+	} while (te != world && foundit == FALSE);
+/*
+	te = find (world, classname, "building_fieldgen");
 	while (te != world && foundit == FALSE)
 	{
 		if (te.real_owner == self) // is it ours?
 			foundit = TRUE; // yeah, found it
 		
 		if (foundit == FALSE) // our search must continue...
-			te = find(te, classname, "building_fieldgen");
-	}
+			te = find (te, classname, "building_fieldgen");
+	}*/
 
 	// check for error getting the other gen
 	if (te == world || te.classname != "building_fieldgen" || foundit == FALSE)
 	{
 		RPrint("BUG: Error on field generator placement routine. 'WhereGen()'\n");
-		return place;
+		return;
 	}
 
-	// calculate the new generator pos
-	distx = fabs(place_x - te.origin_x);
-	disty = fabs(place_y - te.origin_y);
-	retval = place;
-
-	if (distx < disty)
-	{
-		retval_x = te.origin_x; // adjust it in line
-
-		r = vlen(self.origin - retval); // get distance from us (player)
-		if (r > 200) // we r too far away?
-			retval = place; // then bypass the calc
-	}
-	else
-	{
-		retval_y = te.origin_y; // adjust line up
-
-		r = vlen(self.origin - retval); // get distance from us (player)
-		if (r > 200) // we r too far away?
-			retval = place; // then bypass the calc
-	}
-	
 	// print message if they wont link
-	if (!vis2orig(te.origin,retval))
-		sprint(self, PRINT_HIGH, "Your field generators won't link, there are obstacles between them!\n");
+	if (!vis2orig (te.origin,place))
+		sprint (self, PRINT_HIGH,
+			"Your field generators won't link, there are obstacles between them!\n");
 	
-	r = vlen(te.origin - retval); // get distance between generators
-	if (te.num_mines & IMPROVED_FOUR && r > FIELDGEN_HACKEDRANGE)
-		sprint(self, PRINT_HIGH, "Your field generators are too far away to link, even hacked\n");
+	r = vlen(te.origin - place); // get distance between generators
+
+	if (r > FIELDGEN_HACKEDRANGE && te.num_mines & IMPROVED_FOUR)
+		sprint (self, PRINT_HIGH,
+			"Your field generators are too far away to link, even hacked\n");
 	
 	if (r > FIELDGEN_RANGE && !(te.num_mines & IMPROVED_FOUR))
-		sprint(self, PRINT_HIGH, "Your field generators are too far away to link\n");
-	/*else if (retval_z != te.origin_z)
-		sprint(self, PRINT_HIGH, "Your field generators are at different heights, they won't link\n");*/
-	
-	if (retval_x != te.origin_x && retval_y != te.origin_y)
-		sprint(self, PRINT_HIGH, "Your field generators are not lined up, they won't link\n");
+		sprint (self, PRINT_HIGH,
+			"Your field generators are too far away to link\n");
+
+	if (fabs (place_z - te.origin_z) > FIELDGEN_MAXZ)
+		sprint (self, PRINT_HIGH,
+			"Your field generators are at different heights, they won't link\n");
+	dprint (ftos (place_z) + " " + ftos (te.origin_z) + "\n");
 
 	// return the final building place
-	return retval;
+	return;
 };
 
 //======================================================================

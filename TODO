@@ -5,16 +5,16 @@ M = more testing
 I = in progress
 W = waiting on other work
 
-I  make changing skin/color force the proper color instead of kicking
-I  make sure team/color is cleared when a client connects
+M  make changing skin/color force the proper color instead of kicking
+M  make sure team/color is cleared when a client connects
 o  allow lay mode if purchased
 o  various drop items
 X  move from *preqcc to cpp
 o  add more variety to tinkering
 o  add a way to edit the respawn ammo entities
-o  add localinfo string for bottom half of the MOTD
+X  add localinfo string for bottom half of the MOTD
 o  add a define to disable abusive admin commands (eg stuffcmd)
-o  the thief skill should set the "invisible" face
+X  the thief skill should set the "invisible" face
 o  "slave teslas"
 o  instead of not allowing two fastest legs when upgraded, restrict the health/armor you're allowed when you have fast legs
 o  make a seperate menu for detonating engineer buildings

@@ -78,3 +78,5 @@ mtfents.qc
 rotate.qc
 spectate.qc
 ofnents.qc
+
+waypoint.qc

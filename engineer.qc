@@ -544,10 +544,7 @@ void(float objtobuild) TeamFortress_Build =
 	v_forward_z = 0;
 	v_forward = normalize(v_forward) * 64;
 	
-    if (objtobuild == BUILD_FIELDGEN) //- OfN - Field generators must be lined up to work
-        obj.origin = WhereGen(self.origin + v_forward);
-    else
-        obj.origin = self.origin + v_forward;
+	obj.origin = self.origin + v_forward;
 
 	//WK Cheat Fix
 	if (self.is_feigning) {
@@ -734,6 +731,9 @@ void(float objtobuild) TeamFortress_Build =
 
         TeamFortress_SetSpeed(self);
 	}
+
+	if (objtobuild == BUILD_FIELDGEN)
+		WhereGen(obj.origin);
 };
 
 void() DispenserThink =
@@ -1078,8 +1078,6 @@ void() TeamFortress_FinishedBuilding =
 		oldself.movetype = MOVETYPE_TOSS;
 
 		oldself.solid = SOLID_BBOX;
-
-        oldself.angles = '0 0 0';
 
         setmodel(oldself, oldself.mdl);
 

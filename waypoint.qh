@@ -1,0 +1,7 @@
+boolean (entity ent, integer index) Waypoint_IsValid;
+vector (entity ent, integer index) Waypoint_Get;
+void (entity ent, integer index, vector loc) Waypoint_Set;
+void (entity ent, vector loc) Waypoint_Append;
+boolean (entity ent, integer index) Waypoint_IsTouching;
+void (entity ent, integer index, vector loc) Waypoint_Add;
+void (entity ent, integer index) Waypoint_Remove;

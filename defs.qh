@@ -1,4 +1,8 @@
 #include "options.qh"
+
+// because I want a boolean type :)
+#define boolean integer
+
 //
 // constants
 //
