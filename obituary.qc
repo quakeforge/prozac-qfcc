@@ -144,13 +144,13 @@ void (entity targ, entity atk) Give_Frags_Building =
 	if (atk == targ)
 		return;
 
-	atk.owner = atk.real_owner;
+	local entity ro = atk.real_owner;
 
-	if (atk.classname == "building_dispenser" && atk.martyr_enemy != atk.real_owner)
-		atk.real_owner = atk.martyr_enemy;
+	if (atk.classname == "building_dispenser" && atk.martyr_enemy)
+		ro = atk.martyr_enemy;
 
-	if ((((targ.classname == "player") && Teammate(atk.real_owner.team_no, targ.team_no)) ||
-		Teammate(atk.real_owner.team_no, targ.real_owner.team_no)) && ((deathmsg != DMSG_TESLA) ||
+	if ((((targ.classname == "player") && Teammate(ro.team_no, targ.team_no)) ||
+		Teammate(ro.team_no, targ.real_owner.team_no)) && ((deathmsg != DMSG_TESLA) ||
 		!(atk.tf_items & NIT_SECURITY_CAMERA)))
 	{
 		if (targ.classname == "player") // More the victim than the owner's fault
@@ -167,9 +167,6 @@ void (entity targ, entity atk) Give_Frags_Building =
 		atk.frags += 2;
 	else
 		atk.frags++;
-
-	if (atk.real_owner != atk.owner)
-		atk.real_owner = atk.owner;
 
 	Give_Frags_Player(atk.real_owner, atk);
 };

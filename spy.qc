@@ -745,7 +745,7 @@ void() GasGrenadeMakeGas =
 			{
 			// Damage
 			deathmsg = DMSG_GREN_GAS;
-			if (self.heat = 0)
+			if (!self.heat)
 				TF_T_Damage (te, NIL, self.owner, 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			else
 				TF_T_Damage (te, NIL, self.owner, 40, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
