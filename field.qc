@@ -55,6 +55,7 @@ For force field entity:
 .has_sentry     - Controls delay between shield sounds
 .dmg            - Next damage the field will do
 .has_camera     - Used to control the rate at which the field touch sound/visual effects are done (4hz)
+.forcefield_offset     - Offset to one of the gens from origin, used for lightning effects
 
 ================================================================================================*/
 
@@ -570,7 +571,7 @@ void(entity gen1, entity gen2) Create_Field =
 	rotate_bbox (tfield.rotated_bbox, right, forward, up, tfield.mins,
 				 tfield.maxs);
 
-	tfield.angles = (gen2.origin - gen1.origin);
+	tfield.forcefield_offset = (gen2.origin - gen1.origin);
 
     // apply stuff
     tfield.movetype = MOVETYPE_NONE;
@@ -746,7 +747,7 @@ void(entity tfield) Field_MakeVisual =
     {      
         local vector f;
         
-		f = tfield.origin + (tfield.angles * 0.5 * (random() * 2 - 1));
+		f = tfield.origin + (tfield.forcefield_offset * 0.5 * (random() * 2 - 1));
 
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
         if (random() > 0.5)

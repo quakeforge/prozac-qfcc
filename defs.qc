@@ -693,6 +693,8 @@ void (entity pl, float topcolor, float bottomcolor) SetPlayerColor;
 .float	fieldgen_status;
 .float	fieldgen_hasfield;
 .entity	fieldgen_field;
+
+.vector forcefield_offset;
 //----------------------------------------------//
 
 
