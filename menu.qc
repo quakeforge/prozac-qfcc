@@ -1203,40 +1203,10 @@ void(float inp) Menu_Engineer_Input =
 			 && (self.has_teleporter == 0 || self.has_teleporter == 1)
 			 && self.ammo_cells >= BUILD_COST_TELEPORTER) //ch if have one out, can build
 	{
-        if (HasFlag(self.team_no) == FALSE) {
-                CenterPrint(self, "No building until your team has the flag!\n");
-                return;		
-        }
 
-        if (self.has_teleporter == 1)
-		{
-                local float r;
-				te = find(NIL, classname, "building_teleporter");
-				while (te)
-				{
-					if (te.real_owner == self)
-					{
-						r = vlen(te.origin - self.origin);
-						if (r > TELEPORTER_RANGE && !(te.num_mines & IMPROVED_FOUR))
-                        {						    
-                            sprint(self, PRINT_HIGH, "Other Teleporter is too far away\n");
-                        }
-						else
-						{
-							TeamFortress_Build(BUILD_TELEPORTER);	
-							ResetMenu();		
-							self.impulse = 0;
-						}
-					}
-					te = find(te, classname, "building_teleporter");
-				}	
-		}
-		else
-		{
-			TeamFortress_Build(BUILD_TELEPORTER);	
-			ResetMenu();		
-			self.impulse = 0;
-		}
+		TeamFortress_Build(BUILD_TELEPORTER);	
+		ResetMenu();		
+		self.impulse = 0;
 	
 	}
 	else if (inp == 6 && (self.has_teleporter == 1 || self.has_teleporter == 2)) //ch if have one out. can destroy
@@ -1262,41 +1232,9 @@ void(float inp) Menu_Engineer_Input =
             }
             
             // find if there are other generators too close, if this is our first generator only - nope
-            if (infokey(NIL, "fieldtest") != "1")
-            {
-                local float r, mindist;
-                mindist = 3000;
-
-                te = find(NIL, classname, "building_fieldgen");
-                while (te)
-                {
-                    if (te.real_owner != self)
-                    {
-                        r = vlen(te.origin - self.origin);
-
-                        if (r < mindist)
-                            mindist = r;
-                    }
-                    te = find(te, classname, "building_fieldgen");
-                }	
-
-/*                if (mindist < FIELDGEN_HACKEDRANGE) // * 2
-                {						    
-                    sprint(self, PRINT_HIGH, "There are interferences with other field generators here!\n");
-                }
-                else
-                {*/
-                    TeamFortress_Build(BUILD_FIELDGEN);	
-                    ResetMenu();		
-                    self.impulse = 0;
-//                }
-            }
-            else
-            {
-                TeamFortress_Build(BUILD_FIELDGEN);	
-                ResetMenu();		
-                self.impulse = 0;
-            }
+		TeamFortress_Build(BUILD_FIELDGEN);	
+		ResetMenu();		
+		self.impulse = 0;
         }
 
 #ifdef FIELD_FORCEMODE

@@ -76,6 +76,9 @@ void(entity targ, entity atk) Give_Frags_Player =
 {
 	local float numfrags = 1,  chkvamp = 1;
 
+	if (targ.real_owner == atk) // Don't give -1 for killing own builds/monsters
+		return;
+
 	if (targ.classname == "monster_shambler")
 		numfrags = (targ.has_tesla - 4) / 4;
 
