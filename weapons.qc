@@ -1124,11 +1124,7 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 										
 		if (trace_fraction == 1.0)
 			TraceAttack (0, direction);
-		else if (self.current_weapon & WEAP_ASSAULT_CANNON) //WK Sinth's bugfix
-			TraceAttack (8, direction); //WK(12) (6) Reversed from 2.5
-		else if (self.current_weapon & WEAP_LIGHT_ASSAULT)
-			TraceAttack (3, direction);
-		else 
+		else
 			TraceAttack (6, direction); //WK 4
 
 		shotcount--;
@@ -1445,7 +1441,7 @@ void() W_FireAssaultCannon =
 	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 	dir = aim (self, 100000);
 	deathmsg = DMSG_ASSAULTCANNON;
-	FireBullets (5, dir, '0.15 0.10 0');
+	FireBullets (7, dir, '0.08 0.05 0');
 };
 
 /*
@@ -1477,7 +1473,7 @@ void() W_FireLightAssault =
 
 	if (CheckForReload() == TRUE)
 		return;
-	FireBullets (5, dir, '0.05 0.05 0');
+	FireBullets (7, dir, '0.15 0.15 0');
 	Attack_Finished(0.2);
 };
 

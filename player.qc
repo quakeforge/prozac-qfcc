@@ -582,7 +582,7 @@ void() player_nail4   =[ $nailatt2, player_nail1  ]
 // Cannon powering up
 void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ] 
 {
-	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
+	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running || !(self.flags & FL_ONGROUND))
 	{
 		// Let him/her walk again
 //		if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed() {
@@ -623,7 +623,7 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 // Cannon powering up 2
 void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ] 
 {
-	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running)
+	if ((!self.button0) || (self.ammo_shells < 1) || intermission_running || !(self.flags & FL_ONGROUND))
 	{
 		// Let him/her walk again
 //		if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed() {
@@ -661,7 +661,7 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 // Cannon Firing 
 void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ] 
 {
-	local string st;
+//	local string st;
 
 	muzzleflash();
 
@@ -688,6 +688,8 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 	W_FireAssaultCannon();
 
 	// Shake the screen
+	// Not with idlescale -GR
+#if 0
 	stuffcmd(self, "v_idlescale ");
 	if (self.heat < 5)
 		st = ftos(self.heat * 4);
@@ -695,6 +697,17 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 		st = "20";
 	stuffcmd(self, st);
 	stuffcmd(self, "\n");
+#else
+	local vector off = self.v_angle;
+
+	off_x -= (random () * 2) + 2;
+	off_y -= (random () * 2) - 1;
+
+	msg_entity = self;
+	WriteByte (MSG_ONE, SVC_SETANGLE);
+	WriteAngleV (MSG_ONE, off);
+#endif
+
 	Attack_Finished(0.1);
 };
 
@@ -723,8 +736,11 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 	// increase the heat of the cannon
 	self.heat = self.heat + 0.1;
 	// Shake the screen
+	// Not with idlescale
+#if 0
 	stuffcmd(self, "v_idlescale 0\n");
 	stuffcmd(self, "bf\n");
+#endif
 
 	Attack_Finished(0.1);
 };
