@@ -284,7 +284,7 @@ void (vector org, entity shooter) NapalmGrenadeLaunch =
 	if (newmis == world)
 		return;
 
-	self.touch = SUB_Null;
+	self.touch = NIL;
 
 	newmis.classname = "fire";
 	newmis.touch = Napalm_touch;

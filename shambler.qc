@@ -442,7 +442,7 @@ void() custom_shambler_die =
 
     sound (self, CHAN_VOICE, "shambler/sdeath.wav", 1, ATTN_MONSTERDIE);
     self.classname = "monster_corpse";
-    self.think=SUB_Null;
+    self.think=NIL;
     sham_death1();
 };
 

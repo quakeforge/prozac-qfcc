@@ -340,7 +340,7 @@ void () Anchor_Grapple =
 	self.think = Grapple_Track;
 	self.nextthink = time;
 	self.solid = SOLID_NOT;
-	self.touch = SUB_Null;
+	self.touch = NIL;
 };
 
 

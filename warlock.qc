@@ -712,7 +712,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
 		
-        //newmis.touch = SUB_Null;
+        //newmis.touch = NIL;
 
    		sprint(self, PRINT_HIGH, "You summon a hell knight.\n");
 	}
@@ -733,7 +733,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
 		
-        //newmis.touch = SUB_Null;
+        //newmis.touch = NIL;
 
    		sprint(self, PRINT_HIGH, "You summon a knight.\n");
 	}*/
@@ -756,7 +756,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
 		
-        //newmis.touch = SUB_Null;
+        //newmis.touch = NIL;
 
    		sprint(self, PRINT_HIGH, "You summon a fiend.\n");
 	}
@@ -778,7 +778,7 @@ void (float points) custom_demon_create =
 		newmis.think = walkmonster_start;
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
-		//newmis.touch = SUB_Null;
+		//newmis.touch = NIL;
 		////newmis.real_owner.demon_blood = 0; marduk bug
 		sprint(self, PRINT_HIGH, "You summon a shambler.\n");
 	}
@@ -797,7 +797,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 0.05;
 		//newmis.armorclass = 0; //- OfN - none AT_SAVESHOT; // kevlar
 		newmis.last_saveme_sound = 0; // ? oh that
-		//newmis.touch = SUB_Null;
+		//newmis.touch = NIL;
 
 		sprint(self, PRINT_HIGH, "You summon a scrag.\n");
 
@@ -937,7 +937,7 @@ void () kill_my_demon =
 			sound (self, CHAN_VOICE, "demon/ddeath.wav", 1, ATTN_NORM);
 			self = oself;
 			te.think = SUB_Remove;
-			te.touch = SUB_Null;
+			te.touch = NIL;
 			te.nextthink = time + 0.1;
 
 			sprint(self, PRINT_HIGH, "Your fiend is dead.\n");
@@ -965,14 +965,14 @@ void () kill_my_demon =
 			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 //			custom_grunt_die;
 			te.think = SUB_Remove;
-			te.touch = SUB_Null;
+			te.touch = NIL;
 			te.nextthink = time + 0.1;
 
             //-----------------------// NOT NEEDED
-            /*te.th_stand = SUB_Null;
-            te.th_run = SUB_Null;
-            te.th_missile = SUB_Null;
-            te.th_pain = SUB_Null;*/
+            /*te.th_stand = NIL;
+            te.th_run = NIL;
+            te.th_missile = NIL;
+            te.th_pain = NIL;*/
             //--------------------------//
 
 
@@ -1044,7 +1044,7 @@ void () kill_my_demon =
             
 			//sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
-			te.touch = SUB_Null;
+			te.touch = NIL;
 			te.nextthink = time + 0.1;
 			self = oself;
 
@@ -1069,7 +1069,7 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib3.mdl", -70);
 			sound (self, CHAN_VOICE, "hknight/death1.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
-			te.touch = SUB_Null;
+			te.touch = NIL;
 			te.nextthink = time + 0.1;
 			self = oself;
 
@@ -1094,7 +1094,7 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib3.mdl", -70);
 			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
-			te.touch = SUB_Null;
+			te.touch = NIL;
 			te.nextthink = time + 0.1;
 			self = oself;
 
@@ -1120,7 +1120,7 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib3.mdl", -70);
 			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
-			te.touch = SUB_Null;
+			te.touch = NIL;
 			te.nextthink = time + 0.1;
 			self = oself;
 

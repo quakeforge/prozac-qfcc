@@ -1379,8 +1379,8 @@ void() custom_grunt_die =
     ArmyDeathSound();
     self.classname = "monster_corpse";
     
-    self.think=SUB_Null;
-    self.touch=SUB_Null;
+    self.think=NIL;
+    self.touch=NIL;
     
     if (isMelee())
     {

@@ -678,7 +678,7 @@ float() TeleSoldier =
 	newmis.armorclass = 0; //- OfN none // AT_SAVESHOT; // kevlar
 	newmis.last_saveme_sound = 0; // ? oh that
 	
-    //newmis.touch = SUB_Null;
+    //newmis.touch = NIL;
     newmis.touch = grunty_touch; //-OfN- 
     newmis.has_holo = time+2; // touch messages delay
     newmis.is_detpacking=1; //resets engage enemy to "yes"

@@ -1283,7 +1283,7 @@ void() TeamFortress_GrenadePrimed =
 	newmis.angles = vectoangles(newmis.velocity);
 
 	// set the grenade's thinktime to when the PRIMETIME runs out
-	newmis.think = SUB_Null;
+	newmis.think = NIL;
 	newmis.nextthink = self.heat;
 
 	// set the think and touches to the appropriate grenade type
@@ -1314,7 +1314,7 @@ void() TeamFortress_GrenadePrimed =
 	}
     else if (self.weapon == GR_TYPE_CALTROP)
 	{
-		newmis.touch = SUB_Null;
+		newmis.touch = NIL;
 		newmis.think = CaltropGrenadeExplode;
 		newmis.skin = 0;
 		newmis.avelocity = '0 0 0';
@@ -3353,7 +3353,7 @@ void() TeamFortress_ExplodePerson =
 	newmis.angles = vectoangles(newmis.velocity);
 	
 	// set the grenades thinktime to now
-	newmis.think = SUB_Null;
+	newmis.think = NIL;
 	newmis.nextthink = time + 0.1;
 
 	// set the think and touches to the appropriate grenade type
@@ -3438,7 +3438,7 @@ void() TeamFortress_ExplodePerson =
 		setmodel (newmis, "progs/flarefly.mdl");
 
         /*te = spawn();
-   		te.touch = SUB_Null;
+   		te.touch = NIL;
 		te.think = SUB_Remove;//FlareGrenadeExplode;//RemoveFlare;
 		te.nextthink = time + 25;
 		te.owner = self.owner;

@@ -288,7 +288,7 @@ void() rotate_entity_think =
          {
          RotateTargetsFinal();
          self.state = STATE_INACTIVE;
-         self.think = SUB_Null;
+         self.think = NIL;
          return;
          }
 
@@ -319,7 +319,7 @@ void() rotate_entity_use =
          else
             {
             self.state = STATE_INACTIVE;
-            self.think = SUB_Null;
+            self.think = NIL;
             }
          }
       }
@@ -364,7 +364,7 @@ void() rotate_entity_firstthink =
    else
       {
       self.state = STATE_INACTIVE;
-      self.think = SUB_Null;
+      self.think = NIL;
       }
    self.use = rotate_entity_use;
    };
@@ -954,7 +954,7 @@ void() rotate_object =
    self.movetype = MOVETYPE_NONE;
    setmodel (self,self.model);
    setsize( self, self.mins, self.maxs );
-   self.think = SUB_Null;
+   self.think = NIL;
    };
 
 //************************************************
@@ -990,7 +990,7 @@ void() rotate_door_think2 =
       }
 
    sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-   self.think = SUB_Null;
+   self.think = NIL;
 
    RotateTargetsFinal();
    };
@@ -1192,5 +1192,5 @@ void() func_rotate_door =
    setsize( self, self.mins, self.maxs );
    self.state = STATE_CLOSED;
    self.use = rotate_door_use;
-   self.think = SUB_Null;
+   self.think = NIL;
    };

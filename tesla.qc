@@ -47,7 +47,7 @@ float modelindex_tesla; //CH
 // Tesla AI Functions
 float() Tesla_FindTarget;
 void() Tesla_FoundTarget;
-void() Tesla_Pain;
+void(entity attacker, float damage) Tesla_Pain;
 void() Tesla_Die;
 float() Tesla_Fire;
 void() Tesla_Idle;
@@ -364,7 +364,7 @@ void() Tesla_FoundTarget =
     self.no_grenades_1 = FALSE;
 };
 
-void() Tesla_Pain =
+void(entity attacker, float damage) Tesla_Pain =
 {
 	// Update the owner's status bar
 	self.real_owner.StatusRefreshTime = time + 0.2;

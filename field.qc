@@ -977,7 +977,7 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
 
 void(entity field) Field_Built =
 {
-	field.touch = SUB_Null;
+	field.touch = NIL;
 	field.think = FieldGen_think;
 	field.nextthink = time + 0.1;
 	field.fieldgen_status = FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)

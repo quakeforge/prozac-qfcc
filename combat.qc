@@ -240,7 +240,7 @@ void(entity targ, entity attacker) Killed =
 	Obituary(self, attacker);
 	
 	self.takedamage = DAMAGE_NO;
-	self.touch = SUB_Null;
+	self.touch = NIL;
 
 	monster_death_use();
 	self.th_die ();

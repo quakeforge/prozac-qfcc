@@ -378,7 +378,7 @@ void() wiz_die =
 	}
 
     self.classname = "monster_corpse";
-    self.think=SUB_Null;
+    self.think=NIL;
     wiz_death1();
 };
 

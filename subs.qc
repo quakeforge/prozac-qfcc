@@ -3,8 +3,6 @@
 void(entity Goal, entity AP) DoGoalWork;
 void(entity Goal, entity AP) DoGroupWork;
 
-void() SUB_Null = {};
-
 void() SUB_Remove = {dremove(self);};
 
 /*
@@ -280,11 +278,8 @@ void() SUB_UseTargets =
 			otemp = other;
 			self = t;
 			other = stemp;
-			if (self.use != SUB_Null)
-			{
-				if (self.use)
-					self.use ();
-			}
+			if (self.use)
+				self.use ();
 			self = stemp;
 			other = otemp;
 			activator = act;

@@ -592,7 +592,7 @@ void() Demon_Water_Jump =
 	if (trace_inwater == TRUE && jello)
 	{
 		ai_face();
-		self.touch = SUB_Null;
+		self.touch = NIL;
 		self.think = demon1_jump4;
 		self.has_tesla = TRUE; //Landed in water
 		self.nextthink = time + 0.1;
@@ -611,7 +611,7 @@ void()	Demon_JumpTouch =
 	traceline(self.origin,self.origin - '0 0 2',TRUE,self);
 	if (trace_inwater == TRUE && jello)
 	{
-		self.touch = SUB_Null;
+		self.touch = NIL;
 		self.think = demon1_jump1;
 		self.has_tesla = TRUE; //Landed in water
 		self.nextthink = time + 0.1;
@@ -639,7 +639,7 @@ void()	Demon_JumpTouch =
 			//RPrint ("popjump\n");
 			//sprint(self.real_owner,PRINT_HIGH,"Stuck Jump flag set!\n");
 			self.has_sentry = TRUE; //CH Stuck Jump
-			self.touch = SUB_Null;
+			self.touch = NIL;
 			self.think = demon1_jump1;
 			self.nextthink = time + 0.1;
 
@@ -652,7 +652,7 @@ void()	Demon_JumpTouch =
 	}
 
 	self.has_sentry = 0; //Cancel if this far
-	self.touch = SUB_Null;
+	self.touch = NIL;
 	self.think = demon1_jump11;
 	self.nextthink = time + 0.1;
 };
@@ -729,7 +729,7 @@ void () custom_demon_die =
     }
 
     self.classname = "monster_corpse";
-    self.think=SUB_Null;
+    self.think=NIL;
     demon1_die1 ();
 };
 

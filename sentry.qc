@@ -16,7 +16,7 @@ void() Sentry_Rotate;
 float() Sentry_FindTarget;
 void() Sentry_FoundTarget;
 void() Sentry_HuntTarget;
-void() Sentry_Pain;
+void(entity attacker, float damage) Sentry_Pain;
 void() Sentry_Die;
 float() Sentry_Fire;
 //WK - Will kill enemies on touch, and adds support for flying.
@@ -459,7 +459,7 @@ void() Sentry_HuntTarget =
 		self.nextthink = time + (0.5*tfactor);	// Some visual, so its a little easier
 };
 
-void() Sentry_Pain =
+void(entity attacker, float damage) Sentry_Pain =
 {
 	// Update the owner's status bar
 	self.real_owner.StatusRefreshTime = time + 0.2;

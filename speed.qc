@@ -47,7 +47,7 @@ void() Kick_My_Owner =
 	else
 		bprint(PRINT_HIGH, " was kicked for cheating.\n");
 
-	self.think = SUB_Null;
+	self.think = NIL;
 	dremove(self);
 };
 

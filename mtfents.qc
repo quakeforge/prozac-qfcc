@@ -371,7 +371,7 @@ void() ab_think =
     newmis.nextthink = time;
     newmis.think = ab_exp1;
     newmis.owner = self;        
-    newmis.touch = SUB_Null;
+    newmis.touch = NIL;
 
     newmis.movetype = MOVETYPE_FLY;
     newmis.velocity = '0 0 300';

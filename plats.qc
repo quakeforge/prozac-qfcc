@@ -179,7 +179,7 @@ void() plat_crush =
 
 void() plat_use =
 {
-	self.use = SUB_Null;
+	self.use = NIL;
 	if (self.state != STATE_UP)
 		objerror ("plat_use: not in up state");
 	plat_go_down();

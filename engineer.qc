@@ -95,7 +95,7 @@ void() LaserBolt_Touch =
 		self.owner = other;
 
 		setmodel (self, "");
-		self.touch = SUB_Null;
+		self.touch = NIL;
 //		self.solid = SOLID_NOT;
 //		self.movetype = MOVETYPE_NOCLIP;
 
@@ -107,7 +107,7 @@ void() LaserBolt_Touch =
 	{
 		//WK Fly through walls!
 		setmodel (self, "");
-		self.touch = SUB_Null;
+		self.touch = NIL;
 		self.solid = SOLID_NOT;
 		self.movetype = MOVETYPE_NOCLIP;
 
@@ -234,7 +234,7 @@ void() EMPGrenadeExplode =
 	while (te)
 	{	
 		if (!CanDamage(te,self)) // OfN
-            SUB_Null();
+            ;
         else if (te.touch == ammo_touch || te.touch == weapon_touch) // Ammo/Weapon?
 		{
 			// Make sure it isn't picked up in the next second

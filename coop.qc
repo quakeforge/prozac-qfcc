@@ -10,7 +10,7 @@ cooperative mode functions
 void() DroppedKeyThink =
 {
 	// let the throwing player pick it up again
-	self.think = SUB_Null;
+	self.think = NIL;
 	self.touch = key_touch;
 	self.owner = world;
 };
@@ -70,7 +70,7 @@ void() DropKey =
 		}
 
 		newmis.owner = self;
-		newmis.touch = SUB_Null;
+		newmis.touch = NIL;
 		setorigin(newmis, self.origin + '0 0 16');
 		makevectors(self.v_angle);
 		newmis.velocity = normalize(v_forward) * 300 + '0 0 200';
