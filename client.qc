@@ -2853,6 +2853,7 @@ void() PlayerPreThink =
 			deathmsg = DMSG_OUTOFBOUNDS;
 			TF_T_Damage (self, NIL, NIL, self.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		}
+#ifdef REALLY_BUGGY_CODE
 		else if (trace_startsolid && trace_ent.classname != "force_field")
 		{
 			deathmsg = DMSG_PHYSICS;			
@@ -2892,6 +2893,7 @@ void() PlayerPreThink =
 		{
 			self.stucktime = 0;
 		}
+#endif
 	}
 	else
 	{

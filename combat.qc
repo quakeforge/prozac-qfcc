@@ -320,6 +320,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	}
 #endif
 
+#ifndef REALLY_BUGGY_CODE // This really really sucks
 	if (inflictor.martyr_enemy && (Teammate(attacker.team_no, targ.team_no) || Teammate(attacker.team_no,targ.real_owner.team_no)))
 	{
 		if (!Teammate(inflictor.martyr_enemy.team_no, targ.real_owner.team_no) && !Teammate(inflictor.martyr_enemy.team_no, targ.team_no))
@@ -340,6 +341,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		    Teammate(attacker.team_no, targplayer.team_no))
 			attacker = inflictor.AIRG_FlyTracker;
 	}
+#endif
 
 	//BOOKKEEPING
 	//WK Store last person who shot martyr into .enemy
