@@ -1690,6 +1690,9 @@ void() powerup_touch =
 		other.tfstate = other.tfstate - (other.tfstate & TFSTATE_INSPIRED);
 	}	
 
+	other.effects &= ~EF_ANYGLOW;
+	other.effects |= EF_GlowColor (other);
+
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets
 };
