@@ -661,7 +661,7 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 	self.heat = self.heat + 1;
 	if (self.heat >= 10)
 	{
-		sound (self, CHAN_AUTO, "weapons/asscan4.wav", 1, ATTN_NORM);
+		sound (self, CHAN_WEAPON, "weapons/asscan4.wav", 1, ATTN_NORM);
 		self.heat = 0;
 		player_assaultcannon1();
 	}
@@ -759,7 +759,7 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 void() player_assaultcannondown1   =[$nailatt1, player_assaultcannondown1  ] 
 {
 	if (self.count == 1)
-		sound (self, CHAN_AUTO, "weapons/asscan3.wav", 1, ATTN_NORM);
+		sound (self, CHAN_WEAPON, "weapons/asscan3.wav", 1, ATTN_NORM);
 
 	if (self.count >= 15) {
 		self.heat = 0;
