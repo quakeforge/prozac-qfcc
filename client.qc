@@ -3276,7 +3276,7 @@ void() ClientDisconnect =
 	mrmartyr = world;
 	do {
 		mrmartyr = nextent (mrmartyr);
-		if (mrmartyr.martyr_enemy == te)
+		if (mrmartyr && mrmartyr.martyr_enemy == te)
 			mrmartyr.martyr_enemy = world;
 	} while (mrmartyr != world);
 
