@@ -141,7 +141,8 @@ void() Field_think =
 	if (IsValidFieldGen(self.demon_one))
 	if (self.demon_one.fieldgen_status == FIELDGEN_ISWORKING)
 		Field_MakeVisual(self);		   
-   
+
+#ifdef ALIGNED_FIELDGENS 
 	// checks for anything stuck in field :)
 	local entity te;
 	local float frange;
@@ -160,26 +161,18 @@ void() Field_think =
 		if (te.velocity == '0 0 0')
 //		if (!IsBuilding(te)) // no screwing with the buildings :)
 		if (te.classname != "force_field")
-#ifdef ALIGNED_FIELDGENS
 		if (EntsTouching2(te,self))
-#else
-# warning We do NOT have a test for being stuck in the field, so I am disabling it
-		if (0)
-#endif
 		{
-			local entity foo;
-			foo = testentitypos (te);
-			if (foo == self)
-			{
-				other = te;
-				deathmsg = DMSG_STUCK_FORCEFIELD; 
-				self.dmg = FIELDGEN_DMGINSIDE; // this gonna hurt
-				Field_touch_SUB();
-			}
+			other = te;
+			deathmsg = DMSG_STUCK_FORCEFIELD; 
+			self.dmg = FIELDGEN_DMGINSIDE; // this gonna hurt
+			Field_touch_SUB();
 		}
-
 		te = te.chain;
 	}
+#else
+# warning We do NOT have a test for being stuck in the field, so I am disabling it
+#endif
 };
 
 //=============================================================================================
@@ -569,7 +562,7 @@ void(entity gen1, entity gen2) Create_Field =
 	// already checked b4 on CanLink -> CanIdle
 	/*if (!IsValidFieldGen(gen1) || !IsValidFieldGen(gen2))
 		return;*/
-		
+
 	gen1.fieldgen_status = FIELDGEN_ISENABLED;
 	gen2.fieldgen_status = FIELDGEN_ISENABLED;
 
