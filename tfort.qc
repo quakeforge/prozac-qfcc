@@ -1501,23 +1501,22 @@ void(entity p) TeamFortress_SetSpeed =
 {
 	local float tf;
 	local entity te;
+	local float ms = p.maxspeed;
 
 	//stuffcmd(p,"cl_movespeedkey 1\n");
 
 	makeImmune(self,time + 1.1); //WK Don't boot someone decelerating
 
     // - OfN -//
-    //-------------------------------------------------------------------------//
-    // STOP THAT SILLY DAMN BUGS, SPY SLIDING ETC.. !!!!!!!!!!!!!!!!!!!!!!!!! -//
+    //-----------------------------------------------------------------------//
+    // STOP THAT SILLY DAMN BUGS, SPY SLIDING ETC.. !!!!!!!!!!!!!!!!!!!!!!! -//
     if (p.is_feigning || p.is_haxxxoring || p.is_detpacking || p.is_building)
         p.tfstate = p.tfstate | TFSTATE_CANT_MOVE;
-    //-------------------------------------------------------------------------//
+    //-----------------------------------------------------------------------//
 
 	// Check for any reason why they can't move at all
-	if (p.tfstate & TFSTATE_CANT_MOVE)
-	{
-		if (STOP_MOUSE_MOVEMENT == ON)
-		{
+	if (p.tfstate & TFSTATE_CANT_MOVE) {
+		if (STOP_MOUSE_MOVEMENT == ON) {
 			stuffcmd(p,"m_forward 0\n");
 			stuffcmd(p,"m_side 0\n");
 		}
@@ -1528,11 +1527,8 @@ void(entity p) TeamFortress_SetSpeed =
 		stuffcmd(p,"cl_sidespeed 0\n");
 		p.maxspeed = 0;
 		return;
-	}
-	else
-	{
-		if (STOP_MOUSE_MOVEMENT == ON)
-		{
+	} else {
+		if (STOP_MOUSE_MOVEMENT == ON) {
 			stuffcmd(p,"m_forward 1\n");
 			stuffcmd(p,"m_side 0.8\n");
 		}
@@ -1540,113 +1536,113 @@ void(entity p) TeamFortress_SetSpeed =
 
 	// First, get their max class speed
 	// WK We don't use this block much any more
-	if ( p.playerclass == PC_SCOUT )
-	{p.maxspeed = PC_SCOUT_MAXSPEED;}
-	else if ( p.playerclass == PC_SNIPER )
-	{p.maxspeed = PC_SNIPER_MAXSPEED;}
-	else if ( p.playerclass == PC_SOLDIER )
-	{p.maxspeed = PC_SOLDIER_MAXSPEED;}
-	else if ( p.playerclass == PC_DEMOMAN )
-	{p.maxspeed = PC_DEMOMAN_MAXSPEED;}
-	else if ( p.playerclass == PC_MEDIC )
-	{p.maxspeed = PC_MEDIC_MAXSPEED;}
-	else if ( p.playerclass == PC_HVYWEAP )
-	{p.maxspeed = PC_HVYWEAP_MAXSPEED;}
-	else if ( p.playerclass == PC_PYRO )
-	{p.maxspeed = PC_PYRO_MAXSPEED;}
-	else if ( p.playerclass == PC_CIVILIAN )
-	{p.maxspeed = PC_CIVILIAN_MAXSPEED;}
-	else if ( p.playerclass == PC_SPY )
-	{p.maxspeed = PC_SPY_MAXSPEED;}
-	else if ( p.playerclass == PC_ENGINEER )
-	{p.maxspeed = PC_ENGINEER_MAXSPEED;}
-	else if ( p.playerclass == PC_UNDEFINED )
-	{p.maxspeed = 320;return;}
-
-	else if ( p.playerclass == PC_CUSTOM )
-	{
+	if ( p.playerclass == PC_SCOUT)
+		p.maxspeed = PC_SCOUT_MAXSPEED;
+	else if ( p.playerclass == PC_SNIPER)
+		p.maxspeed = PC_SNIPER_MAXSPEED;
+	else if ( p.playerclass == PC_SOLDIER)
+		p.maxspeed = PC_SOLDIER_MAXSPEED;
+	else if ( p.playerclass == PC_DEMOMAN)
+		p.maxspeed = PC_DEMOMAN_MAXSPEED;
+	else if ( p.playerclass == PC_MEDIC)
+		p.maxspeed = PC_MEDIC_MAXSPEED;
+	else if ( p.playerclass == PC_HVYWEAP)
+		p.maxspeed = PC_HVYWEAP_MAXSPEED;
+	else if ( p.playerclass == PC_PYRO)
+		p.maxspeed = PC_PYRO_MAXSPEED;
+	else if ( p.playerclass == PC_CIVILIAN)
+		p.maxspeed = PC_CIVILIAN_MAXSPEED;
+	else if ( p.playerclass == PC_SPY)
+		p.maxspeed = PC_SPY_MAXSPEED;
+	else if ( p.playerclass == PC_ENGINEER)
+		p.maxspeed = PC_ENGINEER_MAXSPEED;
+	else if ( p.playerclass == PC_UNDEFINED)
+		p.maxspeed = 320;
+	else if ( p.playerclass == PC_CUSTOM) {
 		p.maxspeed = p.custom_speed;
 		if (p.done_custom & CUSTOM_BUILDING) //We are building a class
 			p.maxspeed = 0;
 	}
 
-	//1st if we have scuba gear and are underwater, increase speed
-	if ((p.tf_items & NIT_SCUBA) && (p.flags & FL_INWATER))
-		p.maxspeed = p.maxspeed + 200;
-	//Fins slow us down out of water
-	if ((p.tf_items & NIT_SCUBA) && !(p.flags & FL_INWATER))
-		p.maxspeed = p.maxspeed - 20;
-
-	// 2nd, see if any GoalItems are slowing them down
-	tf = 0;
-	te = find (world, classname, "item_tfgoal");
-	while ((te != world) && (tf == 0))
-	{
-		if (te.owner == p)
-		{
-			if (te.goal_activation & TFGI_SLOW)
-			{
-				tf = 1;
-				p.maxspeed = p.maxspeed / 2;
-			}
+	if (p.playerclass != PC_UNDEFINED) {
+		//1st if we have scuba gear ...
+		if (p.tf_items & NIT_SCUBA) {
+			if (p.flags & FL_INWATER)	// and are underwater, increase speed
+				p.maxspeed = p.maxspeed + 200;
+			else						//Fins slow us down out of water
+				p.maxspeed = p.maxspeed - 20;
 		}
-		te = find(te, classname, "item_tfgoal");
+
+		// 2nd, see if any GoalItems are slowing them down
+		tf = 0;
+		te = find (world, classname, "item_tfgoal");
+		while ((te != world) && (tf == 0)) {
+			if (te.owner == p) {
+				if (te.goal_activation & TFGI_SLOW) {
+					tf = 1;
+					p.maxspeed = p.maxspeed / 2;
+				}
+			}
+			te = find(te, classname, "item_tfgoal");
+		}
+
+		// 3rd, See if they're tranquilised
+		if (p.tfstate & TFSTATE_TRANQUILISED) {
+			//WK p.maxspeed = (p.maxspeed / 3) * 2;
+			if (p.maxspeed > 170)
+				p.maxspeed = 170;
+		}
+		
+		if (p.tfstate & TFSTATE_C4THROW)
+			p.maxspeed = p.maxspeed / 3;
+
+		// 4th, check for leg wounds
+		if (p.leg_damage) {
+			if (p.leg_damage > 9)
+				p.leg_damage = 9;
+
+			// reduce speed by 10% per leg wound
+			p.maxspeed = (p.maxspeed * ((10 - p.leg_damage) / 10));
+		}
+
+		// 5th, if they're a sniper, and they're aiming, halve their speed
+		// again, but not to less than 60
+		if (p.tfstate & TFSTATE_AIMING) {
+			if (p.maxspeed > 120)
+				p.maxspeed = p.maxspeed / 2;
+			else if (p.maxspeed > 60)
+				p.maxspeed = 60;
+		}
+
+		// WK 6th, See if they're partially hidden
+		if (p.job & JOB_THIEF) {
+			if (p.job & JOB_ACTIVE)
+				p.maxspeed = (p.maxspeed * 3) / 4;
+			else if (p.job & JOB_FULL_HIDE)
+				if (p.maxspeed > 130)
+					p.maxspeed = 130;
+		}
+
+		//WK 7th, Check to see if they are sprinting or recovering
+		//Note that tired is both ACTIVE and TIRED
+		if (p.job & JOB_RUNNER) {
+			if (p.job & JOB_TIRED)
+				p.maxspeed = 2 * p.maxspeed / 3;
+			else if (p.job & JOB_ACTIVE)
+				p.maxspeed = p.maxspeed + 200;
+		}
+
+		// 8th, check if they're firing an Assault Cannon
+		if (p.tfstate & TFSTATE_ASSAULTCANNON)
+			p.maxspeed /= 4;
 	}
 
-	// 3rd, See if they're tranquilised
-	if (p.tfstate & TFSTATE_TRANQUILISED)
-	{
-		//WK p.maxspeed = (p.maxspeed / 3) * 2;
-		if (p.maxspeed > 170)
-			p.maxspeed = 170;
+	if (p.maxspeed != ms) {
+		local string speed = ftos (p.maxspeed);
+		stuffcmd(p,"cl_backspeed " + speed + "\n");
+		stuffcmd(p,"cl_forwardspeed " + speed + "\n");
+		stuffcmd(p,"cl_sidespeed " + speed + "\n");
 	}
-	
-	if (p.tfstate & TFSTATE_C4THROW)
-		p.maxspeed = p.maxspeed / 3;
-
-	// 4th, check for leg wounds
-	if (p.leg_damage)
-	{
-		if (p.leg_damage > 9)
-			p.leg_damage = 9;
-
-		// reduce speed by 10% per leg wound
-		p.maxspeed = (p.maxspeed * ((10 - p.leg_damage) / 10));
-	}
-
-	// 5th, if they're a sniper, and they're aiming, their speed must be 60 or less
-	if (p.tfstate & TFSTATE_AIMING)
-	{
-		if (p.maxspeed > 60)
-			p.maxspeed = p.maxspeed / 2;
-	}
-
-	// WK 6th, See if they're partially hidden
-	if (p.job & JOB_THIEF)
-	{
-		if (p.job & JOB_ACTIVE)
-			p.maxspeed = (p.maxspeed * 3) / 4;
-		else if (p.job & JOB_FULL_HIDE)
-			if (p.maxspeed > 130)
-				p.maxspeed = 130;
-	}
-
-	//WK 7th, Check to see if they are sprinting or recovering
-	//Note that tired is both ACTIVE and TIRED
-	if (p.job & JOB_RUNNER) {
-		if (p.job & JOB_TIRED)
-			p.maxspeed = 2 * p.maxspeed / 3;
-		else if (p.job & JOB_ACTIVE)
-			p.maxspeed = p.maxspeed + 200;
-	}
-
-	// 8th, check if they're firing an Assault Cannon
-	if (p.tfstate & TFSTATE_ASSAULTCANNON)
-		p.maxspeed /= 4;
-
-	stuffcmd(p,"cl_backspeed 1000\n");
-	stuffcmd(p,"cl_forwardspeed 1000\n");
-	stuffcmd(p,"cl_sidespeed 1000\n");
 };
 
 //=========================================================================
