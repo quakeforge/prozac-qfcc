@@ -415,13 +415,12 @@ float(entity tfield, entity who) Field_ItCanPass =
     if (FieldIsMalfunctioning(tfield) & SCREWUP_ONE)
         return FALSE;
 
+/*
     if (who == tfield.real_owner) // field owner - always pass
         return TRUE;
-
-/*
+*/
     if (Field_GetForcedStatus(tfield)) 
         return FALSE;
-*/
 
     if (who.classname == "player") // PLAYERS
     {
