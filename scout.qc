@@ -88,7 +88,7 @@ void() FlashGrenadeExplode =
 			makevectors(te.v_angle);
 			// Damage player and explode
 			// no, don't damage
-			if (te.health > 0 && (normalize(self.origin - te.origin) * v_forward > -0.5))
+			if (te.health > 0 && (normalize(self.origin - te.origin) * v_forward > -0.5) && visible(te))
 			{
 				local float ft = 60 - (vlen(self.origin - te.origin) * 6 / 50);
 
