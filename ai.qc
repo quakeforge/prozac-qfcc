@@ -579,7 +579,6 @@ entity (entity scanner) LookAround =
     if (infokey(world,"ceasefire")=="on") //OfN
 	    return scanner;
 
-    local entity		scanner;
 	local entity		client;
 	local float			gotatarget;
 

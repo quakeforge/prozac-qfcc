@@ -307,7 +307,6 @@ void() Admin_Cmd =
         else if (st == "team1" || st == "team2" || st == "team3" || st == "team4")
         {
             local float targetteam, tc, tc2;
-            local string st2;
 
             if (st == "team1")
                 targetteam = 1;

@@ -521,8 +521,6 @@ void(entity demon) custom_demon_name =
 
 void (float points) custom_demon_create = 
 {
-	local float points;
-
 	//Play random summoning sound here
 	//r = random();
 	//if (r < 0.33)
