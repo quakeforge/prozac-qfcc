@@ -1175,7 +1175,7 @@ void() W_FireSuperShotgun =
 		dir = normalize (dir - self.origin);
 	}
 	deathmsg = DMSG_SSHOTGUN;
-	FireBullets (14, dir, '0.11 0.06 0'); //WK 14, 0.14, 0.08
+	FireBullets (12, dir, '0.11 0.06 0'); //WK 14, 0.14, 0.08
 };
 
 /*
