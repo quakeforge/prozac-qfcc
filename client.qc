@@ -3065,8 +3065,6 @@ void() ClientConnect =
 {
 	local string st;
 
-	initentity (self);
-
 	bprint (PRINT_HIGH, self.netname);
 	bprint (PRINT_HIGH, " has joined the server\n");
     
