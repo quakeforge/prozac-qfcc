@@ -798,7 +798,7 @@ float no_detpush;
 entity debug_target; // server dprints will go to this client too
 float allow_debug;
 //-------------------------//
-float petsdrown; // if 0, grunts and monsters can be in water, in check_contents ai.qc
+float allow_watermonsters; // if 0, grunts and monsters can be in water, in check_contents ai.qc
 
 // Chris' Teamplay Plus Mode
 /*float chris; // Is Chris mode on or off

@@ -193,7 +193,7 @@ void(entity test) AI_Check_Contents =
 	/* WK Removed because water is ok for monsters, sheesh
 	Whatever you think, ceaf it is. */
     //- OfN - what the fuck means "ceaf"? heh
-	else if (pointcontents(test.origin) == CONTENTS_WATER && petsdrown == TRUE)
+	else if (pointcontents(test.origin) == CONTENTS_WATER && allow_watermonsters == FALSE)
 	{
 		if (self.classname == "monster_demon1")
 		{	// do damage
