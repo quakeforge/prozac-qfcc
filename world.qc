@@ -554,6 +554,8 @@ void() worldspawn =
 
 void() StartFrame =
 {
+	InitFunctions ();
+
 	teamplay = cvar("teamplay");
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");

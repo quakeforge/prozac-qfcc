@@ -3144,25 +3144,25 @@ void () TeamFortress_AmmoboxTouch =
 		{
 			other.ammo_shells = other.ammo_shells + self.ammo_shells;
 			quantity = ftos(self.ammo_shells);
-			sprint2(other, PRINT_LOW, quantity, " shells  ");
+			sprint(other, PRINT_LOW, quantity, " shells  ");
 		}	
 		if (self.ammo_nails > 0)
 		{
 			other.ammo_nails = other.ammo_nails + self.ammo_nails;
 			quantity = ftos(self.ammo_nails);
-			sprint2(other, PRINT_LOW, quantity, " nails  ");
+			sprint(other, PRINT_LOW, quantity, " nails  ");
 		}	
 		if (self.ammo_rockets > 0)
 		{
 			other.ammo_rockets = other.ammo_rockets + self.ammo_rockets;
 			quantity = ftos(self.ammo_rockets);
-			sprint2(other, PRINT_LOW, quantity, " rockets  ");
+			sprint(other, PRINT_LOW, quantity, " rockets  ");
 		}	
 		if (self.ammo_cells > 0)
 		{
 			other.ammo_cells = other.ammo_cells + self.ammo_cells;
 			quantity = ftos(self.ammo_cells);
-			sprint2(other, PRINT_LOW, quantity, " cells  ");
+			sprint(other, PRINT_LOW, quantity, " cells  ");
 		}	
 		sprint(other, PRINT_LOW, "\n");
 	}
@@ -3205,7 +3205,7 @@ void () TeamFortress_AmmoboxTouch =
 	if (self.weapon > 0)
 	{
 		quantity = ftos(self.aflag);
-		sprint5(other, PRINT_LOW, "You picked up ", quantity, " ", self.netname, "\n");
+		sprint(other, PRINT_LOW, "You picked up ", quantity, " ", self.netname, "\n");
 	}
 
 	sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
