@@ -332,7 +332,8 @@ void() MotionSensorTossTouch =
 	teamsprint(self.real_owner.team_no, self.real_owner, " has built a Motion Sensor.\n");
 
 	self.movetype = MOVETYPE_NONE;
-	setsize (self, '-16 -16 -6', '16 16 10');
+	self.owner = NIL;
+	setsize (self, self.mins, self.maxs);
 	self.solid = SOLID_BBOX;
 	self.takedamage = DAMAGE_AIM;
 	sound (self, CHAN_WEAPON, "weapons/guerilla_set.wav", 1, ATTN_NORM);
@@ -478,12 +479,11 @@ void() MotionSensorSpawn =
 	newmis.classname = "building_sensor";
 	newmis.netname = "motion_sensor";
 	newmis.origin = self.origin;
-	newmis.owner = NIL;
+	newmis.owner = self;
 	newmis.real_owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '0 0 0';
 	newmis.velocity = v_forward*800 + v_up * 200 + v_right*10 + v_up*10;
-	newmis.origin += normalize(newmis.velocity) * 20;
 	setorigin(newmis, newmis.origin);
 	newmis.angles = '0 0 0';
 	newmis.angles_y = anglemod(self.angles_y + 180);

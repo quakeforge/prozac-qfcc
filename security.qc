@@ -234,12 +234,11 @@ void() Security_Camera_Spawn =
 	newmis.classname = "building_camera";
 	newmis.netname = "security_camera";
 	newmis.origin = self.origin;
-	newmis.owner = NIL;
+	newmis.owner = self;
 	newmis.real_owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '0 0 0';
 	newmis.velocity = v_forward*800 + v_up * 200 + v_right*10 + v_up*10;
-	newmis.origin += (normalize(newmis.velocity) * 20);
 	setorigin(newmis, newmis.origin);
 	newmis.angles = '0 0 0';
 	newmis.angles_y = anglemod(self.angles_y + 180);
@@ -268,6 +267,7 @@ void() SecurityCameraTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
+	self.owner = NIL
 	local integer pc = entpointcontents(self);
 	if (pc == CONTENTS_SOLID || pc == CONTENTS_SKY)
 	{
@@ -284,7 +284,7 @@ void() SecurityCameraTossTouch =
     self.real_owner.option = time + 2; // so ppl cant destroy it for 2 seconds
 
 	self.movetype = MOVETYPE_NONE;
-	setsize (self, '-16 -16 -6', '16 16 10');
+	setsize (self, newmis.mins, newmis.maxs);
 	self.solid = SOLID_BBOX;
 	self.takedamage = DAMAGE_AIM;
 	sound (self, CHAN_WEAPON, "weapons/guerilla_set.wav", 1, ATTN_NORM);
