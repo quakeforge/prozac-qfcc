@@ -1,5 +1,3 @@
-#include "defs.qh"
-#include "menu.qh"
 /*======================================================
 	ENGINEER.QC			Custom TeamFortress v3.1	
 
@@ -9,6 +7,10 @@
 ========================================================
 Weapons and functions for the ENGINEER class and associated weaponry
 =======================================================*/
+
+#include "defs.qh"
+#include "menu.qh"
+
 float modelindex_tesla; //CH
 // Weapon Functions
 void() LaserBolt_Touch;
@@ -30,7 +32,6 @@ void(entity disp) Engineer_UseDispenser;
 void(entity gun) Engineer_UseSentryGun;
 void(entity cam) Engineer_UseCamera;
 void() CheckDistance;
-float(entity obj, entity builder) CheckArea;
 //WK
 void() Sentry_Touch;
 float(float myteam) HasFlag;
@@ -483,15 +484,14 @@ void() TeamFortress_EngineerBuild =
 	}
 };
 
-
 float(entity obj, entity builder) CheckArea =
 {
 	local vector src, end;
 	local float pos;
 
 	// Check the origin
-	pos = pointcontents(obj.origin); 
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY) 
+	pos = pointcontents(obj.origin);
+	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
 		return FALSE;
 
 	// Check the surrounding area
@@ -499,8 +499,8 @@ float(entity obj, entity builder) CheckArea =
 	src_y = obj.origin_y + obj.maxs_y + 16;
 	src_z = obj.origin_z + obj.maxs_z + 16;  // check upwards more
 
-	pos = pointcontents(src); 
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY) 
+	pos = pointcontents(src);
+	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
 		return FALSE;
 
 	end_x = obj.origin_x + obj.mins_x - 16;
@@ -510,8 +510,8 @@ float(entity obj, entity builder) CheckArea =
 	if (trace_fraction != 1)
 		return FALSE;
 
-	pos = pointcontents(end); 
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY) 
+	pos = pointcontents(end);
+	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
 		return FALSE;
 
 	// extend the size a little
@@ -519,21 +519,21 @@ float(entity obj, entity builder) CheckArea =
 	src_y = obj.origin_y + obj.maxs_y + 16;
 	src_z = obj.origin_z + obj.maxs_z + 16;
 
-	pos = pointcontents(src); 
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY) 
+	pos = pointcontents(src);
+	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
 		return FALSE;
 
 	end_x = obj.origin_x + obj.maxs_x + 16;
 	end_y = obj.origin_y + obj.mins_y - 16;
-	end_z = obj.origin_z + obj.mins_z - 16;		// check downwards less
+	end_z = obj.origin_z + obj.mins_z - 16;         // check downwards less
 
 	traceline (src, end, TRUE, obj);
 
 	if (trace_fraction != 1)
 		return FALSE;
 
-	pos = pointcontents(end); 
-	if (pos == CONTENT_SOLID || pos == CONTENT_SKY) 
+	pos = pointcontents(end);
+	if (pos == CONTENT_SOLID || pos == CONTENT_SKY)
 		return FALSE;
 
 	// Trace a line from the player to the object too
@@ -547,12 +547,14 @@ float(entity obj, entity builder) CheckArea =
 	return TRUE;
 };
 
+
+
 //////////////////////////////////////////////////////////////////////////
 // rehashed version of TF_Build 
 void(float objtobuild) TeamFortress_Build =
 {
 	local float btime;
-	local entity te;
+	local entity tmp;
 	local vector tmp1, tmp2;
 
 	newmis = spawn();
@@ -591,8 +593,8 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy the dispenser before you can build it.\n");
 			return;
 		}
-		tmp1 = '-16 -16 0';
-		tmp2 = '16 16 48';
+		tmp1 = '-8 -8 0';
+		tmp2 = '8 8 24';
 
         #ifdef no_new_dispenser
         newmis.mdl = "progs/disp.mdl";        
@@ -638,14 +640,14 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-		//tmp1 = '-16 -16 0'; //- OfN commented by
+//		tmp1 = '-16 -16 0'; //- OfN commented by
         tmp1 = '-16 -16 -25';
-		//tmp2 = '16 16 48'; //WK 62 is better, but crashes?
+//		tmp2 = '16 16 48'; //WK 62 is better, but crashes?
         tmp2 = '16 16 23';
 		//newmis.mdl = "progs/newtesla.mdl";
         newmis.mdl = "progs/coil.mdl";
 		newmis.netname = "tesla";
-        newmis.origin = newmis.origin + '0 0 25';
+//        newmis.origin = newmis.origin + '0 0 25';
         
 	
 		btime = time + BUILD_TIME_TESLA;
@@ -707,14 +709,39 @@ void(float objtobuild) TeamFortress_Build =
 	
 	if (objtobuild != BUILD_SECURITY_CAMERA)
 	{
-        // before we start building it, check it out
-        // check for validity of point
-        if (CheckArea(newmis, self) == FALSE)
+        newmis.owner = self;
+        newmis.classname = "timer";
+        newmis.netname = "build_timer";
+        newmis.nextthink = btime;
+        newmis.think = TeamFortress_FinishedBuilding;
+        newmis.colormap = self.colormap;
+        newmis.weapon = objtobuild;
+        newmis.angles_y = anglemod(self.angles_y + 180);
+
+//        newmis.velocity = '0 0 8';
+        newmis.movetype = MOVETYPE_TOSS;    
+
+        newmis.solid = SOLID_BBOX;
+        setmodel (newmis, newmis.mdl);
+        setsize (newmis, tmp1, tmp2);
+        if (objtobuild==BUILD_TESLA)
         {
+            newmis.skin = self.team_no;
+            if (self.team_no==3) newmis.skin=0;
+            else if (self.team_no==4) newmis.skin=3;
+        }
+
+        newmis.flags = newmis.flags | FL_ONGROUND;
+        setorigin (newmis, newmis.origin + '0 0 8');
+		tmp = self;
+		self = newmis;
+		if (droptofloor() == FALSE) {
+			self = tmp;
             sprint(self, PRINT_HIGH, "Not enough room to build here\n");
             dremove(newmis);
             return;
-        }
+		}
+		self = tmp;
 
         self.is_building = 1;
         makeImmune(self,time + 2);
@@ -732,32 +759,6 @@ void(float objtobuild) TeamFortress_Build =
     #else
         self.pausetime = btime;
     #endif
-
-        newmis.owner = self;
-        newmis.classname = "timer";
-        newmis.netname = "build_timer";
-        newmis.nextthink = btime;
-        newmis.think = TeamFortress_FinishedBuilding;
-        newmis.colormap = self.colormap;
-        newmis.weapon = objtobuild;
-        newmis.angles_y = anglemod(self.angles_y + 180);
-
-        newmis.velocity = '0 0 8';
-        newmis.movetype = MOVETYPE_TOSS;    
-
-        newmis.solid = SOLID_BBOX;
-        setmodel (newmis, newmis.mdl);
-        setsize (newmis, tmp1, tmp2);
-        setorigin (newmis, newmis.origin);
-
-        if (objtobuild==BUILD_TESLA)
-        {
-            newmis.skin = self.team_no;
-            if (self.team_no==3) newmis.skin=0;
-            else if (self.team_no==4) newmis.skin=3;
-        }
-
-        newmis.flags = newmis.flags - (newmis.flags & FL_ONGROUND);
 	}
 };
 
@@ -796,6 +797,7 @@ void() DispenserThink =
 
 void() TeamFortress_FinishedBuilding =
 {
+	local entity tmpself;
 	local entity oldself;
 	local float current_yaw;
 	local vector source;
@@ -852,9 +854,6 @@ void() TeamFortress_FinishedBuilding =
 		oldself.colormap = self.colormap;	// Set the Color
 		oldself.takedamage = DAMAGE_AIM;
 		oldself.owner = world;
-		oldself.movetype = MOVETYPE_TOSS;
-		oldself.velocity = '0 0 8';
-		oldself.flags = oldself.flags - (oldself.flags & FL_ONGROUND);
 
 		// Put some ammo in the Dispenser
 		oldself.ammo_shells = ceil(self.ammo_shells * 0.25);
@@ -872,8 +871,6 @@ void() TeamFortress_FinishedBuilding =
 
 		oldself.solid = SOLID_BBOX;
 		setmodel(oldself, oldself.mdl);
-		setsize (oldself, '-8 -8 0', '8 8 24');
-		setorigin(oldself, oldself.origin + '0 0 16'); //CH disp does jump
 	}
 	else if (oldself.weapon == BUILD_SENTRYGUN)
 	{
@@ -921,8 +918,6 @@ void() TeamFortress_FinishedBuilding =
 
 		newmis.takedamage = DAMAGE_AIM;
 		newmis.velocity = '0 0 -8';
-		newmis.flags = newmis.flags - (newmis.flags & FL_ONGROUND);
-		oldself.flags = oldself.flags - (oldself.flags & FL_ONGROUND);
 
 		newmis.frags = 0; //CH how many people has your sent killed?
 
@@ -975,9 +970,6 @@ void() TeamFortress_FinishedBuilding =
 		oldself.health = BUILD_HEALTH_TESLA;
 		oldself.movetype = MOVETYPE_TOSS;
 		oldself.colormap = self.colormap;	// Set the Base Color
-		oldself.velocity = '0 0 -8';
-		oldself.avelocity = '0 0 0';
-		oldself.flags = oldself.flags - (oldself.flags & FL_ONGROUND);
 		oldself.team_no = self.team_no;
 		
         //- OfN -
@@ -1065,13 +1057,11 @@ void() TeamFortress_FinishedBuilding =
 		oldself.takedamage = DAMAGE_AIM;
 		oldself.owner = world;
 		oldself.movetype = MOVETYPE_TOSS;
-		oldself.velocity = '0 0 8';
-		oldself.flags = oldself.flags - (oldself.flags & FL_ONGROUND);
 
 		oldself.solid = SOLID_BBOX;
 		setmodel(oldself, oldself.mdl);
 		setsize (oldself, '-16 -16 0', '16 16 4');
-		setorigin(oldself, oldself.origin + '0 0 8'); //CH does jump
+		setorigin(oldself, oldself.origin); //CH does jump
 
 		oldself.heat = 4; //dont come on for 4 seconds
 		oldself.think = Teleporter_heat_think;
@@ -1112,22 +1102,12 @@ void() TeamFortress_FinishedBuilding =
 		oldself.takedamage = DAMAGE_AIM;
 		oldself.owner = world;
 		oldself.movetype = MOVETYPE_TOSS;
-		oldself.velocity = '0 0 8';
-		oldself.flags = oldself.flags - (oldself.flags & FL_ONGROUND);
 
 		oldself.solid = SOLID_BBOX;
 
         oldself.angles = '0 0 0';
 
         setmodel(oldself, oldself.mdl);
-		setsize (oldself, '-6 -6 0', '6 6 54');
-		setorigin(oldself, oldself.origin + '0 0 8'); //CH does jump
-
-
-
-		//oldself.heat = 4; //dont come on for 4 seconds
-		/*oldself.think = Teleporter_heat_think;
-		oldself.nextthink = time + 1;*/
 
 		oldself.spawnflags = 4; //CH cause extensive checks for height
 
@@ -1578,4 +1558,3 @@ void() CheckDistance =
 
 	self.nextthink = time + 0.3;
 };
-
