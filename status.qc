@@ -170,6 +170,7 @@ void(entity pl) RefreshStatusBar1 =
 	local string val;
 	local float num;
 	local entity sent;
+	sent = world;
 
 	if (pl.StatusBarSize == 0)
 	{
@@ -184,7 +185,7 @@ void(entity pl) RefreshStatusBar1 =
 	s1 = GetStatusSize(pl);
 
 	do
-		sent = find(world, classname, "building_sentrygun");
+		sent = find(sent, classname, "building_sentrygun");
 	while (sent != world && sent.real_owner != self);
 
 	if (sent)
@@ -237,6 +238,7 @@ void(entity pl) RefreshStatusBar4 =
 	local string val;
 	local float num;
 	local entity sent;
+	sent = world;
 
 	if (pl.StatusBarSize == 0)
 	{
@@ -251,7 +253,7 @@ void(entity pl) RefreshStatusBar4 =
 	s1 = GetStatusSize(pl);
 
 	do
-		sent = find(world, classname, "building_tesla");
+		sent = find(sent, classname, "building_tesla");
 	while (sent != world && sent.real_owner != self);
 
 	if (sent)
