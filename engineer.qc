@@ -253,10 +253,11 @@ void() EMPGrenadeExplode =
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
 	local float range = 300;
-	local float dmg = 0.6;
+	local float dmg = 0.8;
 
 	local float numcells = 0;
 	local float numrockets = 0;
+	local float numshells = 0;
 	local float numgren1 = 0;
 	local float numgren2 = 0;
 
@@ -401,13 +402,22 @@ void() EMPGrenadeExplode =
 					numgren2 = te.no_grenades_2;
 
 				if (te.tp_grenades_1 == GR_TYPE_MIRV)
-					expsize += numgren1 * 200; // arggh, lots of damage
+					expsize += numgren1 * 50; // arggh, lots of damage
 				if (te.tp_grenades_2 == GR_TYPE_MIRV)
-					expsize += numgren2 * 200; // gotta get hwguys somehow
+					expsize += numgren2 * 50; // gotta get hwguys somehow
 			}
 
 			if (te.classname == "player" && (te.is_detpacking || te.is_toffingadet))
 				expsize += 500;
+
+			if (expsize < 500 && te.touch != BackpackTouch)
+				numshells = te.ammo_shells * expsize / 500;
+			else
+				numshells = te.ammo_shells;
+
+			numshells = floor(numshells);
+
+			expsize += numshells * 1.5;
 	
 			if (expsize > 0)
 			{
@@ -417,10 +427,11 @@ void() EMPGrenadeExplode =
 				//WK Make players not explode radially! GR why not?
 				if (te.touch != BackpackTouch)
 				{
-					T_RadiusDamage(te, self.owner, expsize, te);
+					T_RadiusDamage(te, self.owner, expsize * 0.4, te);
 					
 					deathmsg = DMSG_GREN_EMP;
-					TF_T_Damage (te, te, self.owner, expsize, 0, TF_TD_EXPLOSION);
+					TF_T_Damage (te, te, self.owner, expsize / 3, 0, TF_TD_IGNOREARMOUR);
+					TF_T_Damage (te, te, self.owner, 2 * expsize / 3, 0, TF_TD_EXPLOSION);
 
 					// Remove ammo
 					te.ammo_cells -= numcells;
