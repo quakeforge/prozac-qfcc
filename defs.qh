@@ -192,10 +192,10 @@
 
 
 // message levels
-#define	PRINT_LOW		 0		// pickup messages
-#define	PRINT_MEDIUM	 1		// death messages
-#define	PRINT_HIGH		 2		// critical messages
-#define PRINT_CHAT		 3		// also goes to chat console
+#define	PRINT_LOW		 0.0		// pickup messages
+#define	PRINT_MEDIUM	 1.0		// death messages
+#define	PRINT_HIGH		 2.0		// critical messages
+#define PRINT_CHAT		 3.0		// also goes to chat console
 
 // multicast sets
 #define MULTICAST_ALL    0    	// every client
