@@ -63,7 +63,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer;
 
 //- OfN
 void(entity mine_owner) DetonateMines; //external, job.qc
-string (float tno) TeamGetNiceColor;
+float (float tno) TeamGetNiceColor;
 void() SetArmyTimer; 
 void() RemoveArmyTimer;
 entity() SelectSpawnPoint;
@@ -1213,6 +1213,7 @@ void() BastardTimer =
 {
 	local entity te;
 	local string st;
+	local float tc, tc2;
 	te = self.owner;
 
 	//makeImmune(te,time+5);
@@ -1224,15 +1225,10 @@ void() BastardTimer =
 		//stuffcmd(te, te.old_netname);
 		//stuffcmd(te, "\"\n");
 
-		//Reset their color
-		stuffcmd(te, "color ");
-		st = ftos(TeamGetColor(te.team_no) - 1);
-        
-        //- OfN - Nice colors
-        if (nicecolors==1) st =TeamGetNiceColor(te.team_no);
-
-		stuffcmd(te, st);
-		stuffcmd(te, "\n");
+		// Reset their color
+		tc = TeamGetColor (te.team_no) - 1;
+		tc2 = TeamGetNiceColor (te.team_no);
+		SetPlayerColor (te, tc, tc2);
 
 		bprint (PRINT_MEDIUM, te.netname);
 		bprint (PRINT_MEDIUM, " has his teamkill curse removed\n");
@@ -1247,10 +1243,16 @@ void() BastardTimer =
 		return;
 	}
 
-	if (random() > 0.5) 
-		stuffcmd(te, "cl_yawspeed 500;-left;+right;color 8 8\n");
+	if (random() > 0.5)
+	{
+		stuffcmd(te, "cl_yawspeed 500;-left;+right\n");
+		SetPlayerColor (te, 8, 8);
+	}
 	else
-		stuffcmd(te, "cl_yawspeed 500;-right;+left;color 9 9\n");
+	{
+		stuffcmd(te, "cl_yawspeed 500;-right;+left\n");
+		SetPlayerColor (te, 9, 9);
+	}
 	//te.immune_to_check = time + 5;
 	te.ammo_rockets = 0;
 	te.ammo_cells = 0;
@@ -1258,8 +1260,8 @@ void() BastardTimer =
 	te.ammo_shells = 0;
 	te.ammo_detpack = 0;
 	te.ammo_c4det = 0;
-      te.no_grenades_1 = 0;
-      te.no_grenades_2 = 0;
+	te.no_grenades_1 = 0;
+	te.no_grenades_2 = 0;
 	if (te.health > 50) te.health = 50;
 	if (te.armorvalue > 10) te.armorvalue = 10;
 

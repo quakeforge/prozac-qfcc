@@ -67,12 +67,7 @@ void() TeamFortress_MOTD =
 
 		// Set their color to white, so they stand out from teams
 		if ((teamplay != 0) && (self.team_no == 0))
-		{
-			stuffcmd(self, "color ");
-			ya = ftos(WHITE - 1);
-			stuffcmd(self, ya);
-			stuffcmd(self, "\n");
-		}
+			SetPlayerColor (self, WHITE - 1, WHITE - 1);
 
 /*		if (self.got_aliases == FALSE)
 			sprint(self, PRINT_HIGH, "\n\n\n");*/

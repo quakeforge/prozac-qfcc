@@ -304,7 +304,7 @@ void() Admin_Cmd =
         }
         else if (st == "team1" || st == "team2" || st == "team3" || st == "team4")
         {
-            local float targetteam, tc;
+            local float targetteam, tc, tc2;
             local string st2;
 
             if (st == "team1")
@@ -371,16 +371,10 @@ void() Admin_Cmd =
         	DetonateAllGuns();     
             self = oself;
 
-            // Set the player's color
-        	stuffcmd(self.admin_kick, "color ");
-        	tc = TeamGetColor(targetteam) - 1;
-        	st2 = ftos(tc);
-
-            //- OfN - Nice colors
-            if (nicecolors==1) st2 =TeamGetNiceColor(targetteam);
-        
-        	stuffcmd(self.admin_kick, st2);
-        	stuffcmd(self.admin_kick, "\n");
+			// Set the player's color
+			tc = TeamGetColor (targetteam) - 1;
+			tc2 = TeamGetNiceColor (targetteam);
+			SetPlayerColor (self, tc, tc2);
             
             self.admin_kick.team_no = targetteam;
             makeImmune(self.admin_kick,time+15);

@@ -22,10 +22,12 @@ $frame stand10 stand11 stand12 stand13
 void() JobArmy =
 {
 	if (self.current_menu == MENU_ARMY && self.job & JOB_DEMON_OUT)
-    {
-        if (self.demon_one.is_haxxxoring == 0) self.demon_one.is_haxxxoring = 1;
-        else self.demon_one.is_haxxxoring = 0;
-    }
+	{
+		if (self.demon_one.is_haxxxoring == 0)
+			self.demon_one.is_haxxxoring = 1;
+		else
+			self.demon_one.is_haxxxoring = 0;
+	}
     
     self.current_menu = MENU_ARMY;
 	self.menu_count = MENU_REFRESH_RATE;   
@@ -293,6 +295,7 @@ void(float inp) Menu_Army_Input2 =
 	{	
 		ResetMenu();
 		self.impulse = 0;
+		self.demon_one.is_haxxxoring = 0; // go back to first menu
         return;
 	}
 

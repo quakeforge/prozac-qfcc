@@ -300,7 +300,7 @@ float (string skin_str) Is_TF_Skin =
 // Return the new "NICE" color for the team corresponding to the no passed in //
 //============================================================================//
 
-string (float tno) TeamGetNiceColor =
+/*string (float tno) TeamGetNiceColor =
 {
 	if (tno == 1)
 		return "2 13";
@@ -312,6 +312,33 @@ string (float tno) TeamGetNiceColor =
 		return "3 11";
 
 	return "";
+};
+*/
+float (float tno) TeamGetNiceColor =
+{
+	if (nicecolors == 1)
+	{
+		if (tno == 1)
+			return 2;
+		if (tno == 2)
+			return 9;
+		if (tno == 3)
+			return 5;
+		if (tno == 4)
+			return 3;
+	}
+	else
+	{
+		if (tno == 1)
+			return 13;
+		if (tno == 2)
+			return 4;
+		if (tno == 3)
+			return 12;
+		if (tno == 4)
+			return 11;
+	}
+	return 0;
 };
 
 float (float tno, float theColor ) IsValidTopColor =

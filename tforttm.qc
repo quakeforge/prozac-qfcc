@@ -221,7 +221,7 @@ void(entity p) SetTeamName =
 float(float tno) TeamFortress_TeamSet =
 {
 	local string st;
-	local float tc;
+	local float tc, tc2;
 
 	if (teamplay < 1)
 	{
@@ -297,22 +297,9 @@ float(float tno) TeamFortress_TeamSet =
 		// color command works.
 		makeImmune(self,time+10);
 		//self.immune_to_check = time + 10;
-// FOO
-		tc = TeamGetColor(tno) - 1;
-		st = ftos(tc);
-		setinfokey(self, "color", st);
-/*
-		// Set the player's color
-		stuffcmd(self, "color ");
-		tc = TeamGetColor(tno) - 1;
-		st = ftos(tc);
-
-         //- OfN - Nice colors
-        if (nicecolors==1) st =TeamGetNiceColor(tno);
-
-		stuffcmd(self, st);
-		stuffcmd(self, "\n");
-*/
+		tc = TeamGetColor (tno) - 1;
+		tc2 = TeamGetNiceColor (tno);
+		SetPlayerColor (self, tc, tc2);
 		self.team_no = tno;
 		self.lives = TeamFortress_TeamGetLives(tno);
 
@@ -340,22 +327,9 @@ float(float tno) TeamFortress_TeamSet =
 	bprint(PRINT_HIGH, st);
 	bprint(PRINT_HIGH, ".\n");
 
-//FOO
-	tc = TeamGetColor(tno) - 1;
-	st = ftos(tc);
-	setinfokey(self, "topcolor", st);
-	setinfokey(self, "bottomcolor", st);
-
-	// Set the player's color
-	stuffcmd(self, "color ");
-	tc = TeamGetColor(tno) - 1;
-	st = ftos(tc);
-
-    //- OfN - Nice colors
-    if (nicecolors==1) st =TeamGetNiceColor(tno);
-
-	stuffcmd(self, st);
-	stuffcmd(self, "\n");
+	tc = TeamGetColor (tno) - 1;
+	tc2 = TeamGetNiceColor (tno);
+	SetPlayerColor (self, tc, tc2);
 
 	self.team_no = tno;
 	// Prevent the cheatchecking mechanism from nabbing them b4 the 
@@ -402,7 +376,7 @@ float(float tno) TeamFortress_TeamSet =
 void() TeamFortress_CheckTeamCheats =
 {
 	local string st, sk;
-	local float tc;
+	local float tc, tc2;
 	local float rate;
 
 	if (self.immune_to_chec > time)
@@ -448,19 +422,10 @@ void() TeamFortress_CheckTeamCheats =
             //if ((TeamGetColor(self.undercover_team) != self.team) || !IsValidTopColor(self.undercover_team,tTopColor))
             //  || !IsValidTopColor(self.undercover_team,tTopColor)
 			{
-				// Set their color 
-				stuffcmd(self, "color ");
-				tc = TeamGetColor(self.undercover_team) - 1;
-				
-				st = ftos(tc);
-
-                //- OfN - Nice colors
-                if (nicecolors==1) st =TeamGetNiceColor(self.undercover_team);
-
-				stuffcmd(self, st);
-				stuffcmd(self, "\n");
-				setinfokey(self, "topcolor", st);
-				setinfokey(self, "bottomcolor", st);
+				// Set their color
+				tc = TeamGetColor (self.undercover_team) - 1;
+				tc2 = TeamGetNiceColor (self.undercover_team);
+				SetPlayerColor (self, tc, tc2);
 
 //				bprint2(PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
 //				sprint(self, PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
@@ -470,18 +435,9 @@ void() TeamFortress_CheckTeamCheats =
 		}
 		else if (TeamGetColor(self.team_no) != self.team)
 		{
-			// Set their color 
-			stuffcmd(self, "color ");
-			tc = TeamGetColor(self.team_no) - 1;
-			st = ftos(tc);
-
-            //- OfN - Nice colors
-            if (nicecolors==1) st =TeamGetNiceColor(self.team_no);
-
-			stuffcmd(self, st);
-			stuffcmd(self, "\n");
-			setinfokey(self, "topcolor", st);
-			setinfokey(self, "bottomcolor", st);
+			tc = TeamGetColor (self.team_no) - 1;
+			tc2 = TeamGetNiceColor (self.team_no);
+			SetPlayerColor (self, tc, tc2);
 
 //			bprint2(PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
 //			sprint(self, PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
@@ -502,18 +458,9 @@ void() TeamFortress_CheckTeamCheats =
 				RPrint(" had his colors reset.\n");
 			#endif
 
-				// Set the player's color
-				stuffcmd(self, "color ");
-				tc = TeamGetColor(self.undercover_team) - 1;
-				st = ftos(tc);
-
-                //- OfN - Nice colors
-                if (nicecolors==1) st =TeamGetNiceColor(self.undercover_team);
-
-				stuffcmd(self, st);
-				stuffcmd(self, "\n");
-				setinfokey(self, "topcolor", st);
-				setinfokey(self, "bottomcolor", st);
+				tc = TeamGetColor (self.undercover_team) - 1;
+				tc2 = TeamGetNiceColor (self.undercover_team);
+				SetPlayerColor (self, tc, tc2);
 
 //				bprint2(PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
 //				sprint(self, PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
@@ -528,18 +475,9 @@ void() TeamFortress_CheckTeamCheats =
 			RPrint(" had his colors reset.\n");
 		#endif
 
-			// Set the player's color
-			stuffcmd(self, "color ");
-			tc = TeamGetColor(self.team_no) - 1;
-			st = ftos(tc);
-
-            //- OfN - Nice colors
-            if (nicecolors==1) st =TeamGetNiceColor(self.team_no);
-
-			stuffcmd(self, st);
-			stuffcmd(self, "\n");
-			setinfokey(self, "topcolor", st);
-			setinfokey(self, "bottomcolor", st);
+			tc = TeamGetColor (self.team_no) - 1;
+			tc2 = TeamGetNiceColor (self.team_no);
+			SetPlayerColor (self, tc, tc2);
 
 //			bprint2(PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
 //			sprint(self, PRINT_HIGH, "You have been kicked for changing your color. Don't do it.\n");
@@ -648,6 +586,22 @@ void() TeamFortress_CheckTeamCheats =
 	}
 };
 
+void (entity pl, float topcolor, float bottomcolor) SetPlayerColor =
+{
+	local string top;
+	local string bottom;
+
+	top = ftos (topcolor);
+	bottom = ftos (bottomcolor);
+
+	setinfokey (pl, "topcolor", top);
+	setinfokey (pl, "bottomcolor", bottom);
+
+	stuffcmd (pl, "topcolor " + top + "\n");
+	stuffcmd (pl, "bottomcolor " + bottom + "\n");
+//	stuffcmd (pl, "color " + top + " " + bottom + "\n");
+};
+
 float(string key, string value) UserInfoCallback =
 {
 	local string oldval;
@@ -656,21 +610,25 @@ float(string key, string value) UserInfoCallback =
 
 	if(value == oldval) // generic reject
 	{
-		//bprint(PRINT_MEDIUM,
-		//	   "[oldval (" + key + ")(" + value + ")(" + oldval + ")]\n");
+//		dprint ("[oldval [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 0; // rejected!
 	}
 
-	if (key == "topcolor" || key == "bottomcolor")
+	if (key == "topcolor")
 	{
 		// no changing colors allowed
-		st = infokey(self, "bottomcolor"); // make sure top is same as bottom
+		st = infokey(self, "topcolor");
 		setinfokey(self, "topcolor", st);
-		stuffcmd(self, "color ");
-		stuffcmd(self, st);
-		stuffcmd(self, "\n");
-		//bprint(PRINT_MEDIUM,
-		//	   "[color (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		stuffcmd(self, "color " + st + "\n");
+//		dprint ("[topcolor [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
+		return 0;
+	}
+	if (key == "bottomcolor")
+	{
+		st = infokey (self, "bottomcolor");
+		setinfokey (self, "bottomcolor", st);
+		stuffcmd (self, "bottomcolor " + st + "\n");
+//		dprint ("[bottomcolor [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 0;
 	}
 	else if (key == "skin")
@@ -678,14 +636,12 @@ float(string key, string value) UserInfoCallback =
 		stuffcmd(self, "skin ");
 		stuffcmd(self, oldval);
 		stuffcmd(self, "\n");
-		//bprint(PRINT_MEDIUM,
-		//	   "[skin (" + key + ")(" + value + ")(" + oldval + ")]\n");
+//		dprint ("[skin [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 0;
 	}
 	else
 	{
-		//bprint(PRINT_MEDIUM,
-		//	   "[default (" + key + ")(" + value + ")(" + oldval + ")]\n");
+//		dprint ("[default [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 1; // accept everything else
 	}
 };

@@ -1852,6 +1852,7 @@ void() TeamFortress_SetEquipment =
 	local entity automan;
 	local string st;
 	local float kept_items;
+	local float tc, tc2;
 
 	if (self.classname != "player")
 		return;
@@ -1920,13 +1921,9 @@ void() TeamFortress_SetEquipment =
 
 		self.undercover_team = 0;
 		// Set their color 
-		stuffcmd(self, "color ");
-		st = ftos(TeamGetColor(self.team_no) - 1);
-         //- OfN - Nice colors
-        if (nicecolors==1) st =TeamGetNiceColor(self.team_no);
-
-		stuffcmd(self, st);
-		stuffcmd(self, "\n");
+		tc = TeamGetColor (self.team_no) - 1;
+		tc2 = TeamGetNiceColor (self.team_no);
+		SetPlayerColor (self, tc, tc);
 	}
 
 	self.is_building = 0;
@@ -3966,7 +3963,8 @@ void() PlayerObserverMode =
 
 	sprint (self, PRINT_HIGH, "Observer mode\n");
 	CenterPrint(self, "\n");
-	stuffcmd(self, "color 0; wait; cl_rollangle 0\n");
+	SetPlayerColor (self, 0, 0);
+	stuffcmd(self, "cl_rollangle 0\n"); // FIXME: does this need a wait?
 };
 
 //============================================================================

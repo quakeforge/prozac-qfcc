@@ -510,7 +510,7 @@ void(entity spy) TeamFortress_SpyCalcName =
 // Make the spy who owns this timer undercover, and then remove itself
 void() TeamFortress_SpyUndercoverThink =
 {
-	local float tc;
+	local float tc, tc2;
 	local string st;
 
 	if (!(self.owner.cutf_items & CUTF_SPY_KIT)) //WK
@@ -549,16 +549,10 @@ void() TeamFortress_SpyUndercoverThink =
 				sprint(self.owner, PRINT_HIGH, "\n");
 
 				self.owner.undercover_team = self.team;
-				// Set their color 
-				stuffcmd(self.owner, "color ");
-				tc = TeamGetColor(self.team) - 1;
-				
-				st = ftos(tc);
-                 //- OfN - Nice colors                       //? team_no
-                if (nicecolors==1) st =TeamGetNiceColor(self.team);
-
-				stuffcmd(self.owner, st);
-				stuffcmd(self.owner, "\n");
+				// Set their color
+				tc = TeamGetColor (self.team) - 1;
+				tc2 = TeamGetNiceColor (self.team);
+				SetPlayerColor (self.owner, tc, tc2);
 			}
 
 			TeamFortress_SpyCalcName(self.owner);
@@ -618,7 +612,7 @@ void(float teamno) TeamFortress_SpyChangeColor =
 {
 	local entity te;
 	local string st;
-	local float tc;
+	local float tc, tc2;
 
 	// If they're returning their color to their own team, just reset it
 	if (teamno == self.team_no)
@@ -628,15 +622,9 @@ void(float teamno) TeamFortress_SpyChangeColor =
 		makeImmune(self,time + 4);
 		//self.immune_to_check = time + 4;
 		self.undercover_team = 0;
-		stuffcmd(self, "color ");
-		tc = TeamGetColor(self.team_no) - 1;
-		st = ftos(tc);
-        
-        //- OfN - Nice colors
-        if (nicecolors==1) st =TeamGetNiceColor(self.team_no);
-
-		stuffcmd(self, st);
-		stuffcmd(self, "\n");
+		tc = TeamGetColor (self.team_no) - 1;
+		tc2 = TeamGetNiceColor (self.team_no);
+		SetPlayerColor (self, tc, tc2);
 
 		if (self.undercover_skin == 0)
 		{
@@ -1072,7 +1060,7 @@ void() TranquiliserTimer2 =
 void(entity spy) Spy_RemoveDisguise =
 {
 	local string st;
-	local float tc;
+	local float tc, tc2;
 	local float reset;
 
 	if (invis_only != TRUE)
@@ -1098,16 +1086,9 @@ void(entity spy) Spy_RemoveDisguise =
 				//spy.immune_to_check = time + 4;
 				spy.undercover_team = 0;
 
-				stuffcmd(spy, "color ");
-				tc = TeamGetColor(spy.team_no) - 1;
-				
-				st = ftos(tc);
-
-                //- OfN - Nice colors
-                if (nicecolors==1) st =TeamGetNiceColor(spy.team_no);
-
-				stuffcmd(spy, st);
-				stuffcmd(spy, "\n");
+				tc = TeamGetColor (spy.team_no) - 1;
+				tc2 = TeamGetNiceColor (spy.team_no);
+				SetPlayerColor (spy, tc, tc2);
 			}
 
 			spy.is_undercover = 0;
