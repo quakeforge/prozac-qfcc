@@ -1,4 +1,4 @@
 //CH How much to divide speed when tranqed
 //distance * (UP / DN)
-#define AI_TRANQ_FACTOR_UP		2
-#define AI_TRANQ_FACTOR_DN		3
+#define AI_TRANQ_FACTOR_UP		2.0
+#define AI_TRANQ_FACTOR_DN		3.0

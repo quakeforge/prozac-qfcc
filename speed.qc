@@ -132,7 +132,7 @@ else
 	if (check && (max == 0) && (dist > 100)) { //Definitely cheating...
 		self.owner.cheat_level = self.owner.cheat_level + 700;
 	}
-	if (check && (dist > (max * (1 + (MAXPERCENT / 100))))) // Maybe cheating.
+	if (check && (dist > (max * (1 + (MAXPERCENT / 100.0))))) // Maybe cheating.
 		self.owner.cheat_level = self.owner.cheat_level + 200;
 	if (self.owner.cheat_level >= 900 && self.has_sentry == 0 && dist > max) {
 		bprint(PRINT_HIGH, self.owner.netname);

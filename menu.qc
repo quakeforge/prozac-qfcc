@@ -1517,7 +1517,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
         if (CheckEnemyDismantle()==FALSE) {ResetMenu(); self.impulse=0; return;}
 
         sprint (self, PRINT_HIGH, "You dismantle the Dispenser.\n");
-  		self.ammo_cells = self.ammo_cells + (BUILD_COST_DISPENSER / 2);
+  		self.ammo_cells = self.ammo_cells + (BUILD_COST_DISPENSER / 2.0);
 ///////////////////////////
 #ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
@@ -1664,7 +1664,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
         
         sprint(self, PRINT_HIGH, "You dismantle the Sentry Gun.\n");
 //CH give .5 of build cost====give 25*level
-		self.ammo_cells = self.ammo_cells + (BUILD_COST_SENTRYGUN / 2) + (self.building.weapon * 25);
+		self.ammo_cells = self.ammo_cells + (BUILD_COST_SENTRYGUN / 2.0) + (self.building.weapon * 25);
 
 #ifdef QUAKE_WORLD
 		if (Teammate(self.building.real_owner.team_no,self.team_no) && teamplay != 0 && self.building.real_owner != self) { //Boot em if they dismantle too many
@@ -2239,7 +2239,7 @@ void() Menu_EngineerDismantle_Tesla =
 
 	sprint(self, PRINT_HIGH, "You dismantle the Tesla Gun.\n");
 //CH give .5 of ammount of build====give 25*health level (0-3)====give .5 of cells
-	self.ammo_cells = self.ammo_cells + (BUILD_COST_TESLA / 2) + (self.building.ammo_rockets * 25) + (self.building.ammo_cells / 2);
+	self.ammo_cells = self.ammo_cells + (BUILD_COST_TESLA / 2.0) + (self.building.ammo_rockets * 25) + (self.building.ammo_cells / 2);
 	self.building.real_owner.has_tesla = FALSE;
 
 #ifdef QUAKE_WORLD

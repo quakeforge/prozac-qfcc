@@ -3792,7 +3792,7 @@ void() TeamFortress_RegenerateCyber =
 		{
 			if (self.owner.ammo_medikit == 0)
 				self.owner.health = self.owner.health + 1;
-			else if (self.owner.ammo_medikit < PC_MEDIC_REGEN_AMOUNT / 2)
+			else if (self.owner.ammo_medikit < PC_MEDIC_REGEN_AMOUNT / 2.0)
 			{
 				self.owner.health = self.owner.health + self.owner.ammo_medikit * 2;
 				self.owner.ammo_medikit = 0;
@@ -3800,7 +3800,7 @@ void() TeamFortress_RegenerateCyber =
 			else
 			{
 				self.owner.health = self.owner.health + PC_MEDIC_REGEN_AMOUNT;
-				self.owner.ammo_medikit = self.owner.ammo_medikit - PC_MEDIC_REGEN_AMOUNT / 2;
+				self.owner.ammo_medikit = self.owner.ammo_medikit - PC_MEDIC_REGEN_AMOUNT / 2.0;
 			}
 		}
 		
