@@ -165,11 +165,11 @@ void () UpdateInfos =
     if (army_delay < 2 ) army_delay = 2; // the allowed minimum 
     else if (army_delay > 60) army_delay = 60; //the allowed maximum
 
-    st = infokey(NIL, "allow_watermonsters"); //
+    st = infokey(NIL, "petsdrown"); //
     if (st == "1" || st =="on" )
-		allow_watermonsters = 1;
+		petsdrown = 1;
 	else
-		allow_watermonsters = 0;
+		petsdrown = 0;
 
 };
 
