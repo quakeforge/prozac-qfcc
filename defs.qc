@@ -581,6 +581,8 @@ float (float desc, string buf) cfwrite = #106;
 float (float desc) cfeof = #107;
 float () cfquota = #108;
 
+string (...) sprintf = #109;
+
 //============================================================================
 
 //

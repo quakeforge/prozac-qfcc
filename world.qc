@@ -574,6 +574,7 @@ void() bodyque =
 	// creates bodyques
 };
 
+
 void() InitBodyQue =
 {
 	bodyque_head = spawn();
@@ -586,7 +587,6 @@ void() InitBodyQue =
 	bodyque_head.owner.owner.owner.classname = "bodyque";
 	bodyque_head.owner.owner.owner.owner = bodyque_head;
 };
-
 
 // make a body que entry for the given ent so the ent can be
 // respawned elsewhere

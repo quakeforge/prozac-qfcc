@@ -1118,26 +1118,25 @@ void(entity hit, float damage) AddMultiDamage =
 		multi_damage = multi_damage + damage;
 };
 
-void() Multi_Finish =
+void (integer big) Multi_Finish =
 {
 	/* WK Save spam SB ok, you save spam*/
 	if (puff_count)
 	{
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-		WriteByte (MSG_MULTICAST, puff_count);
+		WriteByte (MSG_MULTICAST, big ? puff_count * 2 : puff_count);
 		WriteCoord (MSG_MULTICAST, puff_org_x);
 		WriteCoord (MSG_MULTICAST, puff_org_y);
 		WriteCoord (MSG_MULTICAST, puff_org_z);
 		multicast (puff_org, MULTICAST_PVS);
 	}
 	
-
 	if (blood_count)
 	{
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_BLOOD);
-		WriteByte (MSG_MULTICAST, blood_count);
+		WriteByte (MSG_MULTICAST, big ? blood_count * 2 : puff_count);
 		WriteCoord (MSG_MULTICAST, blood_org_x);
 		WriteCoord (MSG_MULTICAST, blood_org_y);
 		WriteCoord (MSG_MULTICAST, blood_org_z);
@@ -1158,40 +1157,33 @@ BULLETS
 TraceAttack
 ================
 */
-void(float damage, vector dir) TraceAttack =
+void (float damage, vector dir) TraceAttack =
 {
-	local	vector	vel, org;
+	local vector vel, org;
 	
-	vel = normalize(dir + v_up*crandom() + v_right*crandom());
-	vel = vel + 2*trace_plane_normal;
+	vel = normalize (dir + v_up * crandom() + v_right * crandom());
+	vel = vel + 2 * trace_plane_normal;
 	vel = vel * 200;
 
-	org = trace_endpos - dir*4;
+	org = trace_endpos - dir * 4;
 
 	//WK Sweep mines at the end of the attack
-	GuerillaMineSweep(trace_endpos);
+	GuerillaMineSweep (trace_endpos);
 
-	if (trace_ent.takedamage)
-	{
-			blood_count = blood_count + 1;
-			blood_org = org;
+	if (damage && trace_ent.takedamage) {
+		blood_org = org;
+		blood_count++;
 
 		AddMultiDamage (trace_ent, damage);
-	}
-	else
-	{
-        if (trace_ent.classname == "force_field") //- OfN - Makes field explosion b4 removing it
-        {
+	} else {
+		puff_org = org;
+		puff_count++;
+
+        if (trace_ent.classname == "force_field") { //- OfN - Makes field explosion b4 removing it
             FieldExplosion(trace_ent,trace_endpos,trace_ent);
             PutFieldWork(trace_ent);
         }
-        else
-        {
-            //multicast (trace_endpos, MULTICAST_PVS);
-            puff_count = puff_count + 1;
-        }
 	}
-	
 };
 
 /*
@@ -1204,51 +1196,41 @@ Go to the trouble of combining multiple pellets into a single damage call.
 */
 void(float shotcount, vector dir, vector spread) FireBullets =
 {
-	local	vector direction;
-	local	vector	src;
+	local vector direction;
+	local vector src;
 	
-	makevectors(self.v_angle);
+//	makevectors (self.v_angle); // umm, shouldn't this be dir?
+	makevectors (dir);
 
-	src = self.origin + v_forward*10;
+	src = self.origin + v_forward * 10;
 	src_z = self.absmin_z + self.size_z * 0.7;
 
 	ClearMultiDamage ();
 
-	if (self.current_weapon & WEAP_ASSAULT_CANNON)
-	{
-		direction = dir;
-		direction += (crandom() + crandom()) * 0.08 * v_right;
-		direction += (crandom() + crandom()) * 0.05 * v_up;
-		traceline (src, src + direction*2048, FALSE, self); //WK 2048
-	}
-	else
-		traceline (src, src + dir * 1024, FALSE, self); //WK 2048
-	puff_org = trace_endpos - dir * 4;
-	puff_count = shotcount;
-
 	while (shotcount > 0)
 	{
-		direction = dir + crandom() * spread_x * v_right + crandom() * spread_y * v_up;
+		direction = dir;
+		direction += AVG (crandom(), crandom()) * spread_x * v_right;
+		direction += AVG (crandom(), crandom()) * spread_y * v_up;
+
 		if (self.current_weapon & WEAP_ASSAULT_CANNON)
 			traceline (src, src + direction * 2048, FALSE, self); //WK 2048
 		else
-			traceline (src, src + direction * 1024, FALSE, self); //WK 2048
-		if (trace_fraction != 1.0)
-		{
-			if (self.current_weapon & WEAP_ASSAULT_CANNON) //WK Sinth's bugfix
-				TraceAttack (5, direction); //WK(12) (6) Reversed from 2.5
-			else if (self.current_weapon & WEAP_LIGHT_ASSAULT)
-			{
-				TraceAttack (4, direction);
-			}
-			else 
-				TraceAttack (6, direction); //WK 4
-		}
+			traceline (src, src + direction * 2024, FALSE, self); //WK 2048A
 
-		shotcount = shotcount - 1;
+		if (trace_fraction == 1.0)
+			TraceAttack (0, direction);
+		else if (self.current_weapon & WEAP_ASSAULT_CANNON) //WK Sinth's bugfix
+			TraceAttack (5, direction); //WK(12) (6) Reversed from 2.5
+		else if (self.current_weapon & WEAP_LIGHT_ASSAULT)
+			TraceAttack (4, direction);
+		else 
+			TraceAttack (6, direction); //WK 4
+
+		shotcount--;
   	}
 	ApplyMultiDamage ();
-	Multi_Finish ();
+	Multi_Finish (TRUE);
 };
 
 /*
@@ -1275,7 +1257,7 @@ void() W_FireShotgun =
 	}
 
 	deathmsg = DMSG_SHOTGUN;
-	FireBullets (6, dir, '0.04 0.04 0');
+	FireBullets (6, dir, '0.02 0.02 0');
 };
 
 
@@ -1308,7 +1290,7 @@ void() W_FireSuperShotgun =
 		dir = normalize (dir - self.origin);
 	}
 	deathmsg = DMSG_SSHOTGUN;
-	FireBullets (12, dir, '0.19 0.10 0'); //WK 14, 0.14, 0.08
+	FireBullets (12, dir, '0.05 0.05 0'); //WK 14, 0.14, 0.08
 };
 
 
@@ -1322,19 +1304,22 @@ void(vector direction, float damage) FireSniperBullet =
 {
 	local	vector	src;
 
-	makevectors(self.v_angle);
+	makevectors (self.v_angle);
 
-	src = self.origin + v_forward*10;
+	src = self.origin + v_forward * 10;
 	src_z = self.absmin_z + self.size_z * 0.7;
 
 	ClearMultiDamage ();
 
-      traceline (src, src + direction*4096, FALSE, self);
+	traceline (src, src + direction * 4096, FALSE, self);
 
-	if (trace_fraction != 1.0)
+	if (trace_fraction == 1.0)
+		TraceAttack (0, direction);
+	else
    		TraceAttack (damage, direction);
 
 	ApplyMultiDamage ();
+	Multi_Finish (FALSE);
 };
 
 
@@ -1485,11 +1470,13 @@ void() W_FireSniperRifle =
 
 	ClearMultiDamage ();
 
-	if (trace_fraction != 1.0)	// if it hit something
+	if (trace_fraction == 1.0)
+		TraceAttack (0, dir);
+	else // if it hit something
    		TraceAttack (self.heat * dam_mult, dir);
 
 	ApplyMultiDamage ();
-
+	Multi_Finish (FALSE);
 };
 
 /*
@@ -1532,8 +1519,8 @@ void() W_FireAssaultCannon =
 	//We want more of a cone of fire...
 //	FireBullets (5, dir, '0.2 0.1 0');
 //	FireBullets (5, dir, '0.4 0.1 0');
-	FireBullets (7, dir, '0.15 0.1 0');
-	FireBullets (3, dir, '0.3 0.1 0');
+	FireBullets (7, dir, '0.16 0.12 0');
+	FireBullets (3, dir, '0.12 0.09 0');
 };
 
 /*
@@ -1565,7 +1552,7 @@ void() W_FireLightAssault =
 	self.reload_light_assault = self.reload_light_assault + 1;
 
 	if (CheckForReload() == TRUE) return;
-	FireBullets (5, dir, '0.2 0.1 0');
+	FireBullets (5, dir, '0.1 0.05 0');
 	Attack_Finished(0.2);
 };
 
@@ -2724,7 +2711,7 @@ float() W_BestWeapon =
 		return WEAP_ROCKET_LAUNCHER;
 	else if (self.ammo_cells >= 5 && (it & WEAP_DAEDALUS) )
 		return WEAP_DAEDALUS;
-	else if (self.ammo_cells >= 6 && (self.ammo_shells >= 1) && (it  & WEAP_ASSAULT_CANNON))
+	else if (self.ammo_cells >= 6 && (self.ammo_shells >= 1) && (it & WEAP_ASSAULT_CANNON))
 		return WEAP_ASSAULT_CANNON;
 	else if(self.ammo_nails >= 10 && (it & WEAP_LIGHT_ASSAULT) )
 		return WEAP_LIGHT_ASSAULT;
@@ -3220,6 +3207,7 @@ void() W_Attack =
 		if (self.ammo_cells < 4)
 		{
 			sprint (self, PRINT_MEDIUM, "Insufficient cells to power up the Assault Cannon.\n");
+			stuffcmd (self, "-attack;\n"); // to avoid flooding
 		}
 		else
 		{
@@ -4712,6 +4700,7 @@ void() W_WeaponFrame =
 			else
 			{
 				sprint(self, PRINT_MEDIUM, "You cannot fire the assault cannon without\nyour feet on the ground...\n");
+				stuffcmd (self, "-attack;\n"); // so that they don't get flooded
 			}
 		}
 		else

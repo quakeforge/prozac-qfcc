@@ -324,6 +324,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 			if (at_spot.classname == "player" && self != at_spot && at_spot.is_feigning == TRUE)
 			{
 				sprint(self, PRINT_HIGH, "You can't feign on top of another spy!\n");
+				return;
 			}
 			
 			at_spot = at_spot.chain;			
