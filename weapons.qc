@@ -1857,8 +1857,6 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	if (trace_ent.takedamage)
 	{
 		LightningHit (from, damage);
-		if (self.classname == "player" && trace_ent.classname == "player")
-			trace_ent.velocity_z = trace_ent.velocity_z + 400;
 	}
 	e1 = trace_ent;
 
@@ -1918,8 +1916,7 @@ void() W_FireLightning =
 	//We do this by capping the maximum ammo at 100, and using all
 	//cells above that in one tremendous shot
 	if (self.ammo_cells > 100) {
-		excess = (self.ammo_cells - 100) * 2 / 3;
-		if (excess < 50) excess = 50;
+		excess = self.ammo_cells - 100;
 		self.ammo_cells = 100;
 	}
 	else {
