@@ -16,6 +16,7 @@ void(entity who) MakeMeDebug;
 //==============================================================
 // A remove function which makes sure the entity hasn't already
 // been removed, and that it isn't the NIL object.
+#ifdef DEBUG
 void(entity te) dremove =
 {
 	if (!te)
@@ -46,6 +47,7 @@ void(entity te) dremove =
 	te.is_removed = TRUE;
 	remove(te);
 };
+#endif
 
 //==============================================================
 // A command which just dumps your current location to the screen
