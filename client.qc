@@ -460,6 +460,9 @@ void() DecodeLevelParms =
 		allow_hook = 0;
 		invis_only = SPY_INVIS_ONLY;
 
+		sprint (self, PRINT_HIGH, "check1, SPY_INVIS_ONLY? " + ftos (SPY_INVIS_ONLY) + " invis_only? "
+			 + ftos (invis_only) + "\n");
+
 		if (coop || !deathmatch)
 			toggleflags = toggleflags | TFLAG_CLASS_PERSIST;
 
@@ -474,8 +477,10 @@ void() DecodeLevelParms =
 		if (ent)
 		{
 			// Turn on Teamplay
-			if (teamplay == 0)
+			if (teamplay == 0) {
 				cvar_set("teamplay","21?TeamFortress");
+				teamplay = 21;
+			}
 
 			// Parse the rest of the Detection details
 			ParseTFDetect(ent);
@@ -495,8 +500,10 @@ void() DecodeLevelParms =
 				CTF_Map = TRUE;
 
 				// Turn on Teamplay
-				if (teamplay == 0)
+				if (teamplay == 0) {
 					cvar_set("teamplay","21?TeamFortress");
+					teamplay = 21;
+				}
 
 				// Setup the CTF FlagCheck Timer
 				ent = spawn();
@@ -680,6 +687,9 @@ void() DecodeLevelParms =
 
 		if (!teamplay)
 			invis_only = TRUE;
+
+		sprint (self, PRINT_HIGH, "check2, st? " + st + " teamplay? " + ftos (teamplay) + " invis_only? "
+			+ ftos (invis_only) + "\n");
 
 		// RespawnDelay
 		st = infokey(NIL, "rd");

@@ -3559,12 +3559,20 @@ void() TeamFortress_RegenerateCells =
 {
 	//WK Borrow this code from TF, since there's no reason to
 	// duplicate it.
-	if (!(self.owner.job & JOB_THIEF))
+	// Griev - HEY FUCKTARD, REMOVING MORE THAN ONCE IS IDIOTIC!
+	if (!(self.owner.job & JOB_THIEF)) {
 		dremove(self);
-	if (!(self.owner.job & JOB_ACTIVE))
+		return;
+	}
+	if (!(self.owner.job & JOB_ACTIVE)) {
 		dremove(self);
-	if (self.owner.health <= 0)
+		return;
+	}
+	if (self.owner.health <= 0) {
 		dremove(self);
+		return;
+	}
+
 	self.nextthink = time + PC_SPY_CELL_REGEN_TIME;
 	if (self.owner.job & JOB_ACTIVE)
 	{
