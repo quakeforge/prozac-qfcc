@@ -607,7 +607,6 @@ float() CheckShamConvert =
 
 	self.enemy.martyr_enemy = self.enemy.real_owner;
 	self.enemy.real_owner = self.real_owner;
-	self.enemy.owner = self.real_owner;
 	self.enemy.is_malfunctioning = TRUE;
 	self.enemy.enemy = NIL;
 	self.enemy.think = self.enemy.th_walk;
@@ -618,7 +617,7 @@ float() CheckShamConvert =
 
 	if (self.enemy.martyr_enemy.demon_one == self.enemy)
 	{
-	    self.enemy.martyr_enemy.job -= (self.enemy.martyr_enemy.job & JOB_DEMON_OUT);
+	    self.enemy.martyr_enemy.job &= ~JOB_DEMON_OUT;
 	    self.enemy.martyr_enemy.demon_one = NIL;
 	}
 	
