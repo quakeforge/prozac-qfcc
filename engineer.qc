@@ -534,10 +534,10 @@ float(entity obj, entity builder) CheckArea =
 void(float objtobuild) TeamFortress_Build =
 {
 	local float btime;
-	local entity tmp;
-	local vector tmp1, tmp2;
+	local vector mins, maxs;
+	local entity obj;
 
-	newmis = spawn();
+	obj = spawn();
 
 	// get an origin
 	makevectors(self.v_angle);
@@ -545,9 +545,9 @@ void(float objtobuild) TeamFortress_Build =
 	v_forward = normalize(v_forward) * 64;
 	
     if (objtobuild == BUILD_FIELDGEN) //- OfN - Field generators must be lined up to work
-        newmis.origin = WhereGen(self.origin + v_forward);
+        obj.origin = WhereGen(self.origin + v_forward);
     else
-        newmis.origin = self.origin + v_forward;
+        obj.origin = self.origin + v_forward;
 
 	//WK Cheat Fix
 	if (self.is_feigning) {
@@ -573,16 +573,16 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy the dispenser before you can build it.\n");
 			return;
 		}
-		tmp1 = '-8 -8 0';
-		tmp2 = '8 8 24';
+		mins = '-8 -8 0';
+		maxs = '8 8 24';
 
         #ifdef no_new_dispenser
-        newmis.mdl = "progs/disp.mdl";        
+        obj.mdl = "progs/disp.mdl";        
         #else
-        newmis.mdl = "progs/disp2.mdl";
+        obj.mdl = "progs/disp2.mdl";
         #endif
 		
-        newmis.netname = "dispenser";
+        obj.netname = "dispenser";
 
 		btime = time + BUILD_TIME_DISPENSER;
 	}
@@ -599,11 +599,11 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-		tmp1 = '-16 -16 0';
-		tmp2 = '16 16 48';
-		//newmis.mdl = "progs/turrbase.mdl"; 
-        newmis.mdl = "progs/trrbs2.mdl";
-		newmis.netname = "sentrygun";
+		mins = '-16 -16 0';
+		maxs = '16 16 48';
+		//obj.mdl = "progs/turrbase.mdl"; 
+        obj.mdl = "progs/trrbs2.mdl";
+		obj.netname = "sentrygun";
 	
 		btime = time + BUILD_TIME_SENTRYGUN;
 	}
@@ -620,14 +620,14 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-//		tmp1 = '-16 -16 0'; //- OfN commented by
-        tmp1 = '-16 -16 -25';
-//		tmp2 = '16 16 48'; //WK 62 is better, but crashes?
-        tmp2 = '16 16 23';
-		//newmis.mdl = "progs/newtesla.mdl";
-        newmis.mdl = "progs/coil.mdl";
-		newmis.netname = "tesla";
-//        newmis.origin = newmis.origin + '0 0 25';
+//		mins = '-16 -16 0'; //- OfN commented by
+        mins = '-16 -16 -25';
+//		maxs = '16 16 48'; //WK 62 is better, but crashes?
+        maxs = '16 16 23';
+		//obj.mdl = "progs/newtesla.mdl";
+        obj.mdl = "progs/coil.mdl";
+		obj.netname = "tesla";
+//        obj.origin = obj.origin + '0 0 25';
         
 	
 		btime = time + BUILD_TIME_TESLA;
@@ -659,10 +659,10 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-		tmp1 = '-16 -16 0';
-		tmp2 = '16 16 4';
-		newmis.mdl = "progs/telepad.mdl";
-		newmis.netname = "teleporter";
+		mins = '-16 -16 0';
+		maxs = '16 16 4';
+		obj.mdl = "progs/telepad.mdl";
+		obj.netname = "teleporter";
 	
 		btime = time + BUILD_TIME_TELEPORTER;
 	}
@@ -679,49 +679,47 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-		tmp1 = '-6 -6 0';
-		tmp2 = '6 6 54';
-		newmis.mdl = "progs/ffgen2.mdl";
-		newmis.netname = "field generator";
+		mins = '-6 -6 0';
+		maxs = '6 6 54';
+		obj.mdl = "progs/ffgen2.mdl";
+		obj.netname = "field generator";
 	
 		btime = time + BUILD_TIME_FIELDGEN;
 	}
 	
 	if (objtobuild != BUILD_SECURITY_CAMERA)
 	{
-        newmis.owner = self;
-        newmis.classname = "timer";
-        newmis.netname = "build_timer";
-        newmis.nextthink = btime;
-        newmis.think = TeamFortress_FinishedBuilding;
-        newmis.colormap = self.colormap;
-        newmis.weapon = objtobuild;
-        newmis.angles_y = anglemod(self.angles_y + 180);
-
-//        newmis.velocity = '0 0 8';
-        newmis.movetype = MOVETYPE_TOSS;    
-
-        newmis.solid = SOLID_BBOX;
-        setmodel (newmis, newmis.mdl);
-        setsize (newmis, tmp1, tmp2);
-        if (objtobuild==BUILD_TESLA)
-        {
-            newmis.skin = self.team_no;
-            if (self.team_no==3) newmis.skin=0;
-            else if (self.team_no==4) newmis.skin=3;
-        }
-
-        newmis.flags = newmis.flags | FL_ONGROUND;
-        setorigin (newmis, newmis.origin + '0 0 8');
-		tmp = self;
-		self = newmis;
-		if (droptofloor() == FALSE) {
-			self = tmp;
+		checkmove(obj.origin + '0 0 8', mins, maxs, obj.origin - '0 0 128', 0, self);
+		if (trace_fraction == 1 || trace_allsolid) {
             sprint(self, PRINT_HIGH, "Not enough room to build here\n");
-            dremove(newmis);
+            dremove(obj);
             return;
 		}
-		self = tmp;
+
+		obj.origin = trace_endpos;
+        obj.flags = obj.flags | FL_ONGROUND;
+        obj.movetype = MOVETYPE_TOSS;    
+
+        obj.owner = self;
+        obj.classname = "timer";
+        obj.netname = "build_timer";
+        obj.nextthink = btime;
+        obj.think = TeamFortress_FinishedBuilding;
+        obj.colormap = self.colormap;
+        obj.weapon = objtobuild;
+        obj.angles_y = anglemod(self.angles_y + 180);
+
+        obj.solid = SOLID_BBOX;
+        setmodel (obj, obj.mdl);
+        setsize (obj, mins, maxs);
+        setorigin (obj, obj.origin);
+
+        if (objtobuild==BUILD_TESLA)
+        {
+            obj.skin = self.team_no;
+            if (self.team_no==3) obj.skin=0;
+            else if (self.team_no==4) obj.skin=3;
+        }
 
         self.is_building = 1;
         makeImmune(self,time + 2);

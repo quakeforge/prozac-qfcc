@@ -560,8 +560,13 @@ void(entity e) setspawnparms			= #78;		// set parm1... to the
 void(entity killer, entity killee) logfrag = #79;	// add to stats
 string(entity e, string key) infokey	= #80;		// get a key value (world = serverinfo)
 float(string s) stof				= #81;		// convert string to float
-void(vector where, float set) multicast 	= #82;  // sends the temp message to a set
-												// of clients, possibly in PVS or PHS
+void(vector where, float set) multicast 	= #82;  // sends the temp message
+													// to a set of clients,
+													// possibly in PVS or PHS
+
+void (vector start, vector mins, vector maxs, vector end, float type,
+	  entity passent) checkmove = #98;				// Wrapper around SV_Move.
+
 void (entity ent, string key, string value) setinfokey = #102;
 float (string path, string mode) cfopen = #103;
 void (float desc) cfclose = #104;
