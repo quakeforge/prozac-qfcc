@@ -1,4 +1,5 @@
 *.dat
 *.pqc
 *.sym
+ChangeLog
 progdefs.h
