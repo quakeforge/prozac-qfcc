@@ -491,7 +491,7 @@ float() Tesla_Fire =
 	{
 		local float damg;
 		damg = random() * 100 + 200 * self.ammo_nails; // the bigger they come, the harder they fall
-		deathmsg = DMSG_TESLA;
+		deathmsg = DMSG_LIGHTNING;
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_EXPLOSION);
 		WriteCoord (MSG_MULTICAST, self.origin_x);
@@ -503,7 +503,7 @@ float() Tesla_Fire =
 		return FALSE;
 	}
 		
-	deathmsg = DMSG_TESLA;
+	deathmsg = DMSG_LIGHTNING;
 
  // OfN - Check for force field
 

@@ -1317,7 +1317,7 @@ float (entity e) EF_GlowColor;
 #define DMSG_MARTYR				40
 #define DMSG_HOVER				41 //Boot exhaust!
 #define DMSG_LAND_MINE			42
-#define DMSG_TESLA				43
+#define DMSG_GREN_EMP_RADIUS		43
 #define DMSG_DEMON_FIRE			44
 #define DMSG_BERSERK			45
 #define DMSG_MAUSER				50
@@ -1343,7 +1343,6 @@ float (entity e) EF_GlowColor;
 #define DMSG_FF_STUCK_HACKED	69
 #define DMSG_PHYSICS		70
 #define DMSG_OUTOFBOUNDS	71
-#define DMSG_GREN_EMP_RADIUS	72
 
 //Defs for objects a spikeshooter can spawn  Misc.qc
 #define SPAWNFLAG_SUPERSPIKE	1 

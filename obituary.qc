@@ -172,7 +172,7 @@ void (entity targ, entity atk) Give_Frags_Building =
 		ro = atk.martyr_enemy;
 
 	if ((((targ.classname == "player") && Teammate(ro.team_no, targ.team_no)) ||
-		Teammate(ro.team_no, targ.real_owner.team_no)) && ((deathmsg != DMSG_TESLA) ||
+		Teammate(ro.team_no, targ.real_owner.team_no)) && ((deathmsg != DMSG_LIGHTNING) ||
 		!(atk.tf_items & NIT_SECURITY_CAMERA)))
 	{
 		if (targ.classname == "player") // More the victim than the owner's fault
@@ -1297,7 +1297,7 @@ void (entity targ, entity attacker) Obituary_Player_by_SentryTesla =
 		} else if (deathmsg == DMSG_SENTRYGUN_BULLET) {
 			deathstring = " is mown down by ";
 			deathstring2 = "'s sentry gun\n";
-		} else if (deathmsg == DMSG_TESLA) {
+		} else if (deathmsg == DMSG_LIGHTNING) {
 			local float rnum = random ();
 
 			if (rnum < FRAC (2, 4)) {
