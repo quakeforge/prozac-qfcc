@@ -1512,14 +1512,14 @@ float(entity e) EF_GlowColor =
 		{
 			if (te.owner == e && (te.goal_activation & TFGI_GLOW))
 			{
-				ret |= EF_DIMLIGHT;
-
 				local float teamno = 0;
 
 				if (te.owned_by == 1)
 					ret |= EF_BLUE;
 				else if (te.owned_by == 2)
 					ret |= EF_RED;
+				else if (!ret)
+					ret = EF_DIMLIGHT;
 			}
 
 			te = find(te, classname, "item_tfgoal");
@@ -1529,8 +1529,10 @@ float(entity e) EF_GlowColor =
 			ret |= EF_BLUE;
 		if (e.invincible_finished)
 			ret |= EF_RED;
+		if ((e.job & (JOB_CHAPLAN | JOB_ACTIVE)) == (JOB_CHAPLAN | JOB_ACTIVE))
+			ret |= EF_BLUE | EF_BRIGHTLIGHT;
 
-		if ((ret & EF_ANYGLOW) != EF_DIMLIGHT)
+		if (ret & (EF_BLUE | EF_RED))
 			ret &= ~EF_DIMLIGHT;
 
 		return ret;
@@ -1546,9 +1548,9 @@ float(entity e) EF_GlowColor =
 		}
 		else if (e.team)
 		{
-			if (e.team == 1)
+			if (e.team_no == 1)
 				return EF_BLUE;
-			else if (e.team == 2)
+			else if (e.team_no == 2)
 				return EF_RED;
 		}
 		

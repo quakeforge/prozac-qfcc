@@ -2926,10 +2926,9 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	// Make sure we don't remove an effect another Goal is also supplying
 
 	AP.effects &= ~EF_ANYGLOW;
-	AP.effects |= EF_GlowColor(AP); // This handles other glows 
 
  	if (Item.goal_activation & TFGI_ITEMGLOWS)
-		Item.effects = Item.effects | EF_GlowColor(self);
+		Item.effects = Item.effects | EF_GlowColor(Item);
 
 	// Remove the Spy prevention
 	if (!spyoff)
@@ -3018,10 +3017,12 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 			Item.owner = NIL;
 			dremove(Item);
 			TeamFortress_SetSpeed(AP);
+			AP.effects |= EF_GlowColor(AP);
 			return;
 		}
 		Item.owner = NIL;
 		TeamFortress_SetSpeed(AP);
+		AP.effects |= EF_GlowColor(AP);
 		return;
 	}
 
@@ -3059,6 +3060,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 
 			Item.owner = NIL;
 			TeamFortress_SetSpeed(AP);
+			AP.effects |= EF_GlowColor(AP);
 			return;
 		}
 
@@ -3066,6 +3068,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 		Item.solid = SOLID_NOT;
 		Item.owner = NIL;
 		TeamFortress_SetSpeed(AP);
+		AP.effects |= EF_GlowColor(AP);
 		return;
 	}
 

@@ -182,8 +182,8 @@
 #define EF_DIMLIGHT	8
 #define EF_FLAG1	16
 #define EF_FLAG2	32
-#define EF_RED		64
-#define EF_BLUE		128 
+#define EF_BLUE		64
+#define EF_RED		128 
 
 #define EF_ANYGLOW (EF_BRIGHTLIGHT | EF_DIMLIGHT |  EF_RED | EF_BLUE)
 

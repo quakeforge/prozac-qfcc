@@ -368,7 +368,7 @@ void() JobChaplan =
 	//Start playing preacher music, glow and inspire!
 	//sound (self, CHAN_VOICE, "ambience/orff.wav", 0.75, ATTN_NORM);
 	sound (self, CHAN_MUSIC, "ambience/orff.wav", 0.75, ATTN_NORM);
-	self.effects |= EF_BRIGHTLIGHT | EF_GlowColor(self);
+	self.effects |= EF_GlowColor(self);
 	ChaplanInspire();
 };
 
