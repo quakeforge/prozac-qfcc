@@ -15,7 +15,7 @@ Defines for the compilable options within TF.
 #define QUAKE_WORLD
 
 #ifdef QUAKE_WORLD
-	#pragma PROGS_DAT "../qwprogs.dat"
+	#pragma PROGS_DAT "qwprogs.dat"
 
 	#undef COOP_MODE
 	#define NET_SERVER
