@@ -83,7 +83,7 @@ void(float aur) AddAura =
 	
 	if (!(targ.job & JOB_CRUSADER))
 	{
-//		sound (targ, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
+		sound (targ, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
         
         local string strung;
 		local float oldaur;
@@ -145,7 +145,7 @@ void() CrusaderAddInvisibility =
 	
 	if (!(targ.job & JOB_CRUSADER))
 	{
-//    	sound (targ, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
+    	sound (targ, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
         
         sprint(self, PRINT_HIGH, "You provide ", targ.netname, " with powers of invisibility! They will be invisible for the next 10 seconds!\n");
 		sprint(targ, PRINT_HIGH, self.netname, " grants you an Aura of Invisibility! You will be fully invisibile for the next 10 seconds!\n");
@@ -187,7 +187,7 @@ void() CrusaderMassHeal =
 			if (Teammate(te.team_no, self.team_no))
 				if (te.health < te.max_health)
 				{
-//        	    	sound (te, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
+        	    	sound (te, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
 
                     te.health = te.max_health;
 					if (self != te)
@@ -226,7 +226,7 @@ void() CrusaderMassCure =
 		return;
 	}
 	
-	te = findradius(self.origin, 600);
+	te = findradius(self.origin, 1000);
 	while (te)
 	{
 		if (te.classname == "player")
@@ -289,7 +289,7 @@ void() CrusaderDispel =
 					self = te;
 					self = oself;
             
-//                    sound (te, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
+                    sound (te, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
 
                     deathmsg = DMSG_DISPEL;
 					TF_T_Damage(te, self, self, 25, 0, TF_TD_OTHER);

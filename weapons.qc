@@ -4944,7 +4944,7 @@ void() SuperDamageSound =
 		if (self.super_sound < time)
 		{
 			self.super_sound = time + 1;
-//			sound (self, CHAN_BODY, "auras/aura2.wav", 1, ATTN_NORM);
+			sound (self, CHAN_BODY, "auras/aura2.wav", 1, ATTN_NORM);
 		}
 	}
     else if (self.aura == AURA_HASTE)
@@ -4952,7 +4952,7 @@ void() SuperDamageSound =
 		if (self.super_sound < time)
 		{
 			self.super_sound = time + 1;
-//			sound (self, CHAN_BODY, "auras/aura4.wav", 1, ATTN_NORM);
+			sound (self, CHAN_BODY, "auras/aura4.wav", 1, ATTN_NORM);
 		}
 	}
 	return;
