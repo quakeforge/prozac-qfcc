@@ -3166,7 +3166,7 @@ void(entity Item) tfgoalitem_drop =
 	local vector temp1;
 	local vector temp2;
 	
-	Item.origin = Item.owner.origin - '0 0 8';
+	Item.origin = Item.owner.origin;
 	
 	Item.velocity_z = 400;
 	Item.velocity_x = -50 + (random() * 100);
@@ -3174,9 +3174,12 @@ void(entity Item) tfgoalitem_drop =
 	
 	Item.movetype = MOVETYPE_TOSS;
 //CH set solid state
+//GR this can cause players to be trapped inside their items when they dropitems, do it later
+#if 0
 	if (Item.goal_activation & TFGI_GOAL_IS_SOLID)
 		Item.solid = SOLID_BBOX;
 	else
+#endif
 		Item.solid = SOLID_TRIGGER;
 	setorigin(Item, Item.origin);
 
@@ -3194,9 +3197,12 @@ void(entity Item) tfgoalitem_drop =
 
 	if (Item.mdl)
 		setmodel(Item, Item.mdl);
-	if (Item.goal_activation & TFGI_DROPITEMS) //checks for dropitems
+	if (!Item.owner.deadflag) //checks for dropitems
 	{
-		Item.nextthink = time + 1; //CH wait a sec then make it pickupable
+		makevectors(Item.owner.v_angle);
+
+		Item.velocity = v_forward * 400 + v_up * 200;
+		Item.nextthink = time + 0.5; //CH wait a sec then make it pickupable GR half a sec
 		Item.think = tfgoalitem_settouchandthink;
 	}
 	else
@@ -3206,6 +3212,12 @@ void(entity Item) tfgoalitem_drop =
 
 		Item.goal_state = TFGS_INACTIVE;
 		Item.touch = item_tfgoal_touch;
+
+		if (Item.goal_activation & TFGI_GOAL_IS_SOLID)
+		{
+			Item.solid = SOLID_BBOX;
+			setorigin(Item, Item.origin);
+		}
 	}
 };
 
@@ -3217,6 +3229,12 @@ void() tfgoalitem_settouchandthink =
 
 	self.goal_state = TFGS_INACTIVE;
 	self.touch = item_tfgoal_touch;
+
+	if (self.goal_activation & TFGI_GOAL_IS_SOLID)
+	{
+		self.solid = SOLID_BBOX;
+		setorigin(self, self.origin);
+	}
 };
 
 //=========================================================================
