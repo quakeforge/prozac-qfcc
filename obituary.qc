@@ -1290,7 +1290,7 @@ void (entity targ, entity attacker) Obituary_Player_by_SentryTesla =
 			deathstring = " crossed his sentry gun's line of fire\n";
 		else if (deathmsg == DMSG_BUG_ZAPPER)
 			deathstring = " was electrocuted by his own sentry\n";
-		else if (deathmsg == DMSG_LIGHTING && targ != attacker.enemy
+		else if (deathmsg == DMSG_LIGHTNING && targ != attacker.enemy
 			deathstring = " completes the circuit\n";
 		else
 			deathstring = " let his sentry turn against him\n"; //CH
