@@ -62,8 +62,11 @@ void() Kick_My_Owner =
 
 void () TeamFortress_CheckForSpeed =
 {
+#if 0
 	local vector tempvec;
-	local float max, dist, check, immune;
+	local float dist;
+#endif
+	local float max, check, immune;
 	local string nospeed;
 	local float off;
 
@@ -74,38 +77,40 @@ void () TeamFortress_CheckForSpeed =
 	}
 	if (off) return;
 
-max = self.owner.maxspeed;
-if ((self.owner.job & JOB_RUNNER) && (self.owner.job & JOB_ACTIVE))
-	max = max + 200;	
-//make sure ok to check
-if (self.owner.immune_to_chec > time)
-	immune = immune | IMMUNE; //its ok since IMMUNE becomes 1
-if (self.owner.hook_out)
-	immune = immune | GRAPPLE;
-//WK We should boot if they have no set speed and are moving
-//if (self.owner.maxspeed == 0) // no set speed
-if (!(self.owner.flags & FL_ONGROUND)) //WK People in air immune
-	immune = immune | FLYING;
-if (self.owner.playerclass == PC_UNDEFINED)
-	immune = immune | NOCLASS;
-if (self.owner.done_custom & CUSTOM_BUILDING)
-	immune = immune | BUILDING;
-if (self.owner.health <= 0)
-	immune = immune | DEAD;
-if (self.owner.has_disconnected)
-	dremove(self);
+	max = self.owner.maxspeed;
+	if ((self.owner.job & JOB_RUNNER) && (self.owner.job & JOB_ACTIVE))
+		max = max + 200;	
+	//make sure ok to check
+	if (self.owner.immune_to_chec > time)
+		immune = immune | IMMUNE; //its ok since IMMUNE becomes 1
+	if (self.owner.hook_out)
+		immune = immune | GRAPPLE;
+	//WK We should boot if they have no set speed and are moving
+	//if (self.owner.maxspeed == 0) // no set speed
+	if (!(self.owner.flags & FL_ONGROUND)) //WK People in air immune
+		immune = immune | FLYING;
+	if (self.owner.playerclass == PC_UNDEFINED)
+		immune = immune | NOCLASS;
+	if (self.owner.done_custom & CUSTOM_BUILDING)
+		immune = immune | BUILDING;
+	if (self.owner.health <= 0)
+		immune = immune | DEAD;
+	if (self.owner.has_disconnected)
+		dremove(self);
 
-if (immune)
-	check = FALSE;
-else
-	check = TRUE;
+	if (immune)
+		check = FALSE;
+	else
+		check = TRUE;
 
-	//WK Lowered percent chance of restuffing because stuffcmds() cause overflows
-	if (!self.lip || !(self.has_camera) || (random() <= 0.1)){ //periodically reset ping and gotwalls.
+	//WK Lowered percent chance of restuffing because stuffcmds()
+	// cause overflows
+	if (!self.lip || !(self.has_camera) || (random() <= 0.1)) {
+		// periodically reset ping and gotwalls.
 		self.has_camera = 0;
 		self.has_camera = stof(infokey(self.owner,"ping")) / 20;
 #ifdef ENABLE_CHEAT_CMDS
-		if (!self.lip || (random() <= 0.1)){
+		if (!self.lip || (random() <= 0.1)) {
 			stuffcmd(self.owner,"alias aa_enabled \"impulse I_CHEAT_ONE;wait;impulse I_CHEAT_TWO;wait;impulse I_CHEAT_THREE\"\n");
 			stuffcmd(self.owner,"alias +aa \"aa_enabled\"\n");
 			stuffcmd(self.owner,"alias -aa \"aa_enabled\"\n");
@@ -122,6 +127,7 @@ else
 #endif
 	}
 
+#if 0
 	// Ignore z part of vector
 	tempvec = self.oldorigin - self.owner.origin;
 	tempvec_z = 0;
@@ -171,6 +177,7 @@ else
 	bprint(PRINT_HIGH, ")\n");
 #endif
 	self.oldorigin = self.owner.origin;
+#endif
 	self.nextthink = time + 1;
 };
 //This checks so that the impulse cmds were not by accident
