@@ -587,6 +587,12 @@ integer (string s) stoi = #113;
 vector (string s) stov = #114;
 string (vector v) vtos = #27;
 
+integer () Cmd_Argc = #0;
+string (integer i) Cmd_Argv = #0;
+string (integer i) Cmd_Args = #0;
+integer (string cmd, void() func) Cmd_AddCommand = #0;
+integer (string cmd, void() func, integer noredir) SV_AddUserCommand = #0;
+
 //============================================================================
 
 //

@@ -12,7 +12,7 @@ void () UpdateInfos;
 //==============//
 
 void() InitBodyQue;
-
+void() AddCommands;
 
 void() main =
 {
@@ -552,6 +552,8 @@ void() worldspawn =
 
 	// 63 testing
 	lightstyle(63, "a");
+
+	AddCommands();
 };
 
 void() StartFrame =

@@ -20,6 +20,9 @@ void() Alias_SetBatch;
 //ofN
 void() bprintline;
 
+//GR
+void(entity e) AddCommandAliases;
+
 //=========================================================================
 // HELP FUNCTIONS
 //=========================================================================
@@ -365,6 +368,8 @@ void () Alias_SetBatch =
 		error ("Bad num in Alias_SetBatch: " + ftos (num) + "!\n");
 		return;
 	}
+
+	AddCommandAliases(self);
 
 	self.got_aliases_num = floor (num + 1);
 	self.got_aliases_time = time + 5;
