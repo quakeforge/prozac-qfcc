@@ -3839,7 +3839,7 @@ void() TeamFortress_RegenerateCells =
 		{
 			RevealThief(self.owner,FALSE);
 		}
-		else {	*/		
+		else 	*/		
 			//if (self.owner.ammo_cells > 100) self.owner.ammo_cells = 100;
 		if ((self.owner.velocity_z > 0 || self.owner.velocity_y > 0 || self.owner.velocity_x > 0) && self.owner.job & JOB_FULL_HIDE)
 		{
@@ -3851,10 +3851,12 @@ void() TeamFortress_RegenerateCells =
 			/*self.owner.ammo_cells = self.owner.ammo_cells - PC_SPY_CELL_USAGE;
 			if (self.owner.ammo_cells <= 0) {
 				self.owner.ammo_cells = 0;
-				RevealThief(self.owner,FALSE);*/
-			
+				RevealThief(self.owner,FALSE);
+			}*/
 		}
-		else if ((self.owner.velocity_z == 0 && self.owner.velocity_y == 0 && self.owner.velocity_x == 0) && !(self.owner.job & JOB_FULL_HIDE))
+		else if ((self.owner.velocity_z == 0 && self.owner.velocity_y == 0 && self.owner.velocity_x == 0)
+				 && !(self.owner.job & JOB_FULL_HIDE)
+				 && !(self.effects & (EF_DIMLIGHT | EF_BRIGHTLIGHT)))
 		{
 			self.owner.frame = 0;
 			self.owner.weaponframe = 0;

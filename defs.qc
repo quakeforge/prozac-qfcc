@@ -737,7 +737,9 @@ void (entity pl, float topcolor, float bottomcolor) SetPlayerColor;
 .float		no_grenades_2;		// Number of grenades of type 2 being carried
 .float		tp_grenades_1;		// 1st type of grenades being carried
 .float		tp_grenades_2;		// 2nd type of grenades being carried
-.float		got_aliases;		// TRUE if the player has TeamFortress aliases
+.float		got_aliases;		// controls state of alias checker
+.integer	got_aliases_bits;	// version number bits
+.float		got_aliases_num;	// batch of aliases that are done
 .float 		cheat_check;		// Time when we'll next check for team cheats
 .float 		is_removed;			// TRUE if the entity has been removed
 .float		is_undercover;		// TRUE for a SPY if they're undercover

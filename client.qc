@@ -2742,11 +2742,11 @@ void() CheckPowerups =
     // Invisibility
 	//WK Made people invis during building, and during thief's full hide
 	//WK And while being inspired by chaplan
-	if (self.done_custom & CUSTOM_BUILDING || //We are building a custom class
-          self.playerclass == PC_UNDEFINED || //Or we're in observer mode
-         (self.job & JOB_THIEF && self.job & JOB_FULL_HIDE) || //Or we are fully hiding thieves
-	   //(self.tfstate & TFSTATE_INSPIRED && !(self.job & JOB_CHAPLAN)) || //ofN comented by
-       self.aura == AURA_INVIS) //- OfN
+	if (self.done_custom & CUSTOM_BUILDING //We are building a custom class
+		|| self.playerclass == PC_UNDEFINED //Or we're in observer mode
+		|| (self.job & JOB_THIEF && self.job & JOB_FULL_HIDE) //Or we are fully hiding thieves
+//		|| (self.tfstate & TFSTATE_INSPIRED && !(self.job & JOB_CHAPLAN)) //ofN comented by
+		|| self.aura == AURA_INVIS) //- OfN
 	{
 		self.modelindex = modelindex_null;	// don't use eyes
     }
@@ -3023,9 +3023,9 @@ void() PlayerPostThink =
 
 	//  Display MOTD
 	// Sync this with tforthlp.qc and menu.qc
-	if (self.motd < MOTD_FINISHED)
-		TeamFortress_MOTD();
-	else if (self.cheat_check == 0)
+	TeamFortress_MOTD();
+
+	if (self.cheat_check == 0)
 		self.cheat_check = time + 10;
 #ifdef STATUSBAR
 	else if (time > self.StatusRefreshTime && self.StatusBarSize != 0)

@@ -320,6 +320,8 @@
 /*==================================================*/
 /* Impulse Defines		                        	*/
 /*==================================================*/
+#define TF_ALIASVERSION 100
+
 // Alias check to see whether they already have the aliases
 #define TF_ALIAS_CHECK		13 
 
@@ -479,11 +481,27 @@
 #define TF_ADMIN_KICK_PERSON  209 //'kick' -- kicks current one
 #define TF_ADMIN_BAN_PERSON	  210 //'ban' -- bans current one
 #define TF_ADMIN_CEASEFIRE	  211 //ceasefire
+
+#define TF_BITSTART	250
+#define TF_BIT0		251
+#define TF_BIT1		252
+#define TF_BITEND	253
+#define TF_BITNONE	254
+
+#define TF_ALIASNEXT	255
+
 //CH in admin.qc is a list of impulses that can be used during ceasefire
 //To fool proof the cheat impulses
 #define I_CHEAT_ONE		155
 #define I_CHEAT_TWO		83
 #define I_CHEAT_THREE		212
+
+
+//Alias checking
+#define TF_GOTALIAS_PRECHECK	0
+#define TF_GOTALIAS_CHECKING	1
+#define TF_GOTALIAS_SETTING		2
+#define TF_GOTALIAS_DONE		4
 
 /*==================================================*/
 /*	Colors		      			    */

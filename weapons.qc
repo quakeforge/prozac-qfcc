@@ -4103,8 +4103,22 @@ float(float inp) BuildingImpulses =
 	return FALSE;
 };
 
+void() Alias_BitImpulse;
+
 void() ImpulseCommands =
 {
+	if (self.impulse >= TF_BITSTART && self.impulse <= TF_BITNONE) {
+		Alias_BitImpulse ();
+		self.impulse = 0;
+		return;
+	}
+
+	if (self.impulse == TF_ALIASNEXT) {
+		self.impulse = 0;
+		self.got_aliases_num = ceil (self.got_aliases_num);
+		return;
+	}
+
 	if ((self.impulse== TF_CHANGEPC + PC_CUSTOM || self.impulse==TF_SELL) && custom_mode==2)
     {
         self.impulse=0;

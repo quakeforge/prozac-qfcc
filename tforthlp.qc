@@ -15,6 +15,7 @@ Functions handling all the help displaying for TeamFortress.
 void() TeamFortress_MOTD;
 void() TeamFortress_HelpMap;
 void() AliasTimer;
+void() Alias_SetBatch;
 
 //ofN
 void() bprintline;
@@ -26,13 +27,18 @@ void() TeamFortress_MOTD =
 {
 	local string ya;
 	local string st;
-	local entity atimer;
 
 	// check if player already has aliases
-	if (self.motd == 4) {
-		stuffcmd(self,"prozacalias\n");
+	if (self.got_aliases == TF_GOTALIAS_PRECHECK) {
+		stuffcmd (self, "alias_checkversion\n");
+		stuffcmd (self, "impulse " + ftos (TF_BITNONE) + "\n");
+		self.got_aliases = TF_GOTALIAS_CHECKING;
 		self.show_hostile = 0;
-	}
+	} else if (self.got_aliases == TF_GOTALIAS_SETTING)
+		Alias_SetBatch ();
+
+	if (self.motd >= MOTD_FINISHED)
+		return;
 
 	if (self.motd <= MOTD_FINISHED - 2)
 	{
@@ -88,31 +94,39 @@ void() TeamFortress_MOTD =
 		self.menu_count = MENU_REFRESH_RATE;
    
 		self.motd = MOTD_FINISHED;
-
-		//WK CustomTF Commands
-		TeamFortress_Alias("custom", (TF_CHANGEPC + PC_CUSTOM), 0);
-		TeamFortress_Alias("upgrade", (TF_SELL), 0);
-		TeamFortress_Alias("skill", (TF_SKILL), 0);
-		TeamFortress_Alias("throwdet", (THROW_DETPACK), 0); // SB new impulse aliases
-		//TeamFortress_Alias("buildsensor", (BUILD_SENSOR), 0);
-		//TeamFortress_Alias("interface", (IMPULSE_INTERFACE), 0);
-        TeamFortress_Alias("holo", (IMPULSE_HOLO), 0);
-        //TeamFortress_Alias("debug", (IMPULSE_DEBUG), 0); 193
-		
-
-		// check if player already has aliases
-	   	if (self.got_aliases == TRUE)
-			return;
-
-		//WK If not, spawn off a timer to slowly send the aliases to
-		//prevent overflow
-		atimer = spawn ();
-		atimer.classname = "timer";
-		atimer.owner = self;
-		atimer.nextthink = time + 0.5;
-		atimer.heat = 0;
-		atimer.think = AliasTimer;
 	}
+};
+
+void() Alias_BitImpulse =
+{
+	local float imp = self.impulse;
+	self.impulse = 0;
+
+	if (self.got_aliases != TF_GOTALIAS_CHECKING)
+		return;
+
+	if (imp == TF_BITSTART)
+		self.got_aliases_bits = 0;
+	else if (imp == TF_BIT0)
+		self.got_aliases_bits = self.got_aliases_bits << 1;
+	else if (imp == TF_BIT1)
+		self.got_aliases_bits = (self.got_aliases_bits << 1) | 1;
+	else if (imp == TF_BITEND)
+		if (self.got_aliases_bits == TF_ALIASVERSION) {
+			self.got_aliases = TF_GOTALIAS_DONE;
+			sprint (self, PRINT_HIGH, "Alias version matched, keeping old aliases.\n");
+		} else {
+			self.got_aliases = TF_GOTALIAS_SETTING;
+			sprint (self, PRINT_HIGH, "Wrong alias version, resetting aliases. (found " + ftos (self.got_aliases_num) + ", wanted " + ftos (TF_ALIASVERSION) + ")\n");
+			self.got_aliases_num = 0;
+		}
+	else if (imp == TF_BITNONE) {
+		self.got_aliases = TF_GOTALIAS_SETTING;
+		self.got_aliases_num = 0;
+		sprint (self, PRINT_HIGH, "No alias version found, setting aliases.\n");
+	}
+	else
+		error ("Bad impulse " + ftos (imp) + " in Alias_BitImpulse()!\n");
 };
 
 #ifndef MSG_INTRO1
@@ -173,44 +187,67 @@ void() TeamFortress_HelpMap =
 	sprint (self, PRINT_HIGH, "There is no help for you.\n");
 };
 
-void() AliasTimer = {
-	local entity oself;
-	local float myheat;
-
-	self.heat = self.heat + 1;
-	myheat = self.heat;
-	if (self.heat > 5) {
+void() AliasTimer =
+{
+	if (self.owner.got_aliases != TF_GOTALIAS_SETTING) {
 		self.think = SUB_Remove;
 		self.nextthink = time + 0.1;
+		return;
 	}
-	oself = self;
-	self = self.owner;
+	if (self.owner.got_aliases_num == floor (self.owner.got_aliases_num)) // prevents conflicting with the impulse
+		self.owner.got_aliases_num = self.owner.got_aliases_num + 0.01;
+};
 
-	if (myheat == 1) {
-		sprint (self, PRINT_HIGH, "binding aliases...\n");
 
+void () Alias_SetBatch =
+{
+	local float num = self.got_aliases_num;
+	local entity atimer;
+
+	if (self.got_aliases != TF_GOTALIAS_SETTING)
+		error ("AliasCheck() called with wrong got_aliases setting (" + ftos (self.got_aliases) + ")!\n");
+
+	if (num == 0) {
+        atimer = spawn ();
+        atimer.classname = "timer";
+        atimer.owner = self;
+        atimer.nextthink = time + 0.5;
+        atimer.heat = 0;
+        atimer.think = AliasTimer;
+	} else if (num == 1) {
+		//WK CustomTF Commands
+		TeamFortress_Alias("custom", (TF_CHANGEPC + PC_CUSTOM), 0);
+		TeamFortress_Alias("upgrade", (TF_SELL), 0);
+		TeamFortress_Alias("skill", (TF_SKILL), 0);
+		TeamFortress_Alias("throwdet", (THROW_DETPACK), 0); // SB new impulse aliases
+		//TeamFortress_Alias("buildsensor", (BUILD_SENSOR), 0);
+	} else if (num == 2) {
+		//TeamFortress_Alias("interface", (IMPULSE_INTERFACE), 0);
+        TeamFortress_Alias("holo", (IMPULSE_HOLO), 0);
+        //TeamFortress_Alias("debug", (IMPULSE_DEBUG), 0); 193
 		// Stuff Aliases
 
 		// Grenades
 		TeamFortress_Alias("primeone", TF_GRENADE_1, 0);
 		TeamFortress_Alias("primetwo", TF_GRENADE_2, 0);
+	} else if (num == 3) {
 		TeamFortress_Alias("throwgren", TF_GRENADE_T, 0);
 		TeamFortress_Alias("+gren1", TF_GRENADE_1, 0);
 		TeamFortress_Alias("+gren2", TF_GRENADE_2, 0);
 		TeamFortress_Alias("-gren1", TF_GRENADE_T, 0);
 		TeamFortress_Alias("-gren2", TF_GRENADE_T, 0);
 
+	} else if (num == 4) {
 		// Pipebombs
 		TeamFortress_Alias("detpipe", TF_PB_DETONATE, 0);
 		TeamFortress_Alias("uncustom", TF_UNCUSTOM, 0);
-	}
-	else if (myheat == 2) {
 		// Reloading
 		TeamFortress_Alias("reload", TF_RELOAD, 0);
 
 		// Actions
 		TeamFortress_Alias("special", TF_SPECIAL_SKILL, 0);
 		TeamFortress_Alias("saveme", TF_MEDIC_HELPME, 0);
+	} else if (num == 5) {
 		TeamFortress_Alias("discard", TF_DISCARD, 0);
 		TeamFortress_Alias("id", TF_ID, 0);
 		TeamFortress_Alias("inv",TF_INVENTORY, 0);
@@ -218,6 +255,7 @@ void() AliasTimer = {
 		// Class Ability Impulses
 		TeamFortress_Alias("disguise", TF_SPY_SPY, 0);
 		TeamFortress_Alias("feign", TF_SPY_DIE, 0);
+	} else if (num == 6) {
 		TeamFortress_Alias("sfeign", TF_SPY_DIE2, 0);
 		TeamFortress_Alias("build", TF_ENGINEER_BUILD, 0);
 		TeamFortress_Alias("detdispenser", (TF_ENGINEER_BUILD), 7);
@@ -225,15 +263,15 @@ void() AliasTimer = {
 		// General
 		TeamFortress_Alias("dropammo", TF_DROP_AMMO, 0);
 		TeamFortress_Alias("flaginfo", FLAG_INFO, 0);
+	} else if (num == 7) {
 		TeamFortress_Alias("autozoom", TF_AUTOZOOM, 0);
 		TeamFortress_Alias("showloc", TF_DISPLAYLOCATION, 0);
 		//TeamFortress_Alias("changeclass",TF_CHANGECLASS, 0);
                                     //- OfN - it was(TF_CHANGEPC + PC_CUSTOM)
-	}
-	else if (myheat == 3) {
 		//Taunts
 		TeamFortress_Alias("taunt1", TF_TAUNT, 0);
 		TeamFortress_Alias("taunt2", TF_TAUNT2, 0);
+	} else if (num == 8) {
 		TeamFortress_Alias("taunt3", TF_TAUNT3, 0);
 		TeamFortress_Alias("taunt4", TF_TAUNT4, 0);
 		TeamFortress_Alias("taunt5", TF_TAUNT5, 0);
@@ -241,25 +279,27 @@ void() AliasTimer = {
 		// Class Changing
 		TeamFortress_Alias("scout",(TF_CHANGEPC + PC_SCOUT), 0);
 		TeamFortress_Alias("sniper",(TF_CHANGEPC + PC_SNIPER), 0);
+	} else if (num == 9) {
 		TeamFortress_Alias("soldier",(TF_CHANGEPC + PC_SOLDIER), 0);
 		TeamFortress_Alias("demoman",(TF_CHANGEPC + PC_DEMOMAN), 0);
 		TeamFortress_Alias("medic",(TF_CHANGEPC + PC_MEDIC), 0);
 		TeamFortress_Alias("hwguy",(TF_CHANGEPC + PC_HVYWEAP), 0);
 		TeamFortress_Alias("pyro",(TF_CHANGEPC + PC_PYRO), 0);
+	} else if (num == 10) {
 		TeamFortress_Alias("spy",(TF_CHANGEPC + PC_SPY), 0);
 		TeamFortress_Alias("engineer",(TF_CHANGEPC + PC_ENGINEER), 0);
 		TeamFortress_Alias("randompc",(TF_CHANGEPC + PC_RANDOM), 0);
 
 		TeamFortress_Alias("showtf",TF_SHOWTF, 0);
-		TeamFortress_Alias("maphelp", TF_HELP_MAP, 0);			
+		TeamFortress_Alias("maphelp", TF_HELP_MAP, 0);
+	} else if (num == 11) {
 		TeamFortress_Alias("dropkey", TF_DROPKEY, 0);
-	}
-	else if (myheat == 4) {
 		// Sample aliases for the Scanner
 		TeamFortress_Alias("scan10", TF_SCAN_10, 0);
 		TeamFortress_Alias("scan30", TF_SCAN_30, 0);
 		TeamFortress_Alias("scan100", TF_SCAN_100, 0);
 		TeamFortress_Alias("scanf", TF_SCAN_FRIENDLY, 0);
+	} else if (num == 12) {
 		TeamFortress_Alias("scane", TF_SCAN_ENEMY, 0);
 
 		// Team handlers
@@ -269,49 +309,78 @@ void() AliasTimer = {
 
 		// Sample aliases for the Detpack
 		TeamFortress_Alias("det5", TF_DETPACK_5, 0);
+	} else if (num == 13) {
 		TeamFortress_Alias("det20", TF_DETPACK_20, 0);
 		TeamFortress_Alias("det50", TF_DETPACK_50, 0);
 		TeamFortress_Alias("+det5", TF_DETPACK_5, 0);
 		TeamFortress_Alias("-det5", TF_DETPACK_STOP, 0);
 		TeamFortress_Alias("+det20", TF_DETPACK_20, 0);
+	} else if (num == 14) {
 		TeamFortress_Alias("-det20", TF_DETPACK_STOP, 0);
 		TeamFortress_Alias("+det50", TF_DETPACK_50, 0);
 		TeamFortress_Alias("-det50", TF_DETPACK_STOP, 0);
-	}
-	else if (myheat == 5) {
 		//Get rid of silly MegaTF 10 year olds
 		TeamFortress_Alias("lay", TF_LAY, 0);
 		//CH allow dropitems
 		//TeamFortress_Alias("dropitems", TF_DROPITEMS, 0);
+	} else if (num == 15) {
         //TeamFortress_Alias("get", TF_ADMIN_KICK_CYCLE, 0);
 		//TeamFortress_Alias("kick", TF_ADMIN_KICK_PERSON, 0);
 		//TeamFortress_Alias("ban", TF_ADMIN_BAN_PERSON, 0);
 		//TeamFortress_Alias("ceasefire", TF_ADMIN_CEASEFIRE, 0);
         //TeamFortress_Alias("cmnd", IMPULSE_STUFFCMD, 0);
-
+	} else if (num == 16) {
 #ifdef STATUSBAR
 		TeamFortress_Alias("sbar_on", TF_STATUSBAR_ON, 0);
 		TeamFortress_Alias("sbar_off", TF_STATUSBAR_OFF, 0);
 		TeamFortress_Alias("sbar_200", TF_STATUSBAR_RES_START, 0);
 		TeamFortress_Alias("sbar_240", TF_STATUSBAR_RES_START + 1, 0);
 		TeamFortress_Alias("sbar_300", TF_STATUSBAR_RES_START + 2, 0);
+#endif
+	} else if (num == 17) {
+#ifdef STATUSBAR
 		TeamFortress_Alias("sbar_350", TF_STATUSBAR_RES_START + 3, 0);
 		TeamFortress_Alias("sbar_384", TF_STATUSBAR_RES_START + 4, 0);
 		TeamFortress_Alias("sbar_400", TF_STATUSBAR_RES_START + 5, 0);
 		TeamFortress_Alias("sbar_480", TF_STATUSBAR_RES_START + 6, 0);
 		TeamFortress_Alias("sbar_600", TF_STATUSBAR_RES_START + 7, 0);
-		TeamFortress_Alias("sbar_768", TF_STATUSBAR_RES_START + 8, 0);
 #endif
-		// Set up the alias check
-		TeamFortress_Alias("prozacalias", TF_ALIAS_CHECK, 0);
-
-		// Do the binds
+	} else if (num == 18) {
+#ifdef STATUSBAR
+		TeamFortress_Alias("sbar_768", TF_STATUSBAR_RES_START + 8, 0);
 		stuffcmd(self, "bind 9 \"impulse 9\"\n");
 		stuffcmd(self, "bind 0 \"impulse 10\"\n");
-
+#endif
+	} else if (num == 17) {
+		// Set up the alias check
+//		TeamFortress_Alias ("prozacalias", TF_ALIAS_CHECK, 0);
+		stuffcmd (self, "alias bitstart \"impulse " + ftos(TF_BITSTART) + "; wait\"\n");
+		stuffcmd (self, "alias bit0 \"impulse " + ftos(TF_BIT0) + "; wait\"\n");
+		stuffcmd (self, "alias bit1 \"impulse " + ftos(TF_BIT1) + "; wait\"\n");
+		stuffcmd (self, "alias bitend \"impulse " + ftos(TF_BITEND) + "; wait\"\n");
+	} else if (num == 18) {
+		// our version alias
+		local string bitstring = "";
+		local integer i = TF_ALIASVERSION;
+		while (i) { // I go through the bits from right to left, thus the wierd string prepending
+			if (i & 1)
+				bitstring = "bit1;" + bitstring;
+			else
+				bitstring = "bit0;" + bitstring;
+			i >>= 1;
+		}
+		bitstring = "alias alias_checkversion \"bitstart; " + bitstring;
+		bitstring += "bitend\"\n";
+		stuffcmd (self, bitstring);
+	} else if (num > 18) {
 		//WK INTRO THUNDER
 		stuffcmd(self, "play ambience/thunder1\n");
-	}
-	self = oself;
-	self.nextthink = time + 1;
+		self.got_aliases = TF_GOTALIAS_DONE;
+		sprint (self, PRINT_HIGH, "Done setting aliases.\n");
+		return;
+	} else
+		return;
+
+	self.got_aliases_num = floor (self.got_aliases_num) + 0.1;
+	stuffcmd (self, "impulse " + ftos (TF_ALIASNEXT) + "\n");
 };
