@@ -251,6 +251,8 @@ void() EMPGrenadeExplode =
 	local float dist, mult;
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
+	local float range = 300;
+	local float dmg = 0.7;
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_TAREXPLOSION);
@@ -260,11 +262,25 @@ void() EMPGrenadeExplode =
 	multicast (self.origin, MULTICAST_PHS);
 
 	// Find all ammo in the area
-	te = findradius(self.origin, 300); // was 240
+	te = findradius(self.origin, range); // was 240
+
 	while (te)
 	{	
 		dist = vlen(self.origin - te.origin);
-		mult = 0.85 - (0.65 * dist / 300) + (0.15 * random());
+		mult = 0.85 - (0.65 * dist / range) + (0.15 * random());
+		mult *= dmg;
+
+		if (IsBuilding(te))
+		{
+			if (te.num_mines & IMPROVED_THREE)
+				mult *= 0.5;
+			else
+				mult *= 0.8;
+		}
+
+		if (mult > 1) mult = 1;
+		else if (mult < 0) mult = 0;
+
 
         	if (te.touch == ammo_touch || te.touch == weapon_touch) // Ammo/Weapon?
 		{
@@ -278,8 +294,7 @@ void() EMPGrenadeExplode =
 		else if (te.think == TeamFortress_DetpackExplode)
 		{
 			//te.solid = SOLID_NOT;
-			local float rnd = (dist * (0.6 + random() * 0.4)) / 240;
-			te.nextthink = time + 1 + 120 * rnd*rnd; //chance of either exploding or lengthening timer
+			te.nextthink = time + 1 + 120 * mult*mult; //chance of either exploding or lengthening timer
 			
 			dremove(te.oldenemy); // Countdown ent
 		}
@@ -295,16 +310,12 @@ void() EMPGrenadeExplode =
 				te.think = GuerillaExplode;
 			te.nextthink = time + 0.1 + random();
 		}
-		// just hurt dispensers now
-		else if (te.classname == "building_dispenser") {
-			TF_T_Damage(te, self, self.owner, 300 - dist, 0, TF_TD_OTHER);
-		}
 		// Ammobox?
 		else if (te.classname == "ammobox")
 		{
 			expsize = 0;
-			expsize = expsize + (te.ammo_rockets * 3);
-			expsize = expsize + (te.ammo_cells * 0.75);
+			expsize = expsize + (te.ammo_rockets * 5);
+			expsize = expsize + (te.ammo_cells * 1.4);
 
 			expsize *= mult;
 
@@ -330,15 +341,16 @@ void() EMPGrenadeExplode =
 				multicast (te.origin, MULTICAST_PHS);
 			}
 		}
-		// Backpack/Player?
-		else if ((te.classname == "player") || (te.classname=="monster_army") || (te.touch == BackpackTouch))
+		// Backpack/Player/Building?
+		else if ((te.classname == "player") || (te.classname=="monster_army") || (te.touch == BackpackTouch)
+			|| IsBuilding(te))
 		{
 			expsize = 0;
 			// calculate explosion size
-			expsize = expsize + te.ammo_rockets * 3; // ouch, this hurts
+			expsize = expsize + te.ammo_rockets * 5; // ouch, this hurts
 			// < 200 cells for eng = metal, so don't explode
-			if (!(te.weapons_carried & WEAP_SPANNER) || te.touch == BackpackTouch)
-				expsize += te.ammo_cells;
+			if (!(te.weapons_carried & WEAP_SPANNER) || te.classname != "player")
+				expsize += te.ammo_cells * 1.4;
 			else
 				expsize += ceil(te.ammo_cells * (1 - 200 / te.maxammo_cells));
 
@@ -347,14 +359,15 @@ void() EMPGrenadeExplode =
 				if (te.tp_grenades_1 == GR_TYPE_MIRV)
 					expsize += te.no_grenades_1 * 100; // arggh, lots of damage
 				if (te.tp_grenades_2 == GR_TYPE_MIRV)
-					expsize += te.no_grenades_2 * 100; // gotta get hwguys somehow
+					expsize += te.no_grenades_2 * 100; // gotta get hwguys somehow			
+
 			}
 
 			expsize *= mult;
-			
-			if (te.is_detpacking || te.is_toffingadet) // detpack go off in yo face
-				expsize += 300;
 
+			if (te.classname == "player" && (te.is_detpacking || te.is_toffingadet))
+				expsize += 500;
+	
 			if (expsize > 0)
 			{
 				// Damage player and explode
@@ -371,7 +384,7 @@ void() EMPGrenadeExplode =
 
 					// Remove ammo
 					te.ammo_rockets = ceil(te.ammo_rockets * (1 - mult));
-					if (!(te.weapons_carried & WEAP_SPANNER))
+					if (!(te.weapons_carried & WEAP_SPANNER) || te.classname != "player")
 						te.ammo_cells = ceil(te.ammo_cells * (1 - mult));
 					else  // cells under 200 max don't count for eng
 					{
@@ -380,26 +393,27 @@ void() EMPGrenadeExplode =
 						te.ammo_cells = ceil(te.ammo_cells * te.maxammo_cells / 200);
 					}
 
-					if (te.tp_grenades_1 == GR_TYPE_MIRV)
-						te.no_grenades_1 = ceil(te.no_grenades_1 *(1 - mult));
-					if (te.tp_grenades_2 == GR_TYPE_MIRV)
-						te.no_grenades_2 = ceil(te.no_grenades_2 * (1 - mult));
-					
-					if (te.classname=="player")
+
+					if (te.classname == "player")
 					{
+						if (te.tp_grenades_1 == GR_TYPE_MIRV)
+							te.no_grenades_1 = ceil(te.no_grenades_1 *(1 - mult));
+						if (te.tp_grenades_2 == GR_TYPE_MIRV)
+							te.no_grenades_2 = ceil(te.no_grenades_2 * (1 - mult));
+					
 					// Update console
-					    oldself = self;
-					    self = te;
-					    W_SetCurrentAmmo();
-					    self = oldself;
-                        
-        					WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-						WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-						WriteCoord (MSG_MULTICAST, te.origin_x);
-						WriteCoord (MSG_MULTICAST, te.origin_y);
-						WriteCoord (MSG_MULTICAST, te.origin_z);
-						multicast (te.origin, MULTICAST_PHS);
-					}
+						oldself = self;
+						self = te;
+						W_SetCurrentAmmo();
+						self = oldself;
+  					}                      
+				
+        				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+					WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+					WriteCoord (MSG_MULTICAST, te.origin_x);
+					WriteCoord (MSG_MULTICAST, te.origin_y);
+					WriteCoord (MSG_MULTICAST, te.origin_z);
+					multicast (te.origin, MULTICAST_PHS);
 				}
 				else
 				{
