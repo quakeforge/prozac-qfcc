@@ -5,40 +5,59 @@ M = more testing
 I = in progress
 W = waiting on other work
 
-M  make changing skin/color force the proper color instead of kicking
-M  make sure team/color is cleared when a client connects
-o  allow lay mode if purchased
-o  various drop items
-X  move from *preqcc to cpp
-o  add more variety to tinkering
-o  add a way to edit the respawn ammo entities
-X  add localinfo string for bottom half of the MOTD
-X  add a define to disable abusive admin commands (eg stuffcmd)
-X  the thief skill should set the "invisible" face
-o  "slave teslas"
-o  instead of not allowing two fastest legs when upgraded, restrict the health/armor you're allowed when you have fast legs
-o  make a seperate menu for detonating engineer buildings
-o  remove RPrint, since it's really kinda pointless and just makes the code uglier
-o  change the color defines (eg DARKBLUE) to be the exact number, not number + 1
-o  remove the old method for teleports checking if blocked, after confirming it's not needed.  (moving platforms block it?)
-o  only allow people to use certain topcolors
-o  allow more variation in skins
-o  Make it so '1' repairs/reloads on all building menus
-o  Teammates should be able to destroy fieldgens when they've been hacked to hurt teammates
-o  Possibly berserker shouldn't make detpacks do more damage
-o  give airborn pipebombs a different death message
-o  Health should be given automatically based on the amount of money you have left.  That'd get rid of the "can't undo health" problem
-o  Hitting 0 when customizing should give you a confirmation screen, instead of exiting immedietly
-o  Make 50 frag (upgrade from frags?  maybe not) teslas change color or do something special.  (not yellow though, as that can happen normally)
-o  Medikits should trigger buttons
-o  Fix Sentry movement on platforms.  (Make the top the only real entity, and the bottom one purely visual and adjusted to match it's position every frame)
-o  MegaTF-style caltrops.  (requested by Misty-chan)
-o  specs should have access to admin commands, ceasefire, and query
-o  chance for detpack disarm/krak to set it off
-o  random damage from detpacks
-o  random timer too?
-o  pack_N_match model name to match, or 1 to affect any model with lots of stuff, 2 for any model with any health/ammo/armor
-o  pack_N_improve 1 means to supercharge what the pack already has, 2 means to give it everything
-o  pack_N_model forces a certain model
-o  pack_N_merge is a distance at which they should be merged
-o  All respawns should give you your purchased armor type
+ o  Fix assault cannon death while firing = can't fire again until re-AC bug.
+ o  Can't switch from LG with 0 cells to airfist.
+ X  Scout while customizing bug.
+ o  teleporting grunty bug
+ o  Fix sensor stick bug! VERY abusable and annoying.
+ o  Fix getting stuck on nail grenades while they rise.
+
+ M  make changing skin/color force the proper color instead of kicking
+ M  make sure team/color is cleared when a client connects
+ o  allow lay mode if purchased
+ o  various drop items
+ X  move from *preqcc to cpp
+ o  add more variety to tinkering
+ o  add a way to edit the respawn ammo entities
+ X  add localinfo string for bottom half of the MOTD
+ X  add a define to disable abusive admin commands (eg stuffcmd)
+ X  the thief skill should set the "invisible" face
+ o  "slave teslas"
+ o  instead of not allowing two fastest legs when upgraded, restrict the
+    health/armor you're allowed when you have fast legs
+ o  make a seperate menu for detonating engineer buildings
+ o  remove RPrint, since it's really kinda pointless and just makes the code
+    uglier
+ o  change the color defines (eg DARKBLUE) to be the exact number, not
+    number + 1
+ o  remove the old method for teleports checking if blocked, after confirming
+    it's not needed.  (moving platforms block it?)
+ o  only allow people to use certain topcolors
+ o  allow more variation in skins
+ o  Make it so '1' repairs/reloads on all building menus
+ o  Teammates should be able to destroy fieldgens when they've been hacked to
+    hurt teammates
+ o  Possibly berserker shouldn't make detpacks do more damage
+ o  give airborn pipebombs a different death message
+ o  Health should be given automatically based on the amount of money you have
+    left.  That'd get rid of the "can't undo health" problem
+ o  Hitting 0 when customizing should give you a confirmation screen, instead
+    of exiting immedietly
+ o  Make 50 frag (upgrade from frags?  maybe not) teslas change color or do
+    something special.  (not yellow though, as that can happen normally)
+ o  Medikits should trigger buttons
+ o  Fix Sentry movement on platforms.  (Make the top the only real entity, and
+    the bottom one purely visual and adjusted to match it's position every
+    frame)
+ o  MegaTF-style caltrops.  (requested by Misty-chan)
+ o  specs should have access to admin commands, ceasefire, and query
+ o  chance for detpack disarm/krak to set it off
+ o  random damage from detpacks
+ o  random timer too?
+ o  pack_N_match model name to match, or 1 to affect any model with lots of
+    stuff, 2 for any model with any health/ammo/armor
+ o  pack_N_improve 1 means to supercharge what the pack already has, 2 means to
+    give it everything
+ o  pack_N_model forces a certain model
+ o  pack_N_merge is a distance at which they should be merged
+ o  All respawns should give you your purchased armor type
