@@ -525,6 +525,8 @@ void(float inAuto) W_FireMedikit =
 	local	float healam;	
 	local 	entity te, BioInfection;
 
+	makevectors (self.v_angle);
+
 	source = self.origin + '0 0 16';
 	if (self.cutf_items & CUTF_CLOSECOMBAT)
 		traceline (source, source + v_forward*96, FALSE, self);
@@ -550,8 +552,10 @@ void(float inAuto) W_FireMedikit =
 
 				if (te) {
 					stuffcmd(trace_ent ,"v_idlescale 0\n");
+					trace_ent.mangle = '0 0 0';
 					SpawnBlood(org, 20);
 					sprint(trace_ent, PRINT_HIGH, "you have been healed of your concussion\n");
+					trace_ent.tfstate &= ~TFSTATE_CONCUSSIONED;
 
 					// Give the medic a frag for doing it, only if it was caused by an enemy
 					if (!Teammate(self.team_no,te.team_no)) {
@@ -965,7 +969,7 @@ SpawnChunk
 */
 void(vector org, vector vel) SpawnChunk =
 {
-	particle (org, vel*0.02, 0, 10);
+//	particle (org, vel*0.02, 0, 10);
 };
 
 /*
@@ -1769,6 +1773,8 @@ void() W_FireLightning =
 		W_PrintWeaponMessage();
 		return;
 	}
+
+	makevectors (self.v_angle);
 
 // explode if under water
 	if (self.waterlevel > 1) {

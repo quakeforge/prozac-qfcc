@@ -179,6 +179,7 @@ void() EMPExplode =
 
 	expsize = 10;
 	// Weapon?
+
 	if (self.touch == weapon_touch)
 		expsize = 60;
 	else if (self.classname == "item_shells")
@@ -252,7 +253,12 @@ void() EMPGrenadeExplode =
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
 	local float range = 300;
-	local float dmg = 0.7;
+	local float dmg = 0.6;
+
+	local float numcells = 0;
+	local float numrockets = 0;
+	local float numgren1 = 0;
+	local float numgren2 = 0;
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_TAREXPLOSION);
@@ -263,6 +269,17 @@ void() EMPGrenadeExplode =
 
 	// Find all ammo in the area
 	te = findradius(self.origin, range); // was 240
+
+	local entity head = te;
+
+	while (te)
+	{
+		te.chain2 = te.chain;
+		te = te.chain2;
+	}
+
+	te.chain2 = NIL;
+	te = head;
 
 	while (te)
 	{	
@@ -317,8 +334,6 @@ void() EMPGrenadeExplode =
 			expsize = expsize + (te.ammo_rockets * 5);
 			expsize = expsize + (te.ammo_cells * 1.4);
 
-			expsize *= mult;
-
 			if (expsize > 0)
 			{
 				te.solid = SOLID_NOT;
@@ -328,7 +343,8 @@ void() EMPGrenadeExplode =
 				total_exp = total_exp + expsize;
 				if (expsize > 300) //CH so they are not too powerfull //WK was 500
 					expsize = 300;
-				T_RadiusDamage (te, self.owner, expsize, te);
+
+				T_RadiusDamage(te, self.owner, expsize, te);
 
 				te.think = SUB_Remove;
 				te.nextthink = time + 0.1;
@@ -345,25 +361,50 @@ void() EMPGrenadeExplode =
 		else if ((te.classname == "player") || (te.classname=="monster_army") || (te.touch == BackpackTouch)
 			|| IsBuilding(te))
 		{
+
+			if (te.touch == BackpackTouch)
+			{
+				numcells = te.ammo_cells;
+				numrockets = te.ammo_rockets;
+			}
+			else
+			{
+				numcells = te.maxammo_cells * mult;
+				numrockets = te.maxammo_rockets * mult;				
+
+				if (numcells > te.ammo_cells)
+					numcells = te.ammo_cells;
+				if (numrockets > te.ammo_rockets)
+					numrockets = te.ammo_rockets;
+	
+				if (te.weapons_carried & WEAP_SPANNER && te.classname == "player")
+				{
+					if (numcells > (te.maxammo_cells - 200))
+						numcells = te.maxammo_cells - 200;
+				}
+			}
+
+			numcells = floor(numcells);
+			numrockets = floor(numrockets);
+
 			expsize = 0;
 			// calculate explosion size
-			expsize = expsize + te.ammo_rockets * 5; // ouch, this hurts
-			// < 200 cells for eng = metal, so don't explode
-			if (!(te.weapons_carried & WEAP_SPANNER) || te.classname != "player")
-				expsize += te.ammo_cells * 1.4;
-			else
-				expsize += ceil(te.ammo_cells * (1 - 200 / te.maxammo_cells));
+			expsize = numcells * 1.5 + numrockets * 5; // ouch, this hurts
 
 			if (te.classname == "player")
 			{
+				numgren1 = numgren2 = floor(3 * mult);
+
+				if (numgren1 > te.no_grenades_1)
+					numgren1 = te.no_grenades_1;
+				if (numgren2 > te.no_grenades_2)
+					numgren2 = te.no_grenades_2;
+
 				if (te.tp_grenades_1 == GR_TYPE_MIRV)
-					expsize += te.no_grenades_1 * 100; // arggh, lots of damage
+					expsize += numgren1 * 200; // arggh, lots of damage
 				if (te.tp_grenades_2 == GR_TYPE_MIRV)
-					expsize += te.no_grenades_2 * 100; // gotta get hwguys somehow			
-
+					expsize += numgren2 * 200; // gotta get hwguys somehow
 			}
-
-			expsize *= mult;
 
 			if (te.classname == "player" && (te.is_detpacking || te.is_toffingadet))
 				expsize += 500;
@@ -376,30 +417,21 @@ void() EMPGrenadeExplode =
 				//WK Make players not explode radially! GR why not?
 				if (te.touch != BackpackTouch)
 				{
-
-					T_RadiusDamage (te, self.owner, expsize * 0.5, te);
-
+					T_RadiusDamage(te, self.owner, expsize, te);
+					
 					deathmsg = DMSG_GREN_EMP;
 					TF_T_Damage (te, te, self.owner, expsize, 0, TF_TD_EXPLOSION);
 
 					// Remove ammo
-					te.ammo_rockets = ceil(te.ammo_rockets * (1 - mult));
-					if (!(te.weapons_carried & WEAP_SPANNER) || te.classname != "player")
-						te.ammo_cells = ceil(te.ammo_cells * (1 - mult));
-					else  // cells under 200 max don't count for eng
-					{
-						te.ammo_cells *= 1 - 200 / te.maxammo_cells;
-						te.ammo_cells *= 1 - mult;
-						te.ammo_cells = ceil(te.ammo_cells * te.maxammo_cells / 200);
-					}
-
+					te.ammo_cells -= numcells;
+					te.ammo_rockets -= numrockets;
 
 					if (te.classname == "player")
 					{
 						if (te.tp_grenades_1 == GR_TYPE_MIRV)
-							te.no_grenades_1 = ceil(te.no_grenades_1 *(1 - mult));
+							te.no_grenades_1 -= 3 * mult;
 						if (te.tp_grenades_2 == GR_TYPE_MIRV)
-							te.no_grenades_2 = ceil(te.no_grenades_2 * (1 - mult));
+							te.no_grenades_2 -= 3 * mult;
 					
 					// Update console
 						oldself = self;
@@ -417,7 +449,8 @@ void() EMPGrenadeExplode =
 				}
 				else
 				{
-					T_RadiusDamage(te, self.owner, expsize / 2, te);
+					T_RadiusDamage(te, self.owner, expsize, te);
+
 					if (te.classname != "player")
 					{
 						te.think = SUB_Remove;
@@ -434,7 +467,7 @@ void() EMPGrenadeExplode =
 			}
 		}
 
-		te = te.chain;
+		te = te.chain2;
 	}
 
 	sound (self, CHAN_WEAPON, "weapons/gren_emp.wav", 1, ATTN_NORM); //- OfN - cool sound! :)

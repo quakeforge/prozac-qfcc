@@ -424,6 +424,8 @@ float		deathmatch;
 // stuck time
 .float		stucktime;
 
+.entity		chain2;
+
 //===========================================================================
 	
 
@@ -507,7 +509,7 @@ vector(entity e, float speed) aim 		= #44;		// returns the shooting vector
 float(string s) cvar 				= #45;		// return cvar.value
 void(string s) localcmd 			= #46;		// put string into local que
 entity(entity e) nextent 			= #47;		// for looping through all ents
-void(vector o, vector d, float color, float count) particle = #48;// start a particle effect
+// #48 was removed
 void() ChangeYaw 					= #49;		// turn towards self.ideal_yaw
 										// at self.yaw_speed
 // #50 was removed
