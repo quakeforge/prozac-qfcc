@@ -245,21 +245,17 @@ void() Tesla_Idle =
 		
 	//self.waitmax holds if we have a target
 	if (self.waitmax) //If we have target, shoot it
-        self.waitmax = Tesla_Fire();
+	        self.waitmax = Tesla_Fire();
     
 	if (!self.waitmax)
 	{
+		self.attack_finished = 1;
         //Try to reacquire target
+		Tesla_Lose_Glow ();
+		self.has_holo = time + 0.25;
+		self.no_grenades_1 = FALSE;
 		if (Tesla_FindTarget())
 			self.waitmax = TRUE;
-        else
-		{
-			//Lost a lock
-			Tesla_Lose_Glow();
-			//self.nextthink = time + 0.25; //4Hz check rate
-            self.has_holo = time + 0.25;
-            self.no_grenades_1 = FALSE; // reset main think
-		}
 	}
 	
 	if (self.attack_finished < 1)

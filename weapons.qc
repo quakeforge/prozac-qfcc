@@ -1100,15 +1100,16 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 	local vector direction;
 	local vector src;
 	local string st = infokey (NIL, "numpuffs");
-	local float puffdiv = 0;
+	local float numpuffs = 0;
+	local integer puffdiv;
 
 	if (st)
-		puffdiv = stof (st) - 1;
+		numpuffs = stof (st) - 1;
 
-	if (puffdiv <= 0)
+	if (numpuffs <= 0)
 		puffdiv = 0;
 	else
-		puffdiv = shotcount / puffdiv;
+		puffdiv = (shotcount / numpuffs) + 1;
 
 	makevectors (self.v_angle);
 
@@ -1450,7 +1451,7 @@ void(float num) W_FireAssaultCannon =
 	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 	dir = aim (self, 100000);
 	deathmsg = DMSG_ASSAULTCANNON;
-	FireBullets (num, dir, '0.01 0.01 0' * num);
+	FireBullets (num, dir, '0.013 0.013 0' * num);
 
 	if (!(self.flags & FL_ONGROUND)) {
 		if (!self.waterlevel || (self.tf_items & NIT_SCUBA))

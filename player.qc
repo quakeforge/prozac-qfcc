@@ -706,14 +706,12 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 	stuffcmd(self, st);
 	stuffcmd(self, "\n");
 #else
-	local vector off = self.v_angle;
-
-	off_x -= (random () + 0.5);
-	off_y -= ((random () * 0.6) - 0.3);
+	self.v_angle_x -= (random () + 0.5);
+	self.v_angle_y -= ((random () * 0.6) - 0.3);
 
 	msg_entity = self;
 	WriteByte (MSG_ONE, SVC_SETANGLE);
-	WriteAngleV (MSG_ONE, off);
+	WriteAngleV (MSG_ONE, self.v_angle);
 #endif
 
 	Attack_Finished(0.1);
