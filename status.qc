@@ -602,7 +602,7 @@ void(float res) StatusRes =
 string(entity pl) ClipSizeToString100 =
 //CH edited b/c nothing has over 20
 {
-	local float num;
+	local float num = 0; //XXX qfcc isn't smart enough for the return yet
 
 	if (pl.current_weapon == WEAP_SHOTGUN)
 	{

@@ -332,7 +332,7 @@ ARMOR
 
 void() armor_touch =
 {
-	local float	type, value, bit = 0;
+	local float	type = 0, value = 0, bit = 0;
 	local string s;
 	local entity oldself;
 	
@@ -662,7 +662,8 @@ float() W_BestWeapon;
 
 void() weapon_touch =
 {
-	local	float	hadammo, best, new, old;
+	local	float	hadammo, best, old;
+	local	float new = 0;	//XXX needed until qfcc has "noreturn"
 	local	entity	stemp;
 	local	float	leave;
 

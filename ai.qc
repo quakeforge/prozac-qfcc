@@ -711,11 +711,9 @@ float() FindTarget =
 		if (!client)
 			return FALSE;	// current check entity isn't in PVS
 	} */
-	if (random() < 0.6) // don't always look around to save processor power
-		client = LookAround(self); // search for targets
-	else 
-		return FALSE; //WK They missed a base condition here.*/
-		// SB they did not miss a base condition, LookAround returns self if none
+	if (random() >= 0.6) // don't always look around to save processor power
+		return FALSE;
+	client = LookAround(self); // search for targets
 	
 	if (client == self)
 		return FALSE;

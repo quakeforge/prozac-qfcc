@@ -253,7 +253,7 @@ void() ConcussionGrenadeTimer =
 void(float scanrange,float inAuto) TeamFortress_Scan = 
 {
 	local string power;
-	local entity list;
+	local entity list = NIL;
 	local float scen, scfr;
 	local vector lightningvec;
 

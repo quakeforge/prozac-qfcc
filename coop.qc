@@ -102,8 +102,8 @@ float() DoorShouldOpen =
 {
 	local entity ptr;
 	local float plyrcount;
-	local entity plyr1;
-	local entity plyr2;
+	local entity plyr1 = NIL;
+	local entity plyr2 = NIL;
 
 	if (coop != 2)
 		return TRUE;

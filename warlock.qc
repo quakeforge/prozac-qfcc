@@ -391,7 +391,7 @@ void(float inp) Menu_Demon_Input =
 //Returns a random name for a demon, or pulls it from one's localinfo
 void(entity demon) custom_demon_name =
 {
-	local string happy;
+	local string happy = "FIXME:custom_demon_name";
 	local float r;
 
 	// Why doesn't this work? When people set their own names,

@@ -19,7 +19,7 @@ void () BadTinker = {
 };
 
 void () DoTinker = {
-		local float prob, thresh, enough;
+		local float prob, thresh, enough = FALSE;
 
 		if (self.building.has_sentry > 0) {
 			sprint(self,PRINT_HIGH,"You have to fully upgrade before tinkering\n");

@@ -255,7 +255,7 @@ void() W_FireAxe =
 {
 	local	vector	source;
 	local	vector	org, def;
-	local	vector	dir;
+	local	vector	dir = NIL;	//XXX false +ve on uninit
 
 	if (self.classname == "player")
 		makevectors(self.v_angle);
@@ -1715,7 +1715,7 @@ W_FireRocket
 void() W_FireRocket =
 {
 	local float loops;
-	local vector olorigin, dir;
+	local vector olorigin, dir = NIL;	//XXX false +ve for dir
 	loops = 0;
 	if (self.tf_items & NIT_CLUSTER_ROCKETS && self.cluster_mode == TRUE)
 		loops = 5;
@@ -4752,7 +4752,7 @@ Combination conc, krac and RL
 #define BOUNCE 120
 void() T_DaedalusTouch =
 {
-	local float points;
+	local float points = 0; //XXX false +ve
 	local vector org;
 	local entity head;
 

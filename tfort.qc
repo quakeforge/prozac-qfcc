@@ -1007,7 +1007,7 @@ void() TeamFortress_GrenadePrimed;
 // Primes a grenade of the type corresponding to the player's impulse
 void() TeamFortress_PrimeGrenade =
 {
-	local float gtype;
+	local float gtype = GR_TYPE_NONE;
 	local string gs, ptime;
 	local entity tGrenade;
 
@@ -1461,7 +1461,7 @@ void() TeamFortress_ThrowGrenade =
 // Return TRUE is this class is allowed on this map
 float(float pc) IsLegalClass =
 {
-	local float bit;
+	local float bit = 0;
 
 	// Spy may be turned off
 	if (spy_off == TRUE && pc == PC_SPY)
@@ -2942,7 +2942,7 @@ void() TeamFortress_CheckClassStats =
 // Throw an ammo box with 10 shells, 10 nails, 5 cells or 5 rockets
 void (float type) TeamFortress_DropAmmo =
 {
-	local float ammo;
+	local float ammo = 0;
 
     if (type == 1)
 	{

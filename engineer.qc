@@ -531,7 +531,7 @@ float(entity obj, entity builder) CheckArea =
 // rehashed version of TF_Build 
 void(float objtobuild) TeamFortress_Build =
 {
-	local float btime;
+	local float btime = time - 0.1;
 	local entity obj;
 
 	obj = spawn();

@@ -405,7 +405,7 @@ float (vector where) DoorsAt =
 
 float() Tesla_Fire =
 {
-	local float damage;
+	local float damage = 0;
 	local float cheater = FALSE;
 	local vector below;
 

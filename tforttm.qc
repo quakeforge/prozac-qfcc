@@ -1090,7 +1090,7 @@ float (entity targ, entity attacker, float damage) TeamEqualiseDamage =
 	if (Teammate(targ.team_no, attacker.team_no))
 		return damage;
 
-	local float adv, newdam;
+	local float adv = 0, newdam;
 
 	// increase damage done by attacker's team advantage
 	if (attacker.team_no == 1)
