@@ -2389,7 +2389,7 @@ void() PlayerJump =
 	}
 
 	if (!(self.flags & FL_ONGROUND)) {
-		if (no_pogo_stick)
+		if (no_pogo_stick & 1)
 			self.flags &= ~FL_JUMPRELEASED;
 		return;
 	}
