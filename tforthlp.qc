@@ -37,9 +37,7 @@ void() TeamFortress_MOTD =
 	if (self.motd <= MOTD_FINISHED - 2)
 	{
 		if (self.show_hostile < time) {
-			//local string CP_MOTD;
-            //CP_MOTD = GetProzacMOTD(self.motd);
-            CenterPrint2(self,MSG_INTRO,MSG_INTRO2);//,CP_MOTD);
+			PrintMOTD ();
 			self.show_hostile = time + MOTD_REFRESHRATE; //was 1 //.5? 
 		}
 		self.menu_count = MENU_REFRESH_RATE;
@@ -115,6 +113,45 @@ void() TeamFortress_MOTD =
 		atimer.heat = 0;
 		atimer.think = AliasTimer;
 	}
+};
+
+#ifndef MSG_INTRO1
+# define MSG_INTRO1 ""
+#endif
+#ifndef MSG_INTRO2
+# define MSG_INTRO2 ""
+#endif
+#ifndef MSG_INTRO3
+# define MSG_INTRO3 ""
+#endif
+
+void() PrintMOTD =
+{
+	local string intro = "";
+	local string infostring;
+
+	if (MSG_INTRO1 != "")
+		intro = intro + MSG_INTRO1;
+	if (MSG_INTRO2 != "") {
+		if (intro != "")
+			intro = intro + MSG_INTROBAR;
+		intro = intro + MSG_INTRO2;
+	}
+	if (MSG_INTRO3 != "") {
+		if (intro != "")
+			intro = intro + MSG_INTROBAR;
+		intro = intro + MSG_INTRO3;
+	}
+	infostring = infokey (world, "motd");
+	if (infostring != "") {
+		if (intro != "")
+			intro = intro + MSG_INTROBAR;
+		intro = intro + infostring;
+	}
+
+	intro = "\n\n" + intro; // prepend a newline, to make it center better :/
+
+	CenterPrint(self, intro);
 };
 
 //=========================================================================

@@ -37,6 +37,7 @@ void() lvl2_sentry_stand;
 void() lvl3_sentry_stand;
 float (float tno) TeamFortress_TeamGetNoPlayers;
 float(float myteam) HasFlag; 
+void() PrintMOTD;
 
 /* WK void(float menu_no) DisplayMenu; */
 // Assorted menus
@@ -786,7 +787,7 @@ void(float inp) Menu_Input =
 
 void() Menu_Intro =
 {
-    CenterPrint2(self, MSG_INTRO, MSG_INTRO2);
+	PrintMOTD ();
 };
 
 void() Menu_ClassHelp =

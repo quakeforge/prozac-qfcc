@@ -1,6 +1,8 @@
 // This file contains defines for some of the messages
-#define MSG_INTRO  "\nWelcome to ĞÒÏÚÁÃ CustomÔÆ\na Quake ÔÆ MOD by ShakaUVM\nwww®telefragged®com¯shaka\n\nŸ\n\n"
-#define MSG_INTRO2 "Based on the aussie ver by SB-1\nModified version by Clan Prozac\n\nŸ\n\nGet any files needed at:\n\nhttp:¯¯quake®prozac®net¯"
+#define MSG_INTRO1 "Welcome to ĞÒÏÚÁÃ CustomÔÆ\na Quake ÔÆ MOD by ShakaUVM\nwww®telefragged®com¯shaka"
+#define MSG_INTRO2 "Based on the aussie ver by SB-1\nModified version by Clan Prozac"
+//#define MSG_INTRO3 "Get any files needed at:\n\nhttp:\^/\^/quake\^.prozac\^.net\^/"
+#define MSG_INTROBAR "\n\nŸ\n\n"
                                               //, aka óC”’’’
 //#define MSG_CUTFVERSION "CustomÔÆ version ö3®2®OfN"
 #define MSG_CUTFVERSION   "ĞÒÏÚÁÃ CustomÔÆ ö3®2®OfN4"
