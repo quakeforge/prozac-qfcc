@@ -563,7 +563,10 @@ float(string s) stof				= #81;		// convert string to float
 void(vector where, float set) multicast 	= #82;  // sends the temp message
 													// to a set of clients,
 													// possibly in PVS or PHS
-
+integer () getboxhull = #95;
+void (integer hull) freeboxhull = #96;
+void (integer hull, vector right, vector forward, vector up,
+	  vector mins, vector maxs) rotate_bbox = #97;
 void (vector start, vector mins, vector maxs, vector end, float type,
 	  entity passent) checkmove = #98;				// Wrapper around SV_Move.
 
@@ -719,6 +722,8 @@ void (entity pl, float topcolor, float bottomcolor) SetPlayerColor;
 .float  current_menu;			// is set to the number of the current menu, is 0 if they are not in a menu
 .float  menu_count;			// keeps track of display times for menus
 .float  menu_displaytime;		// keep track of how many times this menu is refreshed
+
+.integer rotated_bbox;
 				   
 
 /*==================================================*/

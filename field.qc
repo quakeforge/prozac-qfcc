@@ -53,7 +53,6 @@ For force field entity:
 .fieldgen_hasfield     - Shield sound running, boolean
 .has_tesla      - Controls delay between hums
 .has_sentry     - Controls delay between shield sounds
-.cnt            - Orientation of field (x or y)
 .dmg            - Next damage the field will do
 .has_camera     - Used to control the rate at which the field touch sound/visual effects are done (4hz)
 
@@ -547,24 +546,8 @@ void(entity gen1, entity gen2) Create_Field =
     tfield.nextthink = time + 0.25;
 
 	// set pos and size
-	if (gen1.origin_x == gen2.origin_x)
-	{
-		tfield.cnt = 0;
-		tfield.size_x = 4;
-		tfield.size_y = vlen (gen1.origin - gen2.origin) - 10;
-	}
-	else /* if (gen1.origin_y == gen2.origin_y) */
-	{
-		tfield.cnt = 1;
-		tfield.size_x = vlen (gen1.origin - gen2.origin) - 10;
-		tfield.size_y = 4;
-	}
-/*	else // for rotation.  not currently used.
-	{
-		tfield.cnt = 2;
-		tfield.size_x = vlen (gen1.origin - gen2.origin) - 10;
-		tfield.size_y = 4;
-	} */
+	tfield.size_x = vlen (gen1.origin - gen2.origin) - 10;
+	tfield.size_y = 4;
 	tfield.size_z = 48; // was 64, but this looks more realistic
 	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
 	tfield.mins = tfield.maxs * -1; // FIXME: -1 * only did first float
@@ -572,7 +555,23 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z;
 	tfield.absmax = tfield.origin + tfield.maxs;
 	tfield.absmin = tfield.origin + tfield.mins;
-//	tfield.angles = gen2.origin - gen1.origin; // for rotation?
+
+	local vector right, forward, up;
+//	local string foo;
+
+	up = '0 0 1';
+	right = normalize (gen2.origin - gen1.origin);
+	forward = crossproduct (up, right);
+
+//	foo = "right: " + vtos (right) + "  forward: " + vtos (forward)
+//		  + "  up: " + vtos (up) + "  mins: " + vtos (tfield.mins)
+//		  + "  maxs: " + vtos (tfield.maxs) + "\n";
+//	dprint (foo);
+	tfield.rotated_bbox = getboxhull();
+	rotate_bbox (tfield.rotated_bbox, right, forward, up, tfield.mins,
+				 tfield.maxs);
+
+	tfield.angles = (gen2.origin - gen1.origin);
 
     // apply stuff
     tfield.movetype = MOVETYPE_NONE;
@@ -605,29 +604,31 @@ void(entity gen1, entity gen2) Create_Field =
 
 void(entity gen1, entity gen2) Remove_Field =
 {
-    if (IsValidFieldGen(gen1))
-    {   
-        if (IsValidField(gen1.fieldgen_field))
-        {
-            dremove(gen1.fieldgen_field);
+	if (IsValidFieldGen(gen1))
+	{   
+		if (IsValidField(gen1.fieldgen_field))
+		{
+			freeboxhull (gen1.fieldgen_field.rotated_bbox);
+			dremove(gen1.fieldgen_field);
+		}
+		gen1.fieldgen_hasfield = FALSE;
+		gen1.fieldgen_field = world;
+		if (IsValidFieldGen(gen2))
+		{
+			gen2.fieldgen_hasfield = FALSE;
+			gen2.fieldgen_field = world;
+		}
 	}
-	gen1.fieldgen_hasfield = FALSE;
-        gen1.fieldgen_field = world;
-	if (IsValidFieldGen(gen2))
+	else if (IsValidFieldGen(gen2))
 	{
-            gen2.fieldgen_hasfield = FALSE;
-            gen2.fieldgen_field = world;
+		if (IsValidField(gen2.fieldgen_field))
+		{
+			freeboxhull (gen2.fieldgen_field.rotated_bbox);
+			dremove(gen2.fieldgen_field);
+		}
+		gen2.fieldgen_hasfield = FALSE;
+		gen2.fieldgen_field = world;
 	}
-    }
-    else if (IsValidFieldGen(gen2))
-    {
-        if (IsValidField(gen2.fieldgen_field))
-        {
-            dremove(gen2.fieldgen_field);
-	}
-        gen2.fieldgen_hasfield = FALSE;
-        gen2.fieldgen_field = world;
-    }
 };
 
 float(entity field) IsValidField =
@@ -744,18 +745,9 @@ void(entity tfield) Field_MakeVisual =
 {
     if (IsValidField(tfield))
     {      
-        local float fx, fy;
+        local vector f;
         
-        if (tfield.cnt)
-        {
-            fy = tfield.origin_y;
-            fx = tfield.origin_x + (tfield.size_x/2 - tfield.size_x * random());
-        }
-        else
-        {
-            fx = tfield.origin_x;
-            fy = tfield.origin_y + (tfield.size_y/2 - tfield.size_y * random());
-        }
+		f = tfield.origin + (tfield.angles * 0.5 * (random() * 2 - 1));
 
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
         if (random() > 0.5)
@@ -763,11 +755,11 @@ void(entity tfield) Field_MakeVisual =
         else
             WriteByte (MSG_BROADCAST, TE_LIGHTNING1);
 	    WriteEntity (MSG_BROADCAST, tfield);
-	    WriteCoord (MSG_BROADCAST, fx);
-	    WriteCoord (MSG_BROADCAST, fy);
+	    WriteCoord (MSG_BROADCAST, f_x);
+	    WriteCoord (MSG_BROADCAST, f_y);
 	    WriteCoord (MSG_BROADCAST, tfield.origin_z - 12);
-	    WriteCoord (MSG_BROADCAST, fx);
-	    WriteCoord (MSG_BROADCAST, fy);
+	    WriteCoord (MSG_BROADCAST, f_x);
+	    WriteCoord (MSG_BROADCAST, f_y);
 	    WriteCoord (MSG_BROADCAST, tfield.origin_z + 12);
     }
 };
@@ -913,10 +905,6 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
     if (fieldgen1.origin_z != fieldgen2.origin_z)
         return FALSE;
 
-// FIXME: comment out if we allow rotation
-	if (fieldgen1.origin_x != fieldgen2.origin_x && fieldgen1.origin_y != fieldgen2.origin_y)
-		return FALSE;
-    
     if (fieldgen1.fieldgen_status == FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == FIELDGEN_ISDISABLED)
         return FALSE;
 
@@ -974,7 +962,7 @@ entity(entity fieldgen) Find_OtherGen =
 vector(vector place) WhereGen =
 {
 // FIXME: remove function if we allow rotation
-//	return place;
+	return place;
 
     // if we have no field generator currently, it can be placed anywhere
     if (self.has_fieldgen == 0) return place;
