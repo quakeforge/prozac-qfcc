@@ -17,6 +17,12 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 //entity looking at, entity thats looking, (0-1) checks visible, (0-range) checks range, (0-1) do special tesla checks, (0-1) should check for ceasefire
 float(entity targ, entity checker, float chkvis, float chkrng, float istesla, float chkcease) Pharse_Client =
 {
+		local float ismotion = 0;
+		if (istesla == 2)
+		{
+			istesla = 0;
+			ismotion = 1;
+		}
 		if (targ.classname != "player")
 			return FALSE;
 		if (chkcease)
@@ -54,7 +60,7 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 					}
 					else
 					{						
-                        if (! (checker.classname == "building_sensor" && checker.num_mines & IMPROVED_FOUR)) 
+                        if (! (ismotion && checker.num_mines & IMPROVED_FOUR)) 
                             return FALSE;
 
                         // - OfN return FALSE;
@@ -90,6 +96,7 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 			return FALSE;
 		if (targ.job & JOB_THIEF && (targ.job & JOB_ACTIVE || targ.job & JOB_FULL_HIDE))
 		{
+			chkrng /= 2; // harder to see
 			if (istesla)
 			{
 				//- OfN jammer only for scanner -// nope
@@ -97,7 +104,7 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
                 //if (!(checker.tf_items & NIT_AUTOID))
 					return FALSE;
 			}
-			else if (checker.classname != "building_sensor")// && checker.classname != "monster_army" && checker.classname != "monster_demon1")
+			else if (!ismotion)// && checker.classname != "monster_army" && checker.classname != "monster_demon1")
 				return FALSE;
 		}
 		if (chkvis && checker.classname == "building_sentrygun" && !(checker.tf_items & NIT_TURRET)) // - OfN - hackish fix for sentry gun targetting
@@ -110,91 +117,62 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
  				return FALSE;
 		if (chkrng)
 		{
+			if (ismotion && targ.cutf_items & CUTF_JAMMER)  // range cut in half if victim has scan jammer
+				chkrng /= 2;
 			local float r;
 			
 			r = vlen(targ.origin - checker.origin);
 			if (r > chkrng)
 				return FALSE;
+		
+
+			if (ismotion) // motion sensor can't detect targets moving slowly or not at all
+			{
+				local float minmove = SENSOR_MINSPEED * (1.5 - r/chkrng) ;
+
+				if (vlen(targ.velocity) < minmove)
+					return FALSE;
+			}
 		}
 	return TRUE;
 };
 //gives entity passed into number of frags passed
-//entity gets frag, entity gave frag, give this many frags, (0-1) log frags, 1=real_frag 2=frag, (0-1) checks real_frag, (0-1) check frag vamp (takes from targ)
-
-void(entity atk, entity targ, float numfrags, float fraggetlog, float howgive, float chkreal, float chkvamp) Give_Frags_Out =
-{
-	if (!atk) // handles cases where the attack ent may have been zeroed
-		return;
 /*
-local string st;
-bprint(PRINT_HIGH, "atk:");
-bprint(PRINT_HIGH, atk.classname);
-bprint(PRINT_HIGH, " targ:");
-bprint(PRINT_HIGH, targ.classname);
-bprint(PRINT_HIGH, " Frag:");
-st = ftos(numfrags);
-bprint(PRINT_HIGH, st);
-bprint(PRINT_HIGH, " log:");
-if (fraggetlog)
-	bprint(PRINT_HIGH, "yes");
-else
-	bprint(PRINT_HIGH, "no");
-bprint(PRINT_HIGH, " howgive:");
-if (howgive == 1)
-	bprint(PRINT_HIGH, "real_frags");
-else if (howgive == 2)
-	bprint(PRINT_HIGH, "frags");
-else
-	bprint(PRINT_HIGH, "ERROR");
-bprint(PRINT_HIGH, " real:");
-if (chkreal)
-	bprint(PRINT_HIGH, "yes");
-else
-	bprint(PRINT_HIGH, "no");
-bprint(PRINT_HIGH, " vamp:");
-if (chkvamp)
-	bprint(PRINT_HIGH, "yes");
-else
-	bprint(PRINT_HIGH, "no");
-bprint(PRINT_HIGH, "\n");
 */
-	if (atk.classname == "monster_army")
-	{
-		atk.frags = atk.frags + numfrags;
-		atk.real_frags = atk.real_frags;
-	}
-	else
-	{
-		if (howgive == 2)
-			atk.frags = atk.frags + numfrags;
-		else if (howgive == 1)
-			atk.real_frags = atk.real_frags + numfrags;
-		else
-			bprint(PRINT_HIGH, "Error in Give_Frags_Out!\n");
-			
-		if (fraggetlog)
-		{
-			logfrag (targ, atk);
-		}
-		if (chkvamp)
-		{
-			if (teamplay & TEAMPLAY_VAMPIRE && targ) // handle when targ is cleared
-			{
-				targ.real_frags = targ.real_frags - numfrags;
-				if (!(toggleflags & TFLAG_TEAMFRAGS))
-					targ.frags = targ.real_frags;
-			}
-		}	
+#if 0
+void (entity atk, entity targ, float numfrags, float howgive, float chkreal, float chkvamp) Give_Frags_Out =
+{
 	
-		if (chkreal)
+	if (howgive == 2)
+		atk.frags = atk.frags + numfrags;
+	else if (howgive == 1)
+		atk.real_frags = atk.real_frags + numfrags;
+	else
+		bprint(PRINT_HIGH, "Error in Give_Frags_Out!\n");
+			
+	if (fraggetlog)
+		logfrag (targ, atk);
+
+	if (chkvamp)
+	{
+		if (teamplay & TEAMPLAY_VAMPIRE && targ) // handle when targ is cleared
 		{
-		 	if (!(toggleflags & TFLAG_TEAMFRAGS))
-		 	{
-				atk.frags = atk.real_frags;
-			}
+			targ.real_frags = targ.real_frags - numfrags;
+			if (!(toggleflags & TFLAG_TEAMFRAGS))
+				targ.frags = targ.real_frags;
+		}
+	}	
+
+	if (attacker.classname == "player")
+	{
+	 	if (!(toggleflags & TFLAG_TEAMFRAGS))
+	 	{
+			atk.frags = atk.real_frags;
 		}
 	}
 };
+#endif
+
 //replaces det guns
 //classname to find, entity checking, (0-1) check for ownership
 void(string search, entity person, float chkown) Find_And_Dmg =
@@ -206,11 +184,11 @@ void(string search, entity person, float chkown) Find_And_Dmg =
 		if (chkown)
 		{
 			if (te.real_owner == person)
-				TF_T_Damage(te, NIL, NIL, te.health+100, 0, 0);
+				TF_T_Damage(te, person, person, te.health+100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		}
 		else
 		{
-			TF_T_Damage(te, NIL, NIL, te.health+100, 0, 0);
+			TF_T_Damage(te, person, person, te.health+100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		}
 		te = find(te, classname, search);
 	}

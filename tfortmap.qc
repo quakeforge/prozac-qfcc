@@ -3494,7 +3494,7 @@ void() item_flag_team2 =
 	dp.activate_goal_no = CTF_SCORE1;
 	dp.axhitme = CTF_FLAG2;
 	dp.count = 10;
-	dp.frags = 10;
+	dp.frags = 0;
 	dp.solid = SOLID_TRIGGER;
 	dp.goal_state = TFGS_INACTIVE;
 	setsize (dp, '-16 -16 -24', '16 16 32');
@@ -3562,7 +3562,7 @@ void() item_flag_team1 =
 	dp.activate_goal_no = CTF_SCORE2;
 	dp.axhitme = CTF_FLAG1;
 	dp.count = 10;
-	dp.frags = 10;
+	dp.frags = 0;
 	dp.solid = SOLID_TRIGGER;
 	dp.goal_state = TFGS_INACTIVE;
 	setsize (dp, '-16 -16 -24', '16 16 32');

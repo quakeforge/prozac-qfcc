@@ -834,7 +834,7 @@ void() shambler_fire_touch =
 	sprint(self.owner.real_owner, PRINT_HIGH, ".\n");
 #endif
 
-	if (pointcontents(self.origin) == CONTENTS_SKY)
+	if (entpointcontents(self) == CONTENTS_SKY)
 	{
 		self.owner.has_fieldgen += 1;
 		dremove(self);

@@ -422,6 +422,9 @@ float		deathmatch;
 .float		distance;
 .float		volume;
 
+// stuck time
+.float		stucktime;
+
 //===========================================================================
 	
 
@@ -1130,3 +1133,5 @@ float deathmsg;		// Global, which is set before every T_Damage, to indicate
 					// the death message that should be used.
 
 float no_pogo_stick;
+
+float last_team_no;

@@ -95,7 +95,7 @@ void(entity test) AI_Check_Contents =
 	
 
 //CH demons (and other ai) can be hurt by liquids //- OfN completely changed!
-	if (pointcontents(test.origin) ==  CONTENTS_EMPTY && IsMonsterNonArmy(self) && self.health < self.max_health)
+	if (entpointcontents(test) ==  CONTENTS_EMPTY && IsMonsterNonArmy(self) && self.health < self.max_health)
 	{	// Heal it
 		if (self.dmgtime < time)
 		{
@@ -133,7 +133,7 @@ void(entity test) AI_Check_Contents =
 			//TF_T_Damage (self, NIL, NIL, 5, 0, TF_TD_ELECTRICITY);
 		}
 	}
-	if (pointcontents(test.origin) == CONTENTS_LAVA)
+	if (entpointcontents(test) == CONTENTS_LAVA)
 	{	// do damage
 		if (self.dmgtime < time)
 		{
@@ -177,7 +177,7 @@ void(entity test) AI_Check_Contents =
             }
 		}
 	}
-	else if (pointcontents(test.origin) ==  CONTENTS_SLIME)
+	else if (entpointcontents(test) ==  CONTENTS_SLIME)
 	{	// do damage
 		if (self.dmgtime < time)
 		{
@@ -212,7 +212,7 @@ void(entity test) AI_Check_Contents =
 	/* WK Removed because water is ok for monsters, sheesh
 	Whatever you think, ceaf it is. */
     //- OfN - what the fuck means "ceaf"? heh
-	else if (pointcontents(test.origin) == CONTENTS_WATER && allow_watermonsters == FALSE)
+	else if (entpointcontents(test) == CONTENTS_WATER && allow_watermonsters == FALSE)
 	{
 		if (self.classname == "monster_demon1")
 		{	// do damage

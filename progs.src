@@ -34,9 +34,6 @@ shambler.qc
 grunty.qc
 wizard.qc
 
-hknight.qc
-knight.qc
-
 
 warlock.qc
 army.qc
@@ -47,7 +44,6 @@ tesla.qc
 field.qc
 security.qc
 teleport.qc
-boss.qc
 
 airfist.qc
 
@@ -66,7 +62,6 @@ tforthlp.qc
 tfortmap.qc
 hook.qc
 ctf.qc
-coop.qc
 
 actions.qc
 

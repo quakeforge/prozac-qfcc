@@ -133,6 +133,8 @@ void (vector org, entity shooter) MirvGrenadeLaunch =
 	newmis.velocity_z = zdir * 5;
 
 	newmis.avelocity='100 100 500';
+	newmis.AIRG_Flags = self.AIRG_Flags; //for tk stuff
+	newmis.AIRG_FlyTracker = self.AIRG_FlyTracker; 
 
 	setmodel (newmis, "progs/grenade2.mdl");
 	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
@@ -338,12 +340,12 @@ float (vector targ, vector check) vis2orig;
 // The detpack goes BOOM!
 void() TeamFortress_DetpackExplode = 
 {
-	local float pos;
+	local integer pos;
 
 	bprint(PRINT_MEDIUM, "FIRE IN THE HOLE!\n");
 
 	// Check the pointcontents to prevent detpack outside the world
-	pos = pointcontents(self.origin); 
+	pos = entpointcontents(self); 
 	if (pos != CONTENTS_SOLID && pos != CONTENTS_SKY) 
 	{
 		deathmsg = DMSG_DETPACK;

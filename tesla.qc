@@ -333,6 +333,13 @@ void(entity attacker, float damage) Tesla_Pain =
 	self.real_owner.StatusRefreshTime = time + 0.2;
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 4;
+
+	if (!self.waitmax && self.health > 0)
+	{
+	    self.enemy = attacker;
+	    self.waitmax = 1;
+	    Tesla_FoundTarget();
+	}
 };
 
 void() Tesla_Die =
@@ -417,10 +424,13 @@ float() Tesla_Fire =
 		{
 			if (self.enemy.is_feigning)
 				return FALSE;
-			if (self.enemy.is_undercover)
+#if 0 // pharse handles these two, we can still hit thieves and spies if they attack us. feign still fools us tho
+			if (self.enemy.is_undercover) //haha, even to their own team? yeah right. No thanks
 				return FALSE;
-			if (self.enemy.job & JOB_THIEF && self.enemy.job & JOB_ACTIVE)
+
+			if (self.enemy.job & JOB_THIEF && self.enemy.job & JOB_ACTIVE) // pharse handles this
 				return FALSE;
+#endif
 		}
 	}
 	//CH rechecks if target is out of range,  has a little extra room added.
@@ -493,13 +503,9 @@ float() Tesla_Fire =
 	deathmsg = DMSG_TESLA;
 
  // OfN - Check for force field
-    local float shoulddmg;
-    shoulddmg = TRUE;
 
     traceline (self.origin, self.enemy.origin, FALSE, self);
 
-    if (trace_ent.classname == "force_field")
-    {
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
         WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
         WriteEntity (MSG_MULTICAST, self);
@@ -514,30 +520,14 @@ float() Tesla_Fire =
         WriteCoord (MSG_MULTICAST, trace_endpos_z);
         multicast (self.origin, MULTICAST_PHS);
         
-        shoulddmg = FALSE;
-
-        FieldExplosion(trace_ent,trace_endpos,trace_ent);
-        PutFieldWork(trace_ent);
-    }
-    else
-    {
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
-        WriteEntity (MSG_MULTICAST, self);
-        WriteCoord (MSG_MULTICAST, self.origin_x);
-        WriteCoord (MSG_MULTICAST, self.origin_y);
-        if (self.tf_items & NIT_TURRET)
-            WriteCoord (MSG_MULTICAST, self.origin_z + 10);
-        else
-            WriteCoord (MSG_MULTICAST, self.origin_z + 30);
-        WriteCoord (MSG_MULTICAST, self.enemy.origin_x);
-        WriteCoord (MSG_MULTICAST, self.enemy.origin_y);
-        WriteCoord (MSG_MULTICAST, self.enemy.origin_z);
-        multicast (self.origin, MULTICAST_PHS);
-    }
+	if (trace_ent.classname == "force_field")
+	{
+          FieldExplosion(trace_ent,trace_endpos,trace_ent);
+          PutFieldWork(trace_ent);
+	}
 
 	sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
-	if (vlen(self.enemy.origin - self.origin) >= 800 && shoulddmg) //Only play end sound if far away
+	if (vlen(self.enemy.origin - self.origin) >= 800 && vlen(trace_endpos - self.enemy.origin) <= 100) //Only play end sound if far away
 		sound (self.enemy, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM); //CH at start and end of arc
 
     /*if (self.ammo_nails == 0) damage = 40;
@@ -556,8 +546,16 @@ float() Tesla_Fire =
 	if (self.is_malfunctioning & SCREWUP_TWO) damage = 1;
 	//TF_T_Damage (self.enemy, self, self.real_owner, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 	
-    if (shoulddmg)
-        TF_T_Damage (self.enemy, self, self, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+
+        //TF_T_Damage (self.enemy, self, self, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+
+	local vector org = self.origin;
+	if (self.tf_items & NIT_TURRET)
+	   org_z += 10;
+	else
+	   org_z += 30;
+
+	LightningDamage(org, self.enemy.origin, self, damage);
 
 	//self.nextthink = time + ReturnTeslaDelay();
     //self.has_holo = time + ReturnTeslaDelay(); //?? wTF
@@ -596,7 +594,7 @@ void() Tesla_Touch =
 	cheater = FALSE;
 
 	//WK Check for blockage
-	if (pointcontents(self.origin) == CONTENTS_SKY)
+	if (entpointcontents(self) == CONTENTS_SKY)
 	{
 		sprint(self.real_owner, PRINT_HIGH, "Your sentry gun flew away.\n");
 		Tesla_Die();
@@ -637,15 +635,7 @@ void() Tesla_Touch =
 	if (self.tf_items & NIT_TURRET && self.movetype == MOVETYPE_FLY) 
 	{
 		//WK Check to see if we are blocked
-		if (pointcontents(self.origin) == CONTENTS_SKY || 
-			//pointcontents(self.origin - '0 0 10') == CONTENTS_SKY ||
-			//pointcontents(self.origin + '0 0 5') == CONTENTS_SKY ||
-			//pointcontents(self.origin + '0 0 10') == CONTENTS_SKY ||
-			//pointcontents(self.origin + '0 0 15') == CONTENTS_SKY ||
-			//pointcontents(self.origin + '0 0 20') == CONTENTS_SKY ||
-			//pointcontents(self.origin + '0 0 30') == CONTENTS_SKY ||
-			//pointcontents(self.origin + '0 0 40') == CONTENTS_SKY ||
-            pointcontents(self.origin + '0 0 70') == CONTENTS_SKY) //- OfN
+		if (entpointcontents(self) == CONTENTS_SKY)
 		{
 			sprint(self.real_owner, PRINT_HIGH, "Your tesla flew away.\n");
 			Tesla_Die();

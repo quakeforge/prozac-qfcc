@@ -1126,7 +1126,7 @@ float() CheckHaxxx =
         
     if (!self.martyr_enemy) // BUG!
         retval = FALSE;
-    else if (!(IsBuilding(self.martyr_enemy))) // BUG! 2
+    else if (!(IsBuilding(self.martyr_enemy)) && self.martyr_enemy.classname != "player") // BUG! GR what about cyberaug?
         retval = FALSE;
     else if (self.martyr_enemy.health <= 0)
     {
@@ -1251,7 +1251,7 @@ void() JobHacker =
 	if ( (IsBuilding(trace_ent) && trace_ent.classname != "building_sentrygun_base") || trace_ent.classname == "player")
 	{
 		
-		if (!Teammate(trace_ent.team_no,self.team_no))
+		if (!Teammate(trace_ent.team_no,self.team_no) && trace_ent.real_owner != self)
 		{
 		    if (trace_ent.is_malfunctioning == SCREWUP_ONE + SCREWUP_TWO + SCREWUP_THREE + SCREWUP_FOUR)
             {

@@ -165,7 +165,8 @@ void() trigger_multiple =
 		self.th_die = multi_killed;
 		self.takedamage = DAMAGE_YES;
 		self.solid = SOLID_BBOX;
-		setorigin (self, self.origin);	// make sure it links into the world
+		setmodel (self, self.model);	// make sure it links into the world
+						// let's see if it actually does this time?
 	}
 	else
 	{

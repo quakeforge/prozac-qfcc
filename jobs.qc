@@ -384,7 +384,7 @@ void() MartyrThink =
 	//Self.owner is the guy who became a martyr
 
 	//Clean these up so we can kill him
-	//self.job = self.job - (self.job & JOB_ACTIVE);
+	self.job = self.job - (self.job & JOB_ACTIVE); //why not?
 	self.owner.items = self.items & ~IT_INVULNERABILITY;
 	self.owner.invincible_time = 0;
 	self.owner.invincible_finished = 0;
@@ -416,8 +416,7 @@ void() JobMartyr =
 	self.items = self.items | IT_INVULNERABILITY;
 	self.invincible_time = 1;
 	self.invincible_finished = time + martyr_time + 1; //Overlap so we can't die till end
-	//self.job = self.job | JOB_ACTIVE;
-	//self.job_finished = time + martyr_time + 1;
+	self.job = self.job | JOB_ACTIVE; //why not?
 	
 	tWeapon = spawn();
 	tWeapon.owner = self;
@@ -447,16 +446,13 @@ void() BerserkerKillTimer =
 		TF_T_Damage(self.owner, self.owner, self.owner, self.owner.health, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 	}
 
-    self.job = self.job - (self.job & JOB_ACTIVE); //- OfN
-    self.owner.is_abouttodie = FALSE;
+    self.owner.job &= ~JOB_ACTIVE; //- OfN is a tard, should be self.owner idiot -Griev
 	dremove(self);
 };
 
 void() JobBerserker =
 {
 	if (self.super_damage_finished > 0)
-		return;
-	if (self.is_abouttodie)
 		return;
 	
 	newmis = spawn();
@@ -466,7 +462,7 @@ void() JobBerserker =
 	newmis.owner = self;
 	
 	if (self.health > BERSERKER_HP_COST)
-		TF_T_Damage(self, self, self, BERSERKER_HP_COST, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		self.health -= BERSERKER_HP_COST;
 	else
 	{
 		self.health = 1;
@@ -475,9 +471,8 @@ void() JobBerserker =
 	self.super_time = 1;
 	self.super_damage_finished = time + BERSERK_TIME + 1;
 	self.items = self.items | IT_QUAD;
-	self.is_abouttodie = TRUE;
     self.job = self.job | JOB_ACTIVE; //- OfN
-	self.job_finished = time + BERSERK_TIME * 3;
+	self.job_finished = time + BERSERK_TIME * 2; // GR was * 3
 	
 	stuffcmd(self, "v_idlescale 30\n");
 };
@@ -576,6 +571,9 @@ void() JobJudoka =
 	local entity tWeapon,oself;
 	local entity te;
 	
+	if (self.attack_finished > time)
+		return;
+
 	makevectors(self.v_angle);
 	source = self.origin + '0 0 16';
 
@@ -750,9 +748,9 @@ void() GuerillaExplode =
       // if has_tesla is 1 print nothing, as this is set by DetonateMines() and GuerillaThink
       
 	if (time < self.heat + ACTIVATE_TIME) //If not charged, do less damage when blowing up
-	   T_RadiusDamage (self, self.owner, 80, NIL); //- damage was 80
+	   T_RadiusDamage (self, self.martyr_enemy, MINE_DMG / 2, NIL); //- damage was 80
 	else 
-       T_RadiusDamage (self, self.owner, MINE_DMG, NIL); //- damage was 160
+       T_RadiusDamage (self, self.martyr_enemy, MINE_DMG, NIL); //- damage was 160
 
     // num_mines is the number of mines the player has
     self.owner.num_mines = self.owner.num_mines - 1;
@@ -796,7 +794,18 @@ void(entity mine_owner) DetonateMines =
 void(vector startpos) GuerillaMineSweep =
 {
 	local entity head;
+	local entity inf = self;
+	local float loopc = 0;
 	head = findradius(startpos, 30);	
+
+	while (loopc < 5 && inf.classname != "player")
+	{
+	    inf = inf.real_owner;
+	    loopc++;
+	    if (loopc >= 5)
+		inf = NIL;
+	}
+
 	while (head)
 	{
 		if (head.classname == "grenade" && head.netname == "land_mine") {
@@ -804,7 +813,7 @@ void(vector startpos) GuerillaMineSweep =
           head.has_tesla = 2; // "mine is destroyed" message on guerillaexplode()
 		  head.think = GuerillaExplode;
 		  head.nextthink = time + 0.1;              
-                  
+         	  head.martyr_enemy = inf; 
 		}
 		head = head.chain;
 	}
@@ -816,6 +825,7 @@ void() GuerillaThink = //Every second see if we have enemy nearby
 	local float finished; //Only blow up once
 	finished = 0;
 	self.nextthink = time + MINE_SCANRATE;
+	self.martyr_enemy = NIL;
 	if (time < self.heat + ACTIVATE_TIME)
 		return;
 	if (time > self.last_attacked_time) {
@@ -876,22 +886,31 @@ void() GuerillaThink = //Every second see if we have enemy nearby
 	}
 };
 
-void() GuerillaTouch = //What happens when someone runs it over
+void(entity inflictor, float amt) GuerillaPain = //What happens when someone hurts it
 {
 	if (time < self.heat + ACTIVATE_TIME)
 		return;
 
+	self.martyr_enemy = inflictor;
 	GuerillaExplode();
+};
+
+void() GuerillaTouch = // what happens when someone runs it over
+{
+	GuerillaPain(other, 100);
 };
 
 void() GuerillaTossTouch = 
 {
-	if (other) {
-		GuerillaTouch();
+	self.solid = SOLID_BBOX;
+	setsize(self, self.mins, self.maxs);
+
+	if (other && other != self.owner) {
+		GuerillaPain(other, 100);
 		return;
 	}
 
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID) {		//CH if in wall or sky
+	if (entpointcontents(self) == CONTENTS_SKY || entpointcontents(self) == CONTENTS_SOLID) {
 		self.health = 0; //CH needed for tesla
 		// OfN CAUSES ANY PROBLEM? Is this needed?
 
@@ -908,6 +927,8 @@ void() GuerillaTossTouch =
 	sound (self, CHAN_WEAPON, "weapons/guerilla_set.wav", 1, ATTN_NORM);
 	self.touch = GuerillaTouch;
 	self.think = GuerillaThink;
+	self.takedamage = DAMAGE_AIM;
+	self.th_pain = GuerillaPain;
 	self.nextthink = time + 1;
 };
 
@@ -944,17 +965,16 @@ void() JobGuerilla =
 	//Set all the critical crap on the mine
 	newmis = spawn();
 	newmis.movetype = MOVETYPE_BOUNCE;
-	newmis.solid = SOLID_BBOX;
+	newmis.solid = SOLID_TRIGGER;
 	newmis.takedamage = DAMAGE_AIM;
 	newmis.classname = "grenade";
 	newmis.netname   = "land_mine";
-	setsize (newmis, '0 0 0', '0 0 0');		
-//	setsize (newmis, '-0.5 -0.5 -0.5', '1 1 1');		
-	setorigin (newmis, self.origin);
+	setsize (newmis, '-0.5 -0.5 -0.5', '1 1 1');		
 	newmis.owner = self;
 	makevectors (self.v_angle);
 	newmis.avelocity = '300 300 300';
 	newmis.velocity = v_forward*600 + v_up * 200 + v_right*10 + v_up*10;
+	setorigin (newmis, self.origin + (normalize(newmis.velocity) * 5));
 	newmis.angles = vectoangles(newmis.velocity);
 //	newmis.skin = self.team_no - 1;
 	newmis.skin = 1;

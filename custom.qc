@@ -89,6 +89,14 @@ float(float targteam, float attackteam) Teammate =
 	return FALSE;
 };
 
+float(entity targ, entity attack) AreTeammates =
+{
+	if (targ == attack)
+	    return TRUE;
+	else
+	    return Teammate(targ.team_no, attack.team_no);
+};
+
 void (string temp) DebugSprint =
 {
 	sprint(self,PRINT_HIGH,temp);

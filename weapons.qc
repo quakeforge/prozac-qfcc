@@ -2804,7 +2804,9 @@ void() W_Attack =
 		return;
 
 	//WK Tranq does not remove disguise
-	if (self.is_undercover && (self.current_weapon != WEAP_TRANQ && self.current_weapon != WEAP_MAUSER))
+	//GR Spy can fire and keep their skin if not color-disguised.
+	if (self.is_undercover && (self.current_weapon != WEAP_TRANQ && self.current_weapon != WEAP_MAUSER)
+		&& (self.undercover_team != self.team_no))
 		Spy_RemoveDisguise(self);
 
 	if (self.job & JOB_THIEF && (self.job & JOB_ACTIVE || self.job & JOB_FULL_HIDE))
@@ -3922,6 +3924,14 @@ void() DeadImpulses =
         self.impulse=0;
         return;
     }
+
+	if (self.impulse == 18)
+	{
+		sprint(self, PRINT_HIGH, "Your origin is: '", ftos(self.origin_x), " ", ftos(self.origin_y));
+		sprint(self, PRINT_HIGH, " ", ftos(self.origin_z), "'\n");
+		self.impulse=0;
+		return;
+	}
 
 
 //<CH>

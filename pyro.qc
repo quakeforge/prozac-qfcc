@@ -683,6 +683,9 @@ void() Napalm_touch =
 			flame.touch = OnPlayerFlame_touch;
 			flame.owner = self.owner;
 
+			flame.AIRG_Flags = self.AIRG_Flags;
+			flame.AIRG_FlyTracker = self.AIRG_FlyTracker;
+
 			vtemp=self.origin;
 
 			setorigin(flame , vtemp);
@@ -828,8 +831,8 @@ void() T_IncendiaryTouch =
 				Napalm_touch();
 				if (other.classname == "player")
 					stuffcmd(other, "bf\nbf\n");
-				if (IsBuilding(other)) 
-				TF_T_Damage (head, self, self.owner, 35, TF_TD_NOTTEAM, TF_TD_FIRE);
+				//if (IsBuilding(other))  //this made no sense
+				//TF_T_Damage (head, self, self.owner, 35, TF_TD_NOTTEAM, TF_TD_FIRE);
 
 			}
 		head = head.chain;

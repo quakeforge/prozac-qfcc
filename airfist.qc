@@ -29,6 +29,7 @@
 // OfN - I fixed the "stuck in wall" stupid bug, and added more entities for airfist pushing
 
 #define AIRG_STEPCONVERTEDTOFLY 2
+#define AIRG_HIT 4
 
 void(float nearAWall, float adjustForward, float adjustRight, float adjustUp, float positionRight, float spriteSpeed) hornBlastSprite;
 float (entity e) hornInfront;
@@ -103,7 +104,6 @@ void() launch_horn =
 {
 	// Local variables used in the function
   local entity e;
-  local entity oself;
   local vector delta;
   local vector dir;
   local float eSpeed;
@@ -118,12 +118,12 @@ void() launch_horn =
   // Maximum strength of the AirFist.  The strength of the affected entity's
   // movement is based on the distance from the center of the shot.
   local float strength;
-  strength = 1000;  // full power of weapon
+  strength = AIRGUN_STRENGTH;  // full power of weapon (now same as recoil - GR)
 
   // Maximum damage that can be incurred by the AirFist.  The actual entity's
   // damage is based on the distance from the center of the shot.
   local float inDamage;
-  inDamage = 20;  // full damage of weapon
+  inDamage = 30;  // full damage of weapon GR was 20
 
   // Range of the AirFist blast.
   local float inRange;
@@ -131,7 +131,7 @@ void() launch_horn =
   local float numBubbles = 3; // number of bubbles generated in the water
 
   // Recoil strength of the AirFist on the player that shot the weapon.
-  local float recoil; // recoil strength of the gun
+  local float recoil = AIRGUN_STRENGTH; // recoil strength of the gun
 
 	// Reshot time for the airgun attack in seconds.
 	local float attackTime = 0.5;
@@ -158,7 +158,6 @@ void() launch_horn =
   //Set initial range
   inRange = 400;
   //Set intital recoil
-  recoil = 300;
   // By default, assume not near a wall.
   nearAWall = 0;
 
@@ -235,6 +234,10 @@ void() launch_horn =
     if (canairpush(e)) //Can only push things in canairpush
     if(e != self)  // but not myself!!
     {
+
+      e.AIRG_Flags |= AIRG_HIT;
+      e.AIRG_FlyTracker = self; // for stuff we airfist that hurts, don't want the orig firer to get tk strikes.
+
       // if flying creature and movetype is step then change to fly
       // NOTE: For some reason the normal quakeC, flying monsters has set a
       //   movetype of MOVETYPE_STEP which means that changing the velocity
@@ -279,36 +282,21 @@ void() launch_horn =
 
       if (e.flags & FL_ONGROUND && !(e.classname == "player" && e.cutf_items & CUTF_HWGUY))
       {
-      	// If there on the ground, raise them up so that the velocity will
-        // take affect.
-
-        // raise the bugger a bit
-        setorigin(e, e.origin + '0 0 1'); // - OfN - And make them stuck in wall? :) nope..
-
-	oself = self;
-	self = e;
-
-	if (pointcontents(e.origin) == CONTENTS_SOLID)
-	   setorigin(e, e.origin - '0 0 1');
-
-	self = oself;
-
         // We biased the up direction when entity is on the ground.
         // Looks cooler and small entitys (heath, etc) go somewhere instead
         // of along the ground (cas there below the line of sight).
 
         // If on the ground, makem go up, up, and away
-        e.flags = e.flags - FL_ONGROUND;
+	// But this makes no sense..
+
         if (delta_z < 0)
-          delta_z = delta_z / -2;
+          delta_z = delta_z / -5;
         delta = delta * 0.7;
 
-        if (delta_z < 100)
-          delta_z = 100;
       }
 
       if (e.classname == "player" && e.cutf_items & CUTF_HWGUY)
-        delta = '0 0 0';
+        delta *= 0.3;
       if (e.classname == "player" && e.cutf_items & CUTF_GYMNAST)
 	delta *= 2;
 
@@ -353,15 +341,29 @@ void() launch_horn =
         // Apply the velocity adjustment
         e.velocity = e.velocity + delta;
 
+	//move them 1 unit so there's no friction
+
+	if (e.flags & FL_ONGROUND)
+	if (e.classname != "player" || !(e.cutf_items & CUTF_HWGUY))
+	{
+		checkmove(e.origin, e.mins, e.maxs, e.origin + normalize(e.velocity), MOVE_NORMAL, e);
+		setorigin(e, e.origin + normalize(e.velocity)*trace_fraction); // - OfN - And make them stuck in wall? :) nope..
+		e.flags &= ~FL_ONGROUND;
+	}
+
         // calculate the damage amount
         ldmg = percent * inDamage;
 
 	if (e.classname == "player") {
 	  if (e.cutf_items & CUTF_HWGUY) // hwguy can't get knocked, but it hurts more
-		ldmg *= 1.5;
+		ldmg *= 2;
 	  if (e.cutf_items & CUTF_GYMNAST) // gymnast goes with the flow, less damage
 		ldmg *= 0.3;
 	}
+
+	checkmove(e.origin, e.mins, e.maxs, e.origin + e.velocity *0.2, MOVE_NORMAL, e);
+	ldmg *= 1.3 - trace_fraction; // extra hurt for airfist into wall!
+				      // and less for not
 
         // This section of code is to even of the "figure momentum add" in the
         // T_Damage function that recoils damaged entity's away from the attacker.
@@ -417,26 +419,31 @@ void() launch_horn =
 	  hornBlastSprite(nearAWall, 50, 50, 300, 20, 1.0);
   }
 
-  // recoil code
-  if (self.flags & FL_ONGROUND)
-  {
-   	// If self on the ground, raise me up so that the velocity will
-    // take affect.
-
-    // raise the bugger a bit 
-    setorigin(self, self.origin + '0 0 1'); // - OfN - And make them stuck in wall? - GR No, but that screws it up
-    self.flags = self.flags - FL_ONGROUND;
-    if (pointcontents(self.origin) == CONTENTS_SOLID)
-        setorigin(self, self.origin + '0 0 -1');
-   }
-
   if(nearAWall)
   {  // hit wall, Bounce based on the distance from the wall
-    recoil = recoil + (recoil * (1.0 - trace_fraction) * 3);
+    recoil = recoil + (recoil * (1.0 - trace_fraction)); //now recoil is in range strength - strengh*2
   }
+
+  if (self.cutf_items & CUTF_HWGUY)
+	recoil *= 0.3;
+  else if (self.cutf_items & CUTF_GYMNAST)
+	recoil *= 2;
 
   // recoil self
   self.velocity = self.velocity + v_forward * recoil * -1;
+
+  if (self.flags & FL_ONGROUND)
+  {
+        // If self on the ground, raise me up so that the velocity will
+    // take affect.
+
+    // raise the bugger a bit
+    checkmove(self.origin, self.mins, self.maxs, self.origin + normalize(self.velocity), MOVE_NORMAL, self);
+    setorigin(self, self.origin + normalize(self.velocity) * trace_fraction); // - OfN - And make them stuck in wall?
+
+    self.flags = self.flags - FL_ONGROUND;
+   }
+
 
   if(self.waterlevel > 2)
   {  // below the water, play under water sound

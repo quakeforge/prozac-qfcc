@@ -227,7 +227,7 @@ void() Security_Camera_Spawn =
 	self.has_camera = TRUE;
 	newmis = spawn();
 	newmis.movetype = MOVETYPE_BOUNCE;
-	setsize (newmis, '-16 -16 -6', '16 16 10');
+	setsize (newmis, '-16 -16 -3', '16 16 5');
 //	setsize (newmis, '-8 -8 -8', '8 8 8');
 	newmis.solid = SOLID_BBOX;
 	newmis.takedamage = DAMAGE_AIM;
@@ -268,7 +268,8 @@ void() SecurityCameraTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 12') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
+	local integer pc = entpointcontents(self);
+	if (pc == CONTENTS_SOLID || pc == CONTENTS_SKY)
 	{
 		Security_Camera_Die();
 		return;

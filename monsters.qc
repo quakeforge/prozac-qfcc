@@ -539,42 +539,8 @@ void() walkmonster_start_go =
 	self.origin_z = self.origin_z + 1;	// raise off floor a bit
 	droptofloor();
 	
-/*	failure = 1;
-	
-	test = self.origin;
-	test_z = test_z - self.mins_z - 1;
-	
-	if (pointcontents(test) == CONTENT_SOLID)
-		failure = 0;
-	
-	test = self.origin - self.mins;
-	test_z = test_z - 1;
-	
-	if (pointcontents(test) == CONTENT_SOLID)
-		failure = 0;
-	
-	test_x = test_x - self.mins_x + self.maxs_x;
-	
-	if (pointcontents(test) == CONTENT_SOLID)
-		failure = 0;
-	
-	test_y = test_y - self.mins_y + self.maxs_y;
-	
-	if (pointcontents(test) == CONTENT_SOLID)
-		failure = 0;
-		
-	test_x = test_x - self.maxs_x + self.mins_x;
-
-	if (pointcontents(test) == CONTENT_SOLID)
-		failure = 0;*/
-	
-	if (!walkmove(0,0))
-//	if (failure)
+	if (entpointcontents(self) == CONTENTS_SOLID)
 	{
-/*		RPrint ("walkmonster in wall at: ");
-		RPrint (vtos(self.origin));
-		RPrint ("\n"); */
-		
 		//- OfN - if (self.classname == "monster_demon1" || self.classname == "monster_army" || self.classname == "monster_shambler")
         if (IsMonster(self))
 			if (self.real_owner.classname == "player")

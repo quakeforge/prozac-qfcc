@@ -2429,7 +2429,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 					self.building.flags = self.building.flags - (self.building.flags & FL_ONGROUND);
 					self.building.movetype = MOVETYPE_FLY;
 					self.building.velocity_z = 200;
-					setsize (self.building, '-16 -16 10', '16 16 40');//35');//'-16 -16 -40', '16 16 -10'); //WK -40, -10
+					setsize (self.building, '-16 -16 10', '16 16 62');
 					self.building.tf_items = self.building.tf_items | NIT_TURRET;
                     self.building.is_haxxxoring=1; //flag determines if flying and it's used for cloaking teslas, set to 0 when landed
                     
@@ -2578,7 +2578,7 @@ void(float inp) Menu_Dispenser_Input =
 		if (self.building.is_malfunctioning & SCREWUP_FOUR)
 		{	
             sprint(self,PRINT_HIGH,"Trapped dispenser, have a nice day!\n");
-            TF_T_Damage(self.building, self.building, self.building, 500, 0, TF_TD_OTHER);
+            TF_T_Damage(self.building, self.building, self.building.martyr_enemy, 500, 0, TF_TD_OTHER);
             return;
         }
 			
@@ -3776,12 +3776,12 @@ l1 = grenstr(GR_TYPE_NORMAL, GR_TYPE_FLAME,
 	"  .. Normal          ­  500\n2 .. Flame           ­  750\n");
 
 l2 = grenstr(GR_TYPE_GAS, GR_TYPE_EMP,
-	"  •.. Gas             ­ 1200\n  –.. EMP             ­ 1200\n",
-	"1 •.. Gas             ­ 1200\n  –.. EMP             ­ 1200\n",
-	"  •.. Gas             ­ 1200\n1 –.. EMP             ­ 1200\n",
-	"1 •.. Gas             ­ 1200\n1 –.. EMP             ­ 1200\n",
-	"2 •.. Gas             ­ 1200\n  –.. EMP             ­ 1200\n",
-	"  •.. Gas             ­ 1200\n2 –.. EMP             ­ 1200\n");
+	"  •.. Gas             ­ 1200\n  –.. EMP             ­ 1300\n",
+	"1 •.. Gas             ­ 1200\n  –.. EMP             ­ 1300\n",
+	"  •.. Gas             ­ 1200\n1 –.. EMP             ­ 1300\n",
+	"1 •.. Gas             ­ 1200\n1 –.. EMP             ­ 1300\n",
+	"2 •.. Gas             ­ 1200\n  –.. EMP             ­ 1300\n",
+	"  •.. Gas             ­ 1200\n2 –.. EMP             ­131200\n");
 
 l3 = grenstr(GR_TYPE_FRAG, GR_TYPE_NAIL,
 	"  —.. Frag            ­ 1300\n  ˜.. Nail            ­ 1400\n",
@@ -3834,7 +3834,7 @@ void(float inp) Menu_Gren1_Input =
             sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
             return;
         }
-        BuyGren(1200,GR_TYPE_EMP);
+        BuyGren(1300,GR_TYPE_EMP);
     }
     else if (inp == 5)
     {

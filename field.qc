@@ -177,20 +177,6 @@ void() Field_think =
 
 float(entity e1, entity e2) EntsTouching2 =
 {
-	if (e1.absmin_x > e2.absmax_x)
-		return FALSE;
-	if (e1.absmin_y > e2.absmax_y)
-		return FALSE;
-	if (e1.absmin_z > e2.absmax_z)
-		return FALSE;
-
-	if (e1.absmax_x < e2.absmin_x)
-		return FALSE;
-	if (e1.absmax_y < e2.absmin_y)
-		return FALSE;
-	if (e1.absmax_z < e2.absmin_z)
-		return FALSE;
-
 	if (hullpointcontents (e2, e1.mins, e1.maxs, e1.origin) != CONTENTS_SOLID)
 		return FALSE;
 	return TRUE;
@@ -283,9 +269,11 @@ void() Field_touch_SUB =
 					deathmsg = DMSG_FF_HACKED;
 				else /* if (deathmsg == DMSG_FORCEFIELD_STUCK) */
 					deathmsg = DMSG_FF_STUCK_HACKED;
-				TF_T_Damage (other, self, self, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+				TF_T_Damage (other, self, self.martyr_enemy, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 			}
-        }
+			if (shoulddamage)
+				self.demon_one.has_camera = self.demon_two.has_camera = 0;
+		}
 
 	}
 	else if (other.classname != "force_field") // non player entities
@@ -308,7 +296,7 @@ void() Field_touch_SUB =
 						deathmsg = DMSG_FF_HACKED;
 					else /* if (deathmsg == DMSG_FORCEFIELD_STUCK) */
 						deathmsg = DMSG_FF_STUCK_HACKED;
-					TF_T_Damage (other, self, self, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+					TF_T_Damage (other, self, self.martyr_enemy, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 				}
 			}
 		}
@@ -321,17 +309,12 @@ void() Field_touch_SUB =
 		if (IsBuilding(other))
 			return;
 
-		other.velocity_z = other.velocity_z + 100;
-		if (other.origin_x < self.origin_x)
-			other.velocity_x = other.velocity_x - 200 * random();
-		else
-			other.velocity_x = other.velocity_x + 200 * random();
-
-		if (other.origin_y < self.origin_y)
-			other.velocity_y = other.velocity_y - 200 * random();
-		else
-			other.velocity_y = other.velocity_y + 200 * random();
 	}
+
+	other.velocity_x = -other.velocity_x;
+	other.velocity_y = -other.velocity_y;
+
+	other.velocity += 200*normalize(other.velocity);
 
 	FieldExplosion(self,other.origin,other);
 	PutFieldWork(self);
@@ -529,9 +512,12 @@ void() Field_touch =
 {
 	if (other.classname == "force_field") return; //avoid weird loops with other fields
 
-	self.dmg = FIELDGEN_DMG;
-
 	deathmsg = DMSG_FORCEFIELD;
+	if (self.dmg == FIELDGEN_DMGINSIDE)
+		deathmsg = DMSG_STUCK_FORCEFIELD;
+	else
+		self.dmg = FIELDGEN_DMG;
+
 	Field_touch_SUB();
 };
 
@@ -1122,8 +1108,8 @@ void(entity field) Engineer_UseFieldGen =
 		sprint(self,PRINT_HIGH,"Trapped field generator, have a nice day!\n");
 			
 		deathmsg = DMSG_FGTRAP;
-		T_RadiusDamage (self.building, self.building, FGTRAP_DMG, NIL);
-//			  TF_T_Damage(self.building, self.building, self.building, 2000, 0, TF_TD_OTHER);
+		//used to do radius damage
+		TF_T_Damage(self, self.building, self.building.martyr_enemy, FGTRAP_DMG, 0, TF_TD_ELECTRICITY);
 		return;
 		//}
 	}

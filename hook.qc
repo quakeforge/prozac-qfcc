@@ -216,8 +216,6 @@ void () Build_Chain =
 //
 float () Check_Overhead =
 {
-	local   vector  src;
-	local   vector  end;
 
 	makevectors (self.owner.angles);
 
@@ -225,35 +223,11 @@ float () Check_Overhead =
 	// SRC and END, and plugging the values directly into the traceline
 	// function calls. Using SRC and END made debugging easier. You
 	// decide if it's worth it.
+	
+	// argh, checkmove makes this SO much easier
 
-	// quick check right above head
-	src = self.owner.origin - '0 0 24';
-	end = self.owner.origin - '0 0 24';
-	traceline (src, end, FALSE, self.owner);
-	if (trace_fraction != 1.0)
-		return FALSE;
+	checkmove(self.owner.origin, self.owner.mins, self.owner.maxs, self.owner.origin + '0 0 1', MOVE_NORMAL, self.owner);
 
-	src = self.owner.origin - '0 0 24' - v_forward * 16;
-	end = self.owner.origin - '0 0 24' - v_forward * 16 + '0 0 58';
-	traceline (src, end, FALSE, self.owner);
-	if (trace_fraction != 1.0)
-		return FALSE;
-
-	src = self.owner.origin - '0 0 24' + v_forward * 16;
-	end = self.owner.origin - '0 0 24' + v_forward * 16 + '0 0 58';
-	traceline (src, end, FALSE, self.owner);
-	if (trace_fraction != 1.0)
-		return FALSE;
-
-	src = self.owner.origin - '0 0 24' - v_right * 16;
-	end = self.owner.origin - '0 0 24' - v_right * 16 + '0 0 58';
-	traceline (src, end, FALSE, self.owner);
-	if (trace_fraction != 1.0)
-		return FALSE;
-
-	src = self.owner.origin - '0 0 24' + v_right * 16;
-	end = self.owner.origin - '0 0 24' + v_right * 16 + '0 0 58';
-	traceline (src, end, FALSE, self.owner);
 	if (trace_fraction != 1.0)
 		return FALSE;
 
@@ -283,8 +257,8 @@ void () Anchor_Grapple =
 		|| other.classname == "force_field") //CH maybe fix crash?
 			return;
 
-	//if (isBuilding(other)) //WK don't hook onto buildings?
-	//	return;
+	if (IsBuilding(other)) //WK don't hook onto buildings? GR Yes, this caused bug
+		return;
 
 	// Don't stick the the sky.
 	if (pointcontents(self.origin) == CONTENTS_SKY)

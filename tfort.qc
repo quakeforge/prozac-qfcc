@@ -1568,32 +1568,38 @@ void() TeamFortress_SetHealth =
 //CH returns value for skin.  used here and tfortmap.qc
 float(entity p) Return_Custom_Skins =
 {
+	if (p.cutf_items & CUTF_SPY_KIT) // want spy to always be spy
+		return PC_SPY;
+	if (p.cutf_items & (CUTF_DETPACK | CUTF_TOSSABLEDET))
+		return PC_DEMOMAN;
 	if (p.weapons_carried & WEAP_SNIPER_RIFLE)
 		return PC_SNIPER;
-	else if (p.weapons_carried & WEAP_ASSAULT_CANNON)
+	if (p.weapons_carried & WEAP_ASSAULT_CANNON)
 		return PC_HVYWEAP;
-	else if (p.weapons_carried & WEAP_ROCKET_LAUNCHER)
+	if (p.weapons_carried & WEAP_ROCKET_LAUNCHER)
 		return PC_SOLDIER;
-	else if (p.weapons_carried & WEAP_FLAMETHROWER)
+	if (p.weapons_carried & WEAP_FLAMETHROWER)
 		return PC_PYRO;
-	else if (p.weapons_carried & WEAP_GRENADE_LAUNCHER)
+	if (p.weapons_carried & WEAP_GRENADE_LAUNCHER)
 		return PC_DEMOMAN;
-	else if (p.weapons_carried & WEAP_MEDIKIT)
+	if (p.weapons_carried & WEAP_MEDIKIT)
 		return PC_MEDIC;
-	else if (p.weapons_carried & WEAP_SPANNER)
+	if (p.weapons_carried & WEAP_SPANNER)
 		return PC_ENGINEER;
-	else if (p.weapons_carried & WEAP_NAILGUN)
+	if (p.weapons_carried & WEAP_NAILGUN || p.weapons_carried & WEAP_AIRF || p.tf_items & NIT_HOVER_BOOTS)
 		return PC_SCOUT;
-	else if (p.job & JOB_GUERILLA)
+	if (p.job & JOB_GUERILLA)
 		return PC_DEMOMAN;
-	else if (p.custom_speed > 320 || p.job & JOB_RUNNER)
-		return PC_SCOUT;
-	else if (p.cutf_items & CUTF_SPY_KIT)
-		return PC_SPY;
-	else if (p.cutf_items & CUTF_SENTRYGUN || p.tf_items & NIT_TESLA)
+	if (p.job & JOB_HACKER)
 		return PC_ENGINEER;
-	else
-		return PC_SOLDIER;
+	if (p.job & JOB_THIEF)
+		return PC_SPY;
+	if (p.custom_speed > 320 || p.job & JOB_RUNNER)
+		return PC_SCOUT;
+	if (p.cutf_items & CUTF_SENTRYGUN || p.tf_items & NIT_TESLA)
+		return PC_ENGINEER;
+
+	return PC_SOLDIER;
 };
 
 //=========================================================================

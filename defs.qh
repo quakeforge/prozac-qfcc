@@ -1,3 +1,4 @@
+#include "extern.qh"
 #include "options.qh"
 
 // because I want a boolean type :)
@@ -210,7 +211,7 @@
 #define AS_FIREBALL	5 
 
 
-#define MAX_HOVER_FUEL 5 //Boots will recharge up to this maximum
+#define MAX_HOVER_FUEL 10 //Boots will recharge up to this maximum
 
 #define CUSTOM_ON_SPAWN 1  //When dead, rebuild
 #define CUSTOM_FINISHED 2  //Normal gameplay
@@ -934,7 +935,7 @@
 #define PC_DEMOMAN_MAXAMMO_NAIL		50 
 #define PC_DEMOMAN_MAXAMMO_CELL		50 
 #define PC_DEMOMAN_MAXAMMO_ROCKET		50 
-#define PC_DEMOMAN_MAXAMMO_DETPACK		1 
+#define PC_DEMOMAN_MAXAMMO_DETPACK		2 
 #define PC_DEMOMAN_INITAMMO_SHOT		30 
 #define PC_DEMOMAN_INITAMMO_NAIL		0 
 #define PC_DEMOMAN_INITAMMO_CELL		0 
@@ -942,9 +943,9 @@
 #define PC_DEMOMAN_INITAMMO_DETPACK		1 
 #define PC_DEMOMAN_GRENADE_TYPE_1		GR_TYPE_NORMAL
 #define PC_DEMOMAN_GRENADE_TYPE_2		GR_TYPE_MIRV
-#define PC_DEMOMAN_GRENADE_INIT_1		4 	 
-#define PC_DEMOMAN_GRENADE_INIT_2		3 	 
-#define PC_DEMOMAN_TF_ITEMS			0 
+#define PC_DEMOMAN_GRENADE_INIT_1		5 	 
+#define PC_DEMOMAN_GRENADE_INIT_2		2 	 
+#define PC_DEMOMAN_TF_ITEMS			NIT_AMMO_BANDOLIER 
 #define PC_DEMOMAN_JOB				JOB_GUERILLA
 #define PC_DEMOMAN_CUTFITEMS		CUTF_DETPACK | CUTF_TOSSABLEDET
 
@@ -1001,9 +1002,9 @@
 #define PC_HVYWEAP_INITAMMO_ROCKET		0 
 #define PC_HVYWEAP_GRENADE_TYPE_1		GR_TYPE_NORMAL
 #define PC_HVYWEAP_GRENADE_TYPE_2		GR_TYPE_MIRV
-#define PC_HVYWEAP_GRENADE_INIT_1		4 	 
+#define PC_HVYWEAP_GRENADE_INIT_1		5 	 
 #define PC_HVYWEAP_GRENADE_INIT_2		2 	 
-#define PC_HVYWEAP_TF_ITEMS			0 
+#define PC_HVYWEAP_TF_ITEMS			NIT_AMMO_BANDOLIER 
 #define PC_HVYWEAP_JOB				JOB_RUNNER
 
 
@@ -1292,6 +1293,9 @@
 #define DMSG_FGTRAP             67
 #define DMSG_FF_HACKED			68
 #define DMSG_FF_STUCK_HACKED	69
+#define DMSG_PHYSICS		70
+#define DMSG_OUTOFBOUNDS	71
+#define DMSG_GREN_EMP_RADIUS	72
 
 //Defs for objects a spikeshooter can spawn  Misc.qc
 #define SPAWNFLAG_SUPERSPIKE	1 

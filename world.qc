@@ -194,6 +194,8 @@ void() worldspawn =
 	lastspawn = world = self;
 	InitBodyQue ();
 
+	last_team_no = 5;
+
 	st = infokey(NIL, "mapcfg");
 	if (!(st == "0" || st == "off" || st == ""))
 	{
@@ -614,4 +616,8 @@ void(entity ent) CopyToBodyQue =
 	bodyque_head = bodyque_head.owner;
 };
 
+
+integer(entity e) entpointcontents = {
+	return hullpointcontents(world, e.mins, e.maxs, e.origin);
+};
 

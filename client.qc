@@ -678,6 +678,9 @@ void() DecodeLevelParms =
 		else if (st == "off")
 			invis_only = FALSE;
 
+		if (!teamplay)
+			invis_only = TRUE;
+
 		// RespawnDelay
 		st = infokey(NIL, "rd");
 		if (!st)
@@ -1843,7 +1846,8 @@ void() PutClientInServer =
 	self.reload_rocket_launcher = 0;
 	self.reload_light_assault = 0;
     self.reload_laser_cannon = 0;
-	
+	self.hover_time = MAX_HOVER_FUEL;	
+
 	//self.is_undercover = 0;
 	//self.undercover_team = 0;
 	self.last_attacked_time = 0; //WK For chaplan healing purposes
@@ -1865,7 +1869,15 @@ void() PutClientInServer =
 		TeamFortress_TeamSet(1);
 	}
 #endif
-
+#if 0
+	if (!teamplay && !self.team_no)
+	{
+		self.team_no = last_team_no;
+		last_team_no++;
+		if (last_team_no >= 1000) //hopefully this will never ever happen
+		   last_team_no = 5;
+	}
+#endif
 	// Set the Civilian Class of anyone in a Civilian Team
 	if (self.playerclass == PC_UNDEFINED)
 	{
@@ -2730,10 +2742,18 @@ void() PlayerPreThink =
 		if (self.button2 && self.velocity_z < 0 && self.hover_time > 0 && self.waterlevel == 0)
 		{ 	//Try to hover
 			self.velocity_z = 100; //+10 == hover
-			self.hover_time = self.hover_time - 0.25; //0.1 == tick time
+			self.hover_time = self.hover_time - 0.5; //0.1 == tick time
 			if (self.hover_time <= 0) {
-				self.hover_time = -5; //3 second penalty for draining it
-				sprint(self,PRINT_HIGH,"Your boots are out of fuel, let them recharge\n");
+				if ((self.tf_items & NIT_HOVER_BOOTS_UPGRADE) && 
+				    (self.ammo_cells > (0 - floor(self.hover_time * 2)))) {
+					self.ammo_cells += floor(self.hover_time * 2);
+					self.ammo_cells--;
+					self.hover_time = 0.5;
+					self.velocity_z = 60; //power running out
+				} else {				    
+					self.hover_time = -10; //3 second penalty for draining it GR was a lot more than 3!
+					sprint(self,PRINT_HIGH,"Your boots are out of fuel, let them recharge\n");
+				}
 			}
 			//Spit out fire from them!
 			if (self.search_time < time) {
@@ -2743,7 +2763,7 @@ void() PlayerPreThink =
 			flame.owner = self;flame.movetype = MOVETYPE_FLYMISSILE;
 			flame.solid = SOLID_BBOX;flame.classname = "flamerflame";
 			makevectors (self.v_angle);
-			flame.velocity = -1 * v_up; flame.velocity = flame.velocity * 600;
+			flame.velocity = '0 0 -600';
 			flame.touch = Boot_Flamer_stream_touch;flame.think = s_explode1;
 			flame.nextthink = time + 0.1;setmodel (flame, "progs/s_explod.spr");
 			setsize (flame, '0 0 0', '0 0 0');
@@ -2752,17 +2772,52 @@ void() PlayerPreThink =
 			}
 		}
 		else { //Recharger <- That's French for "recharge"
-			self.hover_time = self.hover_time + 0.01; //0.05 is a half-tick
+			self.hover_time = self.hover_time + 0.03; //0.05 is a half-tick
 			if (self.hover_time > MAX_HOVER_FUEL && (!(self.tf_items & NIT_HOVER_BOOTS_UPGRADE)))
 				self.hover_time = MAX_HOVER_FUEL;
-			if (self.hover_time > (MAX_HOVER_FUEL * 2) && self.tf_items & NIT_HOVER_BOOTS_UPGRADE)
-				self.hover_time = (MAX_HOVER_FUEL * 2);
+			if (self.tf_items & NIT_HOVER_BOOTS_UPGRADE) {
+				if (self.hover_time > (MAX_HOVER_FUEL * 2))
+					self.hover_time = (MAX_HOVER_FUEL * 2);
+				if (self.hover_time < (MAX_HOVER_FUEL / 2) && self.ammo_cells > (self.maxammo_cells * 0.8)) {
+					self.hover_time++;
+					self.ammo_cells--;
+				}
+			}
 		}
 	}
 
-	if (self.health > 0 && pointcontents (self.origin) == CONTENTS_SOLID)
-		TF_T_Damage (self, NIL, NIL, self.health + 100,
-					 TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+
+	if (self.health > 0)
+	{
+		// do a quick checkmove
+		checkmove (self.origin, self.mins, self.maxs, self.origin - '0 0 8192', MOVE_NORMAL, self);	
+	
+		if (trace_startsolid)
+		{
+			if (trace_ent.classname != "force_field") // hack, stuck in forcefield is okay here
+				self.stucktime++;	
+	
+			deathmsg = DMSG_PHYSICS;
+			if (self.stucktime >= 10) // one second until you die
+			{
+				TF_T_Damage (self, NIL, NIL, self.health + 100,
+					TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			}
+			else if (trace_ent.takedamage) // see if we can't get the other guy out of the way
+			{
+				TF_T_Damage (trace_ent, NIL, NIL, self.health + 100,
+					TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			}
+		}
+		else if (trace_fraction >= 1 || vlen(self.origin) > 16384) // outside the map (doesn't always catch it)
+		{
+			deathmsg = DMSG_OUTOFBOUNDS;
+			TF_T_Damage (self, NIL, NIL, self.health + 100,
+				TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		}
+		else
+			self.stucktime = 0;
+	}
 };
 	
 /*
@@ -3028,27 +3083,42 @@ void() PlayerPostThink =
 	}
 
 	// check to see if player landed and play landing sound	
-	if (self.takedamage && (self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
+	if (self.takedamage && self.health > 0)
 	{
-		if (self.watertype == CONTENTS_WATER)
+		if (self.flags & FL_ONGROUND)
 		{
-			if (!(self.cutf_items & CUTF_STEALTH))
-				sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
-		}
-		else if (self.jump_flag < -650)
-		{
-			if (!(self.cutf_items & CUTF_STEALTH)) { //WK Judo teaches falling... SB ceaf judo
-				self.deathtype = "falling";
-				T_Damage (self, NIL, NIL, 5); 
-				sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
+			if (self.watertype == CONTENTS_WATER)
+			{
+				if (!(self.cutf_items & CUTF_STEALTH))
+					sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
 			}
+			else if (self.movedir_z < -650)
+			{
+				if (!(self.cutf_items & CUTF_STEALTH)) { //WK Judo teaches falling... SB ceaf judo
+					self.deathtype = "falling";
+					T_Damage (self, NIL, NIL, 10); 
+					self.leg_damage++;
+					if (self.leg_damage > 5)
+						self.leg_damage = 5;
+					sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
+				}
+			}
+			else if (self.movedir_z < -300)
+				if (!(self.cutf_items & CUTF_STEALTH)) //WK Judo teaches falling... SB ceaf judo
+					sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
+
 		}
-		else
-			if (!(self.cutf_items & CUTF_STEALTH)) //WK Judo teaches falling... SB ceaf judo
-				sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
+		else if (vlen(self.movedir) - vlen(self.velocity) > 550)
+		{
+#ifdef WALL_HURT
+			self.deathtype = "wall";
+			T_Damage (self, NIL, NIL, ((vlen(self.movedir) - vlen(self.velocity)) - 550) / 10);
+#endif
+		}
 	}
 
 	self.jump_flag = self.velocity_z;
+	self.movedir = self.velocity;
 
 	CheckPowerups ();
 

@@ -62,6 +62,115 @@ void (entity targ, entity attacker) Obituary_Building_by_Teledeath;
 void (entity targ, entity attacker) Obituary_Building_by_Player;
 void (entity targ, entity attacker) Obituary_Building_by_Army;
 
+/*
+===========
+Give_Frags_xxx
+
+Called from Obituary(), doles out frags.
+Unlike Obituary_xxx, the xxx means the ATTACKER here.
+It's cleaner that way.
+===========
+*/
+
+void(entity atk, entity targ) Give_Frags_Player =
+{
+	local float numfrags = 1,  chkvamp = 1;
+
+	if (targ.classname == "monster_shambler")
+		numfrags = (targ.has_tesla - 4) / 4;
+
+	if (targ.classname == "monster_demon1")
+		numfrags = 2;
+
+	if (targ.classname == "building_tesla" && targ.tf_items & NIT_SECURITY_CAMERA) //shortcut for rogue tes
+		return;
+
+	if (targ.classname != "player")
+	{
+		targ = targ.real_owner;
+		chkvamp = 0; // don't vamp building/monster kills
+	}
+
+	if (atk == targ || Teammate(atk.team_no, targ.team_no))
+	{
+		chkvamp = 0; // don't vamp neg frags
+		numfrags *= -1;
+	}
+
+	atk.real_frags += numfrags;
+	if (chkvamp && (teamplay & TEAMPLAY_VAMPIRE))
+		targ.real_frags -= numfrags;
+
+	if (!(toggleflags & TFLAG_TEAMFRAGS))
+	{
+		atk.frags = atk.real_frags;
+		if (chkvamp)
+			targ.frags = targ.real_frags;
+	}	
+
+	if (numfrags > 0)
+		logfrag (targ, atk);
+	if (numfrags < 0)
+		logfrag (targ, targ);
+};
+
+
+void (entity atk, entity targ) Give_Frags_Monster =
+{
+	if (atk == targ)
+		return; // no neg frags to monsters
+
+	if (((targ.classname == "player") && Teammate(atk.real_owner.team_no, targ.team_no)) ||
+	      Teammate(atk.real_owner.team_no, targ.real_owner.team_no))
+	{
+		if (targ.classname == "player") // More the victim than the owner's fault
+		{
+			targ.real_frags--;
+			if (!(toggleflags & TFLAG_TEAMFRAGS))
+				targ.frags = targ.real_frags;
+			logfrag (targ, targ);
+		}
+		return;
+	}
+
+	Give_Frags_Player(atk, targ);
+};
+
+void (entity atk, entity targ) Give_Frags_Building =
+{
+	if (atk == targ)
+		return;
+
+	atk.owner = atk.real_owner;
+
+	if (atk.classname == "building_dispenser" && atk.martyr_enemy != atk.real_owner)
+		atk.real_owner = atk.martyr_enemy;
+
+	if ((((targ.classname == "player") && Teammate(atk.real_owner.team_no, targ.team_no)) ||
+		Teammate(atk.real_owner.team_no, targ.real_owner.team_no)) && ((deathmsg != DMSG_TESLA) ||
+		!(atk.tf_items & NIT_SECURITY_CAMERA)))
+	{
+		if (targ.classname == "player") // More the victim than the owner's fault
+		{
+			targ.real_frags--;
+			if (!(toggleflags & TFLAG_TEAMFRAGS))
+				targ.frags = targ.real_frags;
+		}
+	}
+
+	if (targ.classname == "monster_shambler")
+		atk.frags += (targ.has_tesla - 4) / 4;
+	else if (targ.classname == "monster_demon1")
+		atk.frags += 2;
+	else
+		atk.frags++;
+
+	if (atk.real_owner != atk.owner)
+		atk.real_owner = atk.owner;
+
+	Give_Frags_Player(atk.real_owner, atk);
+};
+
 
 /*
 ===========
@@ -81,6 +190,20 @@ void (entity targ, entity attacker) Obituary =
 		Obituary_Monster (targ, attacker);
 	else if (IsBuilding (targ) && targ.classname != "building_sentrygun_base")
 		Obituary_Building (targ, attacker);
+
+	if (attacker.classname == "player")
+		Give_Frags_Player (targ, attacker);
+	else if (IsMonster (attacker))
+		Give_Frags_Monster (targ, attacker);
+	else if (IsBuilding (attacker) && targ.classname != "building_sentrygun_base" || targ.classname == "force_field")
+		Give_Frags_Building (targ, attacker);		
+	else if (targ.classname == "player") // Player died and can't give credit to anyone. Nothing to do but -1
+	{
+		targ.real_frags--;
+		if (toggleflags & TFLAG_TEAMFRAGS)
+			targ.frags = targ.real_frags;
+		logfrag(targ, targ);
+	}
 };
 
 void (entity targ, entity attacker) Obituary_Player =
@@ -88,7 +211,8 @@ void (entity targ, entity attacker) Obituary_Player =
 	//WK No Obituary for the cursed!
 	if (targ.penance_time > time - 1)
 	{
-		Give_Frags_Out (targ, targ, -1, 0, 1, 1, 0);
+		//Give_Frags (targ, targ, -1);
+		return;
 	}
 
 	if (targ.martyr_enemy != targ)
@@ -133,8 +257,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Cybernet =
 {
 	bprint (PRINT_MEDIUM, targ.netname);
 	bprint (PRINT_MEDIUM, " will abort the hack next time\n");
-
-	Give_Frags_Out (targ, targ, -1, 0, 1, 1, 0);
 };
 
 void (entity targ, entity attacker) Obituary_Player_by_Antihack =
@@ -157,7 +279,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Antihack =
 		bprint (PRINT_MEDIUM, "\n");
 	}
 
-	Give_Frags_Out (targ, targ, -1, 0, 1, 1, 0);
+	//Give_Frags(attacker.real_owner, targ, 1);
 };
 
 void (entity targ, entity attacker) Obituary_Player_by_Antidismantle =
@@ -180,7 +302,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Antidismantle =
 		bprint (PRINT_MEDIUM, "\n");
 	}
 
-	Give_Frags_Out (targ, targ, -1, 0, 1, 1, 0);
+	//Give_Frags (attacker.real_owner, targ, 1);
 };
 
 void (entity targ, entity attacker) Obituary_Player_by_Wizard =
@@ -188,8 +310,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Wizard =
 	custom_demon_name (attacker); //CH
 
 	if (attacker.real_owner == targ) {
-		Give_Frags_Out (attacker.real_owner, attacker.real_owner, -2, 0, 1, 1, 0);
-
 		bprint (PRINT_MEDIUM, "The scrag ");
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " kills his owner, ");
@@ -221,7 +341,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Wizard =
 			bprint (PRINT_MEDIUM, "\n");
 		}
 
-		Give_Frags_Out (attacker.real_owner, attacker.real_owner, 1, 0, 1, 1, 0);
+		//Give_Frags(attacker.real_owner, targ, 1)
 	} else if (Teammate (targ.team_no, attacker.real_owner.team_no)) {
 		if (random () < FRAC (1, 2)) {
 			bprint (PRINT_MEDIUM, "The supposed friendly scrag ");
@@ -248,7 +368,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Demon1 =
 	custom_demon_name (attacker); //CH
 
 	if (attacker.real_owner == targ) {
-		Give_Frags_Out (attacker.real_owner, attacker.real_owner, -2, 0, 1, 1, 0);
 
 		if (deathmsg == DMSG_DEMON_FIRE) {
 			bprint (PRINT_MEDIUM, attacker.netname);
@@ -330,9 +449,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Demon1 =
 		}
 	}
 
-	if (!Teammate (targ.team_no, attacker.real_owner.team_no)
-		|| attacker.real_owner.team_no < 1)
-		Give_Frags_Out (attacker.real_owner, attacker.real_owner, 1, 0, 1, 1, 0);
 };
 
 void (entity targ, entity attacker) Obituary_Player_by_Army =
@@ -341,7 +457,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Army =
 	GetRank (attacker); // Sponsored by SB-1 Tech
 
 	if (attacker.real_owner == targ) {
-		Give_Frags_Out (attacker.real_owner, attacker.real_owner, -2, 0, 1, 1, 0);
+		//Give_Frags (attacker, targ, -1);
 
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " is killed by his own mercenary ");
@@ -422,8 +538,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Army =
 			bprint (PRINT_MEDIUM, ") buckshot\n");
 		}
 	
-		Give_Frags_Out (attacker.real_owner, attacker.real_owner, 1, 0, 1, 1, 0);
-		Give_Frags_Out (attacker, attacker, 1, 0, 1, 1, 0);
+		//Give_Frags(attacker, targ);
 	}
 };
 
@@ -431,10 +546,9 @@ void (entity targ, entity attacker) Obituary_Player_by_Shambler =
 {
 	custom_demon_name (attacker); //CH
 
-	if (attacker.real_owner == targ || (attacker.is_malfunctioning && attacker.martyr_enemy == targ)) {
+	if (attacker.real_owner == targ) {
 	
-		if (!attacker.is_malfunctioning)
-			Give_Frags_Out (attacker.real_owner, attacker.real_owner, -2, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1);
 		if (deathmsg == DMSG_LIGHTNING) {
 			bprint (PRINT_MEDIUM, attacker.netname);
 			bprint (PRINT_MEDIUM, " annihilates its owner ");
@@ -564,8 +678,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Shambler =
 			}
 		}
 	
-		if (!Teammate (targ.team_no, attacker.real_owner.team_no) || attacker.real_owner.team_no < 1)
-			Give_Frags_Out (attacker.real_owner, attacker.real_owner, 1, 0, 1, 1, 0);
 	}
 };
 
@@ -576,8 +688,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Teledeath =
 	bprint (PRINT_MEDIUM, attacker.owner.netname);
 	bprint (PRINT_MEDIUM, "\n");
 
-	if (!Teammate (targ.team_no, attacker.owner.team_no) || attacker.owner.team_no < 1)
-		Give_Frags_Out (attacker.owner, attacker.owner, 1, 0, 1, 1, 0);
 };
 
 void (entity targ, entity attacker) Obituary_Player_by_Teledeath2 =
@@ -586,7 +696,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Teledeath2 =
 	bprint (PRINT_MEDIUM, targ.netname);
 	bprint (PRINT_MEDIUM, "'s telefrag\n");
 
-	Give_Frags_Out (targ, targ, -1, 1, 1, 1, 0);
+	//Give_Frags (attacker, targ, 1);
 };
 
 void (entity targ, entity attacker) Obituary_Player_by_Goal =
@@ -605,7 +715,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		local string deathstring;
 
 		// killed self
-		Give_Frags_Out (attacker, attacker, -1, 0, 1, 1, 1);
+		//Give_Frags (attacker, attacker, -1);
 
 		if (deathmsg == DMSG_GREN_HAND)
 			deathstring = " grenades himself\n";
@@ -630,6 +740,8 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 			deathstring = " chokes on his own gas\n";
 		else if (deathmsg == DMSG_GREN_EMP)
 			deathstring = " explodes his ammo and body\n";
+		else if (deathmsg == DMSG_GREN_EMP_RADIUS)
+			deathstring = " blows himself up with another player's ammo\n";
 		else if (deathmsg == DMSG_GREN_FLASH)
 			deathstring = " is charred by his own flash grenade\n";
 		else if (deathmsg == DMSG_GREN_EMP_AMMO)
@@ -690,10 +802,6 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		bprint (PRINT_MEDIUM, deathstring);
 	} else if (teamplay && Teammate (targ.team_no, attacker.team_no)) {
 		// killed a team member
-		if (Teammate (targ.team_no, attacker.team_no) )
-			Give_Frags_Out (attacker, attacker, -1, 0, 1, 1, 0);
-		else
-			Give_Frags_Out (attacker, attacker, 1, 0, 1, 1, 0);
 
 		if (deathmsg == DMSG_MEDIKIT) {
 			bprint (PRINT_MEDIUM, targ.netname);
@@ -735,7 +843,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 
 		deathstring = deathstring2 = "WASN'T FALSE POSITIVE";
 
-		Give_Frags_Out (attacker, targ, 1, 1, 1, 1, 1);
+		//Give_Frags (attacker, targ, 1);
 
 		if (attacker.tfstate & TFSTATE_INSPIRED) {
 			attacker.inspirator.real_frags += 0.5;
@@ -797,6 +905,9 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		} else if (deathmsg == DMSG_GREN_EMP) {
 			deathstring = "'s ammo detonates him as ";
 			deathstring2 = "'s EMP fries it.\n";
+		} else if (deathmsg == DMSG_GREN_EMP_RADIUS) {
+			deathstring = " eats collateral damage from ";
+			deathstring2 = "'s EMP\n";
 		} else if (deathmsg == DMSG_GREN_FLASH) {
 			deathstring = " is charred by ";
 			deathstring2 = "'s flash grenade.\n";
@@ -1055,21 +1166,31 @@ void (entity targ, entity attacker) Obituary_Player_by_Dispenser =
 {
 	if (!(attacker.is_malfunctioning & SCREWUP_TWO)
 		&& !(attacker.is_malfunctioning & SCREWUP_FOUR)) {
-		if (targ == attacker.real_owner) {
-			bprint (PRINT_MEDIUM, targ.netname);
-			bprint (PRINT_MEDIUM, " dispenses with himself\n");
+		if (attacker.martyr_enemy == attacker.real_owner) {
+			if (targ == attacker.real_owner) {
+				bprint (PRINT_MEDIUM, targ.netname);
+				bprint (PRINT_MEDIUM, " dispenses with himself\n");
+			} else {
+				bprint (PRINT_MEDIUM, targ.netname);
+				bprint (PRINT_MEDIUM, " didn't insert the correct change into ");
+				bprint (PRINT_MEDIUM, attacker.real_owner.netname);
+				bprint (PRINT_MEDIUM, "'s dispenser\n");
+			}
 
-			Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
-		} else {
-			bprint (PRINT_MEDIUM, targ.netname);
-			bprint (PRINT_MEDIUM, " didn't insert the correct change into ");
-			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
-			bprint (PRINT_MEDIUM, "'s dispenser\n");
-
-			if (Teammate (targ.team_no, attacker.team_no))
-				Give_Frags_Out (attacker, attacker, -1, 0, 1, 1, 0);
-			else
-				Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		} else  {
+			if (targ == attacker.real_owner) {
+				bprint (PRINT_MEDIUM, attacker.martyr_enemy.netname);
+				bprint (PRINT_MEDIUM, " nukes ");
+				bprint (PRINT_MEDIUM, targ.netname);
+				bprint (PRINT_MEDIUM, " with his own dispenser\n");
+			} else {
+				bprint (PRINT_MEDIUM, attacker.martyr_enemy.netname);
+				bprint (PRINT_MEDIUM, " blows ");
+				bprint (PRINT_MEDIUM, targ.netname);
+				bprint (PRINT_MEDIUM, " away with ");
+				bprint (PRINT_MEDIUM, attacker.real_owner.netname);
+				bprint (PRINT_MEDIUM, "'s dispenser");
+			}
 		}
 	} else {
 		if (targ == attacker.real_owner) {
@@ -1078,14 +1199,14 @@ void (entity targ, entity attacker) Obituary_Player_by_Dispenser =
 			bprint (PRINT_MEDIUM, targ.netname);
 			bprint (PRINT_MEDIUM, " is blown apart by his trapped dispenser\n");
 
-			Give_Frags_Out (attacker.real_owner, attacker, -1, 0, 1, 1, 0);
+			//Give_Frags (attacker.martyr_enemy, targ, 1);
 		} else if (targ == attacker.martyr_enemy) {
 			bprint (PRINT_MEDIUM, targ.netname);
 			bprint (PRINT_MEDIUM, " should've stayed away from ");
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s dispenser\n");
 
-			Give_Frags_Out (attacker.martyr_enemy, attacker, -1, 0, 1, 1, 0);
+			//Give_Frags (attacker.martyr_enemy, targ, -1);
 		} else {
 			bprint (PRINT_MEDIUM, attacker.martyr_enemy.netname);
 			bprint (PRINT_MEDIUM, " laughs as ");
@@ -1094,7 +1215,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Dispenser =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s trapped dispenser\n");
 
-			Give_Frags_Out (attacker.martyr_enemy, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker.martyr_enemy, targ, 1);
 		}
 	}
 };
@@ -1107,14 +1228,14 @@ void (entity targ, entity attacker) Obituary_Player_by_ForceField =
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " fries in his own hacked force field\n");
 
-		Give_Frags_Out (attacker.real_owner, attacker, -1, 0, 1, 1, 0);
+		//Give_Frags (attacker.martyr_enemy, targ, 1);
 	} else if (targ == attacker.martyr_enemy) {
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " hacked the wrong thing in  ");
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s force field generator\n");
 
-		Give_Frags_Out (attacker.martyr_enemy, attacker, -1, 0, 1, 1, 0);
+		//Give_Frags (attacker.martyr_enemy, targ, -1);
 	} else {
 		bprint (PRINT_MEDIUM, attacker.martyr_enemy.netname);
 		bprint (PRINT_MEDIUM, " laughs as ");
@@ -1123,7 +1244,7 @@ void (entity targ, entity attacker) Obituary_Player_by_ForceField =
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s hacked force field\n");
 
-		Give_Frags_Out (attacker.martyr_enemy, targ, 1, 0, 1, 1, 0);
+		//Give_Frags (attacker.martyr_enemy, targ, 1);
 	}
 };
 
@@ -1147,12 +1268,6 @@ void (entity targ, entity attacker) Obituary_Player_by_SentryTesla =
 		local string deathstring;
 		local string deathstring2;
 
-		if (Teammate (targ.team_no, attacker.team_no))
-			Give_Frags_Out (attacker.real_owner, targ, -1, 1, 1, 1, 0);
-		else {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //gun
-			Give_Frags_Out (attacker.real_owner, targ, 1, 1, 1, 1, 0);
-		}
 
 		if (deathmsg == DMSG_SENTRYGUN_ROCKET) {
 			deathstring = " hates ";
@@ -1217,11 +1332,12 @@ void (entity targ, entity attacker) Obituary_Player_Misc =
 {
 	local string deathstring;
 
-	Give_Frags_Out (targ, targ, -1, 1, 1, 1, 0);
-//	logfrag (targ, targ);
+	//Give_Frags (targ, attacker, -1);
 
-	if (pointcontents (self.origin) == CONTENTS_SOLID) {
+	if (deathmsg == DMSG_PHYSICS) {
 		deathstring = " gets a lesson in spatial physics\n";
+	} else if (deathmsg == DMSG_OUTOFBOUNDS) {
+		deathstring = " found a way out\n";
 	} else if (targ.watertype == CONTENTS_WATER) {
 		local float rnum = random ();
 
@@ -1274,6 +1390,9 @@ void (entity targ, entity attacker) Obituary_Player_Misc =
 	} else if (targ.deathtype == "falling" && !attacker) {
 		targ.deathtype = "";
 		deathstring = " fell to his death\n";
+	} else if (targ.deathtype == "wall" && !attacker) {
+		targ.deathtype = "";;
+		deathstring = " gives a warm hello to Mister Wall\n";
 	} else { //- OfN - unknown death by himself
 		local float rnum = random ();
 
@@ -1337,8 +1456,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Tesla =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags (attacker, targ, 1);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s scrag, ");
@@ -1347,8 +1465,6 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Tesla =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s tesla sentry\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly scrag, ");
@@ -1366,8 +1482,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Sentry =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags (attacker, targ, 1);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s scrag, ");
@@ -1376,8 +1491,6 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Sentry =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s sentry gun\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly scrag, ");
@@ -1396,7 +1509,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Player =
 		&& (self.real_owner.team_no > 0)) {
 		if (Teammate (targ.real_owner.team_no, attacker.team_no)) {
 			if (attacker == self.real_owner) {
-				Give_Frags_Out (attacker, targ, -2, 0, 1, 1, 0);
+				//Give_Frags (attacker, targ, -1);
 
 				bprint (PRINT_MEDIUM, attacker.netname);
 				if (deathmsg == DMSG_LASERCANNON)
@@ -1404,7 +1517,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Player =
 				else
 					bprint (PRINT_MEDIUM, " kills his own scrag!\n");
 			} else {
-				Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+				//Give_Frags (attacker, targ, -1);
 
 				bprint (PRINT_MEDIUM, attacker.netname);
 				if (deathmsg == DMSG_LASERCANNON)
@@ -1417,7 +1530,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Player =
 				bprint (PRINT_MEDIUM, ")\n");
 			}
 		} else {
-			Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+			//Give_Frags (attacker, targ, 1);
 
 			if (deathmsg == DMSG_LASERCANNON) {
 				bprint (PRINT_MEDIUM, attacker.netname);
@@ -1444,7 +1557,6 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Army =
 	GetRank (attacker);
 
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.undercover_name);
 		bprint (PRINT_MEDIUM, attacker.netname);
@@ -1456,7 +1568,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Army =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags (attacker, targ, 1);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s scrag, ");
@@ -1474,7 +1586,6 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Demon1 =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
@@ -1485,7 +1596,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Demon1 =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags (attacker, targ, 1);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s scrag, ");
@@ -1502,7 +1613,6 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Shambler =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, "The shambler ");
 		bprint (PRINT_MEDIUM, attacker.netname);
@@ -1514,7 +1624,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Shambler =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags (attacker, targ, 1);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s scrag, ");
@@ -1531,8 +1641,6 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Wizard =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
-
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
@@ -1542,7 +1650,7 @@ void (entity targ, entity attacker) Obituary_Monster_Wizard_by_Wizard =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags (attacker, targ, 1);
 
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s scrag, ");
@@ -1583,8 +1691,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Tesla =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags (attacker, targ, 1);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s demon, ");
@@ -1593,8 +1700,8 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Tesla =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s tesla sentry\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
+			if (attacker.tf_items & NIT_SECURITY_CAMERA) //overtink	
+				//Give_Frags_Out (attacker.real_owner, targ);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly demon, ");
@@ -1612,8 +1719,8 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Sentry =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Sentry
+			//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s demon, ");
@@ -1622,9 +1729,6 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Sentry =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s sentry gun\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
-
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly demon, ");
 			bprint (PRINT_MEDIUM, targ.netname);
@@ -1642,11 +1746,11 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Player =
 		&& (self.real_owner.team_no > 0)) {
 		if (Teammate (targ.real_owner.team_no, attacker.team_no))	{
 			if (attacker == self.real_owner) {
-				Give_Frags_Out (attacker, targ, -2, 0, 1, 1, 0);
+				//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 				bprint (PRINT_MEDIUM, attacker.netname);
 				bprint (PRINT_MEDIUM, " kills his own fiend!\n");
 			} else {
-				Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+				//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 				bprint (PRINT_MEDIUM, attacker.netname);
 				bprint (PRINT_MEDIUM, " mows down the friendly demon ");
@@ -1656,7 +1760,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Player =
 				bprint (PRINT_MEDIUM, ")\n");
 			}
 		} else {
-			Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s demon, ");
@@ -1675,7 +1779,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Army =
 	custom_demon_name (attacker);
 	GetRank (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.undercover_name);
 		bprint (PRINT_MEDIUM, attacker.netname);
@@ -1687,7 +1791,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Army =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s demon, ");
@@ -1705,7 +1809,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Demon1 =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
@@ -1716,7 +1820,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Demon1 =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s demon, ");
@@ -1733,7 +1837,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Shambler =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
@@ -1744,7 +1848,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Shambler =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s demon, ");
@@ -1761,7 +1865,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Wizard =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
@@ -1772,7 +1876,7 @@ void (entity targ, entity attacker) Obituary_Monster_Demon1_by_Wizard =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s demon, ");
@@ -1814,8 +1918,8 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Tesla =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
+			//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s mercenary soldier, ");
@@ -1825,8 +1929,8 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Tesla =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s tesla sentry\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
+			if (attacker.tf_items & NIT_SECURITY_CAMERA)	
+				//Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly soldier, ");
@@ -1845,8 +1949,8 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Sentry =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Sentry
+			//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s mercenary soldier, ");
@@ -1856,9 +1960,6 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Sentry =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s sentry isn't that easy to kill\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
-
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly soldier, ");
 			bprint (PRINT_MEDIUM, targ.undercover_name);
@@ -1877,12 +1978,12 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Player =
 		&& (self.real_owner.team_no > 0)) {
 		if (Teammate (targ.real_owner.team_no, attacker.team_no)) {
 			if (attacker == self.real_owner) {
-				Give_Frags_Out (attacker, targ, -2, 0, 1, 1, 0);
+				//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 				bprint (PRINT_MEDIUM, attacker.netname);
 				bprint (PRINT_MEDIUM, " kills his own soldier!\n");
 			} else {
-				Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+				//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 				bprint (PRINT_MEDIUM, attacker.netname);
 				bprint (PRINT_MEDIUM, " mows down the friendly soldier ");
@@ -1893,7 +1994,7 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Player =
 				bprint (PRINT_MEDIUM, ")\n");
 			}
 		} else {
-			Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s mercenary soldier, ");
@@ -1910,7 +2011,7 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Shambler =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
@@ -1922,7 +2023,8 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Shambler =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ") into oblivion\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s soldier, ");
 		bprint (PRINT_MEDIUM, targ.undercover_name);
@@ -1939,8 +2041,6 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Demon1 =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
-
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
@@ -1951,7 +2051,8 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Demon1 =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s soldier, ");
@@ -1980,7 +2081,7 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Army =
 	}
 
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.undercover_name);
 		bprint (PRINT_MEDIUM, attacker.netname);
@@ -1993,7 +2094,7 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Army =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s soldier, ");
@@ -2012,7 +2113,7 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Wizard =
 {
 	custom_demon_name (attacker);
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, "The scrag ");
 		bprint (PRINT_MEDIUM, attacker.netname);
@@ -2025,7 +2126,7 @@ void (entity targ, entity attacker) Obituary_Monster_Army_by_Wizard =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s soldier, ");
@@ -2067,8 +2168,8 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Tesla =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
+			//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s shambler, ");
@@ -2077,8 +2178,8 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Tesla =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s tesla sentry\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Tesla
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Tesla
+			//Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly shambler, ");
 			bprint (PRINT_MEDIUM, targ.netname);
@@ -2095,8 +2196,8 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Sentry =
 		&& (attacker.real_owner.team_no > 0)
 		&& (targ.real_owner.team_no > 0)) {
 		if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-			Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Sentry
+			//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s shambler, ");
@@ -2105,8 +2206,8 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Sentry =
 			bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s sentry gun\n");
 		} else {
-			Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Sentry
-			Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, -1, 0, 2, 0, 0); //Sentry
+			//Give_Frags_Out (attacker.real_owner, targ, -1, 0, 1, 1, 0);
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s friendly shambler, ");
 			bprint (PRINT_MEDIUM, targ.netname);
@@ -2124,12 +2225,12 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Player =
 		&& (self.real_owner.team_no > 0)) {
 		if (Teammate (targ.real_owner.team_no, attacker.team_no)) {
 			if (attacker == self.real_owner) {
-				Give_Frags_Out (attacker, targ, -2, 0, 1, 1, 0);
+				//Give_Frags_Out (attacker, targ, -2, 0, 1, 1, 0);
 
 				bprint (PRINT_MEDIUM, attacker.netname);
 				bprint (PRINT_MEDIUM, " kills his own shambler!\n");
 			} else {
-				Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+				//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 				bprint (PRINT_MEDIUM, attacker.netname);
 				bprint (PRINT_MEDIUM, " mows down the friendly shambler ");
@@ -2139,7 +2240,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Player =
 				bprint (PRINT_MEDIUM, ")\n");
 			}
 		} else {
-			Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+			//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 			bprint (PRINT_MEDIUM, targ.real_owner.netname);
 			bprint (PRINT_MEDIUM, "'s shambler, ");
@@ -2158,7 +2259,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Demon1 =
 	custom_demon_name (attacker);
 
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
@@ -2169,7 +2270,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Demon1 =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s shambler, ");
@@ -2193,8 +2294,6 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Shambler =
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 		bprint (PRINT_MEDIUM, ") sets itself on fire one too many times.\n");
 	} else if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
-
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
@@ -2204,7 +2303,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Shambler =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, "'s shambler, ");
@@ -2223,8 +2322,6 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Army =
 	GetRank (attacker);
 
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
-
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " (");
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
@@ -2235,7 +2332,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Army =
 		bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, attacker.undercover_name);
 		bprint (PRINT_MEDIUM, attacker.netname);
@@ -2254,8 +2351,6 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Wizard =
 	custom_demon_name (attacker);
 
 	if (Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)) {
-		Give_Frags_Out (attacker, targ, -1, 0, 1, 1, 0);
-
 		//bprint (PRINT_MEDIUM, attacker.undercover_name);
 		bprint (PRINT_MEDIUM, "The scrag ");
 		bprint (PRINT_MEDIUM, attacker.netname);
@@ -2267,7 +2362,7 @@ void (entity targ, entity attacker) Obituary_Monster_Shambler_by_Wizard =
 		bprint (PRINT_MEDIUM, targ.real_owner.netname);
 		bprint (PRINT_MEDIUM, ")\n");
 	} else {
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 
 		bprint (PRINT_MEDIUM, targ.netname);
 		bprint (PRINT_MEDIUM, " (");
@@ -2302,8 +2397,8 @@ void (entity targ, entity attacker) Obituary_Building_by_Tesla =
 	if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)
 		&& (targ.classname == "building_sentrygun"
 			|| targ.classname == "building_tesla")) {
-		Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
-		Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
+		//Give_Frags_Out (attacker, targ, 1, 0, 2, 0, 0); //Tesla
+		//Give_Frags_Out (attacker.real_owner, targ, 1, 0, 1, 1, 0);
 	}
 
 	if (targ.classname == "building_dispenser")
@@ -2365,10 +2460,6 @@ void (entity targ, entity attacker) Obituary_Building_by_Player =
 		bprint (PRINT_MEDIUM, attacker.netname);
 		bprint (PRINT_MEDIUM, "\n");
 
-		if (!Teammate (targ.real_owner.team_no, attacker.team_no)
-			&& (targ.classname == "building_sentrygun"
-				|| targ.classname == "building_tesla"))
-			Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 	}
 };
 
@@ -2387,10 +2478,6 @@ void (entity targ, entity attacker) Obituary_Building_by_Army =
 	bprint (PRINT_MEDIUM, attacker.real_owner.netname);
 	bprint (PRINT_MEDIUM, ")\n");
 
-	if (!Teammate (targ.real_owner.team_no, attacker.real_owner.team_no)
-		&& (targ.classname == "building_sentrygun"
-			|| targ.classname == "building_tesla"))
-		Give_Frags_Out (attacker, targ, 1, 0, 1, 1, 0);
 };
 
 void (entity targ, entity attacker) Obituary_Monster_Misc =

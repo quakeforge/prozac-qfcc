@@ -157,18 +157,6 @@ void()	lvl3_sentry_atk5 =[	$lvl3_stand1,	lvl3_sentry_atk4	]
 //=============
 void() Sentry_Rotate =
 {
-/*
-	// don't let them exist in walls/doors
-	// FIXME: pointcontents is wrong for doors
-	local vector testpoint = self.origin;
-	if (self.tf_items & NIT_TURRET)
-		testpoint_z -= 40;
-	if (pointcontents (testpoint) == CONTENTS_SOLID) {
-		TF_T_Damage (self, NIL, NIL, self.health + 100,
-					 TF_TD_IGNOREARMOUR, TF_TD_OTHER);
-		return;
-	}
-*/
 
 	if (self.is_malfunctioning & SCREWUP_ONE)
 	{
@@ -465,6 +453,11 @@ void(entity attacker, float damage) Sentry_Pain =
 	self.real_owner.StatusRefreshTime = time + 0.2;
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 1;
+	if (self.attack_finished < time)
+	{
+	    self.enemy = attacker;
+	    Sentry_FoundTarget();
+	}
 };
 
 void() Sentry_Die =
@@ -741,7 +734,7 @@ float(vector vec) BadSpot =
 void() Sentry_Touch =
 {
 	//WK Check for blockage
-	if (pointcontents(self.origin) == CONTENTS_SKY)
+	if (entpointcontents(self) == CONTENTS_SKY)
 	{
 		sprint(self.real_owner, PRINT_HIGH, "Your sentry gun flew away.\n");
 		Sentry_Die();

@@ -309,12 +309,31 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	if (!targ.takedamage)
 		return;
 
-	//WK Set off land mines
+	//WK Set off land mines GR Done with .th_pain now
+#if 0
 	if (targ.classname == "grenade" && targ.netname == "land_mine")
 	{
+		targ.martyr_enemy = inflictor;
 		targ.think = GuerillaExplode;
 		targ.nextthink = time + 0.1;
 		return;
+	}
+#endif
+
+	//Don't blame people for their airfisted rockets/grenades/detpacks if they hit a teammate
+	if ((inflictor.AIRG_Flags & 4) && inflictor != attacker && inflictor.AIRG_FlyTracker.classname == "player")
+	{
+		local entity targplayer = targ;
+		local float loopc = 0;
+		while (loopc < 5 && targplayer.classname != "player")
+		{
+			targplayer = targplayer.real_owner;
+			loopc++;
+		}
+
+		if (loopc < 5 && !Teammate(inflictor.AIRG_FlyTracker.team_no, targplayer.team_no) &&
+		    Teammate(attacker.team_no, targplayer.team_no))
+			attacker = inflictor.AIRG_FlyTracker;
 	}
 
 	//BOOKKEEPING
@@ -325,7 +344,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	{
 		//if (targ.classname == "player" && attacker.classname == "player" && !Teammate(targ.team_no, attacker.team_no))
 		targ.martyr_enemy = attacker;
-		targ.stored_deathmsg = deathmsg; //- OfN - UNUSED?
+		targ.stored_deathmsg = deathmsg; //- OfN - UNUSED? GR yep, so is is_abouttodie pretty much
 	}
 	if (targ.classname == "player") //WK Time holding the last time we've been shot
 		targ.last_attacked_time = time; //WK For chaplan healing purposes
@@ -489,13 +508,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		if (Teammate(targ.real_owner.team_no,attacker.team_no) && (targ.real_owner != attacker) && attacker.classname == "player")
 			TF_T_Damage (attacker, attacker, attacker, mirror, 0, TF_TD_OTHER);
 	}
-	//WK Friendly Sentrygun protection - you can't hurt friendly sentries
-	if (IsBuilding(targ)) {
-		if (Teammate(targ.team_no, attacker.team_no) && (targ != attacker) && (!(targ.tf_items & NIT_SECURITY_CAMERA))) {
-			return;
-		}
+	//WK Friendly Sentrygun protection - you can't hurt friendly sentries GR Why not?
+
+	if (IsBuilding(targ))
 		targ.armorvalue = 1; //CH so that the armors are counted
-	}
 
 	// SPECIAL ARMOR CALCULATIONS
 	if ((targ.armorclass != 0) && (T_AttackType != 0))
@@ -674,6 +690,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			deathmsg = DMSG_DETPACK_DIS;
 
 		//WK Autotrigger martyr - OfN - Now exp.body
+		//BUG, berserk made exp body not work, fixed?
 		if ((targ.cutf_items & CUTF_EXPBODY) && attacker && targ.is_abouttodie == FALSE)
 		{
 			//oldself = self;

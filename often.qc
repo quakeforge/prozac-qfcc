@@ -446,7 +446,7 @@ void(entity player) ActivateHolo =
 
 	newmis = spawn();
 	newmis.solid = SOLID_NOT;
-	newmis.movetype = MOVETYPE_NOCLIP;
+	newmis.movetype = MOVETYPE_NONE;
 	newmis.origin = player.origin;
 	newmis.angles = player.angles;
 	newmis.colormap = player.colormap;
@@ -720,10 +720,12 @@ void(entity themonster) KillTheMonster =
         custom_demon_die();
     else if (themonster.classname == "monster_army")
         custom_grunt_die();
-    else if (themonster.classname == "monster_knight")
+#if 0  // no knights right now
+   else if (themonster.classname == "monster_knight")
         knight_die();
     else if (themonster.classname == "monster_hknight")
         hknight_die();
+#endif
 
 
     self=oself;
@@ -1079,13 +1081,15 @@ float(entity theplayer, float grenslot) GetMaxGrens =
             if (theplayer.tp_grenades_2 == GR_TYPE_NAIL)
                 return 3;// was 1
             if (theplayer.tp_grenades_2 == GR_TYPE_FRAG)
-                return 4;// was 1
+                return 3;// was 1
             if (theplayer.tp_grenades_2 == GR_TYPE_CALTROP)
                 return 4;// was 1
             if (theplayer.tp_grenades_2 == GR_TYPE_MIRV)
-                return 3;// was 1
+                return 2;// was 1
             if (theplayer.tp_grenades_2 == GR_TYPE_FLARE)
-                return 8;            
+                return 8;
+	    if (theplayer.tp_grenades_2 == GR_TYPE_EMP)
+		return 4;// was 5            
 
             return 5;
         }
@@ -1097,13 +1101,15 @@ float(entity theplayer, float grenslot) GetMaxGrens =
             if (theplayer.tp_grenades_1 == GR_TYPE_NAIL)
                 return 3;// was 1
             if (theplayer.tp_grenades_1 == GR_TYPE_FRAG)
-                return 4;// was 1
+                return 3;// was 1
             if (theplayer.tp_grenades_1 == GR_TYPE_CALTROP)
                 return 4;// was 1
             if (theplayer.tp_grenades_1 == GR_TYPE_MIRV)
-                return 3;// was 1
+                return 2;// was 1
             if (theplayer.tp_grenades_1 == GR_TYPE_FLARE)
                 return 8;
+	    if (theplayer.tp_grenades_1 == GR_TYPE_EMP)
+		return 4;// was 5
             
             return 5;
         }        
@@ -1117,13 +1123,15 @@ float(entity theplayer, float grenslot) GetMaxGrens =
         if (theplayer.tp_grenades_2 == GR_TYPE_NAIL)
             return 2;// was 1
         if (theplayer.tp_grenades_2 == GR_TYPE_FRAG)
-            return 3;// was 1
+            return 2;// was 1
         if (theplayer.tp_grenades_2 == GR_TYPE_CALTROP)
             return 3;// was 1
         if (theplayer.tp_grenades_2 == GR_TYPE_MIRV)
-            return 2;// was 1
+            return 1;// was 1
         if (theplayer.tp_grenades_2 == GR_TYPE_FLARE)
             return 6;
+	if (theplayer.tp_grenades_2 == GR_TYPE_EMP)
+	    return 3;
 
         return 4;
     }
@@ -1135,13 +1143,15 @@ float(entity theplayer, float grenslot) GetMaxGrens =
         if (theplayer.tp_grenades_1 == GR_TYPE_NAIL)
             return 2;// was 1
         if (theplayer.tp_grenades_1 == GR_TYPE_FRAG)
-            return 3;// was 1
+            return 2;// was 1
         if (theplayer.tp_grenades_2 == GR_TYPE_CALTROP)
             return 3;// was 1
         if (theplayer.tp_grenades_1 == GR_TYPE_MIRV)
-            return 2;// was 1
+            return 1;// was 1
         if (theplayer.tp_grenades_1 == GR_TYPE_FLARE)
             return 6;
+	if (theplayer.tp_grenades_1 == GR_TYPE_EMP)
+	    return 3;
         
         return 4;
     }

@@ -27,6 +27,7 @@ void() TeamFortress_EngineerBuild;
 void(float objtobuild) TeamFortress_Build;
 void() TeamFortress_FinishedBuilding;
 void() T_Dispenser;
+void(entity atk, float dmg) Dispenser_Pain;
 void() Dispenser_Die;
 void(entity disp) Engineer_UseDispenser;
 void(entity gun) Engineer_UseSentryGun;
@@ -44,17 +45,37 @@ void(entity field) Field_Built;
 void() LaserBolt_Think =
 {
 	if (time > self.heat) {
+		if (self.demon_one)
+			dremove(self.demon_one);
 		dremove(self);	
 		return;
 	}	
-	self.solid = SOLID_TRIGGER;
-	self.movetype = MOVETYPE_FLYMISSILE;
-	self.velocity = self.oldorigin;
-	self.touch = LaserBolt_Touch;
-	setmodel(self, "progs/e_spike2.mdl");
 
-	self.nextthink = time + 1.0;
-	self.think = SUB_Remove;
+	self.velocity = self.oldorigin;
+
+
+	if (!self.demon_one) {
+		newmis = spawn();
+		setorigin(newmis, self.origin);
+		setsize(newmis, '0 0 0', '0 0 0');
+		setmodel(newmis, "");
+		newmis.solid = SOLID_TRIGGER;
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.touch = LaserBolt_Touch;
+		newmis.real_owner = self.owner;
+		newmis.owner = self;
+		newmis.heat = self.heat;
+		self.demon_one = newmis;
+	}
+
+ 	setorigin(self.demon_one, self.origin);
+	self.demon_one.velocity = self.velocity;
+
+	
+	self.movetype = MOVETYPE_NOCLIP;
+
+	self.nextthink = time + 0.1;
+	self.think = LaserBolt_Think;
 };
 
 //=========================================================================
@@ -65,64 +86,52 @@ void() LaserBolt_Touch =
 	local vector org;
 	
 	if (time > self.heat) {
+		dremove(self.owner);
 		dremove(self);	
 		return;
 	}
 
-	if (other == self.owner)
-		return;		
-
-	if (other == self.enemy && self.enemy)
-		return;		// don't explode on same person twice
-
-	if (pointcontents(self.origin) == CONTENTS_SKY)
-	{
+	if (pointcontents(self.origin)==CONTENTS_SKY) {
+		dremove(self.owner);
 		dremove(self);
 		return;
 	}
+
+	if (other.classname == "force_field") { // ff can block rails, but not easily, loses cells
+		other.demon_one.ammo_cells -= 15;
+		other.demon_two.ammo_cells -= 15;
+		
+		if (other.demon_one.ammo_cells < 0)
+			other.demon_one.ammo_cells = 0;
+		if (other.demon_two.ammo_cells < 0)
+			other.demon_two.ammo_cells = 0;
+
+		FieldExplosion(other, self.origin, self);
+		PutFieldWork(other);
+		dremove(self.owner);
+		dremove(self);
+		return;
+	}
+			
+
+	if (other == self.real_owner || other == self.enemy)
+		return;		// don't explode on same person twice
+
+
+	self.enemy = other;
 
 	//WK Sweep mines at point of impact
 	GuerillaMineSweep(self.origin);
 
 	org = self.origin - 8*normalize(self.velocity);
 
-	if (other.health)
+	if (other && other.takedamage)
 	{
 		SpawnBlood (org, 15);
 		deathmsg = DMSG_LASERBOLT;
-		TF_T_Damage (other, self, self.enemy, 25, 0, TF_TD_ELECTRICITY);
-		self.velocity = self.oldorigin;
-		self.owner = other;
-
-		setmodel (self, "");
-		self.touch = NIL;
-//		self.solid = SOLID_NOT;
-//		self.movetype = MOVETYPE_NOCLIP;
-
-		self.nextthink = time + 0.1;
-		self.think = LaserBolt_Think;
-		return;
+		TF_T_Damage (other, self, self.real_owner, 25, 0, TF_TD_NAIL); // was electricity... WTF?
+		setmodel(self.owner, "progs/e_spike2.mdl");
 	}
-	else
-	{
-		//WK Fly through walls!
-		setmodel (self, "");
-		self.touch = NIL;
-		self.solid = SOLID_NOT;
-		self.movetype = MOVETYPE_NOCLIP;
-
-		self.nextthink = time + 0.1;
-		self.think = LaserBolt_Think;
-		return;
-		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-		WriteByte (MSG_MULTICAST, TE_SPIKE);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
-		multicast (self.origin, MULTICAST_PHS);
-	}
-	
-	dremove(self);	
 };
 
 //=========================================================================
@@ -140,8 +149,8 @@ void() W_FireLaser =
 		
 	newmis = spawn();
 	newmis.owner = self;
-	newmis.enemy = self;	// The real owner
-	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.enemy = NIL;	// The real owner GR uh no
+	newmis.movetype = MOVETYPE_NOCLIP; //was noclip. Oh well.
 	newmis.solid = SOLID_TRIGGER;
 
 	setmodel (newmis, "progs/e_spike1.mdl");
@@ -149,15 +158,13 @@ void() W_FireLaser =
 
 	setorigin (newmis, org + '0 0 16');
 
-	newmis.velocity = vec * 1500;
-	newmis.angles = vectoangles(newmis.velocity);
-	newmis.oldorigin = newmis.velocity;
+	newmis.velocity = '0 0 0';
+	newmis.oldorigin = vec*800;
+	newmis.angles = vectoangles(newmis.oldorigin);
 
-	newmis.nextthink = time + 1.5;
-	newmis.heat = time + 1.5;
-
-	newmis.think = SUB_Remove;
-	newmis.touch = LaserBolt_Touch;
+	newmis.heat = time + 5;
+	newmis.nextthink = time + 0.1;
+	newmis.think = LaserBolt_Think;
 };
 
 //=========================================================================
@@ -213,12 +220,31 @@ void() EMPGrenadeTouch =
 };
 
 //=========================================================================
+// EMP Scrambling effect (on players and buildings
+void() EMPScramble =
+{
+#if 0
+	te = findradius(self.origin, 500);
+	
+	while (te)
+	{
+		local float dist = vlen(te.origin - self.origin);	
+		local float mult = 0.25 + (0.65 * dist / 500) + 0.15 * random();
+
+		te = te.chain;
+	}
+#endif
+	dremove(self);
+};
+
+//=========================================================================
 // EMP Grenade explode function, for when the PRIMETIME runs out
 void() EMPGrenadeExplode =
 {
 	local float expsize;
 	local entity te, oldself;
 	local float total_exp;
+	local float dist, mult;
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
 
@@ -230,12 +256,13 @@ void() EMPGrenadeExplode =
 	multicast (self.origin, MULTICAST_PHS);
 
 	// Find all ammo in the area
-	te = findradius(self.origin, 240);
+	te = findradius(self.origin, 300); // was 240
 	while (te)
 	{	
-		if (!CanDamage(te,self)) // OfN
-            ;
-        else if (te.touch == ammo_touch || te.touch == weapon_touch) // Ammo/Weapon?
+		dist = vlen(self.origin - te.origin);
+		mult = 0.85 - (0.65 * dist / 300) + (0.15 * random());
+
+        	if (te.touch == ammo_touch || te.touch == weapon_touch) // Ammo/Weapon?
 		{
 			// Make sure it isn't picked up in the next second
 			te.solid = SOLID_NOT;
@@ -247,7 +274,9 @@ void() EMPGrenadeExplode =
 		else if (te.think == TeamFortress_DetpackExplode)
 		{
 			//te.solid = SOLID_NOT;
-			te.nextthink = time + 225 * random() + 30; //WK Scramble the detpack's timer. :)
+			local float rnd = (dist * (0.6 + random() * 0.4)) / 240;
+			te.nextthink = time + 1 + 120 * rnd*rnd; //chance of either exploding or lengthening timer
+			
 			dremove(te.oldenemy); // Countdown ent
 		}
 		// Pipebomb?
@@ -255,24 +284,25 @@ void() EMPGrenadeExplode =
 		{
 			te.nextthink = time + 0.1 + random();
 		}
-		// Mine?
-		else if (te.classname == "grenade" && te.netname == "land_mine")
+		// Mine/grenade?
+		else if (te.classname == "grenade")
 		{
-			te.think = GuerillaExplode;
-			te.nextthink = time + 0.1;
+			if (te.netname == "land_mine")
+				te.think = GuerillaExplode;
+			te.nextthink = time + 0.1 + random();
 		}
-		// Building?
-		else if (IsBuilding(te)) {
-			total_exp = total_exp + 120;
-			TF_T_Damage(te,self,self.owner, 120, 0, TF_TD_OTHER);
+		// just hurt dispensers now
+		else if (te.classname == "building_dispenser") {
+			TF_T_Damage(te, self, self.owner, 300 - dist, 0, TF_TD_OTHER);
 		}
 		// Ammobox?
 		else if (te.classname == "ammobox")
 		{
 			expsize = 0;
-			expsize = expsize + (te.ammo_shells * 0.75);
-			expsize = expsize + ((te.ammo_rockets * 0.75) * 2);
-			expsize = expsize + ((te.ammo_cells * 0.75) * 2);
+			expsize = expsize + (te.ammo_rockets * 3);
+			expsize = expsize + (te.ammo_cells * 0.75);
+
+			expsize *= mult;
 
 			if (expsize > 0)
 			{
@@ -301,49 +331,80 @@ void() EMPGrenadeExplode =
 		{
 			expsize = 0;
 			// calculate explosion size
-			expsize = expsize + (te.ammo_shells * 0.75);
-			expsize = expsize + ((te.ammo_rockets * 0.75) * 2);
-			if (!(te.weapons_carried & WEAP_SPANNER || te.touch == BackpackTouch))
-				expsize = expsize + (te.ammo_cells * 0.75);
+			expsize = expsize + te.ammo_rockets * 3; // ouch, this hurts
+			// < 200 cells for eng = metal, so don't explode
+			if (!(te.weapons_carried & WEAP_SPANNER) || te.touch == BackpackTouch)
+				expsize += te.ammo_cells;
+			else
+				expsize += ceil(te.ammo_cells * (1 - 200 / te.maxammo_cells));
+
+			if (te.classname == "player")
+			{
+				if (te.tp_grenades_1 == GR_TYPE_MIRV)
+					expsize += te.no_grenades_1 * 100; // arggh, lots of damage
+				if (te.tp_grenades_2 == GR_TYPE_MIRV)
+					expsize += te.no_grenades_2 * 100; // gotta get hwguys somehow
+			}
+
+			expsize *= mult;
+			
+			if (te.is_detpacking || te.is_toffingadet) // detpack go off in yo face
+				expsize += 300;
 
 			if (expsize > 0)
 			{
 				// Damage player and explode
-				deathmsg = DMSG_GREN_EMP;
+				deathmsg = DMSG_GREN_EMP_RADIUS;
 				total_exp = total_exp + expsize;
-				//WK Make players not explode radially!
-				if (te.touch == BackpackTouch) 
-					T_RadiusDamage (te, self.owner, expsize / 2, te); //WK Dampen backpack damage
+				//WK Make players not explode radially! GR why not?
 				if (te.touch != BackpackTouch)
 				{
-					TF_T_Damage (te, self, self.owner, expsize, 0, TF_TD_EXPLOSION);
+
+					T_RadiusDamage (te, self.owner, expsize * 0.5, te);
+
+					deathmsg = DMSG_GREN_EMP;
+					TF_T_Damage (te, te, self.owner, expsize, 0, TF_TD_EXPLOSION);
 
 					// Remove ammo
-					te.ammo_shells = ceil(te.ammo_shells * 0.25);
-					te.ammo_rockets = ceil(te.ammo_rockets * 0.25);
-					if (!(te.cutf_items & CUTF_SENTRYGUN || te.tf_items & NIT_TESLA))
-						te.ammo_cells = ceil(te.ammo_cells * 0.25);
+					te.ammo_rockets = ceil(te.ammo_rockets * (1 - mult));
+					if (!(te.weapons_carried & WEAP_SPANNER))
+						te.ammo_cells = ceil(te.ammo_cells * (1 - mult));
+					else  // cells under 200 max don't count for eng
+					{
+						te.ammo_cells *= 1 - 200 / te.maxammo_cells;
+						te.ammo_cells *= 1 - mult;
+						te.ammo_cells = ceil(te.ammo_cells * te.maxammo_cells / 200);
+					}
 
+					if (te.tp_grenades_1 == GR_TYPE_MIRV)
+						te.no_grenades_1 = ceil(te.no_grenades_1 *(1 - mult));
+					if (te.tp_grenades_2 == GR_TYPE_MIRV)
+						te.no_grenades_2 = ceil(te.no_grenades_2 * (1 - mult));
+					
 					if (te.classname=="player")
-                    {
-                        // Update console
+					{
+					// Update console
 					    oldself = self;
 					    self = te;
 					    W_SetCurrentAmmo();
 					    self = oldself;
                         
-        				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-                        WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-                        WriteCoord (MSG_MULTICAST, te.origin_x);
-                        WriteCoord (MSG_MULTICAST, te.origin_y);
-                        WriteCoord (MSG_MULTICAST, te.origin_z);
-                        multicast (te.origin, MULTICAST_PHS);
-                    }
+        					WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+						WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+						WriteCoord (MSG_MULTICAST, te.origin_x);
+						WriteCoord (MSG_MULTICAST, te.origin_y);
+						WriteCoord (MSG_MULTICAST, te.origin_z);
+						multicast (te.origin, MULTICAST_PHS);
+					}
 				}
 				else
 				{
-					te.think = SUB_Remove;
-					te.nextthink = time + 0.1;
+					T_RadiusDamage(te, self.owner, expsize / 2, te);
+					if (te.classname != "player")
+					{
+						te.think = SUB_Remove;
+						te.nextthink = time + 0.1;
+					}
 				}
 
 				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
@@ -375,7 +436,13 @@ if (total_exp > 0) {//CH Thanks Slice for the idea :)
 		CamProjectileLockOff();
 #endif
 
-	dremove(self);
+	self.nextthink = time + 0.5;
+	self.think = EMPScramble;
+
+	self.movetype = MOVETYPE_NONE;
+	self.solid = SOLID_NOT;
+	setmodel(self, "");
+	setorigin(self, self.origin);
 };
 
 
@@ -466,53 +533,10 @@ void() TeamFortress_EngineerBuild =
 
 float(entity obj, entity builder) CheckArea =
 {
-	local vector src, end;
-	local float pos;
+	local integer pos;
 
-	// Check the origin
-	pos = pointcontents(obj.origin);
-	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
-		return FALSE;
-
-	// Check the surrounding area
-	src_x = obj.origin_x + obj.maxs_x + 16;
-	src_y = obj.origin_y + obj.maxs_y + 16;
-	src_z = obj.origin_z + obj.maxs_z + 16;  // check upwards more
-
-	pos = pointcontents(src);
-	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
-		return FALSE;
-
-	end_x = obj.origin_x + obj.mins_x - 16;
-	end_y = obj.origin_y + obj.mins_y - 16;
-	end_z = obj.origin_z + obj.mins_z - 16;
-	traceline (src, end, TRUE, obj);
-	if (trace_fraction != 1)
-		return FALSE;
-
-	pos = pointcontents(end);
-	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
-		return FALSE;
-
-	// extend the size a little
-	src_x = obj.origin_x + obj.mins_x - 16;
-	src_y = obj.origin_y + obj.maxs_y + 16;
-	src_z = obj.origin_z + obj.maxs_z + 16;
-
-	pos = pointcontents(src);
-	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
-		return FALSE;
-
-	end_x = obj.origin_x + obj.maxs_x + 16;
-	end_y = obj.origin_y + obj.mins_y - 16;
-	end_z = obj.origin_z + obj.mins_z - 16;         // check downwards less
-
-	traceline (src, end, TRUE, obj);
-
-	if (trace_fraction != 1)
-		return FALSE;
-
-	pos = pointcontents(end);
+	// Check the hull
+	pos = entpointcontents(obj);
 	if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
 		return FALSE;
 
@@ -568,7 +592,7 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 		obj.mins = '-8 -8 0';
-		obj.maxs = '8 8 24';
+		obj.maxs = '8 8 40';
 
         #ifdef no_new_dispenser
         obj.mdl = "progs/disp.mdl";        
@@ -617,7 +641,7 @@ void(float objtobuild) TeamFortress_Build =
 //		obj.mins = '-16 -16 0'; //- OfN commented by
         obj.mins = '-16 -16 -25';
 //		obj.maxs = '16 16 48'; //WK 62 is better, but crashes?
-        obj.maxs = '16 16 23';
+        obj.maxs = '16 16 62';
 		//obj.mdl = "progs/newtesla.mdl";
         obj.mdl = "progs/coil.mdl";
 		obj.netname = "tesla";
@@ -697,7 +721,7 @@ void(float objtobuild) TeamFortress_Build =
 		} else if (trace_startsolid) {
 			checkmove (trace_endpos, obj.mins, obj.maxs, trace_endpos,
 					   MOVE_NORMAL, self);
-			printtrace (TRUE);
+			//printtrace (TRUE); // annoying
 			if (trace_startsolid) {
 				sprint (self, PRINT_HIGH, "Not enough room to build here\n");
 				dremove (obj);
@@ -840,7 +864,8 @@ void() TeamFortress_FinishedBuilding =
 		oldself.think = DispenserThink;
 		oldself.nextthink = time + 5;
 		oldself.th_die = Dispenser_Die;		// Death function
-		
+		oldself.th_pain = Dispenser_Pain;		
+
         #ifdef no_new_dispenser
         oldself.mdl = "progs/disp.mdl";		// Actual mdl
         #else
@@ -1171,6 +1196,16 @@ void() Dispenser_Explode =
     dremove(self.demon_one);
 
     dremove(self); // remove explosion timer for this dispenser
+};
+
+void(entity atk, float dmg) Dispenser_Pain =
+{
+	if (self.health < 0)
+	{
+		// give credit to the guy blowing up the disp
+		self.martyr_enemy = atk;
+		self.is_malfunctioning = 0;
+	}
 };
 
 void() Dispenser_Die =

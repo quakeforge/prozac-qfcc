@@ -118,6 +118,18 @@ void() player_touch =
 {
 	local entity Bio;
 
+	// are we stuck inside another object?
+	if (other.solid != SOLID_BSP && hullpointcontents(other, self.mins, self.maxs, self.origin) == CONTENTS_SOLID)
+	{
+		deathmsg = DMSG_PHYSICS;
+		if (other.takedamage) // kill it! aaah!
+			TF_T_Damage(other, NIL, NIL, other.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		else
+			TF_T_Damage(self, NIL, NIL, other.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+
+		return;
+	}
+
 	// Spies and Scouts can uncloak enemy spies
 	// WK Or those with Spy kits & Scanners
 	if (invis_only == FALSE && (self.cutf_items & CUTF_SPY_KIT || other.cutf_items & CUTF_SPY_KIT))

@@ -20,6 +20,7 @@ void() T_TranqDartTouch;
 void() TranquiliserTimer;
 void() TranquiliserTimer2; //CH for demons
 void(entity spy) Spy_RemoveDisguise;
+float(entity p) Return_Custom_Skins;
 
 // Spy Feign Death Handling
 $cd /raid/quake/id1/models/player_4
@@ -581,8 +582,14 @@ void(float class) TeamFortress_SpyChangeSkin =
 {
 	local entity te;
 
+	if (!self.is_undercover)
+	{
+		self.undercover_team = 0;
+		self.undercover_skin = 0;
+	}
+
 	// If they're returning their skin to their Spy, just reset it
-	if (class == PC_SPY && self.playerclass == PC_SPY) //WK
+	if (class == PC_SPY && (Return_Custom_Skins(self) == PC_SPY || self.playerclass == PC_SPY)) //WK
 	{
 		sprint (self, PRINT_HIGH, "Skin reset.");
 		self.undercover_skin = 0;
@@ -590,7 +597,6 @@ void(float class) TeamFortress_SpyChangeSkin =
 
 		if (self.undercover_team == 0)
 		{
-//WK			self.items = self.items & ~IT_INVISIBILITY;
 			self.is_undercover = 0;
 		}
 		return;
@@ -616,6 +622,12 @@ void(float teamno) TeamFortress_SpyChangeColor =
 {
 	local entity te;
 	local float tc, tc2;
+
+	if (!self.is_undercover) // prevent confusion
+	{
+		self.undercover_skin = 0;
+		self.undercover_team = 0;
+	}
 
 	// If they're returning their color to their own team, just reset it
 	if (teamno == self.team_no)

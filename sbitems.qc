@@ -3,6 +3,7 @@
 #include "defs.qh"
 
 // Internal prototypes
+integer(entity e) entpointcontents;
 void() AntiGravGrenadeExplode; // antigrav goes boom
 void() AntiGravGrenadeTimer; // controls antigrav decay or whatever you call it
 void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAntiGrav; // bang
@@ -212,7 +213,6 @@ void() ThrowC4Det =
 	newmis.owner = user;
 	newmis.movetype = MOVETYPE_BOUNCE;
 	newmis.solid = SOLID_BBOX;
-	newmis.solid = SOLID_TRIGGER;
 	newmis.classname = "detpack";
 
     // for identify it on airfist pushable? routine
@@ -320,7 +320,8 @@ void() MotionSensorTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
-	if (pointcontents(self.origin) == CONTENTS_SKY || pointcontents(self.origin + '0 0 18') == CONTENTS_SKY || pointcontents(self.origin) == CONTENTS_SOLID)
+	local integer pc = entpointcontents(self);
+	if (pc == CONTENTS_SOLID || pc == CONTENTS_SKY)
 	{
 		MotionSensorDie();
 		return;
@@ -344,7 +345,7 @@ void() MotionSensorIdle =
 	if (MotionSensorFindTarget())
 		self.nextthink = time + 2.4; //if found wait 2.5 sec before do another check
 	else
-		self.nextthink = time + 0.05; // lots per sec
+		self.nextthink = time + 0.2; // lots per sec GR No, too hard to get past
 	self.think = MotionSensorIdle;
 };
 
@@ -375,7 +376,7 @@ float() MotionSensorFindTarget =
 
 		if (!client)
 			gotone = FALSE;
-		else if (!Pharse_Client(client, self, 1, trange, 0, 1))
+		else if (!Pharse_Client(client, self, 1, trange, 2, 1))
 			gotone = FALSE;
 
 		loopc = loopc + 1;
@@ -391,6 +392,10 @@ float() MotionSensorFindTarget =
 	
 	// Found a Target
 	self.enemy = client;
+
+	if (self.enemy.cutf_items & CUTF_JAMMER) // jammer makes it hard
+	{
+	}
 	
     /*if (self.enemy.classname != "player") // OfN - wtf does this?
 	{
@@ -449,13 +454,13 @@ void() SensorBeAlarmed =
 		if (!(self.is_malfunctioning & SCREWUP_ONE))
 			sound(self, CHAN_WEAPON, "misc/enemy.wav", 1, ATTN_NORM);
 
-		self.nextthink = 2.4;
+		self.nextthink = time + 2.4;
 	}
 	else
 	{
 		self.think = MotionSensorIdle;
 		self.effects = 0;
-		self.nextthink = 1;
+		self.nextthink = time + 0.5;
         ///
         self.skin=1;
 	}

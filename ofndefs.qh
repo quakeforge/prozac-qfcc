@@ -89,3 +89,5 @@
 #define pushable_fiend
 
 #define HUNTED_YELLOWTEAM_FACTOR 0.5 // this multiplied to current red players is max for yellow team on huntedr
+#define SENSOR_MINSPEED 100 // minimum speed someone has to be moving to be picked up by sense.
+#define AIRGUN_STRENGTH 500 // strength of airfist (was 1000), same as recoil.
