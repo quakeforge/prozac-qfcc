@@ -1378,6 +1378,7 @@ void() respawn =
 		setspawnparms (self);
 		// respawn		
 		PutClientInServer ();
+		TeamFortress_SetSpeed (self);
 	}
 	else if (deathmatch)
 	{
@@ -1387,6 +1388,7 @@ void() respawn =
 		SetNewParms ();
 		// respawn		
 		PutClientInServer ();
+		TeamFortress_SetSpeed (self);
 	}
 	else
 	{	// restart the entire server
