@@ -2086,7 +2086,7 @@ void(entity Goal, entity AP) DoTriggerWork =
 		{
 			t = find(t, targetname, Goal.killtarget);
 
-			if (t != world)
+			if (t != world && t != Goal)
 				remove(t);
 
 		} while ( t != world );
