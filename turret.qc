@@ -3,7 +3,7 @@
 
 This file contains all information required
 to handle turrets. Some changes may have
-to be made in ClientObituary().
+to be made in Obituary().
 =============================*/
 
 float TURRET_INSTANT_FIRE 	= 1;

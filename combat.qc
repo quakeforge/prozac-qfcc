@@ -12,7 +12,7 @@ All the functions pertaining to killing people
 void(string gibname, float dm) ThrowGib;	
 void() T_MissileTouch;
 void() info_player_start;
-void(entity targ, entity attacker) ClientObituary;
+void(entity targ, entity attacker) Obituary;
 
 // TeamFortress Prototypes
 void(entity Goal, entity AP, float addb) DoResults;
@@ -237,7 +237,7 @@ void(entity targ, entity attacker) Killed =
 		WriteByte (MSG_ALL, SVC_KILLEDMONSTER);
 	}
 
-	ClientObituary(self, attacker);
+	Obituary(self, attacker);
 	
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
