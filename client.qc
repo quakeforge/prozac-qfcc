@@ -696,6 +696,41 @@ void() DecodeLevelParms =
 			ent.nextthink = time + autoteam_time;
 			ent.think = autoteam_think;
 		}
+
+		st = infokey (world, "improve_respawns");
+		if (st == "1" || st == "on") {
+			local entity ent = world;
+			while (ent = find (ent, classname, "info_tfgoal")) {
+				if (ent.ammo_shells && ent.ammo_nails
+					&& ent.ammo_rockets && ent.ammo_cells
+					&& ent.armorvalue && ent.health) {
+					if (ent.ammo_shells < 200)
+						ent.ammo_shells = 200;
+					if (ent.ammo_nails < 200)
+						ent.ammo_nails = 200;
+					if (ent.ammo_rockets < 200)
+						ent.ammo_rockets = 200;
+					if (ent.ammo_cells < 200)
+						ent.ammo_cells = 200;
+					if (ent.ammo_medikit < 100)
+						ent.ammo_medikit = 100;
+					if (ent.ammo_detpack < 2)
+						ent.ammo_detpack = 2;
+					if (ent.armortype < 0.8)
+						ent.armortype = 0.8;
+					if (ent.armorvalue < 300)
+						ent.armorvalue = 300;
+					if (ent.health < 200)
+						ent.health = 200;
+					if (ent.wait > 0)
+						ent.wait = 0.5;
+					if (ent.no_grenades_1 < 2)
+						ent.no_grenades_1 = 2;
+					if (ent.no_grenades_2 < 2)
+						ent.no_grenades_2 = 2;
+				}
+			}
+		}
 	}
 
 	if (parm11)
