@@ -996,7 +996,8 @@ void() GotoNextMap =
 
 		nextlevel = nextlevel + 1;  // next level
 		sl = ftos(nextlevel);
-		localcmd("serverinfo n ");
+		localcmd("serverinfo n \"\"\n"); // use localinfo instead
+		localcmd("localinfo n ");
 		localcmd(sl);
 		localcmd("\n");
         
