@@ -48,107 +48,86 @@ void() Menu_Army =
 
 void() Menu_Army1 =
 {
-	local float readytime,temp;
-    local string st,st2,st3;
+    local string st;
+	st = "";
 
-    if (self.army_ready==FALSE)
-    {           
-        local entity ArmyTimer;
-        ArmyTimer=GetArmyTimer(self);
-
-        readytime=fabs(floor(ArmyTimer.nextthink - time));
-        if (readytime<60)
-        {
-          st=ftos(readytime);
-          st2=" seconds";
-        }
-        else
-        {
-          temp=floor(readytime/60);//+1;
-          if (temp>1)
-            st2=" minutes";
-          else
-            st2=" minute";
-
-          st=ftos(floor(readytime/60));//+1);
-        }
-    }
-   
     if (self.job & JOB_DEMON_OUT)
     {
-/*        if (self.demon_one.goalentity==self)
-            st="—.. Stay there!           ";
-        else
-            st="—.. Follow me!            ";*/ 
-            
-        if (self.demon_one.martyr_enemy==world && self.demon_one.demon_two==world)
-            st3 = "  “.. Set primary χαωποιξτ    \n  ”.. Set secondary χαωποιξτ  ";
-        
-        else if (self.demon_one.martyr_enemy!=world && self.demon_one.demon_two==world && visible2(self.demon_one,self.demon_one.martyr_enemy))
-            st3 = " “.. Set primary χαωποιξτ    \n  ”.. Set secondary χαωποιξτ  ";
-        else if (self.demon_one.martyr_enemy!=world && self.demon_one.demon_two==world)
-            st3 = "‹ “.. Set primary χαωποιξτ    \n  ”.. Set secondary χαωποιξτ  ";
+		custom_demon_name(self.demon_one);
+		st += self.demon_one.undercover_name; // FIXME: blah, name includes the space
+		st += self.demon_one.netname;
+		st += "\n\n";
 
-        else if (self.demon_one.martyr_enemy==world && self.demon_one.demon_two!=world && visible2(self.demon_one,self.demon_one.demon_two))
-            st3 = "  “.. Set primary χαωποιξτ    \n ”.. Set secondary χαωποιξτ  ";
-        else if (self.demon_one.martyr_enemy==world && self.demon_one.demon_two!=world)
-            st3 = "  “.. Set primary χαωποιξτ    \n‹ ”.. Set secondary χαωποιξτ  ";
-        
-        else if (self.demon_one.martyr_enemy!=world && self.demon_one.demon_two!=world && visible2(self.demon_one,self.demon_one.demon_two) && visible2(self.demon_one,self.demon_one.martyr_enemy))
-            st3 = " “.. Set primary χαωποιξτ    \n ”.. Set secondary χαωποιξτ  ";
-        else if (self.demon_one.martyr_enemy!=world && self.demon_one.demon_two!=world && visible2(self.demon_one,self.demon_one.demon_two))
-            st3 = "‹ “.. Set primary χαωποιξτ    \n ”.. Set secondary χαωποιξτ  ";
-        else if (self.demon_one.martyr_enemy!=world && self.demon_one.demon_two!=world && visible2(self.demon_one,self.demon_one.martyr_enemy))
-            st3 = " “.. Set primary χαωποιξτ    \n‹ ”.. Set secondary χαωποιξτ  ";
-        else if (self.demon_one.martyr_enemy!=world && self.demon_one.demon_two!=world)
-            st3 = "‹ “.. Set primary χαωποιξτ    \n‹ ”.. Set secondary χαωποιξτ  ";
+		if (self.army_ready)
+			st += " \<Action\>: \^(soldier waiting\^)\n\n";
+		else
+			st = " \<Action\>:                  \n\n";
 
-        st2=" Αγτιοξ:                  \n\n";
-        
-        if (self.army_ready == TRUE)
-            st2=" Αγτιοξ: Όsoldier waitingΎ\n\n";
+		if (self.demon_one.martyr_enemy)
+			if (visible2 (self.demon_one, self.demon_one.martyr_enemy))
+				st += "\x8b ";
+			else
+				st += "\x0b ";
+		else
+			st += "  ";
+		st += "\x93.. Set primary \<waypoint\>    \n";
+		if (self.demon_one.demon_two)
+			if (visible2 (self.demon_one, self.demon_one.demon_two))
+				st += "\x8b ";
+			else
+				st += "\x0b ";
+		else
+			st += "  ";
+		st += "\x94.. Set secondary \<waypoint\>  \n";
 
-        custom_demon_name(self.demon_one);
+		st += self.demon_one.penance_time == 1 ? "* " : "  ";
+		st += "\x95.. Follow me!              \n";
+		st += self.demon_one.penance_time == 2 ? "* " : "  ";
+		st += "\x96.. Stay there!             \n";
+		st += self.demon_one.penance_time == 3 ? "* " : "  ";
+		st += "\x97.. Use your waypoints!     \n\n";
 
-//1 “
-//2 ”
-//3 •
-//4 –
-//5 —
-        
-        
-        //CenterPrint5(self, self.demon_one.undercover_name, self.demon_one.netname,"\n\n", st2, "\n\n”.. Soldier inventory     \n\n•.. Set primary χαωποιξτ  \n–.. Set secondary χαωποιξτ\n—.. Follow me!            \n.. Stay there!           \n\n®® Detonate soldier brain\n\n’.. Ξοτθιξη               \n");
-        
-        local string st4;
-        st4="\n•.. Follow me!            \n–.. Stay there!           \n—.. Use your waypoints!   ";
-        
-        if (self.demon_one.penance_time==1)
-            st4="\n* •.. Follow me!              \n–.. Stay there!           \n—.. Use your waypoints!   ";
-        else if (self.demon_one.penance_time==2)
-            st4="\n•.. Follow me!            \n* –.. Stay there!             \n—.. Use your waypoints!   ";
-        else if (self.demon_one.penance_time==3)
-            st4="\n•.. Follow me!            \n–.. Stay there!           \n* —.. Use your waypoints!     ";
-        
-        CenterPrint7(self, self.demon_one.undercover_name, self.demon_one.netname,"\n\n", st2, 
-st3,st4,"\n\n®® Detonate soldier brain\n\n’.. Ξοτθιξη               \n");
+		st += "\x9a\<..\> Detonate soldier brain\n";
+		st += "\x9b.. Main Soldier Menu     \n";
+		st += "\x92.. \<Nothing\>               \n";
+
+        CenterPrint (self, st);
         return;
     }
     else
     {
         if (self.army_ready==TRUE)
         {
-            CenterPrint(self, " Αγτιοξ:                  \n\n“.. Teleport soldier      \n\n’.. Ξοτθιξη               \n\n\nReady for teleporting!");
+            st += " \<Action\>:                  \n\n";
+			st += "“.. Teleport soldier      \n\n";
+			st += "’.. \<Nothing\>               \n\n\n";
+			st += "Ready for teleporting!";
+			CenterPrint (self, st);
         }
         else
         {
-            CenterPrint3(self, " Αγτιοξ:                  \n\n\n\n’.. Ξοτθιξη               \n\n\nPreparing teleporting...\n\nΤινε μεζτ: ",st,st2);
+            st += " \<Action\>:                  \n\n\n\n";
+			st += "’.. \<Nothing\>               \n\n\n";
+			st += "Preparing teleporting...\n\n";
+			st += "\<Time\> \<left\>: ";
+
+			local float readytime = fabs (floor (GetArmyTimer(self).nextthink - time));
+			local float minutes = floor (readytime / 60);
+			local float seconds = readytime % 60;
+			if (minutes)
+				st += ftos(minutes) + " minute" + (minutes == 1 ? ", " : "s, ");
+			st += ftos(seconds) + " second" + (seconds == 1 ? ".\n" : "s.\n");
+
+			CenterPrint (self, st);
         }
 
     }
+};
 
-  //ideas:
+/*
+  ideas:
   
-  //((centered soldier status
+  ((centered soldier status
   // \n attacking)) ((xxxx)) - seeking xxxx - standing - on patrol|walking - following you - following u (forced)//1 prt (2 vars, one for displaying and keep preference and the other for ai)
 
   //((1.. tactic mode:        normal - agressive - static // 1 prt))
@@ -191,89 +170,80 @@ st3,st4,"\n\n®® Detonate soldier brain\n\n’.. Ξοτθιξη               \n");
   // * primary
 
   //in waypoint donothing, if soldier already have assinged the corresponding waypoint to another entity dremove(self);
-};
+*/
+
 
 void() Menu_Army2 =
 {
-    local string st,st2,st3,st4,st5,st6,st7;
-    
-    st3="";
+    local string st;
+	local string st_range;
 
-    if (self.demon_one.enemy!=world && visible2(self.demon_one,self.demon_one.enemy))
-    {
-        st2=" Σομδιες Στατυσ \n\nAttacking ";
-        st3=GetEnemyName(self.demon_one.enemy);
-    }
+	st = "";
+
+	st += "\x9d\x9f \<Soldier Status\> \x9d\x9f\n\n";
+
+    if (self.demon_one.enemy != world && visible2 (self.demon_one, self.demon_one.enemy))
+        st += "Attacking " + GetEnemyName (self.demon_one.enemy) + "\n\n";
     else if (self.demon_one.enemy!=world)
-    {
-        st2=" Σομδιες Στατυσ \n\nSeeking ";
-        st3=GetEnemyName(self.demon_one.enemy);
-    }
-    else if (self.demon_one.goalentity==self)
-        st2=" Σομδιες Στατυσ \n\nFollowing You";
-    else if (self.demon_one.goalentity==world)
-        st2=" Σομδιες Στατυσ \n\nStanding";
-    else if (self.demon_one.goalentity!=world)
-        st2=" Σομδιες Στατυσ \n\nOn Patrol";    
+        st += "Seeking " + GetEnemyName (self.demon_one.enemy) + "\n\n";
+    else if (self.demon_one.goalentity == self)
+        st += "Following You\n\n";
+    else if (self.demon_one.goalentity == world)
+        st += "Standing\n\n";
+    else if (self.demon_one.goalentity != world)
+        st += "On Patrol\n\n";
 
-    st5=""; // this will be static range
-    
-   if (self.demon_one.is_malfunctioning==0)
-    {
-        if (self.demon_one.is_detpacking==0 && self.demon_one.is_toffingadet==1)
-            st4="\n\n“.. Ταγτιγ Νοδε:    normal\n”.. Εξηαηε Εξενω:   no    \n•.. Οξ Οβσταγμε:    stop  \n";
-        else if (self.demon_one.is_detpacking==1 && self.demon_one.is_toffingadet==1)
-            st4="\n\n“.. Ταγτιγ Νοδε:    normal\n”.. Εξηαηε Εξενω:   yes   \n•.. Οξ Οβσταγμε:    stop  \n";
-        else if (self.demon_one.is_detpacking==0 && self.demon_one.is_toffingadet==0)
-            st4="\n\n“.. Ταγτιγ Νοδε:    normal\n”.. Εξηαηε Εξενω:   no    \n•.. Οξ Οβσταγμε:    jump  \n";
-        else if (self.demon_one.is_detpacking==1 && self.demon_one.is_toffingadet==0)
-            st4="\n\n“.. Ταγτιγ Νοδε:    normal\n”.. Εξηαηε Εξενω:   yes   \n•.. Οξ Οβσταγμε:    jump  \n";
-    }
-    else if (self.demon_one.is_malfunctioning==1)
-    {
-        if (self.demon_one.is_detpacking==0 && self.demon_one.is_toffingadet==1)
-            st4="\n\n“.. Ταγτιγ Νοδε:    seek  \n”.. Εξηαηε Εξενω:   no    \n•.. Οξ Οβσταγμε:    stop  \n";
-        else if (self.demon_one.is_detpacking==1 && self.demon_one.is_toffingadet==1)
-            st4="\n\n“.. Ταγτιγ Νοδε:    seek  \n”.. Εξηαηε Εξενω:   yes   \n•.. Οξ Οβσταγμε:    stop  \n";
-        else if (self.demon_one.is_detpacking==0 && self.demon_one.is_toffingadet==0)
-            st4="\n\n“.. Ταγτιγ Νοδε:    seek  \n”.. Εξηαηε Εξενω:   no    \n•.. Οξ Οβσταγμε:    jump  \n";
-        else if (self.demon_one.is_detpacking==1 && self.demon_one.is_toffingadet==0)
-            st4="\n\n“.. Ταγτιγ Νοδε:    seek  \n”.. Εξηαηε Εξενω:   yes   \n•.. Οξ Οβσταγμε:    jump  \n";
-    }
-    else if (self.demon_one.is_malfunctioning==2)
-    {
-        if (self.demon_one.army_ready == 0)
-           st5="–.. Στατιγ Òαξηε:   none  \n";        
-        else if (self.demon_one.army_ready == 1)
-           st5="–.. Στατιγ Òαξηε:   small \n";
-        else if (self.demon_one.army_ready == 2)
-           st5="–.. Στατιγ Òαξηε:   medium\n";
-        else if (self.demon_one.army_ready == 3)
-           st5="–.. Στατιγ Òαξηε:   large \n";
+	st += "\x93.. Tactic Mode:    ";
+	if (self.demon_one.is_malfunctioning == 0)
+		st += "\<normal\>\n";
+    else if (self.demon_one.is_malfunctioning == 1)
+		st += "\<seek  \>\n";
+    else if (self.demon_one.is_malfunctioning == 2)
+		st += "\<static\>\n";
 
-        if (self.demon_one.is_detpacking==0 && self.demon_one.is_toffingadet==1)
-            st4="\n\n“.. Ταγτιγ Νοδε:    static\n”.. Εξηαηε Εξενω:   no    \n•.. Οξ Οβσταγμε:    stop  \n";
-        else if (self.demon_one.is_detpacking==1 && self.demon_one.is_toffingadet==1)
-            st4="\n\n“.. Ταγτιγ Νοδε:    static\n”.. Εξηαηε Εξενω:   yes   \n•.. Οξ Οβσταγμε:    stop  \n";
-        else if (self.demon_one.is_detpacking==0 && self.demon_one.is_toffingadet==0)
-            st4="\n\n“.. Ταγτιγ Νοδε:    static\n”.. Εξηαηε Εξενω:   no    \n•.. Οξ Οβσταγμε:    jump  \n";
-        else if (self.demon_one.is_detpacking==1 && self.demon_one.is_toffingadet==0)
-            st4="\n\n“.. Ταγτιγ Νοδε:    static\n”.. Εξηαηε Εξενω:   yes   \n•.. Οξ Οβσταγμε:    jump  \n";
-    }
-    
-   if (self.demon_one.num_mines==0)
-        st6=".. Òεποςτσ:        all   \n\n™.. Inventory  ’.. Ξοτθιξη\n\nΝαψ ΘΠ: ";
-    else if (self.demon_one.num_mines==1) 
-        st6=".. Òεποςτσ:        most  \n\n™.. Inventory  ’.. Ξοτθιξη\n\nΝαψ ΘΠ: ";
-    else if (self.demon_one.num_mines==2) 
-        st6=".. Òεποςτσ:        some  \n\n™.. Inventory  ’.. Ξοτθιξη\n\nΝαψ ΘΠ: ";
+	st += "\x94.. Engage Enemy:   ";
+	if (self.demon_one.is_detpacking)
+		st += "\<yes   \>\n";
+	else
+		st += "\<no    \>\n";
+
+	st += "\x95.. On Obstacle:    ";
+	if (self.demon_one.is_toffingadet) // FIXME: Eww, what a horrible variable name
+		st += "\<stop  \>\n";
+	else
+		st += "\<jump  \>\n";
+
+	if (self.demon_one.is_malfunctioning == 2) {
+		st += "\x96.. Static Range:   ";
+		if (self.demon_one.army_ready == 0)
+			st += "\<none  \>\n";
+		else if (self.demon_one.army_ready == 1)
+			st += "\<small \>\n";
+		else if (self.demon_one.army_ready == 2)
+			st += "\<medium\>\n";
+		else if (self.demon_one.army_ready == 3)
+			st += "\<large \>\n";
+	}
+
+	st += "\x98.. Reports:        ";
+	if (self.demon_one.num_mines==0)
+		st += "\<all   \>\n";
+	else if (self.demon_one.num_mines==1) 
+		st += "\<most  \>\n";
+	else if (self.demon_one.num_mines==2) 
+        st += "\<some  \>\n";
     else if (self.demon_one.num_mines==3) 
-        st6=".. Òεποςτσ:        none  \n\n™.. Inventory  ’.. Ξοτθιξη\n\nΝαψ ΘΠ: ";                                     
+        st += "\<none  \>\n";
+
+	st += "\x99.. Inventory             \n\n";
+	st += "\x9b.. Main Soldier Menu     \n";
+	st += "\x92.. \<Nothing\>               \n\n";
+	st += "\<Max HP\>: ";
                                      
                                      // "™.. Soldier inventory...  "
-    st7=ftos(floor(self.demon_one.max_health));
+    st += ftos (floor (self.demon_one.max_health));
 
-    CenterPrint7(self,st,st2,st3,st4,st5,st6,st7);
+    CenterPrint (self, st);
 };
 
 void(float inp) Menu_Army_Input1;
@@ -283,10 +253,13 @@ void(float inp) Menu_Army_Input =
 {
     if (self.job & JOB_DEMON_OUT)
     {
-        if (self.demon_one.is_haxxxoring == 1) Menu_Army_Input2(inp);
-        else Menu_Army_Input1(inp);        
+        if (self.demon_one.is_haxxxoring == 1)
+			Menu_Army_Input2(inp);
+        else
+			Menu_Army_Input1(inp);        
     }
-    else Menu_Army_Input1(inp);
+    else
+		Menu_Army_Input1(inp);
 };
 
 void(float inp) Menu_Army_Input2 =
@@ -335,42 +308,55 @@ void(float inp) Menu_Army_Input2 =
 
     if (inp == 3) // jump or stop??
     {
-        self.impulse = 0;
-        if (self.demon_one.is_toffingadet == 0) self.demon_one.is_toffingadet=1;
-        else self.demon_one.is_toffingadet=0;
+		self.impulse = 0;
+		if (self.demon_one.is_toffingadet == 0)
+			self.demon_one.is_toffingadet = 1;
+		else
+			self.demon_one.is_toffingadet = 0;
     }
 
     if (inp == 4 && self.demon_one.is_malfunctioning == 2) // static range, small mdeium or large
     {
-        self.impulse = 0;
-        self.demon_one.army_ready=self.demon_one.army_ready+1;
+		self.impulse = 0;
+		self.demon_one.army_ready += 1;
 
-        if (self.demon_one.army_ready > 3)
-        self.demon_one.army_ready=0;
-        return;
-    }  
+		if (self.demon_one.army_ready > 3)
+			self.demon_one.army_ready = 0;
+		return;
+	}  
 
 
     if (inp == 6)
     {
-        self.impulse = 0;
-        self.demon_one.num_mines=self.demon_one.num_mines+1;
+		self.impulse = 0;
+		self.demon_one.num_mines = self.demon_one.num_mines + 1;
 
-        if (self.demon_one.num_mines > 3)
-        self.demon_one.num_mines=0;
+		if (self.demon_one.num_mines > 3)
+			self.demon_one.num_mines = 0;
+		self.demon_one.is_haxxxoring = 0;
         return;
     }
 
     else if (inp == 7) // Army info
 	{
+		local entity oself;
+
         ResetMenu();
-        local entity oself;
-        oself=self;
-        self=self.demon_one;
+
+        oself = self;
+        self = self.demon_one;
         Grunty_StateInv();
-        self=oself;
+        self = oself;
+
 		self.impulse = 0;
         return;
+	}
+	if (inp == 9) {
+		self.current_menu = MENU_ARMY;
+		self.menu_count = MENU_REFRESH_RATE;
+		self.impulse = 0;
+		self.demon_one.is_haxxxoring = 0;
+		return;
 	}
 
 };
@@ -591,7 +577,13 @@ void(float inp) Menu_Army_Input1 =
 		self.impulse = 0;
     	return;
 	}
-
+	if (inp == 9) {
+		self.current_menu = MENU_ARMY;
+		self.menu_count = MENU_REFRESH_RATE;
+		self.impulse = 0;
+		self.demon_one.is_haxxxoring = 1;
+		return;
+    }
 };
 
 
@@ -904,6 +896,7 @@ string(entity sld) GetFriendlyMessage =
 
     if (rnum < 0.5)
       return "try to not shoot me when fighting enemy! heh\n";
-    else return "lets destroy the enemy!\n";
+    else
+		return "lets destroy the enemy!\n";
     //else return "Hope I don't crash the server\n";
 };

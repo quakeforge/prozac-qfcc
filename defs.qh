@@ -243,6 +243,7 @@
 #define TFSTATE_RL_LASER	 262144 //CH set when aiming laser with rl
 //SB
 #define TFSTATE_C4THROW			524288 // we're priming the detpack
+#define TFSTATE_ASSAULTCANNON	1048576 // we're firing an assault cannon
 
 
 // Defines used by TF_T_Damage (see combat.qc)

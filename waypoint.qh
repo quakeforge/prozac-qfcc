@@ -1,4 +1,5 @@
 boolean (entity ent, integer index) Waypoint_IsValid;
+integer (entity ent) Waypoint_Count;
 vector (entity ent, integer index) Waypoint_Get;
 void (entity ent, integer index, vector loc) Waypoint_Set;
 void (entity ent, vector loc) Waypoint_Append;

@@ -442,13 +442,12 @@ void() BerserkerKillTimer =
 {
 	if (!(self.tfstate & TFSTATE_CONCUSSIONED))
 		stuffcmd(self.owner, "v_idlescale 0\n");
-	
+
 	if (self.has_sensor)
 	{
 		deathmsg = DMSG_BERSERK;
-		TF_T_Damage(self.owner, self.owner, self.owner, self.owner.health, TF_TD_IGNOREARMOUR, TF_TD_OTHER);	
+		TF_T_Damage(self.owner, self.owner, self.owner, self.owner.health, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 	}
-
 
     self.job = self.job - (self.job & JOB_ACTIVE); //- OfN
     self.owner.is_abouttodie = FALSE;
@@ -463,7 +462,7 @@ void() JobBerserker =
 		return;
 	
 	newmis = spawn();
-	newmis.classname = "timer";
+	newmis.classname = "berserker_timer";
 	newmis.nextthink = time + BERSERK_TIME + 1;
 	newmis.think = BerserkerKillTimer;
 	newmis.owner = self;

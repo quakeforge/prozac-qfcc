@@ -1217,21 +1217,23 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 
 	if (self.current_weapon & WEAP_ASSAULT_CANNON)
 	{
-		direction = dir + crandom()*0.2*v_right + crandom()*0.1*v_up;
+		direction = dir;
+		direction += (crandom() + crandom()) * 0.08 * v_right;
+		direction += (crandom() + crandom()) * 0.05 * v_up;
 		traceline (src, src + direction*2048, FALSE, self); //WK 2048
 	}
 	else
-		traceline (src, src + dir*1024, FALSE, self); //WK 2048
-	puff_org = trace_endpos - dir*4;
+		traceline (src, src + dir * 1024, FALSE, self); //WK 2048
+	puff_org = trace_endpos - dir * 4;
 	puff_count = shotcount;
 
 	while (shotcount > 0)
 	{
-		direction = dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up;
+		direction = dir + crandom() * spread_x * v_right + crandom() * spread_y * v_up;
 		if (self.current_weapon & WEAP_ASSAULT_CANNON)
-			traceline (src, src + direction*2048, FALSE, self); //WK 2048
+			traceline (src, src + direction * 2048, FALSE, self); //WK 2048
 		else
-			traceline (src, src + direction*1024, FALSE, self); //WK 2048
+			traceline (src, src + direction * 1024, FALSE, self); //WK 2048
 		if (trace_fraction != 1.0)
 		{
 			if (self.current_weapon & WEAP_ASSAULT_CANNON) //WK Sinth's bugfix
@@ -3237,7 +3239,7 @@ void() W_Attack =
 			self.heat = 1;
 			makeImmune(self,time+2);
 			//self.immune_to_check = time + 2;
-			self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
+			self.tfstate = self.tfstate | TFSTATE_ASSAULTCANNON;
 			TeamFortress_SetSpeed(self);
  			player_assaultcannonup1();
 		}
@@ -4645,7 +4647,7 @@ void() W_WeaponFrame =
 	    self.fire_held_down = FALSE;
 
 		// Let him/her walk again
-		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
 		TeamFortress_SetSpeed(self);
 
 		player_run ();

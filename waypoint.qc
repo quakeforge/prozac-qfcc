@@ -29,6 +29,11 @@ boolean (entity ent, integer index) Waypoint_IsValid =
 	return index > 0 && index < ent.waypoint_count;
 };
 
+integer (entity ent) Waypoint_Count =
+{
+	return ent.waypoint_count;
+};
+
 vector (entity ent, integer index) Waypoint_Get =
 {
 	if (!Waypoint_IsValid (ent, index))

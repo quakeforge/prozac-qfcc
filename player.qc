@@ -575,7 +575,7 @@ void() player_assaultcannonup1   =[$nailatt1, player_assaultcannonup2  ]
 		// Let him/her walk again
 		//if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed()
         //{
-            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
 		    TeamFortress_SetSpeed(self);
         //}
 
@@ -617,7 +617,7 @@ void() player_assaultcannonup2   =[$nailatt1, player_assaultcannonup1  ]
 		// Let him/her walk again
 		//if (!self.is_haxxxoring) //- OfN already checked on TeamFortress_SetSpeed()
         //{
-            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+            self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
 		    TeamFortress_SetSpeed(self);
         //}
 
@@ -661,7 +661,7 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 	{
 		stuffcmd(self, "v_idlescale 0\n");
 		// Let him/her walk again
-        self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+        self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
         TeamFortress_SetSpeed(self);
     
 		self.weaponframe = 0;
@@ -697,7 +697,7 @@ void() player_assaultcannon2   =[$nailatt2, player_assaultcannon1  ]
 	{
 		stuffcmd(self, "v_idlescale 0\n");
 		// Let him/her walk again
-	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
 	    TeamFortress_SetSpeed(self);
     
 		self.weaponframe = 0;
@@ -736,7 +736,7 @@ void() player_assaultcannondown1   =[$nailatt1, player_assaultcannondown1  ]
 	    self.fire_held_down = FALSE;
 
 		// Let him/her walk again
-	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+	    self.tfstate = self.tfstate - (self.tfstate & TFSTATE_ASSAULTCANNON);
 	    TeamFortress_SetSpeed(self);
      
 		if (self.ammo_shells < 1 || self.ammo_cells < 6)

@@ -1641,9 +1641,13 @@ void(entity p) TeamFortress_SetSpeed =
 			p.maxspeed = p.maxspeed + 200;
 	}
 
-		stuffcmd(p,"cl_backspeed 1000\n");
-		stuffcmd(p,"cl_forwardspeed 1000\n");
-		stuffcmd(p,"cl_sidespeed 1000\n");
+	// 8th, check if they're firing an Assault Cannon
+	if (p.tfstate & TFSTATE_ASSAULTCANNON)
+		p.maxspeed /= 8;
+
+	stuffcmd(p,"cl_backspeed 1000\n");
+	stuffcmd(p,"cl_forwardspeed 1000\n");
+	stuffcmd(p,"cl_sidespeed 1000\n");
 };
 
 //=========================================================================
