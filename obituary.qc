@@ -741,7 +741,7 @@ void (entity targ, entity attacker) Obituary_Player_by_Player =
 		else if (deathmsg == DMSG_GREN_EMP)
 			deathstring = " explodes his ammo and body\n";
 		else if (deathmsg == DMSG_GREN_EMP_RADIUS)
-			deathstring = " blows himself up with another player's ammo\n";
+			deathstring = " blows himself up with someone else's ammo\n";
 		else if (deathmsg == DMSG_GREN_FLASH)
 			deathstring = " is charred by his own flash grenade\n";
 		else if (deathmsg == DMSG_GREN_EMP_AMMO)

@@ -1834,6 +1834,7 @@ void() PutClientInServer =
 	self.show_hostile = 0;
 	self.is_malfunctioning = 0;
 	self.is_abouttodie = 0;
+	self.mangle = '0 0 0';
 
     // OfN
     self.has_holo = 0;
@@ -2700,6 +2701,8 @@ void() PlayerPreThink =
 		return;
 	}
 
+	self.v_angle += self.mangle;
+
 	if (self.undercover_team || self.undercover_skin || self.is_undercover)
 	{
 		if (self.effects & EF_ANYGLOW)
@@ -3074,6 +3077,8 @@ void() PlayerPostThink =
 		self.impulse = 0;
 		return;
 	}
+
+	self.v_angle += self.mangle;
 
 	// check to see if player landed and play landing sound	
 	if (self.takedamage && self.health > 0)

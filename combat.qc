@@ -320,6 +320,14 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	}
 #endif
 
+	if (inflictor.martyr_enemy && (Teammate(attacker.team_no, targ.team_no) || Teammate(attacker.team_no,targ.real_owner.team_no)))
+	{
+		if (!Teammate(inflictor.martyr_enemy.team_no, targ.real_owner.team_no) && !Teammate(inflictor.martyr_enemy.team_no, targ.team_no))
+		{
+			attacker = inflictor.martyr_enemy;
+		}
+	}
+
 	//Don't blame people for their airfisted rockets/grenades/detpacks if they hit a teammate
 	if ((inflictor.AIRG_Flags & 4) && inflictor != attacker && inflictor.AIRG_FlyTracker.classname == "player")
 	{

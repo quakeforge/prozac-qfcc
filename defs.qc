@@ -527,6 +527,7 @@ void(float to, float f) WriteAngle		= #57;
 void(float to, string s) WriteString	= #58;
 void(float to, entity s) WriteEntity	= #59;
 
+void(float to, vector a) WriteAngleV	= #0;
 
 void(float step) movetogoal			= #67;
 
@@ -594,6 +595,7 @@ string (integer i) Cmd_Argv = #0;
 string (integer i) Cmd_Args = #0;
 integer (string cmd, void() func) Cmd_AddCommand = #0;
 integer (string cmd, void() func, integer noredir) SV_AddUserCommand = #0;
+
 
 //============================================================================
 

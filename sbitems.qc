@@ -600,8 +600,8 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 						if (te)
 						{
 							head.gravity = 0.3 * random();
-							te.health = 100;
-							te.nextthink = time + GR_CONCUSS_TIME;
+							te.health += GR_ANTIGRAV_AMOUNT;
+							te.nextthink = time + GR_ANTIGRAV_TIME;
 						}
 						else
 						{
@@ -614,7 +614,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 							te.team_no = attacker.team_no;
 							te.classname = "timer";
 							te.owner = head;
-							te.health = 100;
+							te.health = GR_ANTIGRAV_AMOUNT;
 						}
 					}
 				}
@@ -635,15 +635,15 @@ void() AntiGravGrenadeTimer =
 		return;
 	}
 
-	self.health = self.health - GR_CONCUSS_DEC * 2;
+	self.health = self.health - GR_ANTIGRAV_DEC * 2;
 	
 	// hwguy recovers twice as fast - heh heh
 	if (self.owner.cutf_items & CUTF_HWGUY)
-		self.health = self.health - GR_CONCUSS_DEC * 2;
+		self.health = self.health - GR_ANTIGRAV_DEC * 2;
 
 	if (self.health < 0)
 		self.health = 0;
-	self.nextthink = time + GR_CONCUSS_TIME;
+	self.nextthink = time + GR_ANTIGRAV_TIME;
 
 	if (self.health == 0)
 	{

@@ -452,7 +452,7 @@ void() BerserkerKillTimer =
 
 void() JobBerserker =
 {
-	if (self.super_damage_finished > 0)
+	if (self.super_damage_finished > 0 || self.tfstate & TFSTATE_CONCUSSIONED)
 		return;
 	
 	newmis = spawn();
@@ -460,7 +460,7 @@ void() JobBerserker =
 	newmis.nextthink = time + BERSERK_TIME + 1;
 	newmis.think = BerserkerKillTimer;
 	newmis.owner = self;
-	
+
 	if (self.health > BERSERKER_HP_COST)
 		self.health -= BERSERKER_HP_COST;
 	else
@@ -758,11 +758,11 @@ void() GuerillaExplode =
         sprint(self.owner,PRINT_HIGH,"your mine explodes\n");
 
       // if has_tesla is 1 print nothing, as this is set by DetonateMines() and GuerillaThink
-      
+
 	if (time < self.heat + ACTIVATE_TIME) //If not charged, do less damage when blowing up
-	   T_RadiusDamage (self, self.martyr_enemy, MINE_DMG * 0.5, NIL); //- damage was 80
+	   T_RadiusDamage (self, self.owner, MINE_DMG * 0.5, NIL); //- damage was 80
 	else 
-       T_RadiusDamage (self, self.martyr_enemy, MINE_DMG, NIL); //- damage was 160
+       T_RadiusDamage (self, self.owner, MINE_DMG, NIL); //- damage was 160
 
     // num_mines is the number of mines the player has
     self.owner.num_mines = self.owner.num_mines - 1;
@@ -810,14 +810,6 @@ void(vector startpos) GuerillaMineSweep =
 	local float loopc = 0;
 	head = findradius(startpos, 30);	
 
-	while (loopc < 5 && inf.classname != "player")
-	{
-	    inf = inf.real_owner;
-	    loopc++;
-	    if (loopc >= 5)
-		inf = NIL;
-	}
-
 	while (head)
 	{
 		if (head.classname == "grenade" && head.netname == "land_mine") {
@@ -848,6 +840,7 @@ void() GuerillaThink = //Every second see if we have enemy nearby
 
 	if (self.health <= 0) { //Detonate mine cause we ran out of time
 
+		self.martyr_enemy = self.owner;
 		self.heat = time; //Make it a smaller explosion
 		sprint(self.owner,PRINT_HIGH,"Mine runs out of energy, ");
 
@@ -878,10 +871,11 @@ void() GuerillaThink = //Every second see if we have enemy nearby
                    sprint(self.owner,PRINT_HIGH,head.netname);
                    sprint(self.owner,PRINT_HIGH,"'s face!\n");
                    self.has_tesla = 1; //- display no message on GuerillaExplode
+		   self.martyr_enemy = head;
                    GuerillaExplode();
 					return;
                } else if (head == self.owner) { // ourselves
-                        
+                   self.martyr_enemy = self.owner;     
                    self.has_tesla = 1; //- display no message on GuerillaExplode
 		           GuerillaExplode();
 					return;

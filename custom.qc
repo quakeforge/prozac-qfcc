@@ -346,6 +346,7 @@ void() DropFromCustomClassGen =
 	setorigin (self, spot.origin + '0 0 1');
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
+	self.mangle = '0 0 0';
 
 	makevectors(self.angles);
 	spawn_tfog (self.origin + v_forward*20);

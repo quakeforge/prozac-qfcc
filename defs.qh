@@ -120,7 +120,7 @@
 
 // protocol bytes
 #define SVC_SETVIEWPORT		5
-#define SVC_SETANGLES		10
+#define SVC_SETANGLE		10
 #define SVC_TEMPENTITY		23 
 #define SVC_KILLEDMONSTER	27 
 #define SVC_FOUNDSECRET		28 
@@ -824,8 +824,20 @@ float (entity e) EF_GlowColor;
 #define GL_PIPEBOMB	1 
 
 // Defines for Concussion Grenade
-#define GR_CONCUSS_TIME	5 
-#define GR_CONCUSS_DEC	20 
+#define GR_CONCUSS_AMOUNT	75
+#define GR_CONCUSS_TIME		0.2
+#define GR_CONCUSS_DEC		0.5
+#define GR_CONCUSS_MAX  	100
+#define GR_CONCUSS_IDLE 	1
+#define GR_CONCUSS_X		0.2
+#define GR_CONCUSS_Y		0.3
+#define GR_CONCUSS_KICK		0.02
+#define GR_CONCUSS_FIXTIME	0.2
+//#define GR_CONCUSS_BUBBLETIME	3
+
+#define GR_ANTIGRAV_AMOUNT	100 
+#define GR_ANTIGRAV_TIME	3 
+#define GR_ANTIGRAV_DEC		30 
 
 // Defines for the Gas Grenade
 #define GR_HALLU_TIME	0.1

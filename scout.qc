@@ -162,29 +162,37 @@ void() ConcussionGrenadeExplode =
 // Concussion grenade timer to remove idlescale
 void() ConcussionGrenadeTimer =
 {
-	local string st;
-
 	if (self.owner.invincible_finished > time)
 	{
+		sprint(self.owner, PRINT_HIGH, "The power heals your concussion\n");
 		stuffcmd(self.owner, "v_idlescale 0\n");
+		self.owner.mangle = '0 0 0';
+		self.owner.tfstate &= ~TFSTATE_CONCUSSIONED;
 		dremove(self);
 		return;
 	}
 
-	// Bubble
-	newmis = spawn();
-	setmodel (newmis, "progs/s_bubble.spr");
-	setorigin (newmis, self.owner.origin);
-	newmis.movetype = MOVETYPE_NOCLIP;
-	newmis.solid = SOLID_NOT;
-	newmis.velocity = '0 0 15';
-	newmis.nextthink = time + 0.5;
-	newmis.think = bubble_bob;
-	newmis.touch = bubble_remove;
-	newmis.classname = "bubble";
-	newmis.frame = 0;
-	newmis.cnt = 0;
-	setsize(newmis, '-8 -8 -8', '8 8 8');
+
+#ifdef GR_CONCUSS_BUBBLETIME
+	if (self.has_tesla < time)
+	{
+		newmis = spawn();
+		setmodel (newmis, "progs/s_bubble.spr");
+		setorigin (newmis, self.owner.origin);
+		newmis.movetype = MOVETYPE_NOCLIP;
+		newmis.solid = SOLID_NOT;
+		newmis.velocity = '0 0 15';
+		newmis.nextthink = time + 0.5;
+		newmis.think = bubble_bob;
+		newmis.touch = bubble_remove;
+		newmis.classname = "bubble";
+		newmis.frame = 0;
+		newmis.cnt = 0;
+		setsize(newmis, '-8 -8 -8', '8 8 8');
+
+		self.has_tesla += GR_CONCUSS_BUBBLETIME;
+	}
+#endif
 
 	self.health = self.health - GR_CONCUSS_DEC;
 	
@@ -198,15 +206,84 @@ void() ConcussionGrenadeTimer =
 
 	if (self.health < 0)
 		self.health = 0;
-	self.nextthink = time + GR_CONCUSS_TIME;
-
-	st = ftos(self.health);
-	stuffcmd(self.owner, "v_idlescale ");
-	stuffcmd(self.owner, st);
-	stuffcmd(self.owner, "\n");
 
 	if (self.health == 0)
+	{
+		sprint (self.owner, PRINT_HIGH, "Your head feels normal again\n");
+		stuffcmd (self.owner, "v_idlescale 0\n");
+		self.owner.mangle = '0 0 0';
+		self.owner.tfstate &= ~TFSTATE_CONCUSSIONED;
 		dremove(self);
+		return;
+	}
+
+	self.nextthink = time + GR_CONCUSS_TIME;
+
+#ifdef OLD_CONC_GRENADE
+	stuffcmd(self.owner, "v_idlescale " + ftos (self.health * GR_CONCUSS_IDLE) + "\n");
+#else	
+
+	if (self.has_camera < time)
+	{
+		self.owner.mangle = '0 0 0';
+	
+		msg_entity = self.owner;
+		WriteByte (MSG_ONE, SVC_SETANGLE);
+		WriteAngleV (MSG_ONE, self.owner.v_angle);
+
+		self.has_camera = time + GR_CONCUSS_FIXTIME;
+	}
+
+	local float r = random();
+	local float amount = self.health;
+
+	if (amount > GR_CONCUSS_MAX)
+		amount = GR_CONCUSS_MAX;
+
+	amount *= (0.8 + random() * 0.2);
+
+	local float x = random() * amount;
+	local float y = amount - x;
+
+	if (random() < 0.5)
+		self.owner.mangle_x += x * GR_CONCUSS_X;
+	else
+		self.owner.mangle_x -= x * GR_CONCUSS_X;
+
+	if (random() < 0.5)
+		self.owner.mangle_y += y * GR_CONCUSS_Y;
+	else
+		self.owner.mangle_y -= y * GR_CONCUSS_Y;
+
+
+	if (self.owner.mangle_x < -60)
+		self.owner.mangle_x = -60;
+	if (self.owner.mangle_x > 60)
+		self.owner.mangle_x = 60;
+	if (self.owner.mangle_y > 120)
+		self.owner.mangle_y = 120;
+	if (self.owner.mangle_y < -120)
+		self.owner.mangle_y = -120;
+		
+
+	if (self.owner.waterlevel || (self.owner.flags & FL_ONGROUND))
+	{
+		local float vel = vlen (self.owner.velocity);
+
+		if (random() < 0.5)
+			self.owner.velocity_x += x * GR_CONCUSS_KICK * vel;
+		else
+			self.owner.velocity_x -= x * GR_CONCUSS_KICK * vel;
+
+		if (random() < 0.5)
+			self.owner.velocity_y += y * GR_CONCUSS_KICK * vel;
+		else
+			self.owner.velocity_y += y * GR_CONCUSS_KICK * vel;
+	}
+
+	//sprint (self.owner, PRINT_HIGH, "mangle: " + vtos (self.owner.mangle) + "\n");
+
+#endif
 };
 
 //=========================================================================
@@ -615,8 +692,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 				if (!IsBuilding(head) && points > 0)
 				{
 					// Bounce!!
-					head.velocity = org - inflictor.origin;
-					head.velocity = head.velocity * (points / 20);
+					head.velocity += normalize (org - inflictor.origin) * points * 8;
 
 					if (head.classname != "player")
 					{
@@ -631,18 +707,27 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 						// Concuss 'em!!
 						// If they are already concussed, set the concussion back up
 						// Try to find a concusstimer entity for this player
+
+						head.tfstate |= TFSTATE_CONCUSSIONED;
+
 						te = find(NIL, classname, "timer");
 						while (((te.owner != head) || (te.think != ConcussionGrenadeTimer)) && (te))
 							te = find(te, classname, "timer");
 						if (te)
 						{
-							stuffcmd(head,"v_idlescale 100\n");
-							te.health = 100;
+							te.health += GR_CONCUSS_AMOUNT;
+#ifdef OLD_CONC_GRENADE
+							stuffcmd(head, "v_idlescale " + ftos (te.health) + "\n");
+#endif
 							te.nextthink = time + GR_CONCUSS_TIME;
 						}
 						else
 						{
-							stuffcmd(head,"v_idlescale 100\n");
+#ifdef OLD_CONC_GRENADE
+							stuffcmd(head,"v_idlescale " + ftos (GR_CONCUSS_AMOUNT) + "\n");
+#else
+							stuffcmd(head,"v_idlescale 10\n");
+#endif
 							stuffcmd(head,"bf\n");
 							// Create a timer entity
 							te = spawn();
@@ -651,7 +736,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 							te.team_no = attacker.team_no;
 							te.classname = "timer";
 							te.owner = head;
-							te.health = 100;
+							te.health += GR_CONCUSS_AMOUNT;
 						}
 					}
 				}
