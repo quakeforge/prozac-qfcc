@@ -568,7 +568,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			save = targ.armorvalue;
 			targ.armortype = 0;	// lost all armor
 			targ.armorclass = 0; // lost special armor
-			targ.items = targ.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			targ.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 			if (targ.classname == "player")
 			    TeamFortress_SetSpeed(targ);
 		}

@@ -231,7 +231,7 @@ void() TF_PlaceItem =
 //	self.oldorigin = self.origin; 		// So we can return it later
 
  	if (self.goal_activation & TFGI_ITEMGLOWS)
-		self.effects = self.effects | EF_GlowColor(self);
+		self.effects |= EF_GlowColor(self);
 
 	// Setup the item_list mask
 	if (item_list_bit == 0)
@@ -651,22 +651,22 @@ void(entity AD) ParseTFDetect =
 	if (illegalclasses1 == -1)
 	{
 		illegalclasses1 = 0;
-		civilianteams = civilianteams | TEAM1_CIVILIANS;
+		civilianteams |= TEAM1_CIVILIANS;
 	}
 	if (illegalclasses2 == -1)
 	{
 		illegalclasses2 = 0;
-		civilianteams = civilianteams | TEAM2_CIVILIANS;
+		civilianteams |= TEAM2_CIVILIANS;
 	}
 	if (illegalclasses3 == -1)
 	{
 		illegalclasses3 = 0;
-		civilianteams = civilianteams | TEAM3_CIVILIANS;
+		civilianteams |= TEAM3_CIVILIANS;
 	}
 	if (illegalclasses4 == -1)
 	{
 		illegalclasses4 = 0;
-		civilianteams = civilianteams | TEAM4_CIVILIANS;
+		civilianteams |= TEAM4_CIVILIANS;
 	}
 };
 
@@ -938,7 +938,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 	// If this is a goalitem, record the fact that this player
 	// has been affected by it.
 	if (Goal.classname == "item_tfgoal")
-		Player.item_list = Player.item_list | Goal.item_list;
+		Player.item_list |= Goal.item_list;
 
 	if (Player == AP)
 	{
@@ -970,7 +970,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 				if (Goal.invincible_finished < 0)
 				{
 					// KK allow goal to strip invinc cheats
-					Player.items = Player.items & ~IT_INVULNERABILITY;
+					Player.items &= ~IT_INVULNERABILITY;
 					Player.invincible_time = 0;
 					Player.invincible_finished = 0;
 				}	
@@ -1004,15 +1004,15 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 			// always get their bought armorclass back
 
 			if (Player.tf_items & NIT_KEVLAR)
-				Player.armorclass = Player.armorclass | AT_SAVESHOT;
+				Player.armorclass |= AT_SAVESHOT;
 			if (Player.tf_items & NIT_GEL)
-				Player.armorclass = Player.armorclass | AT_SAVEMELEE;
+				Player.armorclass |= AT_SAVEMELEE;
 			if (Player.tf_items & NIT_BLAST)
-				Player.armorclass = Player.armorclass | AT_SAVEEXPLOSION;
+				Player.armorclass |= AT_SAVEEXPLOSION;
 			if (Player.tf_items & NIT_CERAMIC)
-				Player.armorclass = Player.armorclass | AT_SAVEELECTRICITY;
+				Player.armorclass |= AT_SAVEELECTRICITY;
 			if (Player.tf_items & NIT_ASBESTOS)
-				Player.armorclass = Player.armorclass | AT_SAVEFIRE;
+				Player.armorclass |= AT_SAVEFIRE;
 
 			Player.items &= ~(IT_ARMOR3 | IT_ARMOR2 | IT_ARMOR1);
 
@@ -1060,43 +1060,43 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 				// if its a GoalItem, powerup is permanent, so we use TFSTATE flags
 				if (Goal.classname == "item_tfgoal")
 				{
-					Player.tfstate = Player.tfstate | TFSTATE_INVINCIBLE;
+					Player.tfstate |= TFSTATE_INVINCIBLE;
 					Player.invincible_finished = time + 666;
 				}
 			}
 			if (Goal.invisible_finished > 0)
 			{
-				Player.items = Player.items | IT_INVISIBILITY;
+				Player.items |= IT_INVISIBILITY;
 			 	Player.invisible_time = 1;
 				Player.invisible_finished = time + Goal.invisible_finished;
 				// if its a GoalItem, powerup is permanent, so we use TFSTATE flags
 				if (Goal.classname == "item_tfgoal")
 				{
-					Player.tfstate = Player.tfstate | TFSTATE_INVISIBLE;
+					Player.tfstate |= TFSTATE_INVISIBLE;
 					Player.invisible_finished = time + 666;
 				}
 			}
 			if (Goal.super_damage_finished > 0)
 			{
 				//WK Remove Inspiration when we get the real thing
-				Player.tfstate = Player.tfstate - (Player.tfstate & TFSTATE_INSPIRED);
+				Player.tfstate &= ~TFSTATE_INSPIRED;
 				GiveQuad (Player, Goal.super_damage_finished);
 				// if its a GoalItem, powerup is permanent, so we use TFSTATE flags
 				if (Goal.classname == "item_tfgoal")
 				{
-					Player.tfstate = Player.tfstate | TFSTATE_QUAD;
+					Player.tfstate |= TFSTATE_QUAD;
 					Player.super_damage_finished = time + 666;
 				}
 			}
 			if (Goal.radsuit_finished > 0)
 			{
-				Player.items = Player.items | IT_SUIT;
+				Player.items |= IT_SUIT;
 			 	Player.rad_time = 1;
 				Player.radsuit_finished = time + Goal.radsuit_finished;
 				// if its a GoalItem, powerup is permanent, so we use TFSTATE flags
 				if (Goal.classname == "item_tfgoal")
 				{
-					Player.tfstate = Player.tfstate | TFSTATE_RADSUIT;
+					Player.tfstate |= TFSTATE_RADSUIT;
 					Player.radsuit_finished = time + 666;
 				}
 			}
@@ -1257,7 +1257,7 @@ void (entity Goal, entity Player) RemoveResults =
 			return;
 
 		// Remove the affected flag
-		Player.item_list = Player.item_list - (Player.item_list & Goal.item_list);
+		Player.item_list &= ~Goal.item_list;
 	}
 
 	if (Goal.health > 0)
@@ -1267,7 +1267,7 @@ void (entity Goal, entity Player) RemoveResults =
 	Player.lives = Player.lives - Goal.lives;
 	Player.armortype = Player.armortype - Goal.armortype;
 	Player.armorvalue = Player.armorvalue - Goal.armorvalue;
-	Player.armorclass = Player.armorclass - (Player.armorclass & Goal.armorclass);
+	Player.armorclass &= ~Goal.armorclass;
 	
 	Player.real_frags = Player.real_frags - Goal.frags;
  	if (!(toggleflags & TFLAG_TEAMFRAGS))
@@ -1309,24 +1309,24 @@ void (entity Goal, entity Player) RemoveResults =
 	if ((Goal.invincible_finished > 0) && (!puinvin))
 	{
 		// if its a GoalItem, powerup was permanent, so we remove TFSTATE flag
-		Player.tfstate = Player.tfstate - (Player.tfstate & TFSTATE_INVINCIBLE);
-		Player.items = Player.items | IT_INVULNERABILITY;
+		Player.tfstate &= ~TFSTATE_INVINCIBLE;
+		Player.items |= IT_INVULNERABILITY;
 	 	Player.invincible_time = 1;
 		Player.invincible_finished = time + Goal.invincible_finished;
 	}
 	if ((Goal.invisible_finished > 0) && (!puinvis))
 	{
 		// if its a GoalItem, powerup was permanent, so we remove TFSTATE flag
-		Player.tfstate = Player.tfstate - (Player.tfstate & TFSTATE_INVISIBLE);
-		Player.items = Player.items | IT_INVISIBILITY;
+		Player.tfstate &= ~TFSTATE_INVISIBLE;
+		Player.items |= IT_INVISIBILITY;
 	 	Player.invisible_time = 1;
 		Player.invisible_finished = time + Goal.invisible_finished;
 	}
 	if ((Goal.super_damage_finished > 0) && (!puquad))
 	{
 		// if its a GoalItem, powerup was permanent, so we remove TFSTATE flag
-		Player.tfstate = Player.tfstate - (Player.tfstate & TFSTATE_QUAD);
-		Player.items = Player.items | IT_QUAD;
+		Player.tfstate &= ~TFSTATE_QUAD;
+		Player.items |= IT_QUAD;
 	 	Player.super_time = 1;
 		Player.super_damage_finished = time + Goal.super_damage_finished;
 	}
@@ -1334,8 +1334,8 @@ void (entity Goal, entity Player) RemoveResults =
 	if ((Goal.radsuit_finished > 0) && (!purad) && !(Player.tf_items & NIT_SCUBA))
 	{
 		// if its a GoalItem, powerup was permanent, so we remove TFSTATE flag
-		Player.tfstate = Player.tfstate - (Player.tfstate & TFSTATE_RADSUIT);
-		Player.items = Player.items | IT_SUIT;
+		Player.tfstate &= ~TFSTATE_RADSUIT;
+		Player.items |= IT_SUIT;
 	 	Player.rad_time = 1;
 		Player.radsuit_finished = time + Goal.radsuit_finished;
 	}
@@ -2332,7 +2332,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 				bprint(PRINT_HIGH, AP.netname);
 				bprint(PRINT_HIGH, " гот the блуе flag!\n");
 
-				AP.items = AP.items | IT_KEY1;
+				AP.items |= IT_KEY1;
 			}
 			else if (Goal.goal_no == CTF_FLAG2)
 			{
@@ -2369,7 +2369,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 				}
 				bprint(PRINT_HIGH, AP.netname);
 				bprint(PRINT_HIGH, " гот the ред flag!\n");
-				AP.items = AP.items | IT_KEY2;
+				AP.items |= IT_KEY2;
 			}
 			else if (Goal.goal_no == CTF_DROPOFF1)
 			{
@@ -2390,7 +2390,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 				}
 				bprint(PRINT_HIGH, AP.netname);
 				bprint(PRINT_HIGH, " цаптуред the ред flag!\n");
-				AP.items = AP.items & ~IT_KEY2;
+				AP.items &= ~IT_KEY2;
 
 			}
 			else if (Goal.goal_no == CTF_DROPOFF2)
@@ -2412,7 +2412,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 				}
 				bprint(PRINT_HIGH, AP.netname);
 				bprint(PRINT_HIGH, " цаптуред the блуе flag!\n");
-				AP.items = AP.items & ~IT_KEY1;
+				AP.items &= ~IT_KEY1;
 			}
 		}
 	}
@@ -2823,7 +2823,7 @@ void(entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer =
 
 	// Do the deeds on the player
 	if (Item.goal_activation & TFGI_GLOW)
-		AP.effects = AP.effects | EF_GlowColor(AP);
+		AP.effects |= EF_GlowColor(AP);
 	if (Item.goal_activation & TFGI_SLOW)
 		TeamFortress_SetSpeed(AP);
 
@@ -2832,9 +2832,9 @@ void(entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer =
 
 	// Light up console icons
 	if (Item.items & IT_KEY1)
-		AP.items = AP.items | IT_KEY1;
+		AP.items |= IT_KEY1;
 	if (Item.items & IT_KEY2)
-		AP.items = AP.items | IT_KEY2;
+		AP.items |= IT_KEY2;
 
 	// Only do the results if we're allowed to
 	if (Goal != Item)
@@ -2981,7 +2981,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	AP.effects &= ~EF_ANYGLOW;
 
  	if (Item.goal_activation & TFGI_ITEMGLOWS)
-		Item.effects = Item.effects | EF_GlowColor(Item);
+		Item.effects |= EF_GlowColor(Item);
 
 	// Remove the Spy prevention
 	if (!spyoff)
@@ -2989,9 +2989,9 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 
 	// Remove the Light up of console icons
 	if (!key1on)
-		AP.items = AP.items & ~IT_KEY1;
+		AP.items &= ~IT_KEY1;
 	if (!key2on)
-		AP.items = AP.items & ~IT_KEY2;
+		AP.items &= ~IT_KEY2;
 
 	// Remove AP Modifications
 	// Go through all the players and do any results

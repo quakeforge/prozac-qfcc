@@ -157,7 +157,7 @@ void() CrusaderAddInvisibility =
 		targ.aura_time = time + 10;
 		amount = amount - 45;
 		self.job_finished = time - amount;
-		targ.items = targ.items | IT_INVISIBILITY;
+		targ.items |= IT_INVISIBILITY;
 	}
 	else
 		sprint(self, PRINT_HIGH, "You cannot bestow invisibility upon another Crusader\n");

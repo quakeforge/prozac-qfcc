@@ -302,7 +302,7 @@ void () Anchor_Grapple =
 
 	if (self.owner.flags & FL_ONGROUND)
 	{
-		self.owner.flags = self.owner.flags - FL_ONGROUND;
+		self.owner.flags &= ~FL_ONGROUND;
 		setorigin(self.owner,self.owner.origin + '0 0 1');
 	}
 

@@ -318,7 +318,7 @@ void() W_FireAxe =
 		} else {
 			//WK Only give blood if you hit an enemy when being a warlock
 			if ((!Teammate(trace_ent.team_no, self.team_no) || !(self.job & JOB_WARLOCK)) && prematch < time) {
-				self.job = self.job | JOB_BLOODY_KNIFE;
+				self.job |= JOB_BLOODY_KNIFE;
 				self.weaponmode = 1; // Put blood on the knife
   				self.weaponmodel = "progs/v_knife2.mdl";
 			} else if (self.job & JOB_WARLOCK) {
@@ -414,7 +414,7 @@ void() W_FireBackstab =
 
 			//WK Only give blood if you hit an enemy when being a warlock
 			if ((!Teammate(trace_ent.team_no, self.team_no) || !(self.job & JOB_WARLOCK)) && prematch < time) {
-				self.job = self.job | JOB_BLOODY_KNIFE;
+				self.job |= JOB_BLOODY_KNIFE;
 				self.weaponmode = 1;
 				self.weaponmodel = "progs/v_knife2.mdl";
 			} else if (self.job & JOB_WARLOCK) {
@@ -680,7 +680,7 @@ void(float inAuto) W_FireMedikit =
 					}
 
 					if (te) {
-						trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_HALLUCINATING);
+						trace_ent.tfstate &= ~TFSTATE_HALLUCINATING;
 
 						SpawnBlood(org, 20);
 						sprint(trace_ent, PRINT_HIGH, "you have been healed of your hallucinations\n");
@@ -707,7 +707,7 @@ void(float inAuto) W_FireMedikit =
 					}
 
 					if (te) {
-						trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_TRANQUILISED);
+						trace_ent.tfstate &= ~TFSTATE_TRANQUILISED;
 						TeamFortress_SetSpeed(trace_ent);
 
 						SpawnBlood(org, 20);
@@ -758,7 +758,7 @@ void(float inAuto) W_FireMedikit =
 					healam = rint(trace_ent.health / 2);
 
 					// remove the infection
-					trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_INFECTED);
+					trace_ent.tfstate &= ~TFSTATE_INFECTED;
 
 					// some damage is caused (because of the use of leeches!)
 					// remove half their remaining health
@@ -821,7 +821,7 @@ void(float inAuto) W_FireMedikit =
 						T_Heal(trace_ent, healam, 1);
 						self.ammo_medikit = self.ammo_medikit - rint(healam / 10);
 						if (!(trace_ent.items & IT_SUPERHEALTH)) {
-							trace_ent.items = trace_ent.items | IT_SUPERHEALTH;
+							trace_ent.items |= IT_SUPERHEALTH;
 							newmis = spawn();
 							newmis.classname = "medikit_rot";
 							newmis.nextthink = time + 20;
@@ -853,7 +853,7 @@ void(float inAuto) W_FireMedikit =
 				if (trace_ent.tf_items & NIT_GEL && random() < 0.75)
 					return;
 
-				trace_ent.tfstate = trace_ent.tfstate | TFSTATE_INFECTED;
+				trace_ent.tfstate |= TFSTATE_INFECTED;
 
 				BioInfection = spawn ();
 				BioInfection.classname = "timer";
@@ -942,7 +942,7 @@ void() W_FireBioweapon =
 				if (trace_ent.weapons_carried & WEAP_MEDIKIT) //WK
 					return;
 
-				trace_ent.tfstate = trace_ent.tfstate | TFSTATE_INFECTED;
+				trace_ent.tfstate |= TFSTATE_INFECTED;
 
 				BioInfection = spawn ();
 				BioInfection.classname = "timer";
@@ -2376,17 +2376,17 @@ void() W_SetCurrentAmmo =
 
 	player_run();
 
-	self.items = self.items & ~(IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS);
+	self.items &= ~(IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS);
 	self.weapon = 0;
 
 	//WK Set armor here... update armor picture
-	self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+	self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 	if (self.armortype >= 0.8)
-		self.items = self.items | IT_ARMOR3;
+		self.items |= IT_ARMOR3;
 	else if (self.armortype >= 0.6)
-		self.items = self.items | IT_ARMOR2;
+		self.items |= IT_ARMOR2;
 	else if (self.armortype >= 0.3)
-		self.items = self.items | IT_ARMOR1;
+		self.items |= IT_ARMOR1;
 
 	//WK Show nothing for custom playerclass while building
 	if ( self.playerclass == PC_CUSTOM
@@ -2422,12 +2422,12 @@ void() W_SetCurrentAmmo =
 		self.weaponframe = 0;
 	} else if (self.current_weapon == WEAP_SHOTGUN) {
 		self.currentammo = self.ammo_shells;
-		self.items = self.items | IT_CELLS;
+		self.items |= IT_CELLS;
 		if (!(self.tfstate & TFSTATE_RELOADING)) {
 			self.weaponmodel = "progs/v_shot.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_SHELLS;
+		self.items |= IT_SHELLS;
 		self.weapon = IT_SHOTGUN;
 	} else if (self.current_weapon == WEAP_SUPER_SHOTGUN) {
 		self.currentammo = self.ammo_shells;
@@ -2435,7 +2435,7 @@ void() W_SetCurrentAmmo =
 			self.weaponmodel = "progs/v_shot2.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_SHELLS;
+		self.items |= IT_SHELLS;
 		self.weapon = IT_SUPER_SHOTGUN;
 	} else if (self.current_weapon == WEAP_NAILGUN) {
 		self.currentammo = self.ammo_nails;
@@ -2444,7 +2444,7 @@ void() W_SetCurrentAmmo =
 			self.weaponframe = 0;
 		}
 
-		self.items = self.items | IT_NAILS;
+		self.items |= IT_NAILS;
 		self.weapon = IT_NAILGUN;
 	} else if (self.current_weapon == WEAP_LIGHT_ASSAULT) {
 		self.currentammo = self.ammo_nails;
@@ -2452,7 +2452,7 @@ void() W_SetCurrentAmmo =
 			self.weaponmodel = "progs/v_nail2.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_NAILS;
+		self.items |= IT_NAILS;
 		self.weapon = IT_LIGHT_ASSAULT;
 	} else if (self.current_weapon == WEAP_GRENADE_LAUNCHER) {
 		self.currentammo = self.ammo_rockets;
@@ -2462,14 +2462,14 @@ void() W_SetCurrentAmmo =
 		}
 
 		self.weapon = IT_GRENADE_LAUNCHER;
-		self.items = self.items | IT_ROCKETS;
+		self.items |= IT_ROCKETS;
 	} else if (self.current_weapon == WEAP_ROCKET_LAUNCHER) {
 		self.currentammo = self.ammo_rockets;
 		if (!(self.tfstate & TFSTATE_RELOADING)) {
 			self.weaponmodel = "progs/v_rock2.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_ROCKETS;
+		self.items |= IT_ROCKETS;
 		self.weapon = IT_ROCKET_LAUNCHER;
 	} else if (self.current_weapon == WEAP_LIGHTNING) {
 		self.currentammo = self.ammo_cells;
@@ -2477,7 +2477,7 @@ void() W_SetCurrentAmmo =
 			self.weaponmodel = "progs/v_light.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_CELLS;
+		self.items |= IT_CELLS;
 		self.weapon = IT_LIGHTNING;
 	} else if (self.current_weapon == WEAP_SNIPER_RIFLE) {
 	    	self.currentammo = self.ammo_shells;
@@ -2485,7 +2485,7 @@ void() W_SetCurrentAmmo =
 			self.weaponmodel = "progs/v_srifle.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_SHELLS;
+		self.items |= IT_SHELLS;
 		self.weapon = IT_SHOTGUN;
 #ifndef NO_AUTORIFLE
 	} else if (self.current_weapon == WEAP_AUTO_RIFLE) {
@@ -2494,7 +2494,7 @@ void() W_SetCurrentAmmo =
 		    	self.weaponmodel = "progs/v_srifle.mdl";
 		    	self.weaponframe = 0;
 		}
-		self.items = self.items | IT_SHELLS;
+		self.items |= IT_SHELLS;
 		self.weapon = IT_SUPER_SHOTGUN;
 #endif
 	} else if (self.current_weapon == WEAP_ASSAULT_CANNON) {
@@ -2503,7 +2503,7 @@ void() W_SetCurrentAmmo =
 			self.weaponmodel = "progs/v_asscan.mdl";
 		    	self.weaponframe = 0;
 		}
-		self.items = self.items | IT_SHELLS;
+		self.items |= IT_SHELLS;
 		self.weapon = IT_ROCKET_LAUNCHER;
 	} else if (self.current_weapon == WEAP_FLAMETHROWER) {
   		self.currentammo = self.ammo_cells;
@@ -2511,7 +2511,7 @@ void() W_SetCurrentAmmo =
 	    	self.weaponmodel = "progs/v_rock.mdl";
 	    	self.weaponframe = 0;
 		}
-		self.items = self.items | IT_CELLS;
+		self.items |= IT_CELLS;
 		self.weapon = IT_GRENADE_LAUNCHER;
 	} else if (self.current_weapon == WEAP_INCENDIARY) {
   		self.currentammo = self.ammo_rockets;
@@ -2519,7 +2519,7 @@ void() W_SetCurrentAmmo =
 	    	self.weaponmodel = "progs/v_rock2.mdl";
 	    	self.weaponframe = 0;
 		}
-		self.items = self.items | IT_ROCKETS;
+		self.items |= IT_ROCKETS;
 		self.weapon = IT_ROCKET_LAUNCHER;
 	} else if (self.current_weapon == WEAP_MEDIKIT) {
 		self.currentammo = 0;
@@ -2531,7 +2531,7 @@ void() W_SetCurrentAmmo =
 			self.weaponmodel = "progs/v_shot.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_NAILS;
+		self.items |= IT_NAILS;
 		self.weapon = IT_SHOTGUN;
 	} else if (self.current_weapon == WEAP_LASER) {
 		self.currentammo = self.ammo_nails;
@@ -2541,7 +2541,7 @@ void() W_SetCurrentAmmo =
 			self.weaponframe = 0;
 		}
 
-		self.items = self.items | IT_NAILS;
+		self.items |= IT_NAILS;
 		self.weapon = IT_SHOTGUN;
 	} else if (self.current_weapon == WEAP_DAEDALUS) {
 		self.currentammo = self.ammo_cells;
@@ -2551,7 +2551,7 @@ void() W_SetCurrentAmmo =
 			self.weaponframe = 0;
 		}
 
-		self.items = self.items | IT_CELLS;
+		self.items |= IT_CELLS;
 		self.weapon = IT_LIGHTNING;
 	} else if (self.current_weapon == WEAP_MAUSER) {
 		self.currentammo = self.ammo_nails;
@@ -2561,7 +2561,7 @@ void() W_SetCurrentAmmo =
 			self.weaponframe = 0;
 		}
 
-		self.items = self.items | IT_NAILS;
+		self.items |= IT_NAILS;
 		self.weapon = IT_LIGHT_ASSAULT;
 	} else if (self.current_weapon == WEAP_AIRF) {
   		self.currentammo = 0;
@@ -2575,7 +2575,7 @@ void() W_SetCurrentAmmo =
 			self.weaponmodel = "progs/v_nail2.mdl";
 			self.weaponframe = 0;
 		}
-		self.items = self.items | IT_NAILS;
+		self.items |= IT_NAILS;
 		self.weapon = IT_LIGHT_ASSAULT;//IT_SUPER_NAILGUN;
 	} else if (self.current_weapon == WEAP_LASERCANNON) {
     	self.currentammo = self.ammo_cells;
@@ -2584,7 +2584,7 @@ void() W_SetCurrentAmmo =
 	    		self.weaponframe = 0;
 		}
 
-   		self.items = self.items | IT_CELLS;
+   		self.items |= IT_CELLS;
 		self.weapon = WEAP_LASERCANNON;
 	} else {
 		self.currentammo = 0;
@@ -2682,7 +2682,7 @@ Is called when weapon has finished reloading
 ====================*/
 void() W_Reload_shotgun =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RELOADING);
+	self.owner.tfstate &= ~TFSTATE_RELOADING;
 	self.owner.weaponmodel = "progs/v_shot.mdl";
 	sprint(self.owner, PRINT_LOW, "finished reloading\n");
 	self.owner.StatusRefreshTime = time + 0.1;
@@ -2692,7 +2692,7 @@ void() W_Reload_shotgun =
 
 void() W_Reload_light_assault =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RELOADING);
+	self.owner.tfstate &= ~TFSTATE_RELOADING;
 	self.owner.weaponmodel = "progs/v_nail2.mdl";
 	sprint(self.owner, PRINT_LOW, "finished reloading\n");
 	self.owner.StatusRefreshTime = time + 0.1;
@@ -2702,7 +2702,7 @@ void() W_Reload_light_assault =
 
 void() W_Reload_super_shotgun =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RELOADING);
+	self.owner.tfstate &= ~TFSTATE_RELOADING;
 	self.owner.weaponmodel = "progs/v_shot2.mdl";
 	sprint(self.owner, PRINT_LOW, "finished reloading\n");
 	self.owner.StatusRefreshTime = time + 0.1;
@@ -2712,7 +2712,7 @@ void() W_Reload_super_shotgun =
 
 void() W_Reload_grenade_launcher =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RELOADING);
+	self.owner.tfstate &= ~TFSTATE_RELOADING;
 	self.owner.weaponmodel = "progs/v_rock.mdl";
 	sprint(self.owner, PRINT_LOW, "finished reloading\n");
 	self.owner.StatusRefreshTime = time + 0.1;
@@ -2722,7 +2722,7 @@ void() W_Reload_grenade_launcher =
 
 void() W_Reload_rocket_launcher =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RELOADING);
+	self.owner.tfstate &= ~TFSTATE_RELOADING;
 	self.owner.weaponmodel = "progs/v_rock2.mdl";
 	sprint(self.owner, PRINT_LOW, "finished reloading\n");
 	self.owner.StatusRefreshTime = time + 0.1;
@@ -2732,7 +2732,7 @@ void() W_Reload_rocket_launcher =
 
 void() W_Reload_laser_cannon =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RELOADING);
+	self.owner.tfstate &= ~TFSTATE_RELOADING;
 	self.owner.weaponmodel = "progs/v_laserg.mdl";
 	sprint(self.owner, PRINT_LOW, "Laser Cannon charged\n");
 	self.owner.StatusRefreshTime = time + 0.1;
@@ -2751,7 +2751,7 @@ float() CheckForReload =
 				self.reload_shotgun = RE_SHOTGUN - self.ammo_shells;
 
 			sprint (self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.owner = self;
 			tWeapon.classname = "timer";
@@ -2774,7 +2774,7 @@ float() CheckForReload =
 					RE_SUPER_SHOTGUN - self.ammo_shells;
 
 			sprint (self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.owner = self;
 			tWeapon.classname = "timer";
@@ -2794,7 +2794,7 @@ float() CheckForReload =
 				self.reload_light_assault = RE_LIGHT_ASSAULT - self.ammo_nails;
 
 			sprint (self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.owner = self;
 			tWeapon.classname = "timer";
@@ -2814,7 +2814,7 @@ float() CheckForReload =
 				self.reload_laser_cannon = RE_LASER_CANNON - self.ammo_cells;
 
 			sprint (self, PRINT_HIGH, "Charging cannon...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.owner = self;
 			tWeapon.classname = "timer";
@@ -2835,7 +2835,7 @@ float() CheckForReload =
 					RE_GRENADE_LAUNCHER - self.ammo_rockets;
 
 			sprint (self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.owner = self;
 			tWeapon.classname = "timer";
@@ -2856,7 +2856,7 @@ float() CheckForReload =
 				- self.ammo_rockets;
 
 			sprint (self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.owner = self;
 			tWeapon.classname = "timer";
@@ -3107,7 +3107,7 @@ void() W_Attack =
 			self.heat = 1;
 			makeImmune(self,time+2);
 //			self.immune_to_check = time + 2;
-			self.tfstate = self.tfstate | TFSTATE_ASSAULTCANNON;
+			self.tfstate |= TFSTATE_ASSAULTCANNON;
 			TeamFortress_SetSpeed(self);
 			player_assaultcannonup1();
 		}
@@ -4094,7 +4094,7 @@ void() DeadImpulses =
     if (self.impulse == 69 && infokey(NIL, "allow_debug") == "yes")
     {
         self.demon_blood = MAX_KNIFE_BLOOD;
-	self.job = self.job | JOB_BLOODY_KNIFE;
+	self.job |= JOB_BLOODY_KNIFE;
         self.impulse=0;
         return;
     }
@@ -4131,14 +4131,14 @@ void() DeadImpulses =
 	//WK Have a normal "custom" command reset the "sell" flag
 	//Have to do this here, since "upgrade" corrupts self.impulse
 	if (self.impulse == TF_CHANGEPC + PC_CUSTOM) //
-		self.done_custom = self.done_custom - (self.done_custom & CUSTOM_SELLING);
+		self.done_custom &= ~CUSTOM_SELLING;
 
 	//WK - CustomTF1.6 ability to sell frags
 	//Sets a flag saying that we wish to sell
 	//And then issues a command to rebuild our class.
 	if (self.impulse == TF_SELL) {
 		if (bounty) {
-			self.done_custom = self.done_custom | CUSTOM_SELLING;
+			self.done_custom |= CUSTOM_SELLING;
 			self.impulse = TF_CHANGEPC + PC_CUSTOM;
 		} else {
 			sprint (self, PRINT_HIGH, "Sorry, the admin has bounty disabled\n");
@@ -4167,7 +4167,7 @@ void() DeadImpulses =
 	    	TeamFortress_ChangeClass();
 
 	} else if (self.impulse == TF_UNCUSTOM && self.done_custom & CUSTOM_ON_SPAWN) {
-		self.done_custom = self.done_custom - (self.done_custom & CUSTOM_ON_SPAWN);
+		self.done_custom &= ~CUSTOM_ON_SPAWN;
 		sprint(self, PRINT_HIGH, "You will no longer spawn as a new playerclass.\n");	
 	}
 	// TeamFortress Help Impulses
@@ -4304,7 +4304,7 @@ void() W_WeaponFrame =
 					#endif
 					
 					self.height = 90;
-					self.tfstate = self.tfstate | TFSTATE_AIMING;
+					self.tfstate |= TFSTATE_AIMING;
 	
 					TeamFortress_SetSpeed(self);
 				}
@@ -4313,7 +4313,7 @@ void() W_WeaponFrame =
 			if (!(self.tfstate & TFSTATE_RL_LASER)) {
 				// create the laser sight
 				SniperSight_Create(1);
-				self.tfstate = self.tfstate | TFSTATE_RL_LASER;
+				self.tfstate |= TFSTATE_RL_LASER;
 
 				SuperDamageSound ();
 				W_Attack ();
@@ -4367,8 +4367,8 @@ void() T_DaedalusTouch =
 				head.velocity = head.velocity * (points / 20);
 				if (head.cutf_items & CUTF_GYMNAST)
 					head.velocity = head.velocity * (points / 20);
-				if (head.classname != "player" && head.flags & FL_ONGROUND)
-					head.flags = head.flags - FL_ONGROUND;
+				if (head.classname != "player")
+					head.flags &= ~FL_ONGROUND;
 			}
 		}
 		if (head.takedamage) {
@@ -4598,8 +4598,7 @@ void() HIP_LaserTouch =
 		self.velocity = normalize(self.velocity);
 		self.velocity = self.speed * self.velocity;
 		self.neworigin = self.velocity;
-		if (self.flags & FL_ONGROUND)
-			self.flags = self.flags - FL_ONGROUND;
+		self.flags &= ~FL_ONGROUND;
 //		r = random();
 //		self.attack_finished = time + 7; //ofn - restart its life of 7 seconds
 
@@ -4624,8 +4623,7 @@ void() HIP_LaserThink =
 		remove(self);
 		return;
 	}
-	if (self.flags & FL_ONGROUND)
-		self.flags = self.flags - FL_ONGROUND;
+	self.flags &= ~FL_ONGROUND;
 	self.velocity = self.neworigin;
 	self.angles = vectoangles(self.velocity);
 	self.nextthink = time+0.15;

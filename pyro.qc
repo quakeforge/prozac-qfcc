@@ -237,7 +237,7 @@ void() NapalmGrenadeExplode =
 	local entity head;
 
 	// do an incendiary-cannon explosion instead
-	self.effects = self.effects | EF_BRIGHTLIGHT;
+	self.effects |= EF_BRIGHTLIGHT;
 
 	// don't do radius damage to the other, because all the damage
 	// was done in the impact
@@ -805,7 +805,7 @@ void() T_IncendiaryTouch =
 		remove(self);
 		return;
 	}
-	self.effects = self.effects | EF_BRIGHTLIGHT;
+	self.effects |= EF_BRIGHTLIGHT;
 
 	damg = 20 + random()*20;
 	

@@ -286,7 +286,7 @@ void() CastLightning =
 	local	vector	org, dir;
 	local	float	ldmg;
 	
-	self.effects = self.effects | EF_DIMLIGHT;
+	self.effects |= EF_DIMLIGHT;
 
 	ai_face ();
 
@@ -359,7 +359,7 @@ void() sham_magic2     =[      $magic2,       sham_magic3    ] {ai_face();};
 void() sham_magic3     =[      $magic3,       sham_magic4    ] {ai_face();self.nextthink = self.nextthink + 0.2;
 local entity o;
 
-self.effects = self.effects | EF_DIMLIGHT;
+self.effects |= EF_DIMLIGHT;
 ai_face();
 self.owner = spawn();
 o = self.owner;
@@ -371,12 +371,12 @@ o.think = SUB_Remove;
 };
 void() sham_magic4     =[      $magic4,       sham_magic5    ]
 {
-self.effects = self.effects | EF_DIMLIGHT;
+self.effects |= EF_DIMLIGHT;
 self.owner.frame = 1;
 };
 void() sham_magic5     =[      $magic5,       sham_magic6    ]
 {
-self.effects = self.effects | EF_DIMLIGHT;
+self.effects |= EF_DIMLIGHT;
 self.owner.frame = 2;
 };
 void() sham_magic6     =[      $magic6,       sham_magic9    ]
@@ -465,7 +465,7 @@ void() custom_shambler_die =
     if (self.real_owner.classname == "player" && self.real_owner.demon_one == self)
 	{
 		sprint(self.real_owner,PRINT_HIGH,"Your shambler is dead.\n");
-		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
+		self.real_owner.job &= ~JOB_DEMON_OUT;
 		self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
         self.real_owner.demon_one = NIL;
 	}

@@ -70,7 +70,7 @@ void() TeamFortress_MOTD =
 
 		// Set Default autozoom
 		if (DEFAULT_AUTOZOOM == OFF)
-			self.tfstate = self.tfstate | TFSTATE_ZOOMOFF;
+			self.tfstate |= TFSTATE_ZOOMOFF;
 
 		// Set their color to white, so they stand out from teams
 		if ((teamplay != 0) && (self.team_no == 0))

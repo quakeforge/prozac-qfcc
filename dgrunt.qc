@@ -100,7 +100,7 @@ void()	army_atk2	=[	$shoot2,	army_atk3	] {ai_face();};
 void()	army_atk3	=[	$shoot3,	army_atk4	] {ai_face();};
 void()	army_atk4	=[	$shoot4,	army_atk5	] {ai_face();};
 void()	army_atk5	=[	$shoot5,	army_atk6	] {ai_face();army_fire();
-self.effects = self.effects | EF_DIMLIGHT;};
+self.effects |= EF_DIMLIGHT;};
 void()	army_atk6	=[	$shoot6,	army_atk7	] {ai_face(); self.effects = 0;};
 void()	army_atk7	=[	$shoot7,	army_atk8	] {ai_face();SUB_CheckRefire (army_atk1);};
 void()	army_atk8	=[	$shoot8,	army_atk9	] {ai_face();};
@@ -208,7 +208,7 @@ void() custom_grunt_die =
 	if (self.real_owner.classname == "player")
 	{
 		sprint(self.real_owner,PRINT_HIGH,"Your soldier has been killed\n");
-		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
+		self.real_owner.job &= ~JOB_DEMON_OUT);
 		self.real_owner.demon_points = self.real_owner.demon_points + 2;
 		self.real_owner.job_finished = time + 10; //Can't summon streams of demons
 	}

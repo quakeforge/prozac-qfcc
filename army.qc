@@ -293,7 +293,7 @@ void(float inp) Menu_Army_Input2 =
         {
             self.demon_one.is_detpacking=0;
             self.demon_one.has_teleporter = 0;
-			self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
+			self.demon_one.effects &= ~EF_DIMLIGHT;
 
             if (self.demon_one.enemy)//self.demon_one.goalentity)
             {
@@ -390,7 +390,7 @@ void(float inp) Menu_Army_Input1 =
            {
                self.army_ready=FALSE; // needed for setarmytimer
                SetArmyTimer(); // prepare reserve soldier
-               self.job = self.job | JOB_DEMON_OUT; 
+               self.job |= JOB_DEMON_OUT; 
            }
 
            self.impulse = 0;
@@ -490,7 +490,7 @@ void(float inp) Menu_Army_Input1 =
         }
 
         self.demon_one.has_teleporter = 0;
-      	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
+      	self.demon_one.effects &= ~EF_DIMLIGHT;
         self.demon_one.penance_time = 1;
 
         if (self.demon_one.goalentity != self)
@@ -522,7 +522,7 @@ void(float inp) Menu_Army_Input1 =
             }
 
             self.demon_one.has_teleporter = 0;
-        	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
+        	self.demon_one.effects &= ~EF_DIMLIGHT;
         }
 
 		self.demon_one.goalentity = NIL;
@@ -548,7 +548,7 @@ void(float inp) Menu_Army_Input1 =
                 return;
             }
             self.demon_one.has_teleporter = 0;
-        	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
+        	self.demon_one.effects &= ~EF_DIMLIGHT;
         }
 
         self.demon_one.penance_time = 3;
@@ -564,7 +564,7 @@ void(float inp) Menu_Army_Input1 =
         }*/
 
         self.demon_one.has_teleporter = 0;
-    	self.demon_one.effects = self.demon_one.effects - (self.demon_one.effects & EF_DIMLIGHT);
+    	self.demon_one.effects &= ~EF_DIMLIGHT;
 
         ResetMenu();
 		self.impulse = 0;
@@ -631,8 +631,7 @@ float() TeleSoldier =
 	//newmis.velocity = v_forward * 10 + '0 0 250';
 	newmis.velocity = v_forward * 10;
 	newmis.angles = vectoangles(newmis.velocity);
-	if (newmis.flags & FL_ONGROUND)
-		newmis.flags = newmis.flags - FL_ONGROUND;
+	newmis.flags &= ~FL_ONGROUND;
 
 	newmis.movetype = MOVETYPE_TOSS;
     newmis.solid = SOLID_SLIDEBOX;

@@ -351,7 +351,7 @@ void() SBFireInterface =
 	
 	self.is_haxxxoring = 0;
 
-	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+	self.tfstate &= ~TFSTATE_CANT_MOVE;
 	TeamFortress_SetSpeed(self);
 
     if (hackThis == -2)
@@ -404,7 +404,7 @@ void() SBFireInterface =
 			sprint(self, PRINT_HIGH, "You make a few adjustments...\n");
 			if (hackThis == SCREWUP_ONE)
 			{
-				targ.is_malfunctioning = targ.is_malfunctioning | SCREWUP_ONE;
+				targ.is_malfunctioning |= SCREWUP_ONE;
 				if (targ.classname == "building_sentrygun") // 
 					sprint(self, PRINT_HIGH, "The sentrygun is now incapacitated.\n");
 				else if (targ.classname == "building_tesla")
@@ -427,7 +427,7 @@ void() SBFireInterface =
 			}
 			else if (hackThis == SCREWUP_TWO)
 			{
-				targ.is_malfunctioning = targ.is_malfunctioning | SCREWUP_TWO;
+				targ.is_malfunctioning |= SCREWUP_TWO;
 				if (targ.classname == "building_sentrygun")
 					sprint(self, PRINT_HIGH, "The sentrygun's accuracy is now reduced.\n");
 				else if (targ.classname == "building_tesla")
@@ -454,7 +454,7 @@ void() SBFireInterface =
 			}
 			else if (hackThis == SCREWUP_THREE)
 			{
-				targ.is_malfunctioning = targ.is_malfunctioning | SCREWUP_THREE;
+				targ.is_malfunctioning |= SCREWUP_THREE;
 				if (targ.classname == "building_sentrygun")
 					sprint(self, PRINT_HIGH, "The sentrygun rocket launcher will now malfunction...\n");
 				else if (targ.classname == "building_tesla")
@@ -573,7 +573,7 @@ void() SBFireInterface =
 		else if (Teammate(targ.team_no,self.team_no))
 		{
 			//FRIENDLY IMPROVEMENTS
-            targ.num_mines = targ.num_mines | hackThis;
+            targ.num_mines |= hackThis;
 
             local string st;
             st=GetBuildingName(targ);
@@ -917,7 +917,7 @@ void(float input) SBInitiateInterface =
     te.martyr_enemy = self.demon_two;
     te.think = SBHackDotTimerThink;
     
-    self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
+    self.tfstate |= TFSTATE_CANT_MOVE;
     TeamFortress_SetSpeed(self);
     sprint (self, PRINT_HIGH, "You immerse yourself in the cybernet...\n");
     makeImmune(self,time + te.heat); //- OfN - WORKS? yup
@@ -1164,7 +1164,7 @@ float() CheckHaxxx =
     if (!retval)
     {
 		self.owner.is_haxxxoring = 0;
-		self.owner.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+		self.owner.tfstate &= ~TFSTATE_CANT_MOVE;
         TeamFortress_SetSpeed(self.owner);
 		self.think = SUB_Remove;
 		self.nextthink = time + 0.1;

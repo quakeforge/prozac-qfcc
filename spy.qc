@@ -240,7 +240,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 			self.current_weapon = self.weapon;
 			W_SetCurrentAmmo();
 
-			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+			self.tfstate &= ~TFSTATE_CANT_MOVE;
 			TeamFortress_SetSpeed(self);
 
 			// Check .weapon, because .current_weapon has been reset
@@ -333,7 +333,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 
 		makeImmune(self,time+2);
 		//self.immune_to_check = time + 2;
-		self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
+		self.tfstate |= TFSTATE_CANT_MOVE;
 		TeamFortress_SetSpeed(self);
 
 		self.is_feigning = TRUE;
@@ -348,7 +348,7 @@ void(float type) TeamFortress_SpyFeignDeath =
 	    }
 
 		if (self.undercover_team == 0 && self.undercover_skin == 0)
-			self.items = self.items & ~IT_INVISIBILITY;
+			self.items &= ~IT_INVISIBILITY;
 		self.invisible_finished = 0;
 		self.modelindex = modelindex_player;	// don't use eyes
 
@@ -417,7 +417,7 @@ void() TeamFortress_SpyGoUndercover =
 		{
 			self.is_undercover = 0;
 			self.modelindex = modelindex_player;	// return to normal
-//WK			self.items = self.items & ~IT_INVISIBILITY;
+//WK			self.items &= ~IT_INVISIBILITY;
 		}
 		else if (self.is_undercover == 2)	
 		{
@@ -533,7 +533,7 @@ void() TeamFortress_SpyUndercoverThink =
 
 	if (self.owner.is_undercover == 2)
 	{
-//WK		self.owner.items = self.owner.items | IT_INVISIBILITY;
+//WK		self.owner.items |= IT_INVISIBILITY;
 		if (invis_only == TRUE)
 		{
 			self.owner.frame = 0;
@@ -653,7 +653,7 @@ void(float teamno) TeamFortress_SpyChangeColor =
 
 		if (self.undercover_skin == 0)
 		{
-//WK			self.items = self.items & ~IT_INVISIBILITY;
+//WK			self.items &= ~IT_INVISIBILITY;
 			self.is_undercover = 0;
 		}
 		return;
@@ -780,7 +780,7 @@ void() GasGrenadeMakeGas =
 			else
 			{
 				sprint(te, PRINT_HIGH, "You stop breathing as the poison attacks your nerves...\n");
-				te.tfstate = te.tfstate | TFSTATE_HALLUCINATING;
+				te.tfstate |= TFSTATE_HALLUCINATING;
 				// Create a timer entity
 				timer = spawn();
 				timer.nextthink = time + GR_HALLU_TIME;
@@ -845,7 +845,7 @@ void() HallucinationTimer =
 	if (self.owner.weapons_carried & WEAP_MEDIKIT) //WK
 		self.health = self.health - GR_HALLU_DEC;
 	if (self.health <= 0)
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_HALLUCINATING);
+		self.owner.tfstate &= ~TFSTATE_HALLUCINATING;
 	if (!(self.owner.tfstate & TFSTATE_HALLUCINATING))
 	{
 		sprint(self.owner, PRINT_HIGH, "You feel a little better now.\n");
@@ -988,7 +988,7 @@ void() T_TranqDartTouch =
 			}
 			else
 			{
-				other.tfstate = other.tfstate | TFSTATE_TRANQUILISED;
+				other.tfstate |= TFSTATE_TRANQUILISED;
 				// Create a timer entity
 				timer = spawn();
 				timer.nextthink = time + TRANQ_TIME;
@@ -1016,7 +1016,7 @@ void() T_TranqDartTouch =
 			else
 			{
 				sprint(other, PRINT_HIGH, "You stop breathing...\n");
-				other.tfstate = other.tfstate | TFSTATE_TRANQUILISED;
+				other.tfstate |= TFSTATE_TRANQUILISED;
 				// Create a timer entity
 				timer = spawn();
 				timer.nextthink = time + TRANQ_TIME;
@@ -1054,7 +1054,7 @@ void() T_TranqDartTouch =
 // Just remove the player's tranquilisation.
 void() TranquiliserTimer =
 {
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_TRANQUILISED);
+	self.owner.tfstate &= ~TFSTATE_TRANQUILISED;
 
 	TeamFortress_SetSpeed(self.owner);
 
@@ -1066,7 +1066,7 @@ void() TranquiliserTimer =
 void() TranquiliserTimer2 =
 {
 	if (self.owner.tfstate & TFSTATE_TRANQUILISED) //Just in case
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_TRANQUILISED);
+		self.owner.tfstate &= ~TFSTATE_TRANQUILISED;
 	dremove(self);
 };
 
@@ -1082,7 +1082,7 @@ void(entity spy) Spy_RemoveDisguise =
 			// Reset the Skin
 			if (spy.undercover_skin != 0)
 			{
-//WK				spy.items = spy.items & ~IT_INVISIBILITY;
+//WK				spy.items &= ~IT_INVISIBILITY;
 				makeImmune(spy,time + 4);
 				//spy.immune_to_check = time + 4;
 				spy.undercover_skin = 0;
@@ -1093,7 +1093,7 @@ void(entity spy) Spy_RemoveDisguise =
 			// Set their color 
 			if (spy.undercover_team != 0)
 			{
-//WK				spy.items = spy.items - (spy.items & IT_INVISIBILITY);
+//WK				spy.items &= ~IT_INVISIBILITY);
 				makeImmune(spy,time + 4);
 				//spy.immune_to_check = time + 4;
 				spy.undercover_team = 0;
@@ -1118,7 +1118,7 @@ void(entity spy) Spy_RemoveDisguise =
 			spy.modelindex = modelindex_player;	// return to normal
 			
 //WK			if (spy.items & IT_INVISIBILITY)
-//WK				spy.items = spy.items & ~IT_INVISIBILITY;
+//WK				spy.items &= ~IT_INVISIBILITY;
 
 			self.StatusRefreshTime = time + 0.1;
 		}

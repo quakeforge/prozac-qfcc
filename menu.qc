@@ -210,7 +210,7 @@ void() Player_Menu =
 	// WK - Check to see if the custom class menu is overriding us
 	if ((self.done_custom & CUSTOM_BUILDING) && !(self.done_custom & CUSTOM_OVERRIDE) && self.playerclass == PC_CUSTOM) {
 		self.current_menu = MENU_PRIMARY_WEAPON;
-		self.done_custom = self.done_custom | CUSTOM_OVERRIDE;
+		self.done_custom |= CUSTOM_OVERRIDE;
 	}
 
 	//Don't flash status bars
@@ -1450,7 +1450,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1630,11 +1630,11 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 				self.building.angles_z = 180;
 			 	setmodel(self.building.trigger_field, "");
 				self.building.trigger_field.solid = SOLID_NOT;
-				self.building.flags = self.building.flags - (self.building.flags & FL_ONGROUND);
+				self.building.flags &= ~FL_ONGROUND;
 				self.building.movetype = MOVETYPE_FLY;
 				self.building.velocity_z = 200;
 				setsize (self.building, '-16 -16 -40', '16 16 -10'); //WK -40, -10
-				self.building.tf_items = self.building.tf_items | NIT_TURRET;
+				self.building.tf_items |= NIT_TURRET;
 			}
 		}
 	}
@@ -1649,7 +1649,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1707,7 +1707,7 @@ void(float inp) Menu_EngineerFix_Sensor_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1766,7 +1766,7 @@ void(float inp) Menu_EngineerFix_Camera_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1838,7 +1838,7 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -1912,7 +1912,7 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2263,13 +2263,13 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 	if (inp == 4) { //Spy Detector
 		if (Check_Tesla_Ups(4, self, self.building, 4, 0))
 		{
-			self.building.tf_items = self.building.tf_items | NIT_AUTOID;
+			self.building.tf_items |= NIT_AUTOID;
 		}
 	}
 	if (inp == 5) { //CH Get frags for upgrades
 		if (Check_Tesla_Ups(3, self, self.building, 5, 0))
 		{
-			self.building.tf_items = self.building.tf_items | NIT_TELEPORTER;
+			self.building.tf_items |= NIT_TELEPORTER;
 		}
 	}
 	if (inp == 6){ // Tinker by Cyt0  Remade by CH to fit with new code
@@ -2309,7 +2309,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2338,22 +2338,22 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 	if (inp == 1) { //Kevlar
 		if (Check_Tesla_Ups(1, self, self.building, 6, 1))
 		{
-			self.building.tf_items = self.building.tf_items | NIT_KEVLAR;
-			self.building.armorclass = self.building.armorclass | AT_SAVESHOT;
+			self.building.tf_items |= NIT_KEVLAR;
+			self.building.armorclass |= AT_SAVESHOT;
 		}
 	}
 	if (inp == 2) { //Blast
 		if (Check_Tesla_Ups(1, self, self.building, 7, 1))
 		{
-			self.building.tf_items = self.building.tf_items | NIT_BLAST;
-			self.building.armorclass = self.building.armorclass | AT_SAVEEXPLOSION;
+			self.building.tf_items |= NIT_BLAST;
+			self.building.armorclass |= AT_SAVEEXPLOSION;
 		}
 	}
 	if (inp == 3) { //Blast
 		if (Check_Tesla_Ups(1, self, self.building, 8, 1))
 		{
-			self.building.tf_items = self.building.tf_items | NIT_ASBESTOS;
-			self.building.armorclass = self.building.armorclass | AT_SAVEFIRE;
+			self.building.tf_items |= NIT_ASBESTOS;
+			self.building.armorclass |= AT_SAVEFIRE;
 		}
 	}
 	if (inp == 4) { //Tesla Turret(tm)
@@ -2387,11 +2387,11 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
                     }    
                     
                     self.building.angles_z = 180;
-					self.building.flags = self.building.flags - (self.building.flags & FL_ONGROUND);
+					self.building.flags &= ~FL_ONGROUND;
 					self.building.movetype = MOVETYPE_FLY;
 					self.building.velocity_z = 200;
 					setsize (self.building, '-16 -16 10', '16 16 62');
-					self.building.tf_items = self.building.tf_items | NIT_TURRET;
+					self.building.tf_items |= NIT_TURRET;
                     self.building.is_haxxxoring=1; //flag determines if flying and it's used for cloaking teslas, set to 0 when landed
                     
 				}
@@ -2401,14 +2401,14 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 	if (inp == 5) { //Improved Targeter
 		if (Check_Tesla_Ups(1, self, self.building, 10, 1))
 		{
-			self.building.tf_items = self.building.tf_items | NIT_SCANNER;
+			self.building.tf_items |= NIT_SCANNER;
 		}
 	}
 //CH its commented out here and in the centerprint - OfN nomore!
 	if (inp == 6) { //Cloaking tesla
 		if (Check_Tesla_Ups(1, self, self.building, 11, 1))
 		{
-			self.building.tf_items = self.building.tf_items | NIT_TESLA_CLOAKING;
+			self.building.tf_items |= NIT_TESLA_CLOAKING;
             if (self.building.job == 1)
             {
                 local entity oself;
@@ -2448,7 +2448,7 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2557,7 +2557,7 @@ void(float inp) Menu_Dispenser_Input =
 			if (self.armortype == 0)
 			{
 				self.armortype = self.armor_allowed;
-				//self.items = self.items | IT_ARMOR1;
+				//self.items |= IT_ARMOR1;
 				W_SetCurrentAmmo();
 			}
 
@@ -2581,7 +2581,7 @@ void(float inp) Menu_Dispenser_Input =
 		{
 			self.armortype = 0;	// lost all armor
 			self.armorclass = 0; // lost special armor
-			self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+			self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 		}
 
 		W_SetCurrentAmmo();
@@ -2692,7 +2692,7 @@ void(float inp) Menu_PrimaryWeapon_Input =
 				}
 				else if (self.money >= PRICE) {
 					self.money = self.money - PRICE;
-					self.weapons_carried = self.weapons_carried | WEAP_SNIPER_RIFLE | WEAP_AUTO_RIFLE;
+					self.weapons_carried |= WEAP_SNIPER_RIFLE | WEAP_AUTO_RIFLE;
 					self.maxammo_shells = self.maxammo_shells + 75;
 					PrintMoney();
 				}
@@ -2722,7 +2722,7 @@ void(float inp) Menu_PrimaryWeapon_Input =
 					//Clean up asbestos armor
 					if (!(self.tf_items & NIT_ASBESTOS))
 						self.money = self.money - 750; //Sync this with asbestos
-					self.tf_items = self.tf_items & ~NIT_ASBESTOS;
+					self.tf_items &= ~NIT_ASBESTOS;
 	
 					PrintRefund(PRICE);
 					self.weapons_carried = self.weapons_carried - WEAP_INCENDIARY;
@@ -2733,11 +2733,11 @@ void(float inp) Menu_PrimaryWeapon_Input =
 				else if (self.money >= PRICE)
 				{
 					self.money = self.money - PRICE;
-					self.weapons_carried = self.weapons_carried | WEAP_INCENDIARY | WEAP_FLAMETHROWER;
+					self.weapons_carried |= WEAP_INCENDIARY | WEAP_FLAMETHROWER;
 					//Give em asbestos armor, and a refund if they have it
 					if (self.tf_items & NIT_ASBESTOS)
 						self.money = self.money + 750; //Sync this with asbestos price
-					self.tf_items = self.tf_items | NIT_ASBESTOS;
+					self.tf_items |= NIT_ASBESTOS;
 	
 					
 					self.maxammo_cells = self.maxammo_cells + 200;
@@ -2850,7 +2850,7 @@ void(float inp) Menu_SecondaryWeapon_Input =
         }
         else if (self.money >= PRICE) {
             self.money = self.money - PRICE;
-            self.cutf_items = self.cutf_items | CUTF_KNIFE;
+            self.cutf_items |= CUTF_KNIFE;
             PrintMoney();
         }
         else
@@ -3490,16 +3490,16 @@ void(float inp) Menu_Special_Input =
             //Clean up auto-medic (sync this with Custom.qc)
             if (self.tf_items & NIT_AUTOSCANNER)
                 self.money = self.money + 250; //Sync this with price below
-            self.tf_items = self.tf_items & ~NIT_AUTOSCANNER;
+            self.tf_items &= ~NIT_AUTOSCANNER;
 
             PrintRefund(PRICE);
-            self.tf_items = self.tf_items & ~NIT_SCANNER;
-            self.tf_items_flags = self.tf_items_flags - (self.tf_items & NIT_SCANNER_ENEMY);
+            self.tf_items &= ~NIT_SCANNER;
+            self.tf_items_flags &= ~NIT_SCANNER_ENEMY;
         }
         else if (self.money >= PRICE) {
             self.money = self.money - PRICE;
-            self.tf_items = self.tf_items | NIT_SCANNER;
-            self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_ENEMY;
+            self.tf_items |= NIT_SCANNER;
+            self.tf_items_flags |= NIT_SCANNER_ENEMY;
             PrintMoney();
         }
         else
@@ -3525,7 +3525,7 @@ void(float inp) Menu_Special_Input =
         }
         else if (self.money >= PRICE) {
             self.money = self.money - PRICE;
-            self.cutf_items = self.cutf_items | CUTF_DETPACK;
+            self.cutf_items |= CUTF_DETPACK;
             self.maxammo_detpack = self.maxammo_detpack + 1;
             PrintMoney();
         }
@@ -3543,7 +3543,7 @@ void(float inp) Menu_Special_Input =
         }
         else if (self.money >= PRICE) {
             self.money = self.money - PRICE;
-            self.weapons_carried = self.weapons_carried | WEAP_MEDIKIT;
+            self.weapons_carried |= WEAP_MEDIKIT;
             self.maxammo_medikit = self.maxammo_medikit + 80;
             PrintMoney();
         }

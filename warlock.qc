@@ -565,7 +565,7 @@ void (float points) custom_demon_create =
 		sprint(self,PRINT_HIGH,"Not enough room to summon creature!\n");
 		newmis.think = SUB_Remove;
 		newmis.nextthink = time + 0.1;
-        //self.job = self.job - (self.job & JOB_DEMON_OUT); // FIXME - This shouldn't be needed - OfN done
+        //self.job &= ~JOB_DEMON_OUT); // FIXME - This shouldn't be needed - OfN done
 		return;
 	}
 
@@ -642,7 +642,7 @@ void (float points) custom_demon_create =
 	teamsprint(self.team_no,self,"\n");
 
 
-	self.job = self.job | JOB_DEMON_OUT; 
+	self.job |= JOB_DEMON_OUT; 
 	self.job_finished = time + 3;	//Don't let em kill demon for 15 secs.
 									// SB 15 is tight; 10
 									// 10 is tight; 5
@@ -654,8 +654,7 @@ void (float points) custom_demon_create =
 	newmis.velocity = v_forward * 10;// + '0 0 250';
     newmis.angles = vectoangles(newmis.velocity);
 
-	if (newmis.flags & FL_ONGROUND)
-		newmis.flags = newmis.flags - FL_ONGROUND;
+	newmis.flags &= ~FL_ONGROUND;
     
     newmis.velocity = v_forward * 10;
     
@@ -924,7 +923,7 @@ void () kill_my_demon =
 			te.nextthink = time + 0.1;
 
 			sprint(self, PRINT_HIGH, "Your fiend is dead.\n");
-			self.job = self.job - (self.job & JOB_DEMON_OUT);
+			self.job &= ~JOB_DEMON_OUT;
 		}
 
 		te = find(te, classname, "monster_demon1");
@@ -1001,7 +1000,7 @@ void () kill_my_demon =
 			self = oself;
                                         //grunt
 			sprint (self, PRINT_HIGH, "Your soldier is dead.\n");
-			self.job = self.job - (self.job & JOB_DEMON_OUT);
+			self.job &= ~JOB_DEMON_OUT;
 
             self.demon_one = NIL;
             SetArmyTimer();
@@ -1031,7 +1030,7 @@ void () kill_my_demon =
 			te.nextthink = time + 0.1;
 			self = oself;
 
-			//self.job = self.job - (self.job & JOB_DEMON_OUT);
+			//self.job &= ~JOB_DEMON_OUT);
 			sprint (self, PRINT_HIGH, "Your knight is dead.\n");
 			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
@@ -1056,7 +1055,7 @@ void () kill_my_demon =
 			te.nextthink = time + 0.1;
 			self = oself;
 
-			//self.job = self.job - (self.job & JOB_DEMON_OUT);
+			//self.job &= ~JOB_DEMON_OUT);
 			sprint (self, PRINT_HIGH, "Your hell knight is dead.\n");
 			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
@@ -1081,7 +1080,7 @@ void () kill_my_demon =
 				te.nextthink = time + 0.1;
 				self = oself;	
 
-				//self.job = self.job - (self.job & JOB_DEMON_OUT);
+				//self.job &= ~JOB_DEMON_OUT);
 				sprint (self, PRINT_HIGH, "Your shambler is dead.\n");
 				//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
 		}
@@ -1115,7 +1114,7 @@ void () kill_my_demon =
 	}   
 
 
-    	self.job = self.job - (self.job & JOB_DEMON_OUT);
+    	self.job &= ~JOB_DEMON_OUT;
     	self.demon_one = NIL;
 
     	self.summon_one = NIL;

@@ -146,7 +146,7 @@ void() Tesla_Lose_Glow =
             if (self.job == 3) self.job = 1;
         }
 	}
-	self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+	self.effects &= ~EF_DIMLIGHT;
 };
 void() Tesla_Give_Glow =
 {
@@ -160,7 +160,7 @@ void() Tesla_Give_Glow =
             self.pain_finished=1;
         }
 	}
-	self.effects = self.effects | EF_DIMLIGHT;
+	self.effects |= EF_DIMLIGHT;
 };
 
 void() TeslaThink;
@@ -670,7 +670,7 @@ void() Tesla_Touch =
 		{ //The eagle has landed!
 		//	sprint(self.real_owner, PRINT_HIGH, "The eagle has landed!\n");
 			self.solid = SOLID_BBOX;
-			self.flags = self.flags | FL_ONGROUND;
+			self.flags |= FL_ONGROUND;
 			self.movetype = MOVETYPE_STEP;
 			self.origin_z = self.origin_z + 40;
 
@@ -678,7 +678,7 @@ void() Tesla_Touch =
 
             if (self.job == 1)
             {
-                self.effects = self.effects | EF_DIMLIGHT; // hack to make lose_glow to run properly to make disappear again the tesla
+                self.effects |= EF_DIMLIGHT; // hack to make lose_glow to run properly to make disappear again the tesla
                 Tesla_Lose_Glow();
             }
 
@@ -904,7 +904,7 @@ entity(entity OldTesla) TeslaClone =
 
     newmis.skin = OldTesla.skin; //
 
-	//newmis.flags = newmis.flags - (newmis.flags & FL_ONGROUND);
+	//newmis.flags &= ~FL_ONGROUND;
     newmis.flags = OldTesla.flags;
 
     ///////////////////////////
@@ -922,7 +922,7 @@ entity(entity OldTesla) TeslaClone =
     newmis.colormap = OldTesla.colormap; //self.colormap;	// Set the Base Color
     //newmis.velocity = '0 0 -8';
     newmis.avelocity = '0 0 0';
-    newmis.flags = OldTesla.flags; // newmis.flags - (newmis.flags & FL_ONGROUND);
+    newmis.flags = OldTesla.flags; // &= ~FL_ONGROUND;
     newmis.team_no = OldTesla.team_no;
     
     //- OfN -

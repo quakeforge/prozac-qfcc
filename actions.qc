@@ -498,7 +498,7 @@ void() TeamFortress_ReloadCurrentWeapon =
 				self.reload_shotgun = RE_SHOTGUN - self.ammo_shells;
 		   
 			sprint(self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -535,7 +535,7 @@ void() TeamFortress_ReloadCurrentWeapon =
 				self.reload_super_shotgun = RE_SUPER_SHOTGUN - self.ammo_shells;
 
 	      	sprint (self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -572,7 +572,7 @@ void() TeamFortress_ReloadCurrentWeapon =
 				self.reload_laser_cannon = RE_LASER_CANNON - self.ammo_cells;
 
 	      	sprint (self, PRINT_HIGH, "Charging cannon...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -609,7 +609,7 @@ void() TeamFortress_ReloadCurrentWeapon =
 				self.reload_light_assault = RE_LIGHT_ASSAULT - self.ammo_nails;
 
 	      	sprint (self, PRINT_HIGH, "reloading...\n");
-			self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+			self.tfstate |= TFSTATE_RELOADING;
 			tWeapon = spawn();
 			tWeapon.netname = "reloadtimer"; //WK For Judoka code
 			tWeapon.owner = self;
@@ -646,7 +646,7 @@ void() TeamFortress_ReloadCurrentWeapon =
 			self.reload_grenade_launcher = RE_GRENADE_LAUNCHER - self.ammo_rockets;
 
 	  	sprint (self, PRINT_HIGH, "reloading...\n");
-		self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+		self.tfstate |= TFSTATE_RELOADING;
 	     	tWeapon = spawn();
 		tWeapon.netname = "reloadtimer"; //WK For Judoka code
 	     	tWeapon.owner = self;
@@ -682,7 +682,7 @@ void() TeamFortress_ReloadCurrentWeapon =
 			self.reload_rocket_launcher = RE_ROCKET_LAUNCHER - self.ammo_rockets;
 
      		sprint (self, PRINT_HIGH, "reloading...\n");
-		self.tfstate = (self.tfstate | TFSTATE_RELOADING);
+		self.tfstate |= TFSTATE_RELOADING;
          	tWeapon = spawn();
 		tWeapon.netname = "reloadtimer"; //WK For Judoka code
          	tWeapon.owner = self;

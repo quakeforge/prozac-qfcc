@@ -294,7 +294,7 @@ void() door_touch =
 	}
 
 	other.items = other.items - self.items;
-	other.tf_items = other.tf_items | self.items;
+	other.tf_items |= self.items;
 
 	if (DoorShouldOpen())
 	{

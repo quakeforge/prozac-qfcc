@@ -137,8 +137,7 @@ void()	demon1_jump4	=[	$leap4,		demon1_jump5	]
 			self.velocity_z = self.velocity_z + jello;
 		self.has_tesla = 0;
 	}
-	if (self.flags & FL_ONGROUND)
-		self.flags = self.flags - FL_ONGROUND;
+	self.flags &= ~FL_ONGROUND;
 };
 void()	demon1_jump5	=[	$leap5,		demon1_jump6	] {};
 void()	demon1_jump6	=[	$leap6,		demon1_jump7	] {};
@@ -646,7 +645,7 @@ void()	Demon_JumpTouch =
 			//self.velocity_x = (random() - 0.5) * 600;
 			//self.velocity_y = (random() - 0.5) * 600;
 			//self.velocity_z = 200;
-			//self.flags = self.flags - FL_ONGROUND;
+			//self.flags &= ~FL_ONGROUND;
 		}
 		return;	// not on ground yet
 	}
@@ -711,7 +710,7 @@ void () custom_demon_die =
 	if (self.real_owner.classname == "player" && self.real_owner.demon_one == self)
 	{
 		sprint(self.real_owner,PRINT_HIGH,"Your fiend is dead.\n");
-		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
+		self.real_owner.job &= ~JOB_DEMON_OUT;
 		self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
         self.real_owner.demon_one = NIL;
 	}

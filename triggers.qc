@@ -497,11 +497,9 @@ void() teleport_touch =
 
 		other.fixangle = 1;		// turn this way immediately
 		other.teleport_time = time + 0.7;
-		if (other.flags & FL_ONGROUND)
-			other.flags = other.flags - FL_ONGROUND;
 		other.velocity = v_forward * 300;
 	}
-	other.flags = other.flags - other.flags & FL_ONGROUND;
+	other.flags &= ~FL_ONGROUND;
 };
 
 /*QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
@@ -796,7 +794,7 @@ void() trigger_monsterjump_touch =
 	if ( !(other.flags & FL_ONGROUND) )
 		return;
 	
-	other.flags = other.flags - FL_ONGROUND;
+	other.flags &= ~FL_ONGROUND;
 
 	other.velocity_z = self.height;
 };

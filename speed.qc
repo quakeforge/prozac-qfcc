@@ -82,19 +82,19 @@ void () TeamFortress_CheckForSpeed =
 		max = max + 200;	
 	//make sure ok to check
 	if (self.owner.immune_to_chec > time)
-		immune = immune | IMMUNE; //its ok since IMMUNE becomes 1
+		immune |= IMMUNE; //its ok since IMMUNE becomes 1
 	if (self.owner.hook_out)
-		immune = immune | GRAPPLE;
+		immune |= GRAPPLE;
 	//WK We should boot if they have no set speed and are moving
 	//if (self.owner.maxspeed == 0) // no set speed
 	if (!(self.owner.flags & FL_ONGROUND)) //WK People in air immune
-		immune = immune | FLYING;
+		immune |= FLYING;
 	if (self.owner.playerclass == PC_UNDEFINED)
-		immune = immune | NOCLASS;
+		immune |= NOCLASS;
 	if (self.owner.done_custom & CUSTOM_BUILDING)
-		immune = immune | BUILDING;
+		immune |= BUILDING;
 	if (self.owner.health <= 0)
-		immune = immune | DEAD;
+		immune |= DEAD;
 	if (self.owner.has_disconnected)
 		dremove(self);
 

@@ -253,7 +253,7 @@ void() health_touch =
 	{
 		sprint(other, PRINT_MEDIUM, "You have been healed of your infection!");
 
-        other.tfstate = other.tfstate - (other.tfstate & TFSTATE_INFECTED);
+        other.tfstate &= ~TFSTATE_INFECTED;
 	}
 	else
 	{
@@ -275,7 +275,7 @@ void() health_touch =
 	// Megahealth = rot down the player's super health
 	if (self.healtype == 2)
 	{
-		other.items = other.items | IT_SUPERHEALTH;
+		other.items |= IT_SUPERHEALTH;
 		self.nextthink = time + 5;
 		self.think = item_megahealth_rot;
 		self.owner = other;
@@ -307,7 +307,7 @@ void() item_megahealth_rot =
 
 	// it is possible for a player to die and respawn between rots, so don't
 	// just blindly subtract the flag off
-	other.items = other.items & ~IT_SUPERHEALTH;
+	other.items &= ~IT_SUPERHEALTH;
 	
 	if (self.classname == "medikit_rot")
 	{
@@ -470,7 +470,7 @@ void() armor_touch =
 		other.armortype = type;
 		other.armorvalue = value;
 
-		other.items = other.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3) | bit;
+		other.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3) | bit;
 	}
 
 	if (other.armorvalue) {
@@ -794,7 +794,7 @@ void() weapon_touch =
 
 // change to the weapon
 	old = other.weapons_carried;
-	other.weapons_carried = other.weapons_carried | new;
+	other.weapons_carried |= new;
 	
 	stemp = self;
 	self = other;
@@ -1396,7 +1396,7 @@ void() key_touch =
 
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
-	other.items = other.items | self.items;
+	other.items |= self.items;
 
 	if (!coop)
 	{	
@@ -1547,7 +1547,7 @@ void() sigil_touch =
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	self.model = "";
-	serverflags = serverflags | (self.spawnflags & 15);
+	serverflags |= (self.spawnflags & 15);
 	self.classname = "";		// so rune doors won't find it
 	
 	activator = other;
@@ -1660,7 +1660,7 @@ void() powerup_touch =
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
-	other.items = other.items | self.items;
+	other.items |= self.items;
 	self.model = "";
 
 // do the apropriate action

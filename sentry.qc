@@ -55,7 +55,7 @@ $frame lvl3_shoot1 lvl3_shoot2
 */
 
 void() RemoveGlow = {
-	self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+	self.effects &= ~EF_DIMLIGHT;
 };
 
 //===========================
@@ -561,7 +561,7 @@ float() Sentry_Fire =
 	if (self.ammo_shells > 0)
 	{
 		//WK muzzleflash();
-		self.effects = self.effects | EF_DIMLIGHT;
+		self.effects |= EF_DIMLIGHT;
 	/*	if (self.tf_items & NIT_TURRET) 
 			sound (self ,CHAN_WEAPON, "weapons/asscan2.wav", 1, ATTN_NORM);
 		else */
@@ -761,7 +761,7 @@ void() Sentry_Touch =
 		}
 		if (!other) { //The eagle has landed!
 		//	sprint(self.real_owner, PRINT_HIGH, "The eagle has landed!\n");
-			self.flags = self.flags | FL_ONGROUND;
+			self.flags |= FL_ONGROUND;
 			self.movetype = MOVETYPE_STEP;
 			self.origin_z = self.origin_z + 32;//32; // was 40, old custom bug? fixed
 			return;

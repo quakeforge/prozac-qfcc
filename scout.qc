@@ -73,7 +73,7 @@ void() FlashGrenadeExplode =
 	local entity te;
 	local float loopc = 0;
 
-	self.effects = self.effects | EF_BRIGHTLIGHT;
+	self.effects |= EF_BRIGHTLIGHT;
 
 
 	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
@@ -323,11 +323,11 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 			if (self.tf_items_flags & NIT_SCANNER_ENEMY)
 			{
 				sprint (self, PRINT_HIGH, "Enemy Scanning disabled.\n");
-				self.tf_items_flags = self.tf_items_flags & ~NIT_SCANNER_ENEMY;
+				self.tf_items_flags &= ~NIT_SCANNER_ENEMY;
 				return;
 			}
 			sprint (self, PRINT_HIGH, "Enemy Scanning enabled.\n");
-			self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_ENEMY;
+			self.tf_items_flags |= NIT_SCANNER_ENEMY;
 			return;
 		}
 
@@ -337,11 +337,11 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 			if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
 			{
 				sprint (self, PRINT_HIGH, "Friendly Scanning disabled.\n");
-				self.tf_items_flags = self.tf_items_flags & ~NIT_SCANNER_FRIENDLY;
+				self.tf_items_flags &= ~NIT_SCANNER_FRIENDLY;
 				return;
 			}
 			sprint (self, PRINT_HIGH, "Friendly Scanning enabled.\n");
-			self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_FRIENDLY;
+			self.tf_items_flags |= NIT_SCANNER_FRIENDLY;
 			return;
 		}
 
@@ -709,8 +709,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 
 					if (head.classname != "player")
 					{
-						if(head.flags & FL_ONGROUND)
-							head.flags = head.flags - FL_ONGROUND;
+						head.flags &= ~FL_ONGROUND;
 					}
 					else
 					{

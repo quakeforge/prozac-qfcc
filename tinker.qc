@@ -11,7 +11,7 @@ void () BadTinker = {
 		sprint(self,PRINT_HIGH,"The tesla blew up.\n");
 	}
         else { // ZAP!
-		self.building.tf_items = self.building.tf_items | NIT_SECURITY_CAMERA; //Turns tesla against team.
+		self.building.tf_items |= NIT_SECURITY_CAMERA; //Turns tesla against team.
 		self.building.health = 100; //WK Make it easy to kill
 		self.building.max_health = 100;
 		sprint(self,PRINT_HIGH,"You cut the wrong wire!\n");
@@ -60,7 +60,7 @@ void () DoTinker = {
 		}
 		else if (prob <= 0.35){
                         if (!(self.building.tf_items & NIT_SCANNER)){
-				self.building.tf_items = self.building.tf_items | NIT_SCANNER;
+				self.building.tf_items |= NIT_SCANNER;
 				sprint(self,PRINT_HIGH,"The tesla gets a free improved targeter!\n");
                         }
 			else{
@@ -69,7 +69,7 @@ void () DoTinker = {
 		}
 		else if (prob <= 0.4){
 			if (!(self.building.tf_items & NIT_AUTOID)){
-				self.building.tf_items = self.building.tf_items | NIT_AUTOID;
+				self.building.tf_items |= NIT_AUTOID;
 				sprint(self,PRINT_HIGH,"The tesla got a free spy detector!\n");
 			}
 			else{

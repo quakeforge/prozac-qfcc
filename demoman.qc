@@ -193,7 +193,7 @@ void(float timer) TeamFortress_SetDetpack =
 
 	makeImmune(self,time + 2);
 	//self.immune_to_check = time + 2;
-	self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
+	self.tfstate |= TFSTATE_CANT_MOVE;
 	// Save the current weapon and remove it
 	self.weapon = self.current_weapon;
 	self.current_weapon = 0;
@@ -246,7 +246,7 @@ void(float krac) TeamFortress_DetpackStop =
 
 	dremove(detpack_timer);
 
-	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+	self.tfstate &= ~TFSTATE_CANT_MOVE;
 
 	self.is_detpacking = 0;
 	self.current_weapon = self.weapon;
@@ -264,7 +264,7 @@ void() TeamFortress_DetpackSet =
 	local entity countd, oldself;
 
 	self.is_detpacking = 0;
-	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_CANT_MOVE);
+	self.owner.tfstate &= ~TFSTATE_CANT_MOVE;
     self.owner.is_detpacking = 0;
 
 	TeamFortress_SetSpeed(self.owner);
@@ -463,7 +463,7 @@ void() TeamFortress_DetpackTouch =
 
 	makeImmune(other,time + 2);
 	//other.immune_to_check = time + 2;
-	other.tfstate = other.tfstate | TFSTATE_CANT_MOVE;
+	other.tfstate |= TFSTATE_CANT_MOVE;
 
 	sprint(other, PRINT_HIGH, "Disarming detpack...\n");
 	TeamFortress_SetSpeed(other);
@@ -501,7 +501,7 @@ void() TeamFortress_DetpackDisarm =
     //if (!(self.owner.is_feigning))
 	//- OfN already checked on TeamFortress_SetSpeed()
     //{
-        self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_CANT_MOVE);
+        self.owner.tfstate &= ~TFSTATE_CANT_MOVE;
 
 	// Reset speeds of scout
 	TeamFortress_SetSpeed(self.owner);

@@ -119,7 +119,7 @@ void() SetChangeParms =
  	}
 
 	// remove items
-	self.items = self.items & ~(IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD);
+	self.items &= ~(IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD);
 	
 	// cap super health
 	if (self.health > 100)
@@ -149,7 +149,7 @@ void() SetChangeParms =
 	{
 		if (self.tfstate & TFSTATE_RANDOMPC)
 		{
-			parm11 = (parm11 | TFSTATE_RANDOMPC);
+			parm11 |= TFSTATE_RANDOMPC);
 			self.playerclass = 1 + floor(random() * (PC_RANDOM - 1));
 			while(!IsLegalClass(self.playerclass))
 				self.playerclass = 1 + floor(random() * (PC_RANDOM - 1));
@@ -196,7 +196,7 @@ void() autoteam_think =
 //	if (!chris)
 		PrematchBegin();
 	
-	toggleflags = toggleflags | TFLAG_AUTOTEAM;
+	toggleflags |= TFLAG_AUTOTEAM;
 	dremove(self);
 };
 
@@ -209,7 +209,7 @@ void () PrematchBegin =
 		while (other)
 		{
 			other.is_abouttodie = TRUE;
-			other.items = other.items & ~IT_INVULNERABILITY;
+			other.items &= ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects &= ~EF_ANYGLOW;
@@ -224,7 +224,7 @@ void () PrematchBegin =
 		while (other)
 		{
 			other.is_abouttodie = TRUE;
-			other.items = other.items & ~IT_INVULNERABILITY;
+			other.items &= ~IT_INVULNERABILITY;
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects &= ~EF_ANYGLOW;
@@ -439,7 +439,7 @@ void() SetToggleFlags =
 	invis_only = SPY_INVIS_ONLY;
 
 	if (coop || !deathmatch)
-	toggleflags = toggleflags | TFLAG_CLASS_PERSIST;
+	toggleflags |= TFLAG_CLASS_PERSIST;
 
 	nextmap = mapname;
 
@@ -526,21 +526,21 @@ void() SetToggleFlags =
 
 	if (NEVER_TEAMFRAGS)
 	{
-		toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
+		toggleflags &= ~TFLAG_TEAMFRAGS;
 	}
 
 	if (ALWAYS_TEAMFRAGS)
 	{
-		toggleflags = toggleflags | TFLAG_TEAMFRAGS;
+		toggleflags |= TFLAG_TEAMFRAGS;
 	}
 
 	if (CHECK_SPEEDS)
 	{
-		toggleflags = toggleflags | TFLAG_CHEATCHECK;
+		toggleflags |= TFLAG_CHEATCHECK;
 	}
 
 	st = infokey(NIL, "temp1");
-	toggleflags = (toggleflags | TFLAG_FIRSTENTRY | stof(st));
+	toggleflags |= TFLAG_FIRSTENTRY | stof(st);
 	local float autoteam_time;
 	autoteam_time = 30;
 	// check all serverinfo settings, to set the appropriate toggleflags
@@ -550,12 +550,12 @@ void() SetToggleFlags =
 	if (!st)
 		st = infokey(NIL, "autoteam");
 	if (st == "on")
-		toggleflags = toggleflags | TFLAG_AUTOTEAM;
+		toggleflags |= TFLAG_AUTOTEAM;
 	else if (st == "off")
-		toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
+		toggleflags &= ~TFLAG_AUTOTEAM;
 	else if (stof(st) != 0)
 	{
-		toggleflags = toggleflags | TFLAG_AUTOTEAM;
+		toggleflags |= TFLAG_AUTOTEAM;
 		autoteam_time = stof(st);
 	}
 
@@ -564,9 +564,9 @@ void() SetToggleFlags =
 	if (!st)
 		st = infokey(NIL, "teamfrags");
 	if (st == "on")
-		toggleflags = toggleflags | TFLAG_TEAMFRAGS;
+		toggleflags |= TFLAG_TEAMFRAGS;
 	else if (st == "off")
-		toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
+		toggleflags &= ~TFLAG_TEAMFRAGS;
 
 	//WK JELLO WATER
 	st = infokey(NIL, "j");
@@ -605,7 +605,7 @@ void() SetToggleFlags =
 	{
 		prematch = time + prematchtime; // set it
 		autoteam_time = prematchtime;
-		toggleflags = toggleflags | TFLAG_AUTOTEAM;
+		toggleflags |= TFLAG_AUTOTEAM;
 	}
 	else
 		prematch = FALSE; // otherwise, no prematch
@@ -662,7 +662,7 @@ void() SetToggleFlags =
 		st = infokey(NIL, "respawn_delay");
 	respawn_delay_time = stof(st);
 	if (respawn_delay_time)
-		toggleflags = toggleflags | TFLAG_RESPAWNDELAY;
+		toggleflags |= TFLAG_RESPAWNDELAY;
 
 	// If no Respawndelay has been specified, set the default
 	if (toggleflags & TFLAG_RESPAWNDELAY && respawn_delay_time == 0)
@@ -672,7 +672,7 @@ void() SetToggleFlags =
 	// Allows restructuring of the teams from the last map nicely.
 	if (toggleflags & TFLAG_AUTOTEAM)
 	{
-		toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
+		toggleflags &= ~TFLAG_AUTOTEAM;
 		ent = spawn();
 		ent.nextthink = time + autoteam_time;
 		ent.think = autoteam_think;
@@ -1521,7 +1521,7 @@ void() ClientKill =
 	self.health = -1;
 	self.th_die();
 	self.deadflag = DEAD_RESPAWNABLE;
-	self.tfstate = self.tfstate | TFSTATE_RESPAWN_READY;
+	self.tfstate |= TFSTATE_RESPAWN_READY;
 //	self.respawn_time = time;
 };
 
@@ -1934,9 +1934,9 @@ void() PutClientInServer =
 		self.playerclass = self.nextpc;
 
 		if (self.nextpc == PC_RANDOM)
-			self.tfstate = self.tfstate | TFSTATE_RANDOMPC;
+			self.tfstate |= TFSTATE_RANDOMPC;
 		else
-			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_RANDOMPC);
+			self.tfstate &= ~TFSTATE_RANDOMPC;
 	}
 
 	// some states are kept
@@ -1958,7 +1958,7 @@ void() PutClientInServer =
 		self.tfstate = 0;
 
 	if (iszoom == 1)
-		self.tfstate = self.tfstate | TFSTATE_ZOOMOFF;
+		self.tfstate |= TFSTATE_ZOOMOFF;
 
 	// Display the Player's class
 	if (self.playerclass != PC_CUSTOM)
@@ -2375,7 +2375,7 @@ void() PlayerDeathThink =
 			return;
 		self.deadflag = DEAD_RESPAWNABLE;
 		// make sure that respawn flag has not been set
-		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_RESPAWN_READY);
+		self.tfstate &= ~TFSTATE_RESPAWN_READY;
 		return;
 	}
 
@@ -2398,7 +2398,7 @@ void() PlayerDeathThink =
 	else
 	{
 		// button has been pressed, player is ready to respawn
-		self.tfstate = self.tfstate | TFSTATE_RESPAWN_READY;
+		self.tfstate |= TFSTATE_RESPAWN_READY;
 
 		if (self.respawn_time <= time)
 		{
@@ -2453,7 +2453,7 @@ void() PlayerJump =
 	if (!(self.flags & FL_JUMPRELEASED) )
 		return;		// don't pogo stick
 
-	self.flags = self.flags - (self.flags & FL_JUMPRELEASED);
+	self.flags &= ~FL_JUMPRELEASED;
 	self.button2 = 0;
 // player jumping sound
 	if (!(self.cutf_items & CUTF_STEALTH)) // Only play it if we don't have stealth
@@ -2603,9 +2603,9 @@ void() CheckWaterJump =
 		traceline (start, end, TRUE, self);
 		if (trace_fraction == 1)
 		{	// open at eye level
-			self.flags = self.flags | FL_WATERJUMP;
+			self.flags |= FL_WATERJUMP;
 			self.velocity_z = 225;
-			self.flags = self.flags - (self.flags & FL_JUMPRELEASED);
+			self.flags &= ~FL_JUMPRELEASED;
 			self.teleport_time = time + 2;	// safety net
 			return;
 		}
@@ -2738,8 +2738,8 @@ void() PlayerPreThink =
 		if (self.effects & EF_ANYGLOW)
 		{
 			sprint(self, PRINT_MEDIUM, "The glowing removes your full invisibility.\n");
-			self.job = self.job - (self.job & JOB_FULL_HIDE);
-			self.job = self.job | JOB_ACTIVE;
+			self.job &= ~JOB_FULL_HIDE);
+			self.job |= JOB_ACTIVE;
 		}
 	} */
 	
@@ -2753,7 +2753,7 @@ void() PlayerPreThink =
 			PlayerJump (); //WK This just does noises for jumps
 		}
 		else
-			self.flags = self.flags | FL_JUMPRELEASED;
+			self.flags |= FL_JUMPRELEASED;
 	}
 
 	//WK Scuba commando treads water :)
@@ -2966,7 +2966,7 @@ void() CheckPowerups =
 
 		if (self.invisible_finished < time)
 		{	// just stopped
-			self.items = self.items & ~IT_INVISIBILITY;
+			self.items &= ~IT_INVISIBILITY;
 			self.invisible_finished = 0;
 			self.invisible_time = 0;
 		}
@@ -3009,7 +3009,7 @@ void() CheckPowerups =
 		
 		if (self.invincible_finished < time)
 		{	// just stopped
-			self.items = self.items & ~IT_INVULNERABILITY;
+			self.items &= ~IT_INVULNERABILITY;
 			self.invincible_time = 0;
 			self.invincible_finished = 0;
 			self.effects &= ~EF_ANYGLOW;
@@ -3047,11 +3047,11 @@ void() CheckPowerups =
 
 		if (self.super_damage_finished < time)
 		{	// just stopped
-			self.items = self.items & ~IT_QUAD;
+			self.items &= ~IT_QUAD;
 			self.super_damage_finished = 0;
 			self.super_time = 0;
 			//WK If inspired, remove inspiration
-			self.tfstate = self.tfstate - (self.tfstate & TFSTATE_INSPIRED);
+			self.tfstate &= ~TFSTATE_INSPIRED;
 			self.effects &= ~EF_ANYGLOW;
 			self.effects |= EF_GlowColor(self);
 		}
@@ -3089,7 +3089,7 @@ void() CheckPowerups =
 
 		if (self.radsuit_finished < time)
 		{	// just stopped
-			self.items = self.items & ~IT_SUIT;
+			self.items &= ~IT_SUIT;
 			self.rad_time = 0;
 			self.radsuit_finished = 0;
 		}
@@ -3099,7 +3099,7 @@ void() CheckPowerups =
         if (self.aura_time < time)
         {
             if (self.invisible_finished < time)
-                self.items = self.items & ~IT_INVISIBILITY;
+                self.items &= ~IT_INVISIBILITY;
             self.aura = 0;
         }
 
@@ -3219,7 +3219,7 @@ void() ClientConnect =
 
 	// Set Default autozoom
 	if (DEFAULT_AUTOZOOM == OFF)
-		self.tfstate = self.tfstate | TFSTATE_ZOOMOFF;
+		self.tfstate |= TFSTATE_ZOOMOFF;
 
 	// Set the MOTD on
 	self.motd = 0;
@@ -3405,7 +3405,7 @@ void() ClientDisconnect =
 		{
 			if (te.weaponmode == 1)     	  // Detpack was being disarmed
 			{   
-				te.enemy.tfstate = te.enemy.tfstate - (te.enemy.tfstate & TFSTATE_CANT_MOVE);
+				te.enemy.tfstate &= ~TFSTATE_CANT_MOVE;
 				TeamFortress_SetSpeed(te.enemy);
 
 				dremove(te.oldenemy);  	 // CountDown

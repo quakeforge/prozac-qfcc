@@ -185,7 +185,7 @@ void() TeamFortress_ChangeClass =
 		self.nextpc = self.impulse - TF_CHANGEPC;
 		//WK - Handle Custom Class
 		if (self.nextpc == PC_CUSTOM) {
-			self.done_custom = self.done_custom | CUSTOM_ON_SPAWN; //Generate a new custom class when we respawn
+			self.done_custom |= CUSTOM_ON_SPAWN; //Generate a new custom class when we respawn
 		}
 		sprint(self, PRINT_HIGH, "After dying, you will return as a new class\n");
 		return;
@@ -301,7 +301,7 @@ void() TeamFortress_ChangeClass =
 	if ( self.playerclass == PC_RANDOM ) {
 		sprint(self, PRINT_HIGH, "Random Playerclass.\n");
 
-		self.tfstate = (self.tfstate | TFSTATE_RANDOMPC);
+		self.tfstate |= TFSTATE_RANDOMPC);
 		self.playerclass = 1 + floor(random() * (PC_RANDOM - 1));
 	}
 
@@ -348,7 +348,7 @@ void() TeamFortress_ChangeClass =
 	TeamFortress_SetSkin(self);
 	//WK Give them invincibility if they are a normal class or bought it
 	if (self.playerclass >= PC_SCOUT && self.playerclass <= PC_RANDOM) {
-		self.items = self.items & IT_INVULNERABILITY;
+		self.items &= IT_INVULNERABILITY;
 		self.invincible_time = 1;
 		self.invincible_finished = time + RESPAWN_GUARD_TIME;
 	}
@@ -1140,7 +1140,7 @@ void() TeamFortress_PrimeGrenade =
 		}
 	}
 
-	self.tfstate = (self.tfstate | TFSTATE_GRENPRIMED);
+	self.tfstate |= TFSTATE_GRENPRIMED;
 	tGrenade = spawn();
 	tGrenade.owner = self;
 	tGrenade.weapon = gtype;
@@ -1184,8 +1184,8 @@ void() TeamFortress_GrenadePrimed =
 	if (!(user.tfstate & TFSTATE_GRENPRIMED))
 		RPrint("GrenadePrimed logic error\n");
 
-	user.tfstate = user.tfstate - (user.tfstate & TFSTATE_GRENPRIMED);
-	user.tfstate = user.tfstate - (user.tfstate & TFSTATE_GRENTHROWING);
+	user.tfstate &= ~TFSTATE_GRENPRIMED;
+	user.tfstate &= ~TFSTATE_GRENTHROWING;
 
     // ofn
 	if (self.weapon == GR_TYPE_FLARE)
@@ -1360,7 +1360,7 @@ void() TeamFortress_ThrowGrenade =
 	if (self.job & JOB_THIEF && self.job & JOB_FULL_HIDE)
 		RevealThief(self,FALSE);
 
-	self.tfstate = self.tfstate | TFSTATE_GRENTHROWING;
+	self.tfstate |= TFSTATE_GRENTHROWING;
 };
 
 //=========================================================================
@@ -1419,7 +1419,7 @@ void(entity p) TeamFortress_SetSpeed =
     //-----------------------------------------------------------------------//
     // STOP THAT SILLY DAMN BUGS, SPY SLIDING ETC.. !!!!!!!!!!!!!!!!!!!!!!! -//
     if (p.is_feigning || p.is_haxxxoring || p.is_detpacking || p.is_building)
-        p.tfstate = p.tfstate | TFSTATE_CANT_MOVE;
+        p.tfstate |= TFSTATE_CANT_MOVE;
     //-----------------------------------------------------------------------//
 
 	// Check for any reason why they can't move at all
@@ -1773,7 +1773,7 @@ void() TeamFortress_SetEquipment =
 		self.done_custom = 0;
 
 		//Clear job without losing track of demons, etc.
-		self.job = self.job - (self.job & JOB_ALL);
+		self.job &= ~JOB_ALL;
 	}
  //WK ------^
 		
@@ -1782,14 +1782,14 @@ void() TeamFortress_SetEquipment =
 		self.hover_time = MAX_HOVER_FUEL; //10 secs of hovering or so
 	self.respawn_time = 0;
 	self.heat = 0;
-	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_RELOADING);
+	self.tfstate &= ~TFSTATE_RELOADING;
 	if (self.tf_items & NIT_SCUBA) {			//WK We're a scuba commando!
-		self.items = self.items | IT_SUIT;
+		self.items |= IT_SUIT;
 	 	self.rad_time = 1;
-		self.tfstate = self.tfstate | TFSTATE_RADSUIT;
+		self.tfstate |= TFSTATE_RADSUIT;
 		self.radsuit_finished = time + 666;
 	} else {
-		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_RADSUIT);
+		self.tfstate &= ~TFSTATE_RADSUIT;
 		self.items = 0;
 		self.rad_time = 0;
 		self.radsuit_finished = 0;
@@ -1824,7 +1824,7 @@ void() TeamFortress_SetEquipment =
 	if (self.team_no == 0)
 		self.lives = -1;
 
-	self.items = self.items | kept_items;
+	self.items |= kept_items;
 
 	// Start the Cheat-Checking Cyclic Event if CheatChecking Toggleflag is on
 	if (!stof(infokey(NIL,"nospeed")) && (toggleflags&TFLAG_CHEATCHECK)) {
@@ -1836,10 +1836,10 @@ void() TeamFortress_SetEquipment =
 	}
 
 	//WK -- Remove flags for job state
-	self.job = self.job - (self.job & JOB_ACTIVE);
-	self.job = self.job - (self.job & JOB_FULL_HIDE);
-	self.job = self.job - (self.job & JOB_TIRED);
-//	self.job = self.job - (self.job & JOB_MARTYR_ENEMY);
+	self.job &= ~JOB_ACTIVE;
+	self.job &= ~JOB_FULL_HIDE;
+	self.job &= ~JOB_TIRED;
+//	self.job &= ~JOB_MARTYR_ENEMY);
 	self.job_finished = time;
 
 	if ( self.playerclass == PC_CUSTOM ) {		//WK - Reset the custom class
@@ -1942,15 +1942,15 @@ void() TeamFortress_SetEquipment =
 	   	self.armortype = self.armor_allowed; //Start with red if red's allowed
 		self.armorclass = 0; //Default to no special armor type
 		if (self.tf_items & NIT_KEVLAR)
-			self.armorclass = self.armorclass | AT_SAVESHOT;
+			self.armorclass |= AT_SAVESHOT;
 		if (self.tf_items & NIT_GEL)
-			self.armorclass = self.armorclass | AT_SAVEMELEE;
+			self.armorclass |= AT_SAVEMELEE;
 		if (self.tf_items & NIT_BLAST)
-			self.armorclass = self.armorclass | AT_SAVEEXPLOSION;
+			self.armorclass |= AT_SAVEEXPLOSION;
 		if (self.tf_items & NIT_CERAMIC)
-			self.armorclass = self.armorclass | AT_SAVEELECTRICITY;
+			self.armorclass |= AT_SAVEELECTRICITY;
 		if (self.tf_items & NIT_ASBESTOS) //Buying flamer gives this
-			self.armorclass = self.armorclass | AT_SAVEFIRE;
+			self.armorclass |= AT_SAVEFIRE;
 
 		//Support for the "Auto" class itemry
 		if (self.tf_items & NIT_AUTOSCANNER || self.weapons_carried & WEAP_MEDIKIT || self.tf_items & NIT_AUTOID) {
@@ -1964,7 +1964,7 @@ void() TeamFortress_SetEquipment =
 
 		self.current_weapon = W_BestWeapon ();
 	} else if ( self.playerclass == PC_SCOUT ) {
-		self.weapons_carried = self.weapons_carried | PC_SCOUT_WEAPONS;
+		self.weapons_carried |= PC_SCOUT_WEAPONS;
 		self.ammo_rockets = PC_SCOUT_INITAMMO_ROCKET;
 		self.ammo_nails = PC_SCOUT_INITAMMO_NAIL;
 		self.ammo_shells = PC_SCOUT_INITAMMO_SHOT;
@@ -1980,13 +1980,13 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_2 = PC_SCOUT_GRENADE_TYPE_2;
 		self.tf_items = PC_SCOUT_TF_ITEMS;
         self.cutf_items = PC_SCOUT_CUTFITEMS;
-		self.job = self.job | PC_SCOUT_JOB;
+		self.job |= PC_SCOUT_JOB;
 
 		// the scanner defaults to enemy scanning ON, friendly scanning OFF
 		// and movement scanner only OFF
-		self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_ENEMY;
+		self.tf_items_flags |= NIT_SCANNER_ENEMY;
 
-		self.armorclass = self.armorclass | PC_SCOUT_INITARMORCLASS;
+		self.armorclass |= PC_SCOUT_INITARMORCLASS;
 		self.armortype = PC_SCOUT_INITARMORTYPE;
 		self.armorvalue = PC_SCOUT_INITARMOR;
 	   	self.armor_allowed = PC_SCOUT_MAXARMORTYPE;
@@ -1997,9 +1997,9 @@ void() TeamFortress_SetEquipment =
 		kill_my_demon();
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_NAILGUN;
+		self.items |= IT_SHOTGUN | IT_NAILGUN;
 	} else if ( self.playerclass == PC_SNIPER ) {
-		self.weapons_carried = self.weapons_carried | PC_SNIPER_WEAPONS;
+		self.weapons_carried |= PC_SNIPER_WEAPONS;
 		self.ammo_rockets = PC_SNIPER_INITAMMO_ROCKET;
 		self.ammo_nails = PC_SNIPER_INITAMMO_NAIL;
 		self.ammo_shells = PC_SNIPER_INITAMMO_SHOT;
@@ -2014,9 +2014,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_SNIPER_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_SNIPER_GRENADE_TYPE_2;
 		self.tf_items = PC_SNIPER_TF_ITEMS;
-		self.job = self.job | PC_SNIPER_JOB;
+		self.job |= PC_SNIPER_JOB;
 
-		self.armorclass = self.armorclass | PC_SNIPER_INITARMORCLASS;
+		self.armorclass |= PC_SNIPER_INITARMORCLASS;
 		self.armortype = PC_SNIPER_INITARMORTYPE;
 		self.armorvalue = PC_SNIPER_INITARMOR;
 	   	self.armor_allowed = PC_SNIPER_MAXARMORTYPE;
@@ -2027,10 +2027,10 @@ void() TeamFortress_SetEquipment =
         self.cutf_items = PC_SNIPER_CUTF_ITEMS; // OFN -OTR
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
+		self.items |= IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
 		kill_my_demon();
 	} else if ( self.playerclass == PC_SOLDIER ) {
-		self.weapons_carried = self.weapons_carried | PC_SOLDIER_WEAPONS;
+		self.weapons_carried |= PC_SOLDIER_WEAPONS;
 		self.ammo_rockets = PC_SOLDIER_INITAMMO_ROCKET;
 		self.ammo_nails = PC_SOLDIER_INITAMMO_NAIL;
 		self.ammo_shells = PC_SOLDIER_INITAMMO_SHOT;
@@ -2045,9 +2045,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_SOLDIER_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_SOLDIER_GRENADE_TYPE_2;
 		self.tf_items = PC_SOLDIER_TF_ITEMS;
-		self.job = self.job | PC_SOLDIER_JOB;
+		self.job |= PC_SOLDIER_JOB;
 
-		self.armorclass = self.armorclass | PC_SOLDIER_INITARMORCLASS;
+		self.armorclass |= PC_SOLDIER_INITARMORCLASS;
 		self.armortype = PC_SOLDIER_INITARMORTYPE;
 		self.armorvalue = PC_SOLDIER_INITARMOR;
 		self.armor_allowed = PC_SOLDIER_MAXARMORTYPE;
@@ -2057,10 +2057,10 @@ void() TeamFortress_SetEquipment =
 		self.items_allowed = PC_SOLDIER_WEAPONS;
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
+		self.items |= IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
 //		kill_my_demon();
 	} else if ( self.playerclass == PC_DEMOMAN ) {
-		self.weapons_carried = self.weapons_carried | PC_DEMOMAN_WEAPONS;
+		self.weapons_carried |= PC_DEMOMAN_WEAPONS;
 		self.ammo_rockets = PC_DEMOMAN_INITAMMO_ROCKET;
 		self.ammo_nails = PC_DEMOMAN_INITAMMO_NAIL;
 		self.ammo_shells = PC_DEMOMAN_INITAMMO_SHOT;
@@ -2075,14 +2075,14 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_DEMOMAN_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_DEMOMAN_GRENADE_TYPE_2;
 		self.tf_items = PC_DEMOMAN_TF_ITEMS;
-		self.job = self.job | PC_DEMOMAN_JOB;
+		self.job |= PC_DEMOMAN_JOB;
 		self.cutf_items = PC_DEMOMAN_CUTFITEMS;
 
 		// Detpacks
 		self.ammo_detpack = PC_DEMOMAN_INITAMMO_DETPACK;
 		self.maxammo_detpack = PC_DEMOMAN_MAXAMMO_DETPACK;
 
-		self.armorclass = self.armorclass | PC_DEMOMAN_INITARMORCLASS;
+		self.armorclass |= PC_DEMOMAN_INITARMORCLASS;
 		self.armortype = PC_DEMOMAN_INITARMORTYPE;
 		self.armorvalue = PC_DEMOMAN_INITARMOR;
 	   	self.armor_allowed = PC_DEMOMAN_MAXARMORTYPE;
@@ -2095,9 +2095,9 @@ void() TeamFortress_SetEquipment =
 		self.items_allowed = PC_DEMOMAN_WEAPONS;
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_GRENADE_LAUNCHER;
+		self.items |= IT_SHOTGUN | IT_GRENADE_LAUNCHER;
 	} else if ( self.playerclass == PC_MEDIC ) {
-		self.weapons_carried = self.weapons_carried | PC_MEDIC_WEAPONS;
+		self.weapons_carried |= PC_MEDIC_WEAPONS;
 		self.ammo_rockets = PC_MEDIC_INITAMMO_ROCKET;
 		self.ammo_nails = PC_MEDIC_INITAMMO_NAIL;
 		self.ammo_shells = PC_MEDIC_INITAMMO_SHOT;
@@ -2112,9 +2112,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_MEDIC_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_MEDIC_GRENADE_TYPE_2;
 		self.tf_items = PC_MEDIC_TF_ITEMS;
-		self.job = self.job | PC_MEDIC_JOB;
+		self.job |= PC_MEDIC_JOB;
 
-		self.armorclass = self.armorclass | PC_MEDIC_INITARMORCLASS;
+		self.armorclass |= PC_MEDIC_INITARMORCLASS;
 		self.armortype = PC_MEDIC_INITARMORTYPE;
 		self.armorvalue = PC_MEDIC_INITARMOR;
 		self.armor_allowed = PC_MEDIC_MAXARMORTYPE;
@@ -2134,10 +2134,10 @@ void() TeamFortress_SetEquipment =
 		self.items_allowed = PC_MEDIC_WEAPONS;
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_LIGHT_ASSAULT;
+		self.items |= IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_LIGHT_ASSAULT;
 		kill_my_demon();
 	} else if ( self.playerclass == PC_HVYWEAP ) {
-		self.weapons_carried = self.weapons_carried | PC_HVYWEAP_WEAPONS;
+		self.weapons_carried |= PC_HVYWEAP_WEAPONS;
 		self.ammo_rockets = PC_HVYWEAP_INITAMMO_ROCKET;
 		self.ammo_nails = PC_HVYWEAP_INITAMMO_NAIL;
 		self.ammo_shells = PC_HVYWEAP_INITAMMO_SHOT;
@@ -2152,9 +2152,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_HVYWEAP_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_HVYWEAP_GRENADE_TYPE_2;
 		self.tf_items = PC_HVYWEAP_TF_ITEMS;
-		self.job = self.job | PC_HVYWEAP_JOB;
+		self.job |= PC_HVYWEAP_JOB;
 
-		self.armorclass = self.armorclass | PC_HVYWEAP_INITARMORCLASS;
+		self.armorclass |= PC_HVYWEAP_INITARMORCLASS;
 		self.armortype = PC_HVYWEAP_INITARMORTYPE;
 		self.armorvalue = PC_HVYWEAP_INITARMOR;
 	   	self.armor_allowed = PC_HVYWEAP_MAXARMORTYPE;
@@ -2165,10 +2165,10 @@ void() TeamFortress_SetEquipment =
 		self.items_allowed = PC_HVYWEAP_WEAPONS;
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
+		self.items |= IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_ROCKET_LAUNCHER;
 		kill_my_demon();
 	} else if ( self.playerclass == PC_PYRO ) {
-		self.weapons_carried = self.weapons_carried | PC_PYRO_WEAPONS;
+		self.weapons_carried |= PC_PYRO_WEAPONS;
 		self.ammo_rockets = PC_PYRO_INITAMMO_ROCKET;
 		self.ammo_nails = PC_PYRO_INITAMMO_NAIL;
 		self.ammo_shells = PC_PYRO_INITAMMO_SHOT;
@@ -2183,9 +2183,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_PYRO_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_PYRO_GRENADE_TYPE_2;
 		self.tf_items = PC_PYRO_TF_ITEMS;
-		self.job = self.job | PC_PYRO_JOB;
+		self.job |= PC_PYRO_JOB;
 
-		self.armorclass = self.armorclass | PC_PYRO_INITARMORCLASS;
+		self.armorclass |= PC_PYRO_INITARMORCLASS;
 		self.armortype = PC_PYRO_INITARMORTYPE;
 		self.armorvalue = PC_PYRO_INITARMOR;
 	   	self.armor_allowed = PC_PYRO_MAXARMORTYPE;
@@ -2195,9 +2195,9 @@ void() TeamFortress_SetEquipment =
 		kill_my_demon();
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
+		self.items |= IT_SHOTGUN | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER;
 	} else if ( self.playerclass == PC_CIVILIAN ) {
-		self.weapons_carried = self.weapons_carried | PC_CIVILIAN_WEAPONS;
+		self.weapons_carried |= PC_CIVILIAN_WEAPONS;
 		self.ammo_rockets = PC_CIVILIAN_INITAMMO_ROCKET;
 		self.ammo_nails = PC_CIVILIAN_INITAMMO_NAIL;
 		self.ammo_shells = PC_CIVILIAN_INITAMMO_SHOT;
@@ -2212,9 +2212,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_CIVILIAN_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_CIVILIAN_GRENADE_TYPE_2;
 		self.tf_items = PC_CIVILIAN_TF_ITEMS;
-		self.job = self.job | PC_CIVILIAN_JOB;
+		self.job |= PC_CIVILIAN_JOB;
 
-		self.armorclass = self.armorclass | PC_CIVILIAN_INITARMORCLASS;
+		self.armorclass |= PC_CIVILIAN_INITARMORCLASS;
 		self.armortype = PC_CIVILIAN_INITARMORTYPE;
 		self.armorvalue = PC_CIVILIAN_INITARMOR;
 	   	self.armor_allowed = PC_CIVILIAN_MAXARMORTYPE;
@@ -2227,7 +2227,7 @@ void() TeamFortress_SetEquipment =
 		self.items = 0;
 		kill_my_demon();
 	} else if ( self.playerclass == PC_SPY ) {
-		self.weapons_carried = self.weapons_carried | PC_SPY_WEAPONS;
+		self.weapons_carried |= PC_SPY_WEAPONS;
 		self.ammo_rockets = PC_SPY_INITAMMO_ROCKET;
 		self.ammo_nails = PC_SPY_INITAMMO_NAIL;
 		self.ammo_shells = PC_SPY_INITAMMO_SHOT;
@@ -2242,9 +2242,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_SPY_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_SPY_GRENADE_TYPE_2;
 		self.tf_items = PC_SPY_TF_ITEMS;
-		self.job = self.job | PC_SPY_JOB;
+		self.job |= PC_SPY_JOB;
 
-		self.armorclass = self.armorclass | PC_SPY_INITARMORCLASS;
+		self.armorclass |= PC_SPY_INITARMORCLASS;
 		self.armortype = PC_SPY_INITARMORTYPE;
 		self.armorvalue = PC_SPY_INITARMOR;
 	   	self.armor_allowed = PC_SPY_MAXARMORTYPE;
@@ -2254,7 +2254,7 @@ void() TeamFortress_SetEquipment =
 		self.cutf_items = PC_SPY_CUTFITEMS;
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
+		self.items |= IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN;
 		
 		// If the Spy only has invis, start the Spy's cell regen timer
 		if (invis_only == TRUE) {
@@ -2265,7 +2265,7 @@ void() TeamFortress_SetEquipment =
 			te.classname = "timer";
 		}
 	} else if ( self.playerclass == PC_ENGINEER ) {
-		self.weapons_carried = self.weapons_carried | PC_ENGINEER_WEAPONS;
+		self.weapons_carried |= PC_ENGINEER_WEAPONS;
 		self.ammo_rockets = PC_ENGINEER_INITAMMO_ROCKET;
 		self.ammo_nails = PC_ENGINEER_INITAMMO_NAIL;
 		self.ammo_shells = PC_ENGINEER_INITAMMO_SHOT;
@@ -2280,9 +2280,9 @@ void() TeamFortress_SetEquipment =
 		self.tp_grenades_1 = PC_ENGINEER_GRENADE_TYPE_1;
 		self.tp_grenades_2 = PC_ENGINEER_GRENADE_TYPE_2;
 		self.tf_items = PC_ENGINEER_TF_ITEMS;
-		self.job = self.job | PC_ENGINEER_JOB;
+		self.job |= PC_ENGINEER_JOB;
 
-		self.armorclass = self.armorclass | PC_ENGINEER_INITARMORCLASS;
+		self.armorclass |= PC_ENGINEER_INITARMORCLASS;
 		self.armortype = PC_ENGINEER_INITARMORTYPE;
 		self.armorvalue = PC_ENGINEER_INITARMOR;
 	   	self.armor_allowed = PC_ENGINEER_MAXARMORTYPE;
@@ -2292,7 +2292,7 @@ void() TeamFortress_SetEquipment =
 		self.cutf_items = PC_ENGINEER_CUTFITEMS;
 
 		// set the weapon icons on the status bar
-		self.items = self.items | IT_SHOTGUN | IT_SUPER_SHOTGUN;
+		self.items |= IT_SHOTGUN | IT_SUPER_SHOTGUN;
 		kill_my_demon();
 	} else if ( self.playerclass == PC_UNDEFINED ) {
 		self.items = 0;
@@ -2324,7 +2324,7 @@ void() TeamFortress_SetEquipment =
 		self.modelindex = 0;
 		self.weaponmodel = "";
 		modelindex_player = 0;
-		self.tfstate = self.tfstate | TFSTATE_RELOADING;
+		self.tfstate |= TFSTATE_RELOADING;
 	
 		setmodel(self, "");
 	}
@@ -2342,14 +2342,14 @@ void() TeamFortress_SetEquipment =
         SetArmyTimer();
 
     if (no_otr) // if its disabled get it off
-        self.cutf_items = self.cutf_items - (self.cutf_items & CUTF_OTR);
+        self.cutf_items &= ~CUTF_OTR;
     if (no_chaplan)
-        self.job = self.job - (self.job & JOB_CHAPLAN);
+        self.job &= ~JOB_CHAPLAN;
 
 	// Give normal classes the hook
 	// Custom classes get it in 'drop into custom class gen'
 	if (allow_hook && self.playerclass != PC_UNDEFINED && self.playerclass != PC_CUSTOM)
-		self.weapons_carried = self.weapons_carried | WEAP_HOOK;
+		self.weapons_carried |= WEAP_HOOK;
 
 	W_SetCurrentAmmo ();
 };
@@ -2773,13 +2773,13 @@ void() TeamFortress_CheckClassStats =
 		T_Heal(self, (self.health - self.health), 0);
 
 	// Update armor picture
-	self.items = self.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+	self.items &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 	if (self.armortype >= 0.8)
-		self.items = self.items | IT_ARMOR3;
+		self.items |= IT_ARMOR3;
 	else if (self.armortype >= 0.6)
-		self.items = self.items | IT_ARMOR2;
+		self.items |= IT_ARMOR2;
 	else if (self.armortype >= 0.3)
-		self.items = self.items | IT_ARMOR1;
+		self.items |= IT_ARMOR1;
 };
 
 //=========================================================================
@@ -3220,7 +3220,7 @@ void() TeamFortress_ExplodePerson =
 		te.nextthink = time + 25;
 		te.owner = self.owner;
 		te.solid = SOLID_NOT;
-		self.owner.effects = self.owner.effects | EF_BRIGHTLIGHT;
+		self.owner.effects |= EF_BRIGHTLIGHT;
 */
     	setsize (newmis, '0 0 0', '0 0 0');		
 	    setorigin (newmis, self.owner.origin);
@@ -3372,20 +3372,20 @@ void() BioInfection_Decay =
 {
 	// Remove infections which can't hurt the owner
 	if ((teamplay & TEAMPLAY_NOEXPLOSIVE) && Teammate(self.owner.team_no,self.enemy.team_no)) {
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_INFECTED);
+		self.owner.tfstate &= ~TFSTATE_INFECTED;
 		dremove(self);
 		return;
 	}
 
 	if (self.invincible_finished > time) {
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_INFECTED);
+		self.owner.tfstate &= ~TFSTATE_INFECTED;
 		dremove(self);
 		return;
 	}
 
 	if (self.owner.current_weapon == WEAP_MEDIKIT) {
 		sprint(self.owner,PRINT_HIGH,"You heal yourself of your infection.\n");
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_INFECTED);
+		self.owner.tfstate &= ~TFSTATE_INFECTED;
 		dremove(self);
 		return;
 	}
@@ -3585,7 +3585,7 @@ void() TeamFortress_RegenerateCells =
 				self.owner.frame = 0;
 				self.owner.weaponframe = 0;
 				self.owner.modelindex = modelindex_eyes;
-				self.owner.job = self.owner.job - (self.owner.job & JOB_FULL_HIDE);
+				self.owner.job &= ~JOB_FULL_HIDE;
 				TeamFortress_SetSpeed(self.owner);
 			/*self.owner.ammo_cells = self.owner.ammo_cells - PC_SPY_CELL_USAGE;
 			if (self.owner.ammo_cells <= 0) {
@@ -3600,7 +3600,7 @@ void() TeamFortress_RegenerateCells =
 			self.owner.frame = 0;
 			self.owner.weaponframe = 0;
 			self.owner.modelindex = modelindex_null;
-			self.owner.job = self.owner.job | JOB_FULL_HIDE;
+			self.owner.job |= JOB_FULL_HIDE;
 		}
 	}
 /*
@@ -3626,7 +3626,7 @@ void() TeamFortress_RegenerateCells =
 			if (self.owner.ammo_cells == 0) {
 				self.owner.is_undercover = 0;
 				self.owner.modelindex = modelindex_player;	// return to normal
-				self.owner.items = self.owner.items & ~IT_INVISIBILITY;
+				self.owner.items &= ~IT_INVISIBILITY;
 			} else {		// Decrease cells
 				self.owner.ammo_cells = self.owner.ammo_cells - PC_SPY_CELL_USAGE;
 				if (self.owner.ammo_cells < 0)

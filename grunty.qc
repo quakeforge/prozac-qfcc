@@ -396,9 +396,9 @@ void() grunty_shotgun =
 	self.frame = $shotatt1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 0)
-		self.effects = self.effects | EF_DIMLIGHT;
+		self.effects |= EF_DIMLIGHT;
 	else if (self.weaponframe == 0.5)
-		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+		self.effects &= ~EF_DIMLIGHT;
 	
 	self.weaponframe = self.weaponframe + 0.5;
 	GruntyThink();
@@ -420,9 +420,9 @@ void() grunty_rocket =
 	self.frame = $rockatt1 + floor(self.weaponframe);
 	
 	if (self.weaponframe == 0)
-		self.effects = self.effects | EF_DIMLIGHT;
+		self.effects |= EF_DIMLIGHT;
 	else if (self.weaponframe == 0.5)
-		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+		self.effects &= ~EF_DIMLIGHT;
 	
 	self.weaponframe = self.weaponframe + 0.5;
 	GruntyThink();
@@ -463,7 +463,7 @@ void(vector org, vector dir) grunty_spike =
 // Grunty uses the nailgun
 void() grunty_nail1 = [$nailatt1, grunty_nail2]
 {
-	GruntyThink(); GRun(); self.effects = self.effects | EF_DIMLIGHT;
+	GruntyThink(); GRun(); self.effects |= EF_DIMLIGHT;
 	if (self.ammo_nails > 0)
     {   
         W_FireSpikes(4);
@@ -472,11 +472,11 @@ void() grunty_nail1 = [$nailatt1, grunty_nail2]
 };
 void() grunty_nail2 = [$nailatt1, grunty_nail3] 
 {
-    GruntyThink(); GRun(); self.effects = self.effects | EF_DIMLIGHT;
+    GruntyThink(); GRun(); self.effects |= EF_DIMLIGHT;
 };
 void() grunty_nail3 = [$nailatt2, grunty_nail4] 
 {
-    GruntyThink(); GRun(); self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+    GruntyThink(); GRun(); self.effects &= ~EF_DIMLIGHT;
 	if (self.ammo_nails > 0)
     {
         W_FireSpikes(-4);
@@ -485,7 +485,7 @@ void() grunty_nail3 = [$nailatt2, grunty_nail4]
 };
 void() grunty_nail4 = [$nailatt2, grunty_nail1] 
 {
-	GruntyThink(); GRun(); self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+	GruntyThink(); GRun(); self.effects &= ~EF_DIMLIGHT;
 
     local float vis, dist;
 
@@ -695,7 +695,7 @@ void() GruntyScanTargets =
             }
 
             self.has_teleporter = 0;
-			self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+			self.effects &= ~EF_DIMLIGHT;
 			return;
 		}
 	// If we have a target already
@@ -723,7 +723,7 @@ void() GruntyScanTargets =
                 self.goalentity = ReturnEasyWaypoint(self,self);
 
                 self.has_teleporter = 0;
-    			self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+    			self.effects &= ~EF_DIMLIGHT;
 
                 return;
             }
@@ -959,7 +959,7 @@ void() GruntyCheckFire =
 	else
 	{
 		// Do whatever you want
-		self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+		self.effects &= ~EF_DIMLIGHT;
 		//self.walkframe = 0; ofn
 		if (self.health > 0) self.think = grunty_run;
 		#ifdef VERBOSE_GRUNTY
@@ -1340,7 +1340,7 @@ void() custom_grunt_die =
     if (self.real_owner.classname == "player")
 	{
 		sprint(self.real_owner,PRINT_HIGH,"Your soldier is dead.\n");
-		self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
+		self.real_owner.job &= ~JOB_DEMON_OUT;
 		self.real_owner.job_finished = time + 2; //Can't summon streams of demons SB can so
         self.real_owner.demon_one = NIL;
     	
@@ -1790,7 +1790,7 @@ void () GruntyPayThink =
 			r = random();
 			if (r < 0.5)
 			{
-				self.weapons_carried = self.weapons_carried | WEAP_SHOTGUN;
+				self.weapons_carried |= WEAP_SHOTGUN;
 				self.money = self.money - GRUNTY_COST_SHOTGUN;
                 PrintFromSoldier(self,self.real_owner,"i have bought a shotgun.\n");				
 				//sprint(self.real_owner, PRINT_HIGH, "Your soldier has just purchased a shotgun.\n");
@@ -1803,7 +1803,7 @@ void () GruntyPayThink =
 			r = random();
 			if (r < 0.5)
 			{
-				self.cutf_items = self.cutf_items | CUTF_KNIFE;
+				self.cutf_items |= CUTF_KNIFE;
 				self.money = self.money - GRUNTY_COST_KNIFE;
                 PrintFromSoldier(self,self.real_owner,"i have bought a knife.\n");				
 				//sprint(self.real_owner, PRINT_HIGH, "Your soldier has just purchased a knife.\n");
@@ -1816,7 +1816,7 @@ void () GruntyPayThink =
 			r = random();
 			if (r < 0.25)
 			{
-				self.weapons_carried = self.weapons_carried | WEAP_NAILGUN;
+				self.weapons_carried |= WEAP_NAILGUN;
 				self.money = self.money - GRUNTY_COST_NAILGUN;
                 PrintFromSoldier(self,self.real_owner,"i now own a nailgun.\n");				
 				//sprint(self.real_owner, PRINT_HIGH, "Your soldier now owns a nailgun.\n");
@@ -1829,7 +1829,7 @@ void () GruntyPayThink =
 			r = random();
 			if (r < 0.25)
 			{
-				self.weapons_carried = self.weapons_carried | WEAP_SUPER_SHOTGUN;
+				self.weapons_carried |= WEAP_SUPER_SHOTGUN;
 				self.money = self.money - GRUNTY_COST_SUPER_SHOTGUN;
                 PrintFromSoldier(self,self.real_owner,"i've just bought a super shotgun.\n");				
 				//sprint(self.real_owner, PRINT_HIGH, "Your soldier just bought a super shotgun.\n");
@@ -1843,7 +1843,7 @@ void () GruntyPayThink =
 			r = random();
 			if (r < 0.15)
 			{
-				self.tf_items = self.tf_items | NIT_SCANNER;
+				self.tf_items |= NIT_SCANNER;
 				self.money = self.money - GRUNTY_COST_SCANNER;
                 PrintFromSoldier(self,self.real_owner,"i now own a scanner.\n");				
                 //sprint(self.real_owner, PRINT_HIGH, "Your soldier now owns a scanner.\n");
@@ -1856,7 +1856,7 @@ void () GruntyPayThink =
 			r = random();
 			if (r < 0.3) //- was 0.2
 			{
-				self.weapons_carried = self.weapons_carried | WEAP_ROCKET_LAUNCHER;
+				self.weapons_carried |= WEAP_ROCKET_LAUNCHER;
 				self.money = self.money - GRUNTY_COST_ROCKET_LAUNCHER;
                 PrintFromSoldier(self,self.real_owner,"i have bought a ROCKET LAUNCHER!! hehe\n");				
                 //sprint(self.real_owner, PRINT_HIGH, "Your soldier is now the proud owner of a brand new rocket launcher.\n");

@@ -151,7 +151,7 @@ void() PrimeC4Det =
 	te.classname = "timer";
 	te.netname = "C4detpack_timer";
 	self.is_toffingadet = 1;
-	self.tfstate = self.tfstate | TFSTATE_C4THROW;
+	self.tfstate |= TFSTATE_C4THROW;
 	TeamFortress_SetSpeed(self);
 	sprint(self, PRINT_HIGH, "Arming detpack...\n");
 };
@@ -175,7 +175,7 @@ void() TeamFortress_C4DetpackTouch =
 
 	makeImmune(other,time + 2);
 	//other.immune_to_check = time + 2;
-	other.tfstate = other.tfstate | TFSTATE_CANT_MOVE;
+	other.tfstate |= TFSTATE_CANT_MOVE;
 
 	sprint(other, PRINT_HIGH, "Disarming detpack...\n");
 	TeamFortress_SetSpeed(other);
@@ -284,7 +284,7 @@ void() ThrowC4Det =
     teamprefixsprint(self.team_no,self);
     teamsprint6(self,self.netname," throws a C4!\n","","","","");
 	
-	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_C4THROW);
+	self.tfstate &= ~TFSTATE_C4THROW;
 	TeamFortress_SetSpeed(self); // let's roll
 
 };
@@ -583,8 +583,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 
 					if (head.classname != "player")
 					{
-						if(head.flags & FL_ONGROUND)
-							head.flags = head.flags - FL_ONGROUND;
+						head.flags &= ~FL_ONGROUND;
 					}
 					else
 					{

@@ -75,7 +75,7 @@ void() SniperSight_Update =
 
 	if (!(self.owner.tfstate & TFSTATE_AIMING) || (self.owner.current_weapon != WEAP_SNIPER_RIFLE))
 	{
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_AIMING);
+		self.owner.tfstate &= ~TFSTATE_AIMING;
 		TeamFortress_SetSpeed(self.owner);
 		self.owner.heat = 0;
 		dremove(self);
@@ -122,7 +122,7 @@ void() SniperSight_Update2 =
 
 	if (!(self.owner.tfstate & TFSTATE_RL_LASER) || (self.owner.current_weapon != WEAP_ROCKET_LAUNCHER))
 	{
-		self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & TFSTATE_RL_LASER);
+		self.owner.tfstate &= ~TFSTATE_RL_LASER;
 		TeamFortress_SetSpeed(self.owner);
 		self.owner.heat = 0;
 		dremove(self);
@@ -155,9 +155,9 @@ void(float type) SniperSight_Create =
 {
 	local entity sight;
 	if (type == 1)
-		self.tfstate = self.tfstate | TFSTATE_RL_LASER;
+		self.tfstate |= TFSTATE_RL_LASER;
 	else
-		self.tfstate = self.tfstate | TFSTATE_AIMING;
+		self.tfstate |= TFSTATE_AIMING;
 
 	sight = spawn ();
 	sight.owner = self;
@@ -182,12 +182,12 @@ void() TeamFortress_AutoZoomToggle =
 {
 	if (self.tfstate & TFSTATE_ZOOMOFF)
 	{
-		self.tfstate = self.tfstate - TFSTATE_ZOOMOFF;
+		self.tfstate &= ~TFSTATE_ZOOMOFF;
 		sprint(self, PRINT_HIGH, "autozoom ON\n");
 	}
 	else
 	{
-		self.tfstate = self.tfstate | TFSTATE_ZOOMOFF;
+		self.tfstate |= TFSTATE_ZOOMOFF;
 		sprint(self, PRINT_HIGH, "autozoom OFF\n");
 	}
 

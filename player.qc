@@ -190,7 +190,7 @@ void() player_touch =
 					Bio.classname = "timer";
 					Bio.netname = "biotimer";
 					
-					other.tfstate = other.tfstate | TFSTATE_INFECTED;
+					other.tfstate |= TFSTATE_INFECTED;
 					other.infection_team_no = self.infection_team_no;
 
 					sprint(other, PRINT_MEDIUM, "You have been infected by ");
@@ -1145,7 +1145,7 @@ void(string gibname, float dm) ThrowHead =
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.velocity = VelocityForDamage (dm);
 	self.origin_z = self.origin_z - 24;
-	self.flags = self.flags - (self.flags & FL_ONGROUND);
+	self.flags &= ~FL_ONGROUND;
 	self.avelocity = crandom() * '0 600 0';
 
 /*
@@ -1176,7 +1176,7 @@ void(string gibname) HeadShotThrowHead =
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.velocity = normalize(self.head_shot_vector) * 600;
 	self.origin_z = self.origin_z + 24;
-	self.flags = self.flags - (self.flags & FL_ONGROUND);
+	self.flags &= ~FL_ONGROUND;
 	self.avelocity = '0 0 0';
 
 	setorigin (self, self.origin);
@@ -1332,7 +1332,7 @@ void() PlayerDie =
 	self.view_ofs = '0 0 -8';
 	self.deadflag = DEAD_DYING;
 	self.solid = SOLID_NOT;
-	self.flags = self.flags - (self.flags & FL_ONGROUND);
+	self.flags &= ~FL_ONGROUND;
 	self.movetype = MOVETYPE_TOSS;
 
 	if (self.velocity_z < 10)

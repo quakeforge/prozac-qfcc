@@ -195,7 +195,7 @@ void() Wiz_FastFire =
 
 	if (self.owner.health > 0)
 	{
-		self.owner.effects = self.owner.effects | EF_DIMLIGHT;
+		self.owner.effects |= EF_DIMLIGHT;
 
 		makevectors (self.enemy.angles);	
 		dst = self.enemy.origin - 13*self.movedir;
@@ -339,7 +339,7 @@ void()	wiz_death1	=[	$death1,		wiz_death2	] {
 self.velocity_x = -200 + 400*random();
 self.velocity_y = -200 + 400*random();
 self.velocity_z = 100 + 100*random();
-self.flags = self.flags - (self.flags & FL_ONGROUND);
+self.flags &= ~FL_ONGROUND;
 sound (self, CHAN_VOICE, "wizard/wdeath.wav", 1, ATTN_MONSTERDIE);
 };
 void()	wiz_death2	=[	$death2,		wiz_death3	] {};
@@ -359,7 +359,7 @@ void() wiz_die =
     if (self.real_owner.classname == "player" && self.real_owner.demon_one == self)
     {
 	    sprint(self.real_owner,PRINT_HIGH,"Your scrag is dead.\n");
-	    self.real_owner.job = self.real_owner.job - (self.real_owner.job & JOB_DEMON_OUT);
+	    self.real_owner.job &= ~JOB_DEMON_OUT;
 	    self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
         self.real_owner.demon_one = NIL;
     }   

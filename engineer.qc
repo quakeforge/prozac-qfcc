@@ -569,7 +569,7 @@ void() TeamFortress_EngineerBuild =
 		sprint(self, PRINT_HIGH, "You stop building.\n");
 
 		self.is_building = 0;
-		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+		self.tfstate &= ~TFSTATE_CANT_MOVE;
 
 		TeamFortress_SetSpeed(self);
 
@@ -838,7 +838,7 @@ void(float objtobuild) TeamFortress_Build =
 		trace_endpos_z--;
 
 	obj.origin = trace_endpos;
-	obj.flags = obj.flags | FL_ONGROUND;
+	obj.flags |= FL_ONGROUND;
 	obj.movetype = MOVETYPE_TOSS;
 
 #ifdef		DISALLOW_BLOCKED_TELE
@@ -886,7 +886,7 @@ void(float objtobuild) TeamFortress_Build =
         self.is_building = 1;
         makeImmune(self,time + 2);
         //self.immune_to_check = time + 2;
-        self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
+        self.tfstate |= TFSTATE_CANT_MOVE;
 
         // Save the current weapon and remove it
         self.weapon = self.current_weapon;
@@ -946,7 +946,7 @@ void() TeamFortress_FinishedBuilding =
 	oldself.real_owner = self;
 
 	self.is_building = 0;
-	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+	self.tfstate &= ~TFSTATE_CANT_MOVE;
 	self.current_weapon = self.weapon;
 	self.StatusRefreshTime = time + 0.1;
 

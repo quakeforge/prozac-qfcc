@@ -42,7 +42,7 @@ void() turret_normal =
 
 	// if no weapon model, it must be instantaneous fire
 	if (!(self.weaponmodel))
-		self.spawnflags = self.spawnflags | TURRET_INSTANT_FIRE;
+		self.spawnflags |= TURRET_INSTANT_FIRE;
 
 	if (!(self.ammo_shells))
 		self.ammo_shells = -1;
@@ -68,7 +68,7 @@ void() turret_normal =
 
 	// this is the radius damage done	
 	if (self.all_active)
-		self.spawnflags = self.spawnflags | TURRET_EXPLOSIVE_FIRE;
+		self.spawnflags |= TURRET_EXPLOSIVE_FIRE;
 
 	setmodel(self, self.model);
 	setorigin(self, self.origin);

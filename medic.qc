@@ -62,7 +62,7 @@ float (entity targ, entity attacker, float prob) BioInfect =
         sprint(attacker,PRINT_HIGH,"!\n");
     }
 
-	targ.tfstate = targ.tfstate | TFSTATE_INFECTED;
+	targ.tfstate |= TFSTATE_INFECTED;
 	
 	BioInfection = spawn ();
 	BioInfection.classname = "timer";
@@ -134,7 +134,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	if (te)
 	{
 		SpawnBlood(org, 20);
-		patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_CONCUSSIONED);
+		patient.tfstate &= ~TFSTATE_CONCUSSIONED;
 		if (doc == patient)
 			sprint(doc, PRINT_HIGH, "The ground is behaving itself now.\n");
 		else
@@ -166,7 +166,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 
 		if (te)
 		{
-			patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_HALLUCINATING);
+			patient.tfstate &= ~TFSTATE_HALLUCINATING;
 			SpawnBlood(org, 20);
 			if (patient == doc)
 				sprint(doc, PRINT_HIGH, "The visions have stopped.\n");
@@ -203,7 +203,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 		}
 		if (te)
 		{
-			patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_TRANQUILISED);
+			patient.tfstate &= ~TFSTATE_TRANQUILISED;
 			TeamFortress_SetSpeed(patient);
 			
 			SpawnBlood(org, 20);
@@ -234,7 +234,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	// check if the healed player is blinded
 	/*if (patient.tfstate & TFSTATE_STASIS)
 	{
-		patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_STASIS);
+		patient.tfstate &= ~TFSTATE_STASIS;
 		TeamFortress_SetSpeed(patient);
 		if (doc == patient)
 			sprint(doc, PRINT_HIGH, "You can move freely again!\n");
@@ -245,7 +245,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 		}
 //		patient.movetype = patient.stasismovetype;
 		patient.gravity = patient.stasisGravity;
-		patient.effects = patient.effects - (patient.effects & EF_BRIGHTFIELD);
+		patient.effects &= ~EF_BRIGHTFIELD;
 		return 1;
 	}*/
 
@@ -257,7 +257,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 		
 		healam = rint(patient.health / 2);
 		// remove the infection
-		patient.tfstate = patient.tfstate - (patient.tfstate & TFSTATE_INFECTED);
+		patient.tfstate &= ~TFSTATE_INFECTED;
 		
 		te = find(NIL, netname, "biotimer");
 		

@@ -413,7 +413,7 @@ void(entity player) UpdateCells =
     || player.current_weapon == WEAP_LASERCANNON)
     {
         player.currentammo = player.ammo_cells;
-        player.items = player.items | IT_CELLS;
+        player.items |= IT_CELLS;
     }
 };
 
@@ -624,7 +624,7 @@ void() FlareGrenadeExplode =
 		WriteCoord (MSG_MULTICAST, org_z);
 		multicast (org, MULTICAST_PVS);
 
-    self.effects = self.effects | EF_DIMLIGHT;
+    self.effects |= EF_DIMLIGHT;
 
     self.think = SUB_Remove;
     self.nextthink = time + FLARE_DURATION;

@@ -93,17 +93,17 @@ void() JobThief =
 			self.frame = 0;
 			self.weaponframe = 0;
 			self.modelindex = modelindex_null;
-			self.job = self.job | JOB_FULL_HIDE;
+			self.job |= JOB_FULL_HIDE;
 		} */
 		if (self.invisible_time)
 			sprint (self, PRINT_HIGH, "Leaving shadows... just as soon as this ring wears off...\n");
 		else {
 			sprint (self, PRINT_HIGH, "Leaving shadows...\n");
-			self.items = self.items & ~IT_INVISIBILITY;
+			self.items &= ~IT_INVISIBILITY;
 			self.modelindex = modelindex_player;
 		}
 		self.job = self.job - JOB_ACTIVE;
-		self.job = self.job - (self.job & JOB_FULL_HIDE);
+		self.job &= ~JOB_FULL_HIDE;
 		self.job_finished = time + 2;
 		TeamFortress_SetSpeed(self);
 	}
@@ -126,10 +126,10 @@ void() JobThief =
 		self.frame = 0;
 		self.weaponframe = 0;
 		self.modelindex = modelindex_eyes;
-		self.job = self.job | JOB_ACTIVE;
+		self.job |= JOB_ACTIVE;
 		self.job_finished = time + 2;
 		TeamFortress_SetSpeed(self);
-		self.items = self.items | IT_INVISIBILITY;
+		self.items |= IT_INVISIBILITY;
 
 		te = spawn();
 		te.nextthink = time + PC_SPY_CELL_REGEN_TIME;
@@ -158,13 +158,13 @@ void() RunnerThink =
 	}
 	else if (self.heat == 2) {
 		sprint(self.owner,PRINT_HIGH,"Recovering...\n");
-		self.owner.job = self.owner.job | JOB_TIRED;
+		self.owner.job |= JOB_TIRED;
 		TeamFortress_SetSpeed(self.owner);
 		self.nextthink = time + PHASE2;
 	}	
 	else if (self.heat == 3) {
-		self.owner.job = self.owner.job - (self.owner.job & JOB_ACTIVE);
-		self.owner.job = self.owner.job - (self.owner.job & JOB_TIRED);
+		self.owner.job &= ~JOB_ACTIVE;
+		self.owner.job &= ~JOB_TIRED;
 		TeamFortress_SetSpeed(self.owner);
 		self.nextthink = time + PHASE3;
 	}
@@ -176,7 +176,7 @@ void() JobRunner =
 {
 	local entity RunnerTimer;
 
-	self.job = self.job | JOB_ACTIVE; //Timer will remove this
+	self.job |= JOB_ACTIVE; //Timer will remove this
 
 	RunnerTimer = spawn ();
 	RunnerTimer.classname = "timer";
@@ -315,10 +315,10 @@ void() ChaplanThink = {
 		else { //We stopped preaching
 			sprint(self,PRINT_HIGH,"You finish your sermon\n");
 			//Sync CHAN_MUSIC with disconnect and sound below
-			self.job = self.job - (self.job & JOB_ACTIVE);
+			self.job &= ~JOB_ACTIVE;
 			sound (self, CHAN_MUSIC, "items/r_item1.wav", 0.1, ATTN_NORM);
 			self.effects &= ~EF_ANYGLOW;
-			//self.tfstate = self.tfstate - (self.tfstate & TFSTATE_RELOADING);
+			//self.tfstate &= ~TFSTATE_RELOADING);
 			self.current_weapon = self.weapon;
 			W_SetCurrentAmmo();
 			oself.nextthink = time + 0.1;
@@ -352,7 +352,7 @@ void() JobChaplan =
 	tWeapon.classname = "timer";
 	tWeapon.nextthink = time + GUIDE_TIME;
 	tWeapon.think = ChaplanThink;
-	self.job = self.job | JOB_ACTIVE;
+	self.job |= JOB_ACTIVE;
 	self.job_finished = time + 0.3; //Don't allow them to trigger too often
 
 	//Hide our weapon. Can't shoot while preaching.
@@ -361,7 +361,7 @@ void() JobChaplan =
 	self.weaponmodel = "";
 	self.weaponframe = 0;
 	self.heat = TRUE; //We're actively preaching.
-	//self.tfstate = self.tfstate | TFSTATE_RELOADING;
+	//self.tfstate |= TFSTATE_RELOADING;
 
 	//Start playing preacher music, glow and inspire!
 	//sound (self, CHAN_VOICE, "ambience/orff.wav", 0.75, ATTN_NORM);
@@ -382,11 +382,11 @@ void() MartyrThink =
 	//Self.owner is the guy who became a martyr
 
 	//Clean these up so we can kill him
-	self.job = self.job - (self.job & JOB_ACTIVE); //why not?
-	self.owner.items = self.items & ~IT_INVULNERABILITY;
+	self.job &= ~JOB_ACTIVE; //why not?
+	self.owner.items &= ~IT_INVULNERABILITY;
 	self.owner.invincible_time = 0;
 	self.owner.invincible_finished = 0;
-	self.owner.effects = self.owner.effects - (self.owner.effects & EF_DIMLIGHT);
+	self.owner.effects &= ~EF_DIMLIGHT;
 
 	//if (self.owner.martyr_enemy == self.owner)
 		deathmsg = DMSG_MARTYR;
@@ -412,7 +412,7 @@ void() JobMartyr =
 	
 	sprint(self,PRINT_HIGH,"Beginning your suicide run...\n");
 	GivePent (self, martyr_time + 1);
-	self.job = self.job | JOB_ACTIVE; //why not?
+	self.job |= JOB_ACTIVE; //why not?
 	
 	tWeapon = spawn();
 	tWeapon.owner = self;
@@ -466,8 +466,8 @@ void() JobBerserker =
 	}
 	self.super_time = 1;
 	self.super_damage_finished = time + BERSERK_TIME + 1;
-	self.items = self.items | IT_QUAD;
-    self.job = self.job | JOB_ACTIVE; //- OfN
+	self.items |= IT_QUAD;
+    self.job |= JOB_ACTIVE; //- OfN
 	self.job_finished = time + BERSERK_TIME * 2; // GR was * 3
 	
 	stuffcmd(self, "v_idlescale 30\n");
@@ -488,7 +488,7 @@ void() JudokaRearm =
 	//Self.enemy is the guy who took it away
 	local entity oself,te;
 
-	self.enemy.job = self.enemy.job - (self.enemy.job & JOB_ACTIVE);
+	self.enemy.job &= ~JOB_ACTIVE;
 	if (self.heat == 1) { //We have their weapon
 		////Fix feign while stolen
 		self.enemy.weapon = 0;
@@ -509,8 +509,8 @@ void() JudokaRearm =
 		////Fix double weapons
 #ifndef NO_AUTORIFLE
 		if (self.current_weapon == WEAP_SNIPER_RIFLE) {
-			self.owner.weapons_carried = self.owner.weapons_carried | WEAP_AUTO_RIFLE;				
-			self.enemy.weapons_carried = self.enemy.weapons_carried - (self.enemy.weapons_carried & WEAP_AUTO_RIFLE);
+			self.owner.weapons_carried |= WEAP_AUTO_RIFLE;				
+			self.enemy.weapons_carried &= ~WEAP_AUTO_RIFLE);
 		}
 #endif
 		////Fix weird weapons
@@ -537,10 +537,10 @@ void() JudokaRearm =
 		}
 
 		sprint(self.owner,PRINT_HIGH,"You get your weapon back\n");
-		self.owner.weapons_carried = self.owner.weapons_carried | self.current_weapon;
+		self.owner.weapons_carried |= self.current_weapon;
 
 		sprint(self.enemy,PRINT_HIGH,"You lose your stolen weapon\n");
-		self.enemy.weapons_carried = self.enemy.weapons_carried - (self.enemy.weapons_carried & self.current_weapon);
+		self.enemy.weapons_carried &= ~self.current_weapon;
 		//Fix for a bug that would let someone keep their weapon if they switched to autorifle before
 		//the weapon returned.
 		if (self.enemy.current_weapon == self.current_weapon || self.current_weapon == WEAP_SNIPER_RIFLE || self.current_weapon == WEAP_MEDIKIT) {	
@@ -608,7 +608,7 @@ void() JobJudoka =
 		sprint (trace_ent, PRINT_HIGH, self.netname);
 		sprint (trace_ent, PRINT_HIGH, "\n");
 
-		self.job = self.job | JOB_ACTIVE;
+		self.job |= JOB_ACTIVE;
 		//Simplify the dual-weapon problem
 #ifndef NO_AUTORIFLE
 		if (trace_ent.current_weapon == WEAP_AUTO_RIFLE)
@@ -671,8 +671,8 @@ void() JobJudoka =
 			//Fix double weapons
 #ifndef NO_AUTORIFLE
 			if (trace_ent.current_weapon == WEAP_SNIPER_RIFLE) {
-				self.weapons_carried = self.weapons_carried | WEAP_AUTO_RIFLE;				
-				trace_ent.weapons_carried = trace_ent.weapons_carried - (trace_ent.weapons_carried & WEAP_AUTO_RIFLE);
+				self.weapons_carried |= WEAP_AUTO_RIFLE;				
+				trace_ent.weapons_carried &= ~WEAP_AUTO_RIFLE);
 			}
 #endif
 			if (trace_ent.current_weapon == WEAP_MEDIKIT) {
@@ -700,11 +700,11 @@ void() JobJudoka =
 				self = oself;
 			}
 
-			self.weapons_carried = self.weapons_carried | trace_ent.current_weapon;
+			self.weapons_carried |= trace_ent.current_weapon;
 			self.current_weapon = trace_ent.current_weapon;
 			W_SetCurrentAmmo();
 
-			trace_ent.weapons_carried = trace_ent.weapons_carried - (trace_ent.weapons_carried & trace_ent.current_weapon);
+			trace_ent.weapons_carried &= ~trace_ent.current_weapon;
 			trace_ent.current_weapon = 0;
 
 			deathmsg = DMSG_JUDOKA;
@@ -1039,7 +1039,7 @@ void (entity targ, float pain) RevealThief =
 
 	if (!targ.invisible_time) {
 		targ.modelindex = modelindex_player;
-		targ.items = targ.items & ~IT_INVISIBILITY;
+		targ.items &= ~IT_INVISIBILITY;
 	}
 	if (pain) {
 		if (targ.invisible_time)
@@ -1057,7 +1057,7 @@ void (entity targ, float pain) RevealThief =
 		if (targ.job & JOB_FULL_HIDE)
 			targ.attack_finished = time + FULLH_NORELOAD_TIME;
 	}
-	targ.job = targ.job - (targ.job & JOB_FULL_HIDE);
-	targ.job = targ.job - (targ.job & JOB_ACTIVE);
+	targ.job &= ~JOB_FULL_HIDE;
+	targ.job &= ~JOB_ACTIVE;
 	TeamFortress_SetSpeed(targ);
 };

@@ -456,7 +456,7 @@ void() launch_horn =
     checkmove(self.origin, self.mins, self.maxs, self.origin + normalize(self.velocity), MOVE_NORMAL, self);
     setorigin(self, self.origin + normalize(self.velocity) * trace_fraction); // - OfN - And make them stuck in wall?
 
-    self.flags = self.flags - FL_ONGROUND;
+    self.flags &= ~FL_ONGROUND;
    }
 
 

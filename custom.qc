@@ -188,7 +188,7 @@ void() DropToCustomClassGen =
 			sell_no = self.real_frags;
 		else {
 			sell_no = 0;
-			self.done_custom = self.done_custom - (self.done_custom & CUSTOM_SELLING);
+			self.done_custom &= ~CUSTOM_SELLING;
 		}
 
 		self.real_frags = self.real_frags - sell_no;
@@ -232,7 +232,7 @@ void() DropFromCustomClassGen =
 
 	//Make sure they have at least one axe-like weapon
 	if (!(self.weapons_carried & (WEAP_MEDIKIT | WEAP_SPANNER)) || (self.cutf_items & CUTF_KNIFE))
-		self.weapons_carried = self.weapons_carried | WEAP_AXE;
+		self.weapons_carried |= WEAP_AXE;
 
 	//CH if you bought Guerilla, you get 20 rockets :)
 	if (self.job & JOB_GUERILLA)
@@ -560,12 +560,12 @@ void(float cost, float item) BuyWeapon =
 		if (item == WEAP_ROCKET_LAUNCHER && self.tf_items & NIT_RL_LASER_SIGHT)
 		{
 			self.money = self.money + 1000;
-			self.tf_items = self.tf_items & ~NIT_RL_LASER_SIGHT;
+			self.tf_items &= ~NIT_RL_LASER_SIGHT;
 		}
 		if (item == WEAP_ROCKET_LAUNCHER && self.tf_items & NIT_CLUSTER_ROCKETS)
 		{
 			self.money = self.money + 3250;
-			self.tf_items = self.tf_items & ~NIT_CLUSTER_ROCKETS;
+			self.tf_items &= ~NIT_CLUSTER_ROCKETS;
 		}
 		self.maxammo_shells = self.maxammo_shells - countshells(item);
 		self.maxammo_nails = self.maxammo_nails - countnails(item);
@@ -586,7 +586,7 @@ void(float cost, float item) BuyWeapon =
 	self.maxammo_rockets = self.maxammo_rockets + countrockets(item);
 	self.maxammo_cells = self.maxammo_cells + countcells(item);
 
-	self.weapons_carried = self.weapons_carried | item;
+	self.weapons_carried |= item;
 	self.money = self.money - cost;
 	PrintMoney();
 };
@@ -623,7 +623,7 @@ void(float cost, float item) BuyCuTF =
 		self.maxammo_cells  = self.maxammo_cells  + 130;
 	}
 
-	self.cutf_items = self.cutf_items | item;
+	self.cutf_items |= item;
 	self.money = self.money - cost;
 	PrintMoney();
 };
@@ -695,7 +695,7 @@ void(float cost, float item) BuyItem =
 		return;
 	}
 
-	self.tf_items = self.tf_items | item;
+	self.tf_items |= item;
 	self.money = self.money - cost;
 	PrintMoney();
 };
@@ -712,21 +712,21 @@ void(float cost, float type) BuyJob =
 			if (!(self.cutf_items & CUTF_DEMONLORE))
 				cost = cost - 300; // sync with demonlore cost
 			else
-				self.cutf_items = self.cutf_items - (self.cutf_items & CUTF_DEMONLORE);
+				self.cutf_items &= ~CUTF_DEMONLORE;
 		}
 		if (self.job & JOB_RUNNER)
 		{
 			if (!(self.cutf_items & CUTF_HIGHJUMP))
 				cost = cost - 200; // sync with highjump cost
 			else
-				self.cutf_items = self.cutf_items - (self.cutf_items & CUTF_HIGHJUMP);
+				self.cutf_items &= ~CUTF_HIGHJUMP;
 		}
 		if (self.job & JOB_JUDOKA)
 		{
 			if (!(self.cutf_items & CUTF_STEALTH))
 				cost = cost - 400; // sync with stealth cost
 			else
-				self.cutf_items = self.cutf_items - (self.cutf_items & CUTF_STEALTH);
+				self.cutf_items &= ~CUTF_STEALTH;
 		}
 		PrintRefund(cost);
 		self.job = 0;
@@ -750,19 +750,19 @@ void(float cost, float type) BuyJob =
 		if (self.cutf_items & CUTF_DEMONLORE)
 			self.money = self.money + 300; // sync this with demonlore cost
 		else
-			self.cutf_items = self.cutf_items | CUTF_DEMONLORE; // warlocks see demon health
+			self.cutf_items |= CUTF_DEMONLORE; // warlocks see demon health
 	
 	if (type == JOB_RUNNER)
 		if (self.cutf_items & CUTF_HIGHJUMP)
 			self.money = self.money + 200; // sync with highjump cost
 		else
-			self.cutf_items = self.cutf_items | CUTF_HIGHJUMP; // runner jumps high
+			self.cutf_items |= CUTF_HIGHJUMP; // runner jumps high
 	
 	if (type == JOB_JUDOKA)
 		if (self.cutf_items & CUTF_STEALTH)
 			self.money = self.money + 400; // sync with stealth price
 		else
-			self.cutf_items = self.cutf_items | CUTF_STEALTH; // Judo is a master of stealth by default
+			self.cutf_items |= CUTF_STEALTH; // Judo is a master of stealth by default
 	
 	//Ok we buy it
 	self.job = type;
@@ -1161,7 +1161,7 @@ void() KracGrenadeExplode =
 			// This code handles disarming a detpack
 			if (te.weaponmode == 1)	// Detpack was being disarmed
 			{
-				te.enemy.tfstate = te.enemy.tfstate - (te.enemy.tfstate & TFSTATE_CANT_MOVE);
+				te.enemy.tfstate &= ~TFSTATE_CANT_MOVE;
 				TeamFortress_SetSpeed(te.enemy);
 
 				dremove(te.oldenemy);  	 // CountDown
