@@ -62,6 +62,7 @@ void() LaserBolt_Think =
 		newmis.solid = SOLID_TRIGGER;
 		newmis.movetype = MOVETYPE_FLYMISSILE;
 		newmis.touch = LaserBolt_Touch;
+		newmis.blocked = LaserBolt_Touch;
 		newmis.real_owner = self.owner;
 		newmis.owner = self;
 		newmis.heat = self.heat;
@@ -114,6 +115,9 @@ void() LaserBolt_Touch =
 	}
 			
 
+	setorigin(self, self.owner.origin);
+	self.velocity = self.owner.velocity;
+
 	if (other == self.real_owner || other == self.enemy)
 		return;		// don't explode on same person twice
 
@@ -159,7 +163,7 @@ void() W_FireLaser =
 	setorigin (newmis, org + '0 0 16');
 
 	newmis.velocity = '0 0 0';
-	newmis.oldorigin = vec*800;
+	newmis.oldorigin = vec*1500;
 	newmis.angles = vectoangles(newmis.oldorigin);
 
 	newmis.heat = time + 5;
