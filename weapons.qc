@@ -1211,14 +1211,17 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 		direction += AVG (crandom(), crandom()) * spread_x * v_right;
 		direction += AVG (crandom(), crandom()) * spread_y * v_up;
 
-		traceline (src, src + direction * 2048, FALSE, self);
+		if (self.current_weapon & WEAP_ASSAULT_CANNON)
+			traceline (src, src + direction * 2048, FALSE, self);
+		else
+			traceline (src, src + direction * 1024, FALSE, self);
 
 		if (trace_fraction == 1.0)
 			TraceAttack (0, direction);
 		else if (self.current_weapon & WEAP_ASSAULT_CANNON) //WK Sinth's bugfix
-			TraceAttack (5, direction); //WK(12) (6) Reversed from 2.5
+			TraceAttack (8, direction); //WK(12) (6) Reversed from 2.5
 		else if (self.current_weapon & WEAP_LIGHT_ASSAULT)
-			TraceAttack (4, direction);
+			TraceAttack (3, direction);
 		else 
 			TraceAttack (6, direction); //WK 4
 
@@ -1548,7 +1551,7 @@ void() W_FireLightAssault =
 	self.reload_light_assault = self.reload_light_assault + 1;
 
 	if (CheckForReload() == TRUE) return;
-	FireBullets (5, dir, '0.1 0.05 0');
+	FireBullets (5, dir, '0.15 0.10 0');
 	Attack_Finished(0.2);
 };
 
