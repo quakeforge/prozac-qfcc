@@ -2749,7 +2749,10 @@ void() PlayerPreThink =
 	if (self.tf_items & NIT_HOVER_BOOTS) {
 		if (self.button2 && self.velocity_z < 0 && self.hover_time > 0 && self.waterlevel == 0)
 		{ 	//Try to hover
-			self.velocity_z = 100; //+10 == hover
+			local vector angle = self.angles;
+			angle_x = -angle_x;
+			makevectors(angle);
+
 			self.hover_time = self.hover_time - 0.5; //0.1 == tick time
 			if (self.hover_time <= 0) {
 				if ((self.tf_items & NIT_HOVER_BOOTS_UPGRADE) && 
@@ -2757,29 +2760,29 @@ void() PlayerPreThink =
 					self.ammo_cells += floor(self.hover_time * 2);
 					self.ammo_cells--;
 					self.hover_time = 0.5;
-					self.velocity_z = 60; //power running out
+					self.velocity += 80 * v_up; //power running out
 				} else {				    
 					self.hover_time = -10; //3 second penalty for draining it GR was a lot more than 3!
 					sprint(self,PRINT_HIGH,"Your boots are out of fuel, let them recharge\n");
 				}
-			}
+			} else
+				self.velocity += 100 * v_up;
 			//Spit out fire from them!
 			if (self.search_time < time) {
-			sound (self, CHAN_AUTO, "weapons/flmfire2.wav", 1, ATTN_NORM);
-			local entity flame;
-			flame = spawn();
-			flame.owner = self;flame.movetype = MOVETYPE_FLYMISSILE;
-			flame.solid = SOLID_BBOX;flame.classname = "flamerflame";
-			makevectors (self.v_angle);
-			flame.velocity = '0 0 -600';
-			flame.touch = Boot_Flamer_stream_touch;flame.think = s_explode1;
-			flame.nextthink = time + 0.1;setmodel (flame, "progs/s_explod.spr");
-			setsize (flame, '0 0 0', '0 0 0');
-			setorigin (flame, self.origin + v_up * -16);
-			self.search_time = time + 0.15;
+				sound (self, CHAN_AUTO, "weapons/flmfire2.wav", 1, ATTN_NORM);
+				local entity flame;
+				flame = spawn();
+				flame.owner = self;flame.movetype = MOVETYPE_FLYMISSILE;
+				flame.solid = SOLID_BBOX;flame.classname = "flamerflame";
+				makevectors (self.v_angle);
+				flame.velocity = -600 * v_up;
+				flame.touch = Boot_Flamer_stream_touch;flame.think = s_explode1;
+				flame.nextthink = time + 0.1;setmodel (flame, "progs/s_explod.spr");
+				setsize (flame, '0 0 0', '0 0 0');
+				setorigin (flame, self.origin + v_up * -16);
+				self.search_time = time + 0.15;
 			}
-		}
-		else { //Recharger <- That's French for "recharge"
+		} else { //Recharger <- That's French for "recharge"
 			self.hover_time = self.hover_time + 0.03; //0.05 is a half-tick
 			if (self.hover_time > MAX_HOVER_FUEL && (!(self.tf_items & NIT_HOVER_BOOTS_UPGRADE)))
 				self.hover_time = MAX_HOVER_FUEL;
@@ -3116,13 +3119,15 @@ void() PlayerPostThink =
 					sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
 
 		}
-		else if (vlen(self.movedir) - vlen(self.velocity) > 550)
-		{
+		else 
 #ifdef WALL_HURT
+		if (vlen(self.movedir) - vlen(self.velocity) > 5500 * (time - self.lastframe_time))
+		{
 			self.deathtype = "wall";
 			T_Damage (self, NIL, NIL, ((vlen(self.movedir) - vlen(self.velocity)) - 550) / 10);
-#endif
 		}
+#endif
+		;
 	}
 
 	self.jump_flag = self.velocity_z;
@@ -3134,7 +3139,7 @@ void() PlayerPostThink =
 
 	//  Display MOTD
 	// Sync this with tforthlp.qc and menu.qc
-	TeamFortress_MOTD();
+	TeamFortress_MOTD();	
 
 	if (self.cheat_check == 0)
 		self.cheat_check = time + 10;
@@ -3159,10 +3164,12 @@ void() PlayerPostThink =
 	// Check for Team Cheats
 	if (self.cheat_check <= time)
 	{
-		TeamFortress_CheckTeamCheats();
+		TeamFortress_CheckTeamCheats();	
 
-		self.cheat_check = time + 5;
+		self.cheat_check = time + 5;	
 	}
+
+	self.lastframe_time = time;	
 };
 
 
