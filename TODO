@@ -37,3 +37,8 @@ o  specs should have access to admin commands, ceasefire, and query
 o  chance for detpack disarm/krak to set it off
 o  random damage from detpacks
 o  random timer too?
+o  pack_N_match model name to match, or 1 to affect any model with lots of stuff, 2 for any model with any health/ammo/armor
+o  pack_N_improve 1 means to supercharge what the pack already has, 2 means to give it everything
+o  pack_N_model forces a certain model
+o  pack_N_merge is a distance at which they should be merged
+o  All respawns should give you your purchased armor type
