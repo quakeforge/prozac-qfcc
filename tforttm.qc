@@ -41,40 +41,39 @@ float (float tno, float theColor ) IsValidTopColor;
 // Put the player into the team with the least number of players in it. Return TRUE if successful
 float() TeamFortress_TeamPutPlayerInTeam =
 {
-	local float i, j, lowest, likely_team;
-	local string st;
+	local float lowest, lowest_num;
+	local float i, i_num;
+	local float teams_with_vacancy = 0;
+	local float maxplayers, curplayers;
 
-	i = 1;
-	likely_team = random() * number_of_teams;
-	likely_team = ceil(likely_team);
-	if (likely_team == 0)
-		likely_team = number_of_teams;
-	lowest = 33;
-	while (i < (number_of_teams + 1))
-	{
-		j = TeamFortress_TeamGetNoPlayers(i);
-		if (j <= lowest) //WK j < lowest
-		{
-			// Is the team full?
-			if (TeamFortress_TeamGetMaxPlayers(i) > j)
-			{
-				if (lowest == j) { //WK tie
-					if (random() < (1/number_of_teams)) {
-						lowest = j;
-						likely_team = i;
-					}
-				}
-				else {
-					lowest = j;
-					likely_team = i;
-				}
-			}
-		}
-		i = i + 1;
+	for (i = 1; i <= number_of_teams; i = i + 1) {
+		maxplayers = TeamFortress_TeamGetMaxPlayers (i);
+		curplayers = TeamFortress_TeamGetNoPlayers (i);
+		if (curplayers < maxplayers)
+			teams_with_vacancy = teams_with_vacancy + 1;
 	}
 
-	// Put the player in likely_team
-	return TeamFortress_TeamSet(likely_team);
+	lowest = 0;
+	lowest_num = -1;
+	for (i = 1; i <= number_of_teams; i = i + 1) {
+		i_num = TeamFortress_TeamGetNoPlayers(i);
+		if (TeamFortress_TeamGetMaxPlayers (i) > i_num) {
+			if (i_num < lowest_num // eww, ugly
+				|| lowest_num == -1
+				|| (i_num == lowest_num
+					&& random () < 1 / teams_with_vacancy)) {
+				lowest = i;
+				lowest_num = i_num;
+			}
+		}
+	}
+
+	if (lowest == 0) { // ummm, I don't think this should be possible..
+		sprint (self, PRINT_HIGH, "All teams are full!\n");
+		return 0;
+	}
+
+	return TeamFortress_TeamSet (lowest);
 };
 
 //=========================================================================
@@ -555,55 +554,45 @@ void (entity pl, float topcolor, float bottomcolor) SetPlayerColor =
 //	stuffcmd (pl, "color " + top + " " + bottom + "\n");
 };
 
-float(string key, string value) UserInfoCallback =
-{
+void (string key, string value) UserInfoCallback =
+{ // FIXME: remove the cheat poller
 	local string oldval;
 	local string st;
 	oldval = infokey(self, key);
 
-	if(value == oldval) // generic reject
-	{
+	if(value == oldval) { // generic reject
 //		dprint ("[oldval [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 0; // rejected!
+		return;
 	}
+//	dprint ("[[" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 
-	if (key == "topcolor")
-	{
-		// no changing colors allowed
-		st = infokey(self, "topcolor");
-		setinfokey(self, "topcolor", st);
-		stuffcmd(self, "color " + st + "\n");
-//		dprint ("[topcolor [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 0;
+	if (key == "topcolor") { // FIXME: some topcolors may be allowed
+		setinfokey(self, "topcolor", oldval);
+		stuffcmd(self, "color \"" + oldval + "\"\n");
+		return;
 	}
-	if (key == "bottomcolor")
-	{
-		st = infokey (self, "bottomcolor");
-		setinfokey (self, "bottomcolor", st);
-		stuffcmd (self, "bottomcolor " + st + "\n");
-//		dprint ("[bottomcolor [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 0;
+	if (key == "bottomcolor") {
+		setinfokey (self, "bottomcolor", oldval);
+		stuffcmd (self, "bottomcolor \"" + oldval + "\"\n");
+		return;
 	}
-	else if (key == "skin")
-	{
-		stuffcmd(self, "skin ");
-		stuffcmd(self, oldval);
-		stuffcmd(self, "\n");
-//		dprint ("[skin [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 0;
+	else if (key == "skin") { // FIXME: some other skins may be allowed
+		stuffcmd(self, "skin \"" + oldval + "\"\n");
+		return;
 	}
-/*	else if (key == "name") // I have a hacky-poll to do this atm
-	{
+	else if (key == "name") {
 		self.netname = value;
 		setinfokey (self, key, value);
-		dprint ("[name [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 1;
-	} */
-	else
-	{
+		return;
+	}
+	else if (key == "team") {
+		stuffcmd (self, "team \"" + oldval + "\"\n");
+		return;
+	}
+	else {
 		setinfokey (self, key, value);
 //		dprint ("[default [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 1; // accept everything else
+		return; // accept everything else
 	}
 };
 
@@ -674,7 +663,7 @@ float (float tno) TeamFortress_TeamGetLives =
 // Return the number of players in a team
 float (float tno) TeamFortress_TeamGetNoPlayers =
 {
-	local float size_team;
+	local float size_team = 0;
 	local entity search;
 	//local string st;
 
