@@ -2526,6 +2526,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 	// Items and Triggers do their own respawn work
 	if (Goal.classname == "info_tfgoal")
 		SetupRespawn(Goal);
+	remove (Goal);
 };
 
 //=========================================================================
