@@ -12,6 +12,7 @@ Defines for the compilable options within TF.
 //#define BOTS			// doesn't do anything yet
 //#define DEMO_STUFF
 #define STATUSBAR
+#undef ALIGNED_FIELDGENS
 
 #pragma PROGS_DAT "qwprogs.dat"
 

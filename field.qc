@@ -160,7 +160,12 @@ void() Field_think =
 		if (te.velocity == '0 0 0')
 //		if (!IsBuilding(te)) // no screwing with the buildings :)
 		if (te.classname != "force_field")
-//		if (EntsTouching2(te,self))
+#ifdef ALIGNED_FIELDGENS
+		if (EntsTouching2(te,self))
+#else
+# warning We do NOT have a test for being stuck in the field, so I am disabling it
+		if (0)
+#endif
 		{
 			local entity foo;
 			foo = testentitypos (te);
@@ -963,6 +968,11 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
 	if (fieldgen1.origin_z != fieldgen2.origin_z)
 		return FALSE;
 
+#ifdef ALIGNED_FIELDGENS
+	if (fieldgen1.origin_x != fieldgen2.origin_x && fieldgen1.origin_y != fieldgen2.origin_y)
+		return FALSE;
+#endif
+
 	if (fieldgen1.fieldgen_status == FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == FIELDGEN_ISDISABLED)
 		return FALSE;
 
@@ -1020,8 +1030,9 @@ entity(entity fieldgen) Find_OtherGen =
 
 vector(vector place) WhereGen =
 {
-// FIXME: remove function if we allow rotation
+#ifndef ALIGNED_FIELDGENS
 	return place;
+#endif
 
 	// if we have no field generator currently, it can be placed anywhere
 	if (self.has_fieldgen == 0) return place;
