@@ -180,16 +180,12 @@
 #define EF_DIMLIGHT	8 
 
 
-// messages
-// Since BROADCAST is never used in QW 1.5, and MULTICAST is used instead,
-// just define BROADCAST as MULTICAST for QW 1.5
-
-#define MSG_MULTICAST   4
-#define MSG_BROADCAST 	MSG_MULTICAST
-
+// network writes.  argument to Write*
 #define MSG_ONE			1 		// reliable to one (msg_entity)
 #define MSG_ALL			2 		// reliable to all
 #define MSG_INIT		3 		// write to the init string
+#define MSG_MULTICAST	4		// only those in pvs/phs.  see
+								//   multicast sets below
 
 
 // message levels
@@ -198,7 +194,7 @@
 #define	PRINT_HIGH		 2.0		// critical messages
 #define PRINT_CHAT		 3.0		// also goes to chat console
 
-// multicast sets
+// multicast sets.  argument to multicast
 #define MULTICAST_ALL    0    	// every client
 #define MULTICAST_PHS    1    	// within hearing
 #define MULTICAST_PVS    2    	// within sight

@@ -385,11 +385,11 @@ void() Tesla_Die =
     ThrowGib("progs/tesgib4.mdl", self.skin);
     ThrowGib("progs/tesgib4.mdl", self.skin);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
 };
@@ -516,11 +516,11 @@ float() Tesla_Fire =
 		local float damg;
 		damg = random() * 100 + 200 * self.ammo_nails; // the bigger they come, the harder they fall
 		deathmsg = DMSG_TESLA;
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-		WriteCoord (MSG_BROADCAST, self.origin_x);
-		WriteCoord (MSG_BROADCAST, self.origin_y);
-		WriteCoord (MSG_BROADCAST, self.origin_z);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+		WriteCoord (MSG_MULTICAST, self.origin_x);
+		WriteCoord (MSG_MULTICAST, self.origin_y);
+		WriteCoord (MSG_MULTICAST, self.origin_z);
 		T_RadiusDamage(self, self, damg, world);
 		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
 		//else self.origin_z = self.origin_z - 24;
@@ -537,18 +537,18 @@ float() Tesla_Fire =
 
     if (trace_ent.classname == "force_field")
     {
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
-        WriteEntity (MSG_BROADCAST, self);
-        WriteCoord (MSG_BROADCAST, self.origin_x);
-        WriteCoord (MSG_BROADCAST, self.origin_y);
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+        WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
+        WriteEntity (MSG_MULTICAST, self);
+        WriteCoord (MSG_MULTICAST, self.origin_x);
+        WriteCoord (MSG_MULTICAST, self.origin_y);
         if (self.tf_items & NIT_TURRET)
-            WriteCoord (MSG_BROADCAST, self.origin_z + 10);
+            WriteCoord (MSG_MULTICAST, self.origin_z + 10);
         else
-            WriteCoord (MSG_BROADCAST, self.origin_z + 30);        
-        WriteCoord (MSG_BROADCAST, trace_endpos_x);
-        WriteCoord (MSG_BROADCAST, trace_endpos_y);
-        WriteCoord (MSG_BROADCAST, trace_endpos_z);
+            WriteCoord (MSG_MULTICAST, self.origin_z + 30);        
+        WriteCoord (MSG_MULTICAST, trace_endpos_x);
+        WriteCoord (MSG_MULTICAST, trace_endpos_y);
+        WriteCoord (MSG_MULTICAST, trace_endpos_z);
         multicast (self.origin, MULTICAST_PHS);
         
         shoulddmg = FALSE;
@@ -558,18 +558,18 @@ float() Tesla_Fire =
     }
     else
     {
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
-        WriteEntity (MSG_BROADCAST, self);
-        WriteCoord (MSG_BROADCAST, self.origin_x);
-        WriteCoord (MSG_BROADCAST, self.origin_y);
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+        WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
+        WriteEntity (MSG_MULTICAST, self);
+        WriteCoord (MSG_MULTICAST, self.origin_x);
+        WriteCoord (MSG_MULTICAST, self.origin_y);
         if (self.tf_items & NIT_TURRET)
-            WriteCoord (MSG_BROADCAST, self.origin_z + 10);
+            WriteCoord (MSG_MULTICAST, self.origin_z + 10);
         else
-            WriteCoord (MSG_BROADCAST, self.origin_z + 30);
-        WriteCoord (MSG_BROADCAST, self.enemy.origin_x);
-        WriteCoord (MSG_BROADCAST, self.enemy.origin_y);
-        WriteCoord (MSG_BROADCAST, self.enemy.origin_z);
+            WriteCoord (MSG_MULTICAST, self.origin_z + 30);
+        WriteCoord (MSG_MULTICAST, self.enemy.origin_x);
+        WriteCoord (MSG_MULTICAST, self.enemy.origin_y);
+        WriteCoord (MSG_MULTICAST, self.enemy.origin_z);
         multicast (self.origin, MULTICAST_PHS);
     }
 

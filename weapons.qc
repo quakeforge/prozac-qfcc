@@ -351,12 +351,12 @@ void() W_FireAxe =
 	else
 	{	// hit wall
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -427,12 +427,12 @@ void() W_FireSpanner =
 			else
 			{
 				sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-				WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-				WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+				WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 				WriteByte (MSG_MULTICAST, 3);
-				WriteCoord (MSG_BROADCAST, org_x);
-				WriteCoord (MSG_BROADCAST, org_y);
-				WriteCoord (MSG_BROADCAST, org_z);
+				WriteCoord (MSG_MULTICAST, org_x);
+				WriteCoord (MSG_MULTICAST, org_y);
+				WriteCoord (MSG_MULTICAST, org_z);
 				multicast (org, MULTICAST_PVS);
 			}
 		}
@@ -516,12 +516,12 @@ void() W_FireSpanner =
 						self.ammo_cells = self.ammo_cells - healam;
 
 						sound(trace_ent, CHAN_WEAPON, "items/r_item1.wav", 1, ATTN_NORM);
-						WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-						WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+						WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+						WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 						WriteByte (MSG_MULTICAST, 3);
-						WriteCoord (MSG_BROADCAST, org_x);
-						WriteCoord (MSG_BROADCAST, org_y);
-						WriteCoord (MSG_BROADCAST, org_z);
+						WriteCoord (MSG_MULTICAST, org_x);
+						WriteCoord (MSG_MULTICAST, org_y);
+						WriteCoord (MSG_MULTICAST, org_z);
 						multicast (org, MULTICAST_PVS);
 
 						W_SetCurrentAmmo ();
@@ -544,12 +544,12 @@ void() W_FireSpanner =
 	else // hit wall
 	{	
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -874,12 +874,12 @@ void(float inAuto) W_FireMedikit =
 		if (inAuto) return; //Don't click for automedic
 		// hit wall
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -969,12 +969,12 @@ void() W_FireBioweapon =
 	else
 	{	// hit wall
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -1632,11 +1632,11 @@ void() T_MissileTouch =
 		CamProjectileLockOff();
 #endif
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it
@@ -1948,15 +1948,15 @@ void() W_FireLightning =
         FieldExplosion(trace_ent,trace_endpos,trace_ent);
         PutFieldWork(trace_ent);
 
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
-        WriteEntity (MSG_BROADCAST, self);
-        WriteCoord (MSG_BROADCAST, org_x);
-        WriteCoord (MSG_BROADCAST, org_y);
-        WriteCoord (MSG_BROADCAST, org_z);
-        WriteCoord (MSG_BROADCAST, trace_endpos_x);
-        WriteCoord (MSG_BROADCAST, trace_endpos_y);
-        WriteCoord (MSG_BROADCAST, trace_endpos_z);
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+        WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
+        WriteEntity (MSG_MULTICAST, self);
+        WriteCoord (MSG_MULTICAST, org_x);
+        WriteCoord (MSG_MULTICAST, org_y);
+        WriteCoord (MSG_MULTICAST, org_z);
+        WriteCoord (MSG_MULTICAST, trace_endpos_x);
+        WriteCoord (MSG_MULTICAST, trace_endpos_y);
+        WriteCoord (MSG_MULTICAST, trace_endpos_z);
         multicast (org, MULTICAST_PHS);
 
         return;
@@ -1965,15 +1965,15 @@ void() W_FireLightning =
 
 	traceline (org, org + v_forward*600, TRUE, self);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
-	WriteEntity (MSG_BROADCAST, self);
-	WriteCoord (MSG_BROADCAST, org_x);
-	WriteCoord (MSG_BROADCAST, org_y);
-	WriteCoord (MSG_BROADCAST, org_z);
-	WriteCoord (MSG_BROADCAST, trace_endpos_x);
-	WriteCoord (MSG_BROADCAST, trace_endpos_y);
-	WriteCoord (MSG_BROADCAST, trace_endpos_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
+	WriteEntity (MSG_MULTICAST, self);
+	WriteCoord (MSG_MULTICAST, org_x);
+	WriteCoord (MSG_MULTICAST, org_y);
+	WriteCoord (MSG_MULTICAST, org_z);
+	WriteCoord (MSG_MULTICAST, trace_endpos_x);
+	WriteCoord (MSG_MULTICAST, trace_endpos_y);
+	WriteCoord (MSG_MULTICAST, trace_endpos_z);
 	multicast (org, MULTICAST_PHS);
 
 	//WK Either way of firing the gun, we handle it here
@@ -2087,11 +2087,11 @@ void() GrenadeExplode =
 		CamProjectileLockOff();
 #endif
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -2262,11 +2262,11 @@ void() superspike_touch =
            FieldExplosion(other,self.origin,self);
         else
         {
-            WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-            WriteByte (MSG_BROADCAST, TE_SUPERSPIKE);
-            WriteCoord (MSG_BROADCAST, self.origin_x);
-            WriteCoord (MSG_BROADCAST, self.origin_y);
-            WriteCoord (MSG_BROADCAST, self.origin_z);
+            WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+            WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
+            WriteCoord (MSG_MULTICAST, self.origin_x);
+            WriteCoord (MSG_MULTICAST, self.origin_y);
+            WriteCoord (MSG_MULTICAST, self.origin_z);
             multicast (self.origin, MULTICAST_PHS);
         }
 	}
@@ -2383,16 +2383,16 @@ void() spike_touch =
            FieldExplosion(other,self.origin,self);
         else
         {
-            WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+            WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
             if (self.classname == "wizspike")
-                WriteByte (MSG_BROADCAST, TE_WIZSPIKE);
+                WriteByte (MSG_MULTICAST, TE_WIZSPIKE);
             else if (self.classname == "knightspike")
-                WriteByte (MSG_BROADCAST, TE_KNIGHTSPIKE);
+                WriteByte (MSG_MULTICAST, TE_KNIGHTSPIKE);
             else
-                WriteByte (MSG_BROADCAST, TE_SPIKE);
-            WriteCoord (MSG_BROADCAST, self.origin_x);
-            WriteCoord (MSG_BROADCAST, self.origin_y);
-            WriteCoord (MSG_BROADCAST, self.origin_z);
+                WriteByte (MSG_MULTICAST, TE_SPIKE);
+            WriteCoord (MSG_MULTICAST, self.origin_x);
+            WriteCoord (MSG_MULTICAST, self.origin_y);
+            WriteCoord (MSG_MULTICAST, self.origin_z);
             multicast (self.origin, MULTICAST_PHS);
         }
 	}
@@ -4792,11 +4792,11 @@ void() T_DaedalusTouch =
 
 
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it

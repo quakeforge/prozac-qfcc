@@ -804,18 +804,18 @@ void(entity tfield) Field_MakeVisual =
 		
 		f = tfield.origin + (tfield.forcefield_offset * 0.5 * (random() * 2 - 1));
 
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		if (random() > 0.5)
-			WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
+			WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
 		else
-			WriteByte (MSG_BROADCAST, TE_LIGHTNING1);
-		WriteEntity (MSG_BROADCAST, tfield);
-		WriteCoord (MSG_BROADCAST, f_x);
-		WriteCoord (MSG_BROADCAST, f_y);
-		WriteCoord (MSG_BROADCAST, tfield.origin_z + tfield.mins_z);
-		WriteCoord (MSG_BROADCAST, f_x);
-		WriteCoord (MSG_BROADCAST, f_y);
-		WriteCoord (MSG_BROADCAST, tfield.origin_z + tfield.maxs_z);
+			WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
+		WriteEntity (MSG_MULTICAST, tfield);
+		WriteCoord (MSG_MULTICAST, f_x);
+		WriteCoord (MSG_MULTICAST, f_y);
+		WriteCoord (MSG_MULTICAST, tfield.origin_z + tfield.mins_z);
+		WriteCoord (MSG_MULTICAST, f_x);
+		WriteCoord (MSG_MULTICAST, f_y);
+		WriteCoord (MSG_MULTICAST, tfield.origin_z + tfield.maxs_z);
 	}
 };
 
@@ -1082,11 +1082,11 @@ void() FieldGen_Die =
 	self.real_owner.has_fieldgen = self.real_owner.has_fieldgen - 1;
 	if (self.real_owner.has_fieldgen < 0) self.real_owner.has_fieldgen = 0;
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	// check if field should be removed..

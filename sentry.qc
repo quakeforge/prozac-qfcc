@@ -490,11 +490,11 @@ void() Sentry_Die =
 			dremove(self.trigger_field);
 	}
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
 };
@@ -640,11 +640,11 @@ float() Sentry_Fire =
 			local float damg;
 			damg = random() * 50 + 120;
 			T_RadiusDamage(self, self, damg, world);
-			WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-			WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-			WriteCoord (MSG_BROADCAST, self.origin_x);
-			WriteCoord (MSG_BROADCAST, self.origin_y);
-			WriteCoord (MSG_BROADCAST, self.origin_z);
+			WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+			WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+			WriteCoord (MSG_MULTICAST, self.origin_x);
+			WriteCoord (MSG_MULTICAST, self.origin_y);
+			WriteCoord (MSG_MULTICAST, self.origin_z);
 			if (self.tf_items & NIT_TURRET)
 				self.origin_z = self.origin_z + 40;
 			return FALSE;

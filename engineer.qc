@@ -114,11 +114,11 @@ void() LaserBolt_Touch =
 		self.nextthink = time + 0.1;
 		self.think = LaserBolt_Think;
 		return;
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_SPIKE);
-		WriteCoord (MSG_BROADCAST, self.origin_x);
-		WriteCoord (MSG_BROADCAST, self.origin_y);
-		WriteCoord (MSG_BROADCAST, self.origin_z);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_SPIKE);
+		WriteCoord (MSG_MULTICAST, self.origin_x);
+		WriteCoord (MSG_MULTICAST, self.origin_y);
+		WriteCoord (MSG_MULTICAST, self.origin_z);
 		multicast (self.origin, MULTICAST_PHS);
 	}
 	
@@ -191,11 +191,11 @@ void() EMPExplode =
 	deathmsg = DMSG_GREN_EMP_AMMO;
 	T_RadiusDamage (self, self.enemy, expsize, world);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	// Respawn
@@ -222,11 +222,11 @@ void() EMPGrenadeExplode =
 //CH Slice gave idea of an emp gren getting rated based on blast so i added..
 	total_exp = 0;
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_TAREXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_TAREXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	// Find all ammo in the area
@@ -288,11 +288,11 @@ void() EMPGrenadeExplode =
 				te.think = SUB_Remove;
 				te.nextthink = time + 0.1;
 
-				WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-				WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-				WriteCoord (MSG_BROADCAST, te.origin_x);
-				WriteCoord (MSG_BROADCAST, te.origin_y);
-				WriteCoord (MSG_BROADCAST, te.origin_z);
+				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+				WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+				WriteCoord (MSG_MULTICAST, te.origin_x);
+				WriteCoord (MSG_MULTICAST, te.origin_y);
+				WriteCoord (MSG_MULTICAST, te.origin_z);
 				multicast (te.origin, MULTICAST_PHS);
 			}
 		}
@@ -332,11 +332,11 @@ void() EMPGrenadeExplode =
 					    W_SetCurrentAmmo();
 					    self = oldself;
                         
-        				WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-                        WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-                        WriteCoord (MSG_BROADCAST, te.origin_x);
-                        WriteCoord (MSG_BROADCAST, te.origin_y);
-                        WriteCoord (MSG_BROADCAST, te.origin_z);
+        				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+                        WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+                        WriteCoord (MSG_MULTICAST, te.origin_x);
+                        WriteCoord (MSG_MULTICAST, te.origin_y);
+                        WriteCoord (MSG_MULTICAST, te.origin_z);
                         multicast (te.origin, MULTICAST_PHS);
                     }
 				}
@@ -346,11 +346,11 @@ void() EMPGrenadeExplode =
 					te.nextthink = time + 0.1;
 				}
 
-				WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-				WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-				WriteCoord (MSG_BROADCAST, te.origin_x);
-				WriteCoord (MSG_BROADCAST, te.origin_y);
-				WriteCoord (MSG_BROADCAST, te.origin_z);
+				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+				WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+				WriteCoord (MSG_MULTICAST, te.origin_x);
+				WriteCoord (MSG_MULTICAST, te.origin_y);
+				WriteCoord (MSG_MULTICAST, te.origin_z);
 				multicast (te.origin, MULTICAST_PHS);
 			}
 		}
@@ -1162,11 +1162,11 @@ void() Dispenser_Explode =
 {    
     T_RadiusDamage(self.demon_one, self.demon_one, self.has_holo, world);
 
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.demon_one.origin_x);
-	WriteCoord (MSG_BROADCAST, self.demon_one.origin_y);
-	WriteCoord (MSG_BROADCAST, self.demon_one.origin_z);
+    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.demon_one.origin_x);
+	WriteCoord (MSG_MULTICAST, self.demon_one.origin_y);
+	WriteCoord (MSG_MULTICAST, self.demon_one.origin_z);
 	multicast (self.demon_one.origin, MULTICAST_PHS);
     dremove(self.demon_one);
 

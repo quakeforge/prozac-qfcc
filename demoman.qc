@@ -73,11 +73,11 @@ void() MirvGrenadeExplode =
 	deathmsg = DMSG_GREN_MIRV;
 	T_RadiusDamage (self, self.owner, 100, world);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	self.solid = SOLID_NOT;
@@ -351,18 +351,18 @@ void() TeamFortress_DetpackExplode =
 
         sound(self, CHAN_MISC, "weapons/detpack.wav", 1, ATTN_NONE);
 
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-		WriteCoord (MSG_BROADCAST, self.origin_x);
-		WriteCoord (MSG_BROADCAST, self.origin_y);
-		WriteCoord (MSG_BROADCAST, self.origin_z);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+		WriteCoord (MSG_MULTICAST, self.origin_x);
+		WriteCoord (MSG_MULTICAST, self.origin_y);
+		WriteCoord (MSG_MULTICAST, self.origin_z);
 		multicast (self.origin, MULTICAST_PHS);
 
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_LAVASPLASH);
-		WriteCoord (MSG_BROADCAST, self.origin_x);
-		WriteCoord (MSG_BROADCAST, self.origin_y);
-		WriteCoord (MSG_BROADCAST, self.origin_z);
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_LAVASPLASH);
+		WriteCoord (MSG_MULTICAST, self.origin_x);
+		WriteCoord (MSG_MULTICAST, self.origin_y);
+		WriteCoord (MSG_MULTICAST, self.origin_z);
 		multicast (self.origin, MULTICAST_PHS);
 
     //- OfN - Should a detpack make the same explosion a gren does? dont think so...
@@ -381,11 +381,11 @@ void() TeamFortress_DetpackExplode =
 
             if (vis2orig(self.origin,rexp))
             {
-                WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-                WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-                WriteCoord (MSG_BROADCAST, rexp_x);
-                WriteCoord (MSG_BROADCAST, rexp_y);
-                WriteCoord (MSG_BROADCAST, rexp_z);
+                WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+                WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+                WriteCoord (MSG_MULTICAST, rexp_x);
+                WriteCoord (MSG_MULTICAST, rexp_y);
+                WriteCoord (MSG_MULTICAST, rexp_z);
                 multicast (rexp, MULTICAST_PHS);
             }
             loopc = loopc + 1;

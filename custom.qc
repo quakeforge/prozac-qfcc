@@ -961,11 +961,11 @@ void() fragspike_touch =
                FieldExplosion(other,self.origin,self);
             else
             {
-                WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-                WriteByte (MSG_BROADCAST, TE_SUPERSPIKE);
-                WriteCoord (MSG_BROADCAST, self.origin_x);
-                WriteCoord (MSG_BROADCAST, self.origin_y);
-                WriteCoord (MSG_BROADCAST, self.origin_z);
+                WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+                WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
+                WriteCoord (MSG_MULTICAST, self.origin_x);
+                WriteCoord (MSG_MULTICAST, self.origin_y);
+                WriteCoord (MSG_MULTICAST, self.origin_z);
                 multicast (self.origin, MULTICAST_PHS);
             }
 
@@ -991,11 +991,11 @@ void() FragSpikeThink =
 		self.nextthink = time + 0.5 + random();
 	}
 	else {
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_SUPERSPIKE);
-		WriteCoord (MSG_BROADCAST, self.origin_x);
-		WriteCoord (MSG_BROADCAST, self.origin_y);
-		WriteCoord (MSG_BROADCAST, self.origin_z);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
+		WriteCoord (MSG_MULTICAST, self.origin_x);
+		WriteCoord (MSG_MULTICAST, self.origin_y);
+		WriteCoord (MSG_MULTICAST, self.origin_z);
 		multicast (self.origin, MULTICAST_PHS);
 		dremove(self);
 	}
@@ -1021,11 +1021,11 @@ void() FragGrenadeExplode =
 	deathmsg = DMSG_GREN_HAND;
 	T_RadiusDamage (self, self.owner, 80, world);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	shraps = rint(6 * random()) + 6; //Pieces of shrapmetal;
@@ -1067,11 +1067,11 @@ void() FragGrenadeExplode =
 		newmis.heat = 5;
 		shraps = shraps - 1;
 	}
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -1165,11 +1165,11 @@ void() KracGrenadeExplode =
 		te = te.chain;
 	}
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };

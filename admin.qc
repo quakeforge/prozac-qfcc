@@ -376,7 +376,7 @@ void() Admin_Cmd =
 			// Set the player's color
 			tc = TeamGetColor (targetteam) - 1;
 			tc2 = TeamGetNiceColor (targetteam);
-			SetPlayerColor (self, tc, tc2);
+			SetPlayerColor (self.admin_kick, tc, tc2);
             
             self.admin_kick.team_no = targetteam;
             makeImmune(self.admin_kick,time+15);

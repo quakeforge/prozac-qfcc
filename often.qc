@@ -589,12 +589,12 @@ void() FlareGrenadeExplode =
     local vector org;
     org=self.origin;
 
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
 		multicast (org, MULTICAST_PVS);
 
     self.effects = self.effects | EF_DIMLIGHT;
@@ -777,11 +777,11 @@ void() ExpBodyThink =
     //deathmsg = DMSG_EXPBODY;
     TF_T_Damage(self.owner, self.owner, self.owner.martyr_enemy, self.owner.health + 60, TF_TD_IGNOREARMOUR, TF_TD_OTHER);// TF_TD_OTHER);
 
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-    WriteCoord (MSG_BROADCAST, self.origin_x);
-    WriteCoord (MSG_BROADCAST, self.origin_y);
-    WriteCoord (MSG_BROADCAST, self.origin_z);
+    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+    WriteCoord (MSG_MULTICAST, self.origin_x);
+    WriteCoord (MSG_MULTICAST, self.origin_y);
+    WriteCoord (MSG_MULTICAST, self.origin_z);
    	multicast (self.origin, MULTICAST_PHS);
 
     deathmsg = DMSG_EXPBODY;
@@ -796,11 +796,11 @@ void() ExpBodyThink =
 
 void(vector where) spawnFOG =
 {
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_TELEPORT);
-	WriteCoord (MSG_BROADCAST, where_x);
-	WriteCoord (MSG_BROADCAST, where_y);
-	WriteCoord (MSG_BROADCAST, where_z);
+    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_TELEPORT);
+	WriteCoord (MSG_MULTICAST, where_x);
+	WriteCoord (MSG_MULTICAST, where_y);
+	WriteCoord (MSG_MULTICAST, where_z);
 	multicast (where, MULTICAST_PHS);
 };
 

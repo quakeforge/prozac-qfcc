@@ -278,15 +278,15 @@ void() CastLightning =
         FieldExplosion(trace_ent,trace_endpos,trace_ent);
         PutFieldWork(trace_ent);
 
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_LIGHTNING1);
-        WriteEntity (MSG_BROADCAST, self);
-        WriteCoord (MSG_BROADCAST, org_x);
-        WriteCoord (MSG_BROADCAST, org_y);
-        WriteCoord (MSG_BROADCAST, org_z);
-        WriteCoord (MSG_BROADCAST, trace_endpos_x);
-        WriteCoord (MSG_BROADCAST, trace_endpos_y);
-        WriteCoord (MSG_BROADCAST, trace_endpos_z);
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+        WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
+        WriteEntity (MSG_MULTICAST, self);
+        WriteCoord (MSG_MULTICAST, org_x);
+        WriteCoord (MSG_MULTICAST, org_y);
+        WriteCoord (MSG_MULTICAST, org_z);
+        WriteCoord (MSG_MULTICAST, trace_endpos_x);
+        WriteCoord (MSG_MULTICAST, trace_endpos_y);
+        WriteCoord (MSG_MULTICAST, trace_endpos_z);
         multicast (org, MULTICAST_PHS);
 
         return;
@@ -295,15 +295,15 @@ void() CastLightning =
 
 	traceline (org, self.origin + dir*3000, TRUE, self);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_LIGHTNING1);
-	WriteEntity (MSG_BROADCAST, self);
-	WriteCoord (MSG_BROADCAST, org_x);
-	WriteCoord (MSG_BROADCAST, org_y);
-	WriteCoord (MSG_BROADCAST, org_z);
-	WriteCoord (MSG_BROADCAST, trace_endpos_x);
-	WriteCoord (MSG_BROADCAST, trace_endpos_y);
-	WriteCoord (MSG_BROADCAST, trace_endpos_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
+	WriteEntity (MSG_MULTICAST, self);
+	WriteCoord (MSG_MULTICAST, org_x);
+	WriteCoord (MSG_MULTICAST, org_y);
+	WriteCoord (MSG_MULTICAST, org_z);
+	WriteCoord (MSG_MULTICAST, trace_endpos_x);
+	WriteCoord (MSG_MULTICAST, trace_endpos_y);
+	WriteCoord (MSG_MULTICAST, trace_endpos_z);
 
 	ldmg = 5 + self.has_tesla * 5;
 	if (self.has_tesla == 5)
@@ -621,11 +621,11 @@ void(float side) ShamFireball =
 		CamProjectileLockOff();
 #endif
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+	WriteCoord (MSG_MULTICAST, self.origin_x);
+	WriteCoord (MSG_MULTICAST, self.origin_y);
+	WriteCoord (MSG_MULTICAST, self.origin_z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };

@@ -779,11 +779,11 @@ void() GasGrenadeMakeGas =
 	// Do the cloud
 	if (self.heat == 1)
 	{
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_TAREXPLOSION);
-		WriteCoord (MSG_BROADCAST, self.origin_x);
-		WriteCoord (MSG_BROADCAST, self.origin_y);
-		WriteCoord (MSG_BROADCAST, self.origin_z);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_TAREXPLOSION);
+		WriteCoord (MSG_MULTICAST, self.origin_x);
+		WriteCoord (MSG_MULTICAST, self.origin_y);
+		WriteCoord (MSG_MULTICAST, self.origin_z);
 		multicast (self.origin, MULTICAST_PVS);
 		return;
 	}
@@ -792,11 +792,11 @@ void() GasGrenadeMakeGas =
 		self.weapon = self.weapon + 1;
 		if (self.weapon == 1)
 		{
-			WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-			WriteByte (MSG_BROADCAST, TE_LAVASPLASH);
-			WriteCoord (MSG_BROADCAST, self.origin_x);
-			WriteCoord (MSG_BROADCAST, self.origin_y);
-			WriteCoord (MSG_BROADCAST, self.origin_z - 24);
+			WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+			WriteByte (MSG_MULTICAST, TE_LAVASPLASH);
+			WriteCoord (MSG_MULTICAST, self.origin_x);
+			WriteCoord (MSG_MULTICAST, self.origin_y);
+			WriteCoord (MSG_MULTICAST, self.origin_z - 24);
 			multicast (self.origin, MULTICAST_PVS);
 		}
 		else if (self.weapon == 2)
@@ -1015,11 +1015,11 @@ void() T_TranqDartTouch =
             FieldExplosion(other,self.origin,self);
         else
         {
-            WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-            WriteByte (MSG_BROADCAST, TE_SPIKE);
-            WriteCoord (MSG_BROADCAST, self.origin_x);
-            WriteCoord (MSG_BROADCAST, self.origin_y);
-            WriteCoord (MSG_BROADCAST, self.origin_z);
+            WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+            WriteByte (MSG_MULTICAST, TE_SPIKE);
+            WriteCoord (MSG_MULTICAST, self.origin_x);
+            WriteCoord (MSG_MULTICAST, self.origin_y);
+            WriteCoord (MSG_MULTICAST, self.origin_z);
             multicast (self.origin, MULTICAST_PVS);
         }
 	}
