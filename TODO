@@ -20,3 +20,5 @@ o  instead of not allowing two fastest legs when upgraded, restrict the health/a
 o  make a seperate menu for detonating engineer buildings
 o  remove RPrint, since it's really kinda pointless and just makes the code ugliero  change the color defines (eg DARKBLUE) to be the exact number, not number + 1
 o  remove the old method for teleports checking if blocked, after confirming it's not needed.  (moving platforms block it?)
+o  only allow people to use certain topcolors
+o  allow more variation in skins
