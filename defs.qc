@@ -1135,3 +1135,4 @@ float deathmsg;		// Global, which is set before every T_Damage, to indicate
 float no_pogo_stick;
 
 float last_team_no;
+float instant_repair;

@@ -748,7 +748,7 @@ void() GuerillaExplode =
       // if has_tesla is 1 print nothing, as this is set by DetonateMines() and GuerillaThink
       
 	if (time < self.heat + ACTIVATE_TIME) //If not charged, do less damage when blowing up
-	   T_RadiusDamage (self, self.martyr_enemy, MINE_DMG / 2, NIL); //- damage was 80
+	   T_RadiusDamage (self, self.martyr_enemy, MINE_DMG * 0.5, NIL); //- damage was 80
 	else 
        T_RadiusDamage (self, self.martyr_enemy, MINE_DMG, NIL); //- damage was 160
 

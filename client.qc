@@ -737,6 +737,14 @@ void() DecodeLevelParms =
 				}
 			}
 		}
+
+		st = infokey(NIL, "ir");
+		if (!st)
+			st = infokey(NIL, "instant_repair");
+		if (st == "1" || st == "on")
+			instant_repair = TRUE;
+		else
+			instant_repair = FALSE;
 	}
 
 	if (parm11)
@@ -2778,7 +2786,7 @@ void() PlayerPreThink =
 			if (self.tf_items & NIT_HOVER_BOOTS_UPGRADE) {
 				if (self.hover_time > (MAX_HOVER_FUEL * 2))
 					self.hover_time = (MAX_HOVER_FUEL * 2);
-				if (self.hover_time < (MAX_HOVER_FUEL / 2) && self.ammo_cells > (self.maxammo_cells * 0.8)) {
+				if (self.hover_time < (MAX_HOVER_FUEL * 0.5) && self.ammo_cells > (self.maxammo_cells * 0.8)) {
 					self.hover_time++;
 					self.ammo_cells--;
 				}

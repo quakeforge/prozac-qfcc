@@ -110,6 +110,7 @@ void(entity gun) Engineer_UseTesla;
 void(entity cam) Engineer_UseCamera;
 void(entity tele) Engineer_UseTeleporter;
 void(entity field) Engineer_UseFieldGen;
+void() Engineer_AutoUse;
 
 void(entity spy) Spy_RemoveDisguise;
 
@@ -415,8 +416,11 @@ void() W_FireSpanner =
 	}
 
 	if (trace_ent.takedamage) {
-		// Engineer can repair/use his buildings
-		if (trace_ent.classname == "building_dispenser") {
+		// auto-repair/dismantle if hit twice
+		if (trace_ent == self.building) {
+			Engineer_AutoUse();
+			return;
+		} else if (trace_ent.classname == "building_dispenser") {
 			Engineer_UseDispenser(trace_ent);
 			return;
 		} else if (trace_ent.classname == "building_sentrygun") {
@@ -4098,7 +4102,7 @@ void() W_WeaponFrame =
 		player_run ();
 	}
 
-	if (self.current_weapon == WEAP_AUTO_RIFLE)
+	if (self.current_weapon == WEAP_AUTO_RIFLE) // BUG BUG BUG! GIVES ADVANTAGE TO HIGH FPSERS
 	    self.heat -= 100;
 	// check for attack
     if (self.button0 && !(self.fire_held_down)) {

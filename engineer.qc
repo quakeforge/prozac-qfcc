@@ -1353,10 +1353,6 @@ void(entity gun) Engineer_UseSentryGun =
 	self.building = gun;
 
 	//dodgy
-	if (teamplay != 0 && !Teammate(self.building.real_owner.team_no,self.team_no)) {
-		Menu_EngineerFix_SentryGun_Input(5);
-		return;
-	}
 
 	// Start a Distance checker, which removes the menu if the player
 	// gets too far away from the sentry.
@@ -1456,12 +1452,6 @@ void(entity gun) Engineer_UseTesla =
 
 	self.building = gun;
 
-	// dodgy
-	if (teamplay != 0 && !Teammate(self.building.real_owner.team_no, self.team_no)) {
-		Menu_EngineerFix_Tesla_Input(8);
-		return;
-	}
-
 	// Start a Distance checker, which removes the menu if the player
 	// gets too far away from the tesla.
 	dist_checker = spawn();
@@ -1490,11 +1480,6 @@ void(entity cam) Engineer_UseSensor =
 	self.menu_count = MENU_REFRESH_RATE;
 
 	self.building = cam;
-
-	if (teamplay != 0 && !Teammate(self.building.real_owner.team_no, self.team_no)) {
-		Menu_EngineerFix_Sensor_Input(3);
-		return;
-	}
 
 	// Start a Distance checker, which removes the menu if the player
 	// gets too far away from the camera.
@@ -1525,11 +1510,6 @@ void(entity cam) Engineer_UseCamera =
 	self.menu_count = MENU_REFRESH_RATE;
 
 	self.building = cam;
-
-	if (teamplay != 0 && !Teammate(self.building.real_owner.team_no,self.team_no)) {
-		Menu_EngineerFix_Camera_Input(3);
-		return;
-	}
 
 	// Start a Distance checker, which removes the menu if the player
 	// gets too far away from the camera.
@@ -1612,3 +1592,114 @@ void() CheckDistance =
 
 	self.nextthink = time + 0.3;
 };
+
+void() Engineer_AutoUse =
+{
+	local float repair_amt = 0;
+	local entity targ = self.building;
+
+	if (self.building.real_owner != self && !Teammate(self.team_no,self.building.real_owner.team_no))
+	{
+		// Auto Dismantle
+		if (CheckEnemyDismantle() == FALSE)
+			return;
+		else if (self.building.classname == "building_dispenser")
+			Menu_EngineerFix_Dispenser_Input(4);
+		else if (self.building.classname == "building_sentrygun")
+			Menu_EngineerFix_SentryGun_Input(5);
+		else if (self.building.classname == "building_tesla")
+			Menu_EngineerDismantle_Tesla();
+		else if (self.building.classname == "building_camera")
+			Menu_EngineerFix_Camera_Input(3);
+		else if (self.building.classname == "building_sensor")
+			Menu_EngineerFix_Sensor_Input(3);
+		else if (self.building.classname == "building_fieldgen")
+			Menu_EngineerFix_FieldGen_Input(4);
+		else if (self.building.classname == "building_teleporter")
+			Menu_EngineerFix_Teleporter_Input(4);
+	} else if (self.building.health < self.building.max_health) {
+
+		// Auto Repair
+		if (self.building.classname == "building_dispenser")
+			repair_amt = BUILD_DISPENSER_REPAIR;
+		else if (self.building.classname == "building_sentrygun")
+			repair_amt = BUILD_SENTRYGUN_REPAIR;
+		else if (self.building.classname == "building_tesla")
+			repair_amt = BUILD_TESLA_REPAIR;
+		else if (self.building.classname == "building_teleporter")
+			repair_amt = BUILD_TELEPORT_REPAIR;
+		else if (self.building.classname == "building_camera")
+			repair_amt = BUILD_CAMERA_REPAIR;
+		else if (self.building.classname == "building_sensor")
+			repair_amt = BUILD_SENSOR_REPAIR;
+		else if (self.building.classname == "building_fieldgen")
+			repair_amt = BUILD_FIELDGEN_REPAIR;
+		else
+		{
+			RPrint ("BUG BUG BUG! Engineer_AutoUse called on unknown building!");
+			repair_amt = 0;
+		}
+
+		if (repair_amt*5 > (self.building.max_health - self.building.health))
+			repair_amt = ceil((self.building.max_health - self.building.health) / 5);
+		if (repair_amt > self.ammo_cells)
+			repair_amt = self.ammo_cells;
+
+		self.building.health += repair_amt * 5;
+		if (self.building.health > self.building.max_health)
+			self.building.health = self.building.max_health;
+		self.ammo_cells -= repair_amt;
+		sprint(self, PRINT_HIGH, ftos(self.building.health) + "/" + ftos(self.building.max_health) + " health\n");	
+	
+		W_SetCurrentAmmo();
+
+	} else {
+		
+		// Auto Recharge / refill
+		if (self.building.classname == "building_tesla")
+			repair_amt = BUILD_TESLA_RECHARGE;
+		else if (self.building.classname == "building_teleporter")
+			repair_amt = BUILD_TELEPORT_RECHARGE;
+		else if (self.building.classname == "building_fieldgen")
+			repair_amt = BUILD_FIELDGEN_RECHARGE;
+
+		if (repair_amt) {
+			if (repair_amt > self.building.maxammo_cells - self.building.ammo_cells)
+				repair_amt = self.building.maxammo_cells - self.building.ammo_cells;
+			if (repair_amt > self.ammo_cells)
+				repair_amt = self.ammo_cells;
+
+			self.building.ammo_cells += repair_amt;
+			self.ammo_cells -= repair_amt;
+
+			sprint(self, PRINT_HIGH, ftos(self.building.ammo_cells) + "/" 
+						+ftos(self.building.maxammo_cells) + " cells\n");
+
+			W_SetCurrentAmmo();
+
+		} else if (self.building.classname == "building_dispenser") {
+			sprint(self, PRINT_HIGH, "Filling armor...");
+			local float oldarmor = self.armorvalue;
+			Menu_EngineerFix_Dispenser_Input(2);
+			self.building = targ;
+			if (self.armorvalue == oldarmor)
+			{
+				sprint(self, PRINT_HIGH, "full. Filling ammo...\n");
+				Menu_EngineerFix_Dispenser_Input(1);
+				self.building = targ;
+			} else 
+				sprint(self, PRINT_HIGH, "\n");
+		} else if (self.building.classname == "building_sentrygun") {
+			Menu_EngineerFix_SentryGun_Input(1);
+			self.building = targ;
+			sprint(self, PRINT_HIGH, ftos(self.building.ammo_shells) + "/"
+						+ftos(self.building.maxammo_shells) + " shells ");
+			if (self.building.weapon >= 3)
+				sprint(self, PRINT_HIGH, ftos(self.building.ammo_rockets) + "/"
+							+ftos(self.building.maxammo_rockets) + " rockets");
+
+			sprint(self, PRINT_HIGH, "\n");
+		}
+	}
+};
+

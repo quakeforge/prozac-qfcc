@@ -1477,6 +1477,8 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 
 		if (metalcost > self.ammo_cells)
 			metalcost = self.ammo_cells;
+		if (!instant_repair && metalcost > BUILD_DISPENSER_REPAIR) // don't allow instant repairs
+			metalcost = BUILD_DISPENSER_REPAIR;
 
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.health = self.building.health + (metalcost * 5);
@@ -1557,7 +1559,8 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 		self.building.ammo_shells = self.building.ammo_shells + am;
 
 		// If it's level 3, put some rockets in too
-		if (self.building.weapon == 3)
+		// GR But not at the same time as the shells 
+		if (self.building.weapon == 3 && am == 0)
 		{
 			am = (DROP_ROCKETS * 2);
 			if (am > self.ammo_rockets)
@@ -1621,6 +1624,8 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 
 		if (metalcost > self.ammo_cells)
 			metalcost = self.ammo_cells;
+		if (!instant_repair && metalcost > BUILD_SENTRYGUN_REPAIR) // disallow instant repairs
+			metalcost = BUILD_SENTRYGUN_REPAIR;
 
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.health = self.building.health + (metalcost * 5);
@@ -1731,6 +1736,8 @@ void(float inp) Menu_EngineerFix_Sensor_Input =
 
 		if (metalcost > self.ammo_cells)
 			metalcost = self.ammo_cells;
+		if (!instant_repair && metalcost > BUILD_SENSOR_REPAIR)
+			metalcost = BUILD_SENSOR_REPAIR;
 
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.health = self.building.health + (metalcost * 10);
@@ -1788,6 +1795,9 @@ void(float inp) Menu_EngineerFix_Camera_Input =
 		if (metalcost > self.ammo_cells)
 			metalcost = self.ammo_cells;
 
+		if (!instant_repair && metalcost > BUILD_CAMERA_REPAIR)
+			metalcost = BUILD_CAMERA_REPAIR;
+
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.health = self.building.health + (metalcost * 10);
 	}
@@ -1843,6 +1853,8 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 
 		if (metalcost > self.ammo_cells)
 			metalcost = ceil(self.ammo_cells);
+		if (!instant_repair && metalcost > BUILD_TELEPORT_REPAIR)
+			metalcost = BUILD_TELEPORT_REPAIR;			
 
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.health = self.building.health + (metalcost * 5);
@@ -1853,6 +1865,9 @@ void(float inp) Menu_EngineerFix_Teleporter_Input =
 
 		if (metalcost > self.ammo_cells)
 			metalcost = ceil(self.ammo_cells);
+		if (!instant_repair && metalcost > BUILD_TELEPORT_RECHARGE)
+			metalcost = BUILD_TELEPORT_RECHARGE;
+
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.ammo_cells = self.building.ammo_cells + metalcost;
 		if (self.building.ammo_cells > self.building.maxammo_cells)
@@ -1912,6 +1927,8 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 
 		if (metalcost > self.ammo_cells)
 			metalcost = ceil(self.ammo_cells);
+		if (!instant_repair && metalcost > BUILD_FIELDGEN_REPAIR)
+			metalcost = BUILD_FIELDGEN_REPAIR;
 
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.health = self.building.health + (metalcost * 5);
@@ -1922,6 +1939,9 @@ void(float inp) Menu_EngineerFix_FieldGen_Input =
 
 		if (metalcost > self.ammo_cells)
 			metalcost = ceil(self.ammo_cells);
+		if (!instant_repair && metalcost > BUILD_FIELDGEN_RECHARGE)
+			metalcost = BUILD_FIELDGEN_RECHARGE;
+
 		self.ammo_cells = self.ammo_cells - metalcost;
 		self.building.ammo_cells = self.building.ammo_cells + metalcost;
 		if (self.building.ammo_cells > self.building.maxammo_cells)
@@ -2163,21 +2183,24 @@ void() Menu_EngineerRepair_Tesla =
 		cost = (self.building.max_health - self.building.health) / 2;
 		if (cost > self.ammo_cells)
 			cost = self.ammo_cells;
+		if (!instant_repair && cost > BUILD_TESLA_REPAIR)
+			cost = BUILD_TESLA_REPAIR;
 
-			self.ammo_cells = self.ammo_cells - cost;
+		self.ammo_cells = self.ammo_cells - cost;
 		self.building.health = self.building.health + (cost * 2);
 		if (self.building.health >= self.building.max_health)
 			self.building.health = self.building.max_health;
+	} else {  // don't allow repair and recharge at the same time
+		maxcells = self.building.maxammo_cells;	
+
+		cost = maxcells - self.building.ammo_cells;
+		if (cost > self.ammo_cells) cost = self.ammo_cells;
+		if (!instant_repair && cost > BUILD_TESLA_RECHARGE) cost = BUILD_TESLA_RECHARGE;
+		self.ammo_cells = self.ammo_cells - cost;
+		self.building.ammo_cells = self.building.ammo_cells + cost;
+		if (self.building.ammo_cells >= maxcells)
+			self.building.ammo_cells = maxcells;
 	}
-
-	maxcells = self.building.maxammo_cells;
-
-	cost = maxcells - self.building.ammo_cells;
-	if (cost > self.ammo_cells) cost = self.ammo_cells;
-	self.ammo_cells = self.ammo_cells - cost;
-	self.building.ammo_cells = self.building.ammo_cells + cost;
-	if (self.building.ammo_cells >= maxcells)
-		self.building.ammo_cells = maxcells;
 };
 void() Menu_EngineerDismantle_Tesla =
 {

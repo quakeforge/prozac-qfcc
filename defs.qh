@@ -564,6 +564,23 @@
 #define BUILD_HEALTH_TELEPORTER	300
 #define BUILD_HEALTH_FIELDGEN	300     //
 
+// Amount of CELLS you can repair something in one go (NOT HEALTH! health is 5x this)
+// this is going to be tweaked a lot
+
+#define BUILD_DISPENSER_REPAIR  15		// 3 repairs
+#define BUILD_SENTRYGUN_REPAIR  20		// 3 repairs
+#define BUILD_TESLA_REPAIR	30		// a lot of repairs for many teslas, 2 for regular ones
+#define BUILD_CAMERA_REPAIR	50		// 2 repairs
+#define BUILD_SENSOR_REPAIR	50		// 1 repair (these things get attacked a lot)
+#define BUILD_TELEPORT_REPAIR   30		// 2 or 3
+#define BUILD_FIELDGEN_REPAIR	30		// also 2 or 3, decheapening here
+
+// same, but for amount you can recharge. this is the same as the number of cells used
+
+#define BUILD_TESLA_RECHARGE	100
+#define BUILD_TELEPORT_RECHARGE	100
+#define BUILD_FIELDGEN_RECHARGE 50
+
 // Building screwups
 #define SCREWUP_ONE     1
 #define SCREWUP_TWO     2
