@@ -1219,7 +1219,7 @@ TeamFortress : W_FireSniperRifle
 void() W_FireSniperRifle =
 {
 	local vector dir, src;
-	local float dam_mult, zdif, use_this;
+	local float dam_mult, zdif, use_this, ign_mult = 0;
 	local vector angle;
 
 	sound (self ,CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
@@ -1246,7 +1246,7 @@ void() W_FireSniperRifle =
 	dir = v_forward; //XXX is this correct?
 
 	use_this = FALSE;
-    traceline (src, src + dir*8092, FALSE, self);
+	traceline (src, src + dir*8092, FALSE, self);
 	if (trace_fraction != 1.0) {
 		if (trace_ent) {
 			if (trace_ent.classname == "player") {
@@ -1273,13 +1273,15 @@ void() W_FireSniperRifle =
 	if (!dam_mult)
 	   dam_mult = SNIPER_DMG;	
 
-    //- OfN - float factor to handle OTR bullets difference
-    if (self.cutf_items & CUTF_OTR && self.ammo_shells > 2) {
-      self.currentammo = self.ammo_shells = self.ammo_shells - 3;
-    } else
-      self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+	if (self.cutf_items & CUTF_OTR)
+	{
+		ign_mult=dam_mult*OTR_IGNFACTOR;
+		dam_mult=dam_mult*OTR_DMGFACTOR;
+	}
 
-    dam_mult=dam_mult*OTR_DMGFACTOR;
+	self.ammo_shells -= 5;
+	W_SetCurrentAmmo();
+	
 
 	if (trace_ent) {
 		if (trace_ent.classname == "player") {
@@ -1306,7 +1308,14 @@ void() W_FireSniperRifle =
 			trace_ent.head_shot_vector = '0 0 0';
 			if (zdif < 0) {
 				// leg shot doesn't hurt very much
-				dam_mult = 0.40;
+				dam_mult *= 0.40;
+				ign_mult *= 0.40;
+
+				if ((dam_mult + ign_mult) > SNIPER_MAXLEG)
+				{
+					dam_mult *= (dam_mult + ign_mult) / SNIPER_MAXLEG;
+					ign_mult *= (dam_mult + ign_mult) / SNIPER_MAXLEG;
+				}
 
 				if (trace_ent.armorvalue < 0.8)
 					trace_ent.leg_damage++;
@@ -1322,20 +1331,17 @@ void() W_FireSniperRifle =
 				//GR red armor has leg protection
 
 				if (trace_ent.armortype >= 0.7 && trace_ent.armorvalue > 0) {
-				    if (self.cutf_items & CUTF_OTR) // otr does extra damage to armored
-					TF_T_Damage (trace_ent, self, self, OTR_DMG * dam_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
-				    TF_T_Damage (trace_ent, self, self, SNIPER_DMG * dam_mult, 0, TF_TD_SHOT);
+				    TF_T_Damage (trace_ent, self, self, ign_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
+				    TF_T_Damage (trace_ent, self, self, dam_mult, 0, TF_TD_SHOT);
 				} else {
-				    if (self.cutf_items & CUTF_OTR)
-					TF_T_Damage (trace_ent, self, self, OTR_DMG * dam_mult, TF_TD_IGNOREARMOUR, 0);
-				    TF_T_Damage (trace_ent, self, self, SNIPER_DMG * dam_mult, TF_TD_IGNOREARMOUR,0);
+				    TF_T_Damage (trace_ent, self, self, dam_mult + ign_mult, TF_TD_IGNOREARMOUR,0);
 				} 
 
 				if (trace_ent.health > 0) {
-                    if (self.cutf_items & CUTF_OTR) {
+					if (self.cutf_items & CUTF_OTR) {
 						sprint(trace_ent, PRINT_MEDIUM, "Leg injury! That was OTR stuff!\n");
 						sprint(self, PRINT_MEDIUM, "OTR Leg shot - that'll slow him down!\n");
-                    } else { //- not OTR..
+					} else { //- not OTR..
 						sprint(trace_ent, PRINT_MEDIUM, "Leg injury!\n");
 						sprint(self, PRINT_MEDIUM, "Leg shot - that'll slow him down!\n");
 					}
@@ -1344,7 +1350,8 @@ void() W_FireSniperRifle =
 				return;
 			} else if (zdif > 20) {
 				// head shot
-				dam_mult = 2;
+				dam_mult *= 2;
+				ign_mult *= 2;
 
 				stuffcmd(trace_ent, "bf\n");
 
@@ -1352,13 +1359,10 @@ void() W_FireSniperRifle =
 				deathmsg = DMSG_SNIPERHEADSHOT;
 				if (trace_ent.armortype > 0.5 && trace_ent.armorvalue > 0)
 				{
-				    if (self.cutf_items & CUTF_OTR) // OTR does extra damage to armored
-					TF_T_Damage (trace_ent, self, self, OTR_DMG * dam_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
-				    TF_T_Damage (trace_ent, self, self, SNIPER_DMG * dam_mult, 0, TF_TD_SHOT);
+				    TF_T_Damage (trace_ent, self, self, ign_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
+				    TF_T_Damage (trace_ent, self, self, dam_mult, 0, TF_TD_SHOT);
 				} else {
-				    if (self.cutf_items & CUTF_OTR)
-					TF_T_Damage (trace_ent, self, self, OTR_DMG * dam_mult, TF_TD_IGNOREARMOUR, 0);
-				    TF_T_Damage (trace_ent, self, self, SNIPER_DMG * dam_mult, TF_TD_IGNOREARMOUR, 0);
+				    TF_T_Damage (trace_ent, self, self, dam_mult + ign_mult, TF_TD_IGNOREARMOUR, 0);
 				}
 
 				if (trace_ent.health > 0) {
@@ -1369,17 +1373,13 @@ void() W_FireSniperRifle =
 						sprint(trace_ent, PRINT_MEDIUM, "Head injury!\n");
 						sprint(self, PRINT_MEDIUM, "Head shot - that's gotta hurt!\n");
 					}
-                }
+				}
 
 				return;
 			} else
 				deathmsg = DMSG_SNIPERRIFLE;
-				if (self.cutf_items & CUTF_OTR) {
-				    if (trace_ent.armorvalue > 0)
-					TF_T_Damage (trace_ent, self, self, OTR_DMG * dam_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
-				    else
-					TF_T_Damage (trace_ent, self, self, OTR_DMG * dam_mult, TF_TD_IGNOREARMOUR, 0);
-				}
+
+			TF_T_Damage (trace_ent, self, self, ign_mult, TF_TD_IGNOREARMOUR, TF_TD_SHOT);
 		}
 	}
 
@@ -1394,6 +1394,7 @@ void() W_FireSniperRifle =
 	Multi_Finish (FALSE);
 };
 
+#ifndef NO_AUTORIFLE
 /*
 ===================================
 TeamFortress : W_FireAutoRifle
@@ -1402,33 +1403,21 @@ TeamFortress : W_FireAutoRifle
 // same as sniper rifle
 void() W_FireAutoRifle =
 {
-	local string st = infokey(NIL, "oldrifle");
+	local vector dir;
 
-	if (!(st == "yes" || st == "y" || st == "on" || st == "1")) {
-		if (self.heat < 50)
-		   self.heat = 50;
+	sound (self ,CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
 
-		W_FireSniperRifle();
+	KickPlayer(-1, self);
 
-		self.heat += 200;
+	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 
-		if (self.heat > 600)
-		   self.heat = 600;
-	} else {
-		local vector dir;
-
-		sound (self ,CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
-
-		KickPlayer(-1, self);
-
-		self.currentammo = self.ammo_shells = self.ammo_shells - 1;
-
-		makevectors(self.v_angle);
-		dir = v_forward;
-		deathmsg = DMSG_AUTORIFLE;
-		FireSniperBullet (dir, 8);
-	}
+	makevectors(self.v_angle);
+	dir = v_forward;
+	deathmsg = DMSG_AUTORIFLE;
+	FireSniperBullet (dir, 8);
 };
+
+#endif
 
 /*
 ================
@@ -2368,6 +2357,7 @@ void() W_SetCurrentAmmo =
 		}
 		self.items = self.items | IT_SHELLS;
 		self.weapon = IT_SHOTGUN;
+#ifndef NO_AUTORIFLE
 	} else if (self.current_weapon == WEAP_AUTO_RIFLE) {
   		self.currentammo = self.ammo_shells;
 		if (!(self.tfstate & TFSTATE_RELOADING)) {
@@ -2376,6 +2366,7 @@ void() W_SetCurrentAmmo =
 		}
 		self.items = self.items | IT_SHELLS;
 		self.weapon = IT_SUPER_SHOTGUN;
+#endif
 	} else if (self.current_weapon == WEAP_ASSAULT_CANNON) {
   		self.currentammo = self.ammo_shells;
 		if (!(self.tfstate & TFSTATE_RELOADING)) {
@@ -2539,6 +2530,9 @@ float() W_CheckNoAmmo =
 		if (self.currentammo >= 3)
 			return TRUE;
 	} else if (self.current_weapon == WEAP_DAEDALUS) {
+		if (self.currentammo >= 5)
+			return TRUE;
+	} else if (self.current_weapon == WEAP_SNIPER_RIFLE) {
 		if (self.currentammo >= 5)
 			return TRUE;
 	} else if (self.currentammo > 0)
@@ -2772,7 +2766,9 @@ void()	player_light1;
 void()	player_light_assault1;
 void()	player_rocket1;
 
+#ifndef NO_AUTORIFLE
 void()	player_autorifle1;
+#endif
 void()  player_assaultcannon1;
 void()  player_assaultcannonup1;
 void()  player_assaultcannondown1;
@@ -2933,10 +2929,12 @@ void() W_Attack =
 			W_FireSniperRifle();
 			Attack_Finished(SNIPER_RIFLE_RELOAD_TIME);
 		}
+#ifndef NO_AUTORIFLE
 	} else if (self.current_weapon == WEAP_AUTO_RIFLE) {
 		player_autorifle1();
 	     	W_FireAutoRifle();
 	     	Attack_Finished(0.1);
+#endif
 	} else if (self.current_weapon == WEAP_ASSAULT_CANNON) {
 		// Need 4 cells to power up the Assault Cannon
 		if (self.ammo_cells < 4) {
@@ -3050,8 +3048,10 @@ void() W_PrintWeaponMessage =
 			sprint(self, PRINT_MEDIUM, "Pipebomb mode\n");
 	} else if (self.current_weapon == WEAP_SNIPER_RIFLE)
 		sprint(self, PRINT_MEDIUM, "Sniper Rifle ready\n");
+#ifndef NO_AUTORIFLE
 	else if (self.current_weapon == WEAP_AUTO_RIFLE)
 		sprint(self, PRINT_MEDIUM, "Rifle on fully auto\n");
+#endif
 	else if (self.current_weapon == WEAP_TRANQ)
 		sprint(self, PRINT_MEDIUM, "Tranquiliser gun selected\n");
 	else if (self.current_weapon == WEAP_MEDIKIT)
@@ -3186,13 +3186,18 @@ void() W_ChangeWeapon =
 				am = 1;
 		}
 	} else if (self.impulse == 3) {
-		if (!((it & WEAP_AUTO_RIFLE && self.ammo_shells > 0) || (it & WEAP_SUPER_SHOTGUN && self.ammo_shells >1)))
+		if (!(
+#ifndef NO_AUTORIFLE
+			(it & WEAP_AUTO_RIFLE && self.ammo_shells > 0) || 
+#endif
+			(it & WEAP_SUPER_SHOTGUN && self.ammo_shells >1)))
 			have_weapon = FALSE;
 		loopck = 0;
 		while (!usable && have_weapon) {
 			loopck = (loopck + 1);
 			if (loopck >= 10)
 				have_weapon = FALSE;
+#ifndef NO_AUTORIFLE
 			if (fl == WEAP_AUTO_RIFLE) {
 				fl = WEAP_SUPER_SHOTGUN;
 				if (it & WEAP_SUPER_SHOTGUN && self.ammo_shells > 1)
@@ -3202,6 +3207,13 @@ void() W_ChangeWeapon =
 				if (it & WEAP_AUTO_RIFLE && self.ammo_shells > 0)
 					usable = 1;
 			}
+#else
+			fl = WEAP_SUPER_SHOTGUN;
+			if (it & WEAP_SUPER_SHOTGUN && self.ammo_cells > 1)
+				usable = 1;
+			else
+				have_weapon = FALSE;
+#endif
 		}
 
 		if (fl == WEAP_SUPER_SHOTGUN) {
@@ -3473,13 +3485,15 @@ void() CycleWeaponCommand =
 				am = 1;
 		} else if (self.current_weapon == WEAP_TRANQ) {
 			self.current_weapon = WEAP_SNIPER_RIFLE;
-			if (self.ammo_shells < 1)
+			if (self.ammo_shells < 5)
 				am = 1;
 		} else if (self.current_weapon == WEAP_SNIPER_RIFLE) {
+#ifndef NO_AUTORIFLE
 			self.current_weapon = WEAP_AUTO_RIFLE;
 			if (self.ammo_shells < 1)
 				am = 1;
 		} else if (self.current_weapon == WEAP_AUTO_RIFLE) {
+#endif
 			self.current_weapon = WEAP_MAUSER;
 			if (self.ammo_nails < 1)
 				am = 1;
@@ -4102,8 +4116,6 @@ void() W_WeaponFrame =
 		player_run ();
 	}
 
-	if (self.current_weapon == WEAP_AUTO_RIFLE) // BUG BUG BUG! GIVES ADVANTAGE TO HIGH FPSERS
-	    self.heat -= 1000 * frametime;
 	// check for attack
     if (self.button0 && !(self.fire_held_down)) {
 		if ((self.current_menu == MENU_CLASSHELP) || (self.current_menu == MENU_CLASSHELP2)) {
@@ -4112,7 +4124,9 @@ void() W_WeaponFrame =
 			Attack_Finished(0.2);
 		} else if (self.current_weapon == WEAP_SNIPER_RIFLE) {
 			if (self.tfstate & TFSTATE_AIMING) {
-				if (self.height > 30) {
+				if (!W_CheckNoAmmo())
+					self.tfstate &= ~TFSTATE_AIMING;
+				else if (self.height > 30) {
 					self.height = self.height - 5;
 					TF_zoom(self.height);
 				}
@@ -4120,7 +4134,7 @@ void() W_WeaponFrame =
 				tv = self.velocity;
 				tv_z = 0;
 
-				if (vlen(tv) <= WEAP_SNIPER_RIFLE_MAX_MOVE) {
+				if (vlen(tv) <= WEAP_SNIPER_RIFLE_MAX_MOVE && W_CheckNoAmmo()) {
 					// create the laser sight
 					SniperSight_Create(0);
 					self.heat = 30; // damage done 

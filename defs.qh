@@ -632,31 +632,35 @@
 /*==================================================*/
 // WK -- Removed "weapons" to free up space for shootable things
 // We can remove some more by giving the weapons a weapon mode (like the rifle)
-#define WEAP_HOOK				1
+#define WEAP_HOOK			1
 #define WEAP_MEDIKIT			4
 #define WEAP_SPANNER			8
-#define WEAP_AXE				16
+#define WEAP_AXE			16
 #define WEAP_SNIPER_RIFLE		32
-#define WEAP_AUTO_RIFLE			64
+
+#ifndef NO_AUTORIFLE
+# define WEAP_AUTO_RIFLE		64
+#endif
+
 #define WEAP_SHOTGUN			128
 #define WEAP_SUPER_SHOTGUN		256
 #define WEAP_NAILGUN			512
 #define WEAP_LIGHT_ASSAULT		1024
-#define WEAP_GRENADE_LAUNCHER	2048
+#define WEAP_GRENADE_LAUNCHER		2048
 #define WEAP_FLAMETHROWER		4096
-#define WEAP_ROCKET_LAUNCHER	8192
+#define WEAP_ROCKET_LAUNCHER		8192
 #define WEAP_INCENDIARY			16384
 #define WEAP_ASSAULT_CANNON		32768
 #define WEAP_LIGHTNING			65536
 #define WEAP_DAEDALUS			131072
 //#define WEAP_DETPACK			131072 DONT MAKE ANY AMMOTYPES USE THIS NUMBER!
-#define WEAP_TRANQ				262144
-#define WEAP_LASER				524288
-#define WEAP_MAUSER				1048576
+#define WEAP_TRANQ			262144
+#define WEAP_LASER			524288
+#define WEAP_MAUSER			1048576
 
-#define WEAP_AIRF               2097152 //- OfN - airfist
-#define WEAP_LASERCANNON        4194304 //- OfN - LASER CANNON
-#define WEAP_SNG                8388608
+#define WEAP_AIRF               	2097152 //- OfN - airfist
+#define WEAP_LASERCANNON        	4194304 //- OfN - LASER CANNON
+#define WEAP_SNG                	8388608
 //MAX 24 BITS OF PRECISION IN FLOAT!
 
 /*====================================================*/
@@ -892,7 +896,13 @@
 #define PC_SNIPER_INITARMORTYPE		0.3 
 #define PC_SNIPER_ARMORCLASSES		3 		// AT_SAVESHOT | AT_SAVEMELEE
 #define PC_SNIPER_INITARMORCLASS		1 
-#define PC_SNIPER_WEAPONS			WEAP_SNIPER_RIFLE | WEAP_AUTO_RIFLE | WEAP_AXE | WEAP_NAILGUN
+
+#ifndef NO_AUTORIFLE
+# define PC_SNIPER_WEAPONS			WEAP_SNIPER_RIFLE | WEAP_AUTO_RIFLE | WEAP_AXE | WEAP_NAILGUN
+#else
+# define PC_SNIPER_WEAPONS			WEAP_SNIPER_RIFLE | WEAP_AXE | WEAP_NAILGUN
+#endif
+
 #define PC_SNIPER_MAXAMMO_SHOT		75 
 #define PC_SNIPER_MAXAMMO_NAIL		100 
 #define PC_SNIPER_MAXAMMO_CELL		150 

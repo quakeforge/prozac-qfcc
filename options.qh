@@ -55,7 +55,7 @@ Defines for the compilable options within TF.
 #define NEVER_TEAMFRAGS		ON		// teamfrags options always off (i didn't realise people wouldn't like it)
 #define ALWAYS_TEAMFRAGS	OFF	// teamfrags options always on 
 #define CHECK_SPEEDS		ON		// makes sure players aren't moving too fast
-#define SNIPER_RIFLE_RELOAD_TIME	1.5	// seconds
+#define SNIPER_RIFLE_RELOAD_TIME	2	// seconds
 #define STOP_MOUSE_MOVEMENT	ON		// stops players from moving forward/back with the mouse, and cheating with it.
 #define RESPAWN_DELAY_TIME  5		// this is the respawn delay, if the RESPAWN_DELAY option is
 									// turned on with temp1.  QuakeWorld servers can use

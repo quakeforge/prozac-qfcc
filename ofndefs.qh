@@ -37,7 +37,8 @@
 #define SCRAG_DMG              29 // damage the scrag does
 
 #define WAYPOINT_LIFE         240 // 120 after this amount of seconds any unused waypoint will be removed
-#define OTR_DMGFACTOR           0.6 // *damage facter for the OTR armed sniper rifle (MUST BE GREATER THAN 1!!!) no
+#define OTR_DMGFACTOR           0.6 // How much damage OTR does normally (should not be more than 1)
+#define OTR_IGNFACTOR		0.3 // How much armor-piercing damage OTR does (this + dmgfactor should be slightly <1)
 #define SENTRY_UNLOCKTIME       2.5 // (must be greater than 1.1) time for the sentries to begin to rotate after they have no target (+/- 1 second)
 #define HAX_UNSTABLEDIST      300 // distance at which enemy hacks take longer cause of "unstable connection"
 #define WAYPOINT_AI_LIFE       10 // life for grunty ai created waypoints - last seen enemy mark
@@ -45,8 +46,8 @@
 #define MINE_SCANRATE           0.6 // mines look again for nearby enemy after this time - it was 1 which caused high ping players to not trigger mines sometimes walking around them fast
 #define EXPBODY_DMG           200 // damage exp. body does /was 140 GR this was really really wimpy
 #define MINE_DMG              200 // was 240 /215
-#define SNIPER_DMG	       90 // was charge up. Makes more sense for sniper bullets to do constant damage.
-#define OTR_DMG		       50 // extra damage done by OTR (always ignores armor)
+#define SNIPER_DMG	      200 // was charge up. Makes more sense for sniper bullets to do constant damage.
+#define SNIPER_MAXLEG	       50 // Max damage sniper rifle can do with legshot
 
 #define BERSERKER_HP_COST    30
 

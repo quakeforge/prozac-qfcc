@@ -30,17 +30,19 @@ void() TeamFortress_SniperWeapon =
 	if (!((self.weapons_carried & WEAP_SNIPER_RIFLE) && (self.weapons_carried & WEAP_AUTO_RIFLE)))
 		return;
 
-	if (self.ammo_shells < 1)
+	if (self.ammo_shells < 5)
 	{	// don't have the ammo
 		sprint (self, PRINT_HIGH, "not enough ammo.\n");
 		return;
 	}
 
+#ifndef NO_AUTORIFLE
 	if (self.current_weapon == WEAP_SNIPER_RIFLE)
 	{
 		self.current_weapon = WEAP_AUTO_RIFLE;
 	}
 	else
+#endif
 	{
 		self.current_weapon = WEAP_SNIPER_RIFLE;
 	}

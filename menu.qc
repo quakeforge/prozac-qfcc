@@ -2747,7 +2747,9 @@ void(float inp) Menu_PrimaryWeapon_Input =
 				{
 					PrintRefund(PRICE);
 					self.weapons_carried = self.weapons_carried - WEAP_SNIPER_RIFLE;
+#ifndef NO_AUTORIFLE
 					self.weapons_carried = self.weapons_carried - WEAP_AUTO_RIFLE;
+#endif
 					self.maxammo_shells = self.maxammo_shells - 75;
 				}
 				else if (self.money >= PRICE) {

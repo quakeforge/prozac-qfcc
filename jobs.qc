@@ -511,10 +511,12 @@ void() JudokaRearm =
 			te = find(te, netname, "reloadtimer");
 		}
 		////Fix double weapons
+#ifndef NO_AUTORIFLE
 		if (self.current_weapon == WEAP_SNIPER_RIFLE) {
 			self.owner.weapons_carried = self.owner.weapons_carried | WEAP_AUTO_RIFLE;				
 			self.enemy.weapons_carried = self.enemy.weapons_carried - (self.enemy.weapons_carried & WEAP_AUTO_RIFLE);
 		}
+#endif
 		////Fix weird weapons
 		if (self.current_weapon == WEAP_ASSAULT_CANNON && self.enemy.current_weapon == WEAP_ASSAULT_CANNON) {
 			oself = self;
@@ -617,8 +619,10 @@ void() JobJudoka =
 
 		self.job = self.job | JOB_ACTIVE;
 		//Simplify the dual-weapon problem
+#ifndef NO_AUTORIFLE
 		if (trace_ent.current_weapon == WEAP_AUTO_RIFLE)
 			trace_ent.current_weapon = WEAP_SNIPER_RIFLE;
+#endif
 
 		//If already reloading, remove that timer
 		te = find(NIL, netname, "reloadtimer");
@@ -670,10 +674,12 @@ void() JobJudoka =
 			tWeapon.heat = 1;
 
 			//Fix double weapons
+#ifndef NO_AUTORIFLE
 			if (trace_ent.current_weapon == WEAP_SNIPER_RIFLE) {
 				self.weapons_carried = self.weapons_carried | WEAP_AUTO_RIFLE;				
 				trace_ent.weapons_carried = trace_ent.weapons_carried - (trace_ent.weapons_carried & WEAP_AUTO_RIFLE);
 			}
+#endif
 			if (trace_ent.current_weapon == WEAP_MEDIKIT) {
 				self.health = self.max_health; //You heal yourself. :)
 			}

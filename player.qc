@@ -299,9 +299,11 @@ void()	player_shot4 =	[$shotatt4, player_shot5	] {self.weaponframe=4;};
 void()	player_shot5 =	[$shotatt5, player_shot6	] {self.weaponframe=5;};
 void()	player_shot6 =	[$shotatt6, player_run	] {self.weaponframe=6;};
 
+#ifndef NO_AUTORIFLE
 void()	player_autorifle1 =	[$shotatt1, player_autorifle2	] {self.weaponframe=1; muzzleflash(); };
 void()	player_autorifle2 =	[$shotatt2, player_autorifle3	] {self.weaponframe=2;};
 void()	player_autorifle3 =	[$shotatt6, player_run	] {self.weaponframe=6;};
+#endif
 
 void()	player_axe1 =	[$axatt1, player_axe2	] {self.weaponframe=1;};
 void()	player_axe2 =	[$axatt2, player_axe3	] {self.weaponframe=2;};
