@@ -576,17 +576,6 @@ void() FoundTarget =
 	//self.show_hostile = time + 1;		// wake up other monsters
 	
 
-    //- OfN- if (self.classname == "monster_demon1" || self.classname == "monster_shambler" || self.classname == "monster_wizard" )
-    if (IsMonsterNonArmy(self))
-		//- OfN - if (self.enemy.classname == "monster_demon1" || self.enemy.classname == "monster_shambler" || self.enemy.classname == "monster_wizard")
-        if (IsMonsterNonArmy(self.enemy))
-			//- OfN - if (self.enemy.enemy.classname != "monster_demon1" || self.enemy.enemy.classname != "monster_shambler" || self.enemy.enemy.classname != "monster_wizard")
-            if (!IsMonsterNonArmy(self.enemy.enemy))
-			{
-				self.enemy.enemy = self;
-				self.enemy.goalentity = self;
-			}
-
 	SightSound ();
 	HuntTarget ();
 };
