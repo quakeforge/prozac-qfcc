@@ -186,6 +186,19 @@ void() worldspawn =
 	lastspawn = world;
 	InitBodyQue ();
 
+	st = infokey(world, "mapcfg");
+	if (!(st == "0" || st == "off" || st == ""))
+	{
+		if (st == "1" || st == "on")
+			st = "mapcfg";
+
+		localcmd("exec \"");
+		localcmd(st);
+		localcmd("/");
+		localcmd(infokey(world, "map")); // FIXME: this is safe chaining, right?
+		localcmd(".cfg\"\n");
+	}
+
 // custom map attributes
 #ifndef QUAKE_WORLD
 	if (self.model == "maps/e1m8.bsp")
@@ -195,8 +208,14 @@ void() worldspawn =
 #endif
 
 #ifdef QUAKE_WORLD
-	if (infokey(world, "*gamedir") != "fortress")
-		objerror("QW TF must be run with a gamedir of \"fortress\".\n");
+	st = infokey(world, "*gamedir");
+	if (st != "fortress")
+	{
+		if (st == "")
+			localcmd("sv_gamedir fortress\n");
+		else
+			objerror("QW TF must be run with a gamedir of \"fortress\".\n");
+	}
 #endif
 	
     //- OfteN globals -//
