@@ -418,6 +418,8 @@ void() SBFireInterface =
 				{
 					sprint(self, PRINT_HIGH, "The field generator is now rigged to hurt teammates...\n");
 					targ.martyr_enemy = self;
+					if (targ.fieldgen_hasfield)
+						targ.fieldgen_field.martyr_enemy = self;
 				}
 			}
 			else if (hackThis == SCREWUP_TWO)

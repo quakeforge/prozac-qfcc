@@ -160,12 +160,17 @@ void() Field_think =
 		if (te.velocity == '0 0 0')
 //		if (!IsBuilding(te)) // no screwing with the buildings :)
 		if (te.classname != "force_field")
-		if (EntsTouching2(te,self))
+//		if (EntsTouching2(te,self))
 		{
-			other = te;
-			deathmsg = DMSG_STUCK_FORCEFIELD; 
-			self.dmg = FIELDGEN_DMGINSIDE; // this gonna hurt
-			Field_touch_SUB();
+			local entity foo;
+			foo = testentitypos (te);
+			if (foo == self)
+			{
+				other = te;
+				deathmsg = DMSG_STUCK_FORCEFIELD; 
+				self.dmg = FIELDGEN_DMGINSIDE; // this gonna hurt
+				Field_touch_SUB();
+			}
 		}
 
 		te = te.chain;
@@ -280,7 +285,7 @@ void() Field_touch_SUB =
 					deathmsg = DMSG_FF_HACKED;
 				else /* if (deathmsg == DMSG_FORCEFIELD_STUCK) */
 					deathmsg = DMSG_FF_STUCK_HACKED;
-				TF_T_Damage (other, self, self.martyr_enemy, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+				TF_T_Damage (other, self, self, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 			}
         }
 
@@ -305,7 +310,7 @@ void() Field_touch_SUB =
 						deathmsg = DMSG_FF_HACKED;
 					else /* if (deathmsg == DMSG_FORCEFIELD_STUCK) */
 						deathmsg = DMSG_FF_STUCK_HACKED;
-					TF_T_Damage (other, self, self.martyr_enemy, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
+					TF_T_Damage (other, self, self, self.dmg, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 				}
 			}
 		}
@@ -629,6 +634,13 @@ void(entity gen1, entity gen2) Create_Field =
 	gen2.effects = EF_DIMLIGHT;
 	gen2.has_teleporter = TRUE;
 	gen2.skin = 2;
+
+	if (gen1.martyr_enemy)
+		tfield.martyr_enemy = gen1.martyr_enemy;
+	else if (gen1.martyr_enemy)
+		tfield.martyr_enemy = gen2.martyr_enemy;
+	else
+		tfield.martyr_enemy = world;
 
 /*	// make sure the field goes off instantly if there's somebody in it
 	local entity oldself;
