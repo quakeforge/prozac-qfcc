@@ -1637,12 +1637,10 @@ void(entity p) TeamFortress_SetSpeed =
 			p.maxspeed /= 4;
 	}
 
-	if (p.maxspeed != ms) {
-		local string speed = ftos (p.maxspeed);
-		stuffcmd(p,"cl_backspeed " + speed + "\n");
-		stuffcmd(p,"cl_forwardspeed " + speed + "\n");
-		stuffcmd(p,"cl_sidespeed " + speed + "\n");
-	}
+	local string speed = ftos (p.maxspeed);
+	stuffcmd(p,"cl_backspeed " + speed + "\n");
+	stuffcmd(p,"cl_forwardspeed " + speed + "\n");
+	stuffcmd(p,"cl_sidespeed " + speed + "\n");
 };
 
 //=========================================================================

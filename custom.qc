@@ -400,8 +400,6 @@ void() DropFromCustomClassGen =
     {
         SetArmyTimer();
     }	
-
-	TeamFortress_SetSpeed (self);
 	
 	return;
 };
