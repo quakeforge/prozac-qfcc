@@ -612,6 +612,7 @@ void(float tno, float scoretoadd) TeamFortress_TeamIncreaseScore =
 	// If TeamFrags is on, update all the team's player's frags.
  	if (toggleflags & TFLAG_TEAMFRAGS)
 	{
+		RPrint ("Teamfrags is on!\n");
 		e = find(NIL, classname, "player");
 		while (e)
 		{

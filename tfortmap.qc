@@ -1055,6 +1055,8 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 
 		Player.lives = Player.lives + Goal.lives;
 		
+		RPrint("Giving " + ftos(Goal.frags) + " frags to " + Player.netname +" from goal " + Goal.netname + ".\n");
+
 		Player.real_frags = Player.real_frags + Goal.frags;
  		if (!(toggleflags & TFLAG_TEAMFRAGS))
 			Player.frags = Player.real_frags;
