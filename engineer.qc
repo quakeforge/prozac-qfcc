@@ -1699,17 +1699,27 @@ void() Engineer_AutoUse =
 			sprint(self, PRINT_HIGH, "Filling armor...");
 			local float oldarmor = self.armorvalue;
 			Menu_EngineerFix_Dispenser_Input(2);
+
 			self.building = targ;
+
 			if (self.armorvalue == oldarmor)
 			{
 				sprint(self, PRINT_HIGH, "full. Filling ammo...\n");
 				Menu_EngineerFix_Dispenser_Input(1);
 				self.building = targ;
-			} else 
+			}
+			else
 				sprint(self, PRINT_HIGH, "\n");
+
+			self.menu = MENU_ENGINEER_FIX_DISPENSER
+			self.menu_count = MENU_REFRESH_RATE;
 		} else if (self.building.classname == "building_sentrygun") {
 			Menu_EngineerFix_SentryGun_Input(1);
+
+			self.menu = MENU_ENGINEER_FIX_SENTRYGUN;
+			self.menu_count = MENU_REFRESH_RATE;
 			self.building = targ;
+
 			sprint(self, PRINT_HIGH, ftos(self.building.ammo_shells) + "/"
 						+ftos(self.building.maxammo_shells) + " shells ");
 			if (self.building.weapon >= 3)
