@@ -11,7 +11,7 @@
 // Team Functions
 float() TeamFortress_TeamPutPlayerInTeam;
 float(float tno) TeamFortress_TeamSet;
-float(float tno) TeamFortress_TeamGetColor;
+float(float tno) TeamGetColor;
 void(float tno) TeamFortress_TeamSetColor;
 void() TeamFortress_CheckTeamCheats;
 void(float tno, float scoretoadd) TeamFortress_TeamIncreaseScore;
@@ -81,7 +81,7 @@ float() TeamFortress_TeamPutPlayerInTeam =
 
 //=========================================================================
 // Return the color for the team corresponding to the no passed in
-float(float tno) TeamFortress_TeamGetColor =
+float(float tno) TeamGetColor =
 {
 	if (tno == 1)
 		return DARKBLUE;
@@ -275,11 +275,11 @@ float(float tno) TeamFortress_TeamSet =
 	// then this is the first player in this team, and we set the
 	// teamcolor to this player's pants color.
 	// If not, we change this player's color to this team.
-	if (TeamFortress_TeamGetColor(tno) == 0)
+	if (TeamGetColor(tno) == 0)
 	{
 		TeamFortress_TeamSetColor(tno);
 		// If the color wasn't set
-		if (TeamFortress_TeamGetColor(tno) == 0)
+		if (TeamGetColor(tno) == 0)
 		{
 			sprint (self, PRINT_HIGH, "You can't start a new team with your color, since another ");
 			sprint (self, PRINT_HIGH, "already using that color. Change your pants color, then try again.\n");
@@ -298,13 +298,13 @@ float(float tno) TeamFortress_TeamSet =
 		makeImmune(self,time+10);
 		//self.immune_to_check = time + 10;
 // FOO
-		tc = TeamFortress_TeamGetColor(tno) - 1;
+		tc = TeamGetColor(tno) - 1;
 		st = ftos(tc);
 		setinfokey(self, "color", st);
 /*
 		// Set the player's color
 		stuffcmd(self, "color ");
-		tc = TeamFortress_TeamGetColor(tno) - 1;
+		tc = TeamGetColor(tno) - 1;
 		st = ftos(tc);
 
          //- OfN - Nice colors
@@ -341,14 +341,14 @@ float(float tno) TeamFortress_TeamSet =
 	bprint(PRINT_HIGH, ".\n");
 
 //FOO
-	tc = TeamFortress_TeamGetColor(tno) - 1;
+	tc = TeamGetColor(tno) - 1;
 	st = ftos(tc);
 	setinfokey(self, "topcolor", st);
 	setinfokey(self, "bottomcolor", st);
 
 	// Set the player's color
 	stuffcmd(self, "color ");
-	tc = TeamFortress_TeamGetColor(tno) - 1;
+	tc = TeamGetColor(tno) - 1;
 	st = ftos(tc);
 
     //- OfN - Nice colors
@@ -444,13 +444,13 @@ void() TeamFortress_CheckTeamCheats =
 		// if they're a spy, check to see if they've changed colors manually
 		if ((self.cutf_items & CUTF_SPY_KIT) && self.undercover_team != 0)
 		{
-			if (TeamFortress_TeamGetColor(self.undercover_team) != self.team) //- OfN
-            //if ((TeamFortress_TeamGetColor(self.undercover_team) != self.team) || !IsValidTopColor(self.undercover_team,tTopColor))
+			if (TeamGetColor(self.undercover_team) != self.team) //- OfN
+            //if ((TeamGetColor(self.undercover_team) != self.team) || !IsValidTopColor(self.undercover_team,tTopColor))
             //  || !IsValidTopColor(self.undercover_team,tTopColor)
 			{
 				// Set their color 
 				stuffcmd(self, "color ");
-				tc = TeamFortress_TeamGetColor(self.undercover_team) - 1;
+				tc = TeamGetColor(self.undercover_team) - 1;
 				
 				st = ftos(tc);
 
@@ -468,11 +468,11 @@ void() TeamFortress_CheckTeamCheats =
 				return;
 			}
 		}
-		else if (TeamFortress_TeamGetColor(self.team_no) != self.team)
+		else if (TeamGetColor(self.team_no) != self.team)
 		{
 			// Set their color 
 			stuffcmd(self, "color ");
-			tc = TeamFortress_TeamGetColor(self.team_no) - 1;
+			tc = TeamGetColor(self.team_no) - 1;
 			st = ftos(tc);
 
             //- OfN - Nice colors
@@ -495,7 +495,7 @@ void() TeamFortress_CheckTeamCheats =
 		// if they're a spy, check to see if they've changed colors manually
 		if ((self.cutf_items & CUTF_SPY_KIT) && self.undercover_team != 0)
 		{
-			if ((TeamFortress_TeamGetColor(self.undercover_team) - 1) != tc || !IsValidTopColor(self.undercover_team,tTopColor))
+			if ((TeamGetColor(self.undercover_team) - 1) != tc || !IsValidTopColor(self.undercover_team,tTopColor))
 			{
 			#ifdef CHEAT_WARNINGS
 				RPrint(self.netname);
@@ -504,7 +504,7 @@ void() TeamFortress_CheckTeamCheats =
 
 				// Set the player's color
 				stuffcmd(self, "color ");
-				tc = TeamFortress_TeamGetColor(self.undercover_team) - 1;
+				tc = TeamGetColor(self.undercover_team) - 1;
 				st = ftos(tc);
 
                 //- OfN - Nice colors
@@ -521,7 +521,7 @@ void() TeamFortress_CheckTeamCheats =
 				return;
 			}
 		}
-		else if (tc != (TeamFortress_TeamGetColor(self.team_no) - 1) || !IsValidTopColor(self.team_no,tTopColor))
+		else if (tc != (TeamGetColor(self.team_no) - 1) || !IsValidTopColor(self.team_no,tTopColor))
 		{
 		#ifdef CHEAT_WARNINGS
 			RPrint(self.netname);
@@ -530,7 +530,7 @@ void() TeamFortress_CheckTeamCheats =
 
 			// Set the player's color
 			stuffcmd(self, "color ");
-			tc = TeamFortress_TeamGetColor(self.team_no) - 1;
+			tc = TeamGetColor(self.team_no) - 1;
 			st = ftos(tc);
 
             //- OfN - Nice colors
@@ -850,7 +850,7 @@ void(float all) TeamFortress_TeamShowScores =
 	{
 		while (i <= number_of_teams)
 		{
-			if (TeamFortress_TeamGetColor(i) > 0)
+			if (TeamGetColor(i) > 0)
 			{
 				j = TeamFortress_TeamGetScore(i);
 				st = TeamFortress_TeamGetColorString(i);
@@ -870,7 +870,7 @@ void(float all) TeamFortress_TeamShowScores =
 	// long scores
 	while (i <= number_of_teams)
 	{
-		if (TeamFortress_TeamGetColor(i) > 0)
+		if (TeamGetColor(i) > 0)
 		{
 			if (all)
 				bprint (PRINT_HIGH, "Team ");
@@ -922,7 +922,7 @@ string(float tno) TeamFortress_TeamGetColorString =
 {
 	local float col;
 
-	col = TeamFortress_TeamGetColor(tno);
+	col = TeamGetColor(tno);
 	if (col == 1)
 		return "White";
 	if (col == 2)

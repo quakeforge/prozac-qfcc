@@ -373,7 +373,7 @@ void() Admin_Cmd =
 
             // Set the player's color
         	stuffcmd(self.admin_kick, "color ");
-        	tc = TeamFortress_TeamGetColor(targetteam) - 1;
+        	tc = TeamGetColor(targetteam) - 1;
         	st2 = ftos(tc);
 
             //- OfN - Nice colors

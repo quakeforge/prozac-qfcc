@@ -25,7 +25,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer;
 void() TeamFortress_MOTD;
 
 // Team Functions
-float(float tno) TeamFortress_TeamGetColor;
+float(float tno) TeamGetColor;
 void(float tno) TeamFortress_TeamSetColor;
 float() TeamFortress_TeamPutPlayerInTeam;
 float(float tno) TeamFortress_TeamGetScore;
@@ -457,7 +457,7 @@ void() TeamFortress_Inventory =
 	}
 
 	// Display Team
-	col = TeamFortress_TeamGetColor(self.team_no);
+	col = TeamGetColor(self.team_no);
 
 	sprint(self, PRINT_HIGH, "You're in team ");
 	ac = ftos(self.team_no);
@@ -1921,7 +1921,7 @@ void() TeamFortress_SetEquipment =
 		self.undercover_team = 0;
 		// Set their color 
 		stuffcmd(self, "color ");
-		st = ftos(TeamFortress_TeamGetColor(self.team_no) - 1);
+		st = ftos(TeamGetColor(self.team_no) - 1);
          //- OfN - Nice colors
         if (nicecolors==1) st =TeamGetNiceColor(self.team_no);
 

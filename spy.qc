@@ -551,7 +551,7 @@ void() TeamFortress_SpyUndercoverThink =
 				self.owner.undercover_team = self.team;
 				// Set their color 
 				stuffcmd(self.owner, "color ");
-				tc = TeamFortress_TeamGetColor(self.team) - 1;
+				tc = TeamGetColor(self.team) - 1;
 				
 				st = ftos(tc);
                  //- OfN - Nice colors                       //? team_no
@@ -629,7 +629,7 @@ void(float teamno) TeamFortress_SpyChangeColor =
 		//self.immune_to_check = time + 4;
 		self.undercover_team = 0;
 		stuffcmd(self, "color ");
-		tc = TeamFortress_TeamGetColor(self.team_no) - 1;
+		tc = TeamGetColor(self.team_no) - 1;
 		st = ftos(tc);
         
         //- OfN - Nice colors
@@ -1099,7 +1099,7 @@ void(entity spy) Spy_RemoveDisguise =
 				spy.undercover_team = 0;
 
 				stuffcmd(spy, "color ");
-				tc = TeamFortress_TeamGetColor(spy.team_no) - 1;
+				tc = TeamGetColor(spy.team_no) - 1;
 				
 				st = ftos(tc);
 

@@ -32,7 +32,7 @@ void () TeamAllPlayers;
 // TeamFortress prototypes
 void() TeamFortress_MOTD;
 void() TeamFortress_CheckTeamCheats;
-//float(float tno) TeamFortress_TeamGetColor; //- OfN - not used here
+//float(float tno) TeamGetColor; //- OfN - not used here
 void(entity Viewer, float pc, float rpc) TeamFortress_PrintClassName;
 void(entity Viewer, float pc) TeamFortress_PrintJobName;
 void() TeamFortress_RemoveTimers;

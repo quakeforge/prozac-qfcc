@@ -22,7 +22,7 @@ void() W_SetCurrentAmmo;
 void(entity p) bound_other_ammo;
 float(float tno) TeamFortress_TeamSet;
 void(entity p) TeamFortress_SetSkin;
-float(float tno) TeamFortress_TeamGetColor;
+float(float tno) TeamGetColor;
 void() TeamFortress_ChangeClass;
 void(float type) TeamFortress_DropAmmo;
 float() TeamFortress_TeamPutPlayerInTeam;

@@ -1226,7 +1226,7 @@ void() BastardTimer =
 
 		//Reset their color
 		stuffcmd(te, "color ");
-		st = ftos(TeamFortress_TeamGetColor(te.team_no) - 1);
+		st = ftos(TeamGetColor(te.team_no) - 1);
         
         //- OfN - Nice colors
         if (nicecolors==1) st =TeamGetNiceColor(te.team_no);
