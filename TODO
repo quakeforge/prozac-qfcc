@@ -14,3 +14,4 @@ o  add more variety to tinkering
 o  add a way to edit the respawn ammo entities
 o  add localinfo string for bottom half of the MOTD
 o  add a define to disable abusive admin commands (eg stuffcmd)
+o  the thief skill should set the "invisible" face
