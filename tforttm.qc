@@ -655,7 +655,8 @@ float(string key, string value) UserInfoCallback =
 
 	if(value == oldval) // generic reject
 	{
-		bprint(#PRINT_MEDIUM, "[oldval (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		//bprint(#PRINT_MEDIUM,
+		//	   "[oldval (" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 0; // rejected!
 	}
 
@@ -667,7 +668,8 @@ float(string key, string value) UserInfoCallback =
 		stuffcmd(self, "color ");
 		stuffcmd(self, st);
 		stuffcmd(self, "\n");
-		bprint(#PRINT_MEDIUM, "[color (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		//bprint(#PRINT_MEDIUM,
+		//	   "[color (" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 0;
 	}
 	else if (key == "skin")
@@ -675,12 +677,14 @@ float(string key, string value) UserInfoCallback =
 		stuffcmd(self, "skin ");
 		stuffcmd(self, oldval);
 		stuffcmd(self, "\n");
-		bprint(#PRINT_MEDIUM, "[skin (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		//bprint(#PRINT_MEDIUM,
+		//	   "[skin (" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 0;
 	}
 	else
 	{
-		bprint(#PRINT_MEDIUM, "[default (" + key + ")(" + value + ")(" + oldval + ")]\n");
+		//bprint(#PRINT_MEDIUM,
+		//	   "[default (" + key + ")(" + value + ")(" + oldval + ")]\n");
 		return 1; // accept everything else
 	}
 };
