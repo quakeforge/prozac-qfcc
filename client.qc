@@ -2839,7 +2839,7 @@ void() PlayerPreThink =
 	}
 
 
-	if (self.health > 0)
+	if (self.health > 0 && self.solid != SOLID_NOT)
 	{
 		// do a quick checkmove
 		checkmove (self.origin, self.mins, self.maxs, self.origin - '0 0 8192', MOVE_NORMAL, self);	
@@ -2849,31 +2849,35 @@ void() PlayerPreThink =
 			deathmsg = DMSG_OUTOFBOUNDS;
 			TF_T_Damage (self, NIL, NIL, self.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		}
-		else if (trace_startsolid)
+		else if (trace_startsolid && trace_ent.classname != "force_field")
 		{
-			if (trace_ent.classname != "force_field") // hack, stuck in forcefield is okay here
-			{
-				self.stucktime += frametime;
+			deathmsg = DMSG_PHYSICS;			
 
-				printtrace(0);
-	
-				deathmsg = DMSG_PHYSICS;
-				if (self.stucktime > 1.0) // one second until you die
-				{
-					TF_T_Damage (self, NIL, NIL, self.health + 100,
-						TF_TD_IGNOREARMOUR, TF_TD_OTHER);
-				}
-				else if (trace_ent.takedamage && trace_ent.classname != "player") 
+			if (self.stucktime && self.stucktime < time && 
+				(trace_ent.solid == SOLID_BSP || trace_ent.classname == "player")) 
+			{	
+				TF_T_Damage (self, NIL, NIL, self.health + 100,
+					TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			}
+			else
+			{
+				if (trace_ent.takedamage && trace_ent.classname != "player") 
 				{
 					TF_T_Damage (trace_ent, NIL, NIL, self.health + 100,
 						TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 				}
+
+				self.stucktime = time + 2.0;
 			}
 		}
 		else
 		{
 			self.stucktime = 0;
 		}
+	}
+	else
+	{
+		self.stucktime = 0;
 	}
 };
 	
