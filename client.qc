@@ -2844,33 +2844,36 @@ void() PlayerPreThink =
 		// do a quick checkmove
 		checkmove (self.origin, self.mins, self.maxs, self.origin - '0 0 8192', MOVE_NORMAL, self);	
 	
-		if (trace_startsolid)
-		{
-			if (trace_ent.classname != "force_field") // hack, stuck in forcefield is okay here
-				self.stucktime++;
-
-			printtrace(0);
-	
-			deathmsg = DMSG_PHYSICS;
-			if (self.stucktime >= 10) // one second until you die
-			{
-				TF_T_Damage (self, NIL, NIL, self.health + 100,
-					TF_TD_IGNOREARMOUR, TF_TD_OTHER);
-			}
-			else if (trace_ent.takedamage) // see if we can't get the other guy out of the way
-			{
-				TF_T_Damage (trace_ent, NIL, NIL, self.health + 100,
-					TF_TD_IGNOREARMOUR, TF_TD_OTHER);
-			}
-		}
-		else if (trace_fraction >= 1 || vlen(self.origin) > 16384) // outside the map (doesn't always catch it)
+		if (vlen(self.origin) > 16384 || (trace_fraction >= 1 && !trace_startsolid)) // outside the map 
 		{
 			deathmsg = DMSG_OUTOFBOUNDS;
-			TF_T_Damage (self, NIL, NIL, self.health + 100,
-				TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage (self, NIL, NIL, self.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		}
+		else if (trace_startsolid)
+		{
+			if (trace_ent.classname != "force_field") // hack, stuck in forcefield is okay here
+			{
+				self.stucktime += frametime;
+
+				printtrace(0);
+	
+				deathmsg = DMSG_PHYSICS;
+				if (self.stucktime > 1.0) // one second until you die
+				{
+					TF_T_Damage (self, NIL, NIL, self.health + 100,
+						TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+				}
+				else if (trace_ent.takedamage && trace_ent.classname != "player") 
+				{
+					TF_T_Damage (trace_ent, NIL, NIL, self.health + 100,
+						TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+				}
+			}
 		}
 		else
+		{
 			self.stucktime = 0;
+		}
 	}
 };
 	
