@@ -179,7 +179,7 @@ void() SUB_CalcAngleMoveDone =
 
 void() DelayThink =
 {
-	local integer rem = self.killtarget != self.targetname;
+	local integer rem = !self.killtarget || self.killtarget != self.targetname;
 	activator = self.enemy;
 	SUB_UseTargets ();
 	if (rem)

@@ -959,8 +959,10 @@ void() player_die_ax1;
 
 void() DeathBubblesSpawn =
 {
-	if (self.owner.waterlevel != 3 && self.has_holo == 0)
+	if (self.owner.waterlevel != 3 && self.has_holo == 0) {
+		dremove(self);
 		return;
+	}
 	newmis = spawn();
 	setmodel (newmis, "progs/s_bubble.spr");
 	setorigin (newmis, self.owner.origin + '0 0 24');

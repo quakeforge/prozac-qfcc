@@ -198,7 +198,6 @@ void(entity ignore, string st, string st2, string st3, string st4, string st5, s
 void() ThrowC4Det =
 {
 	local entity user;
-	local entity oldself;
 	
 	self.owner.is_toffingadet = 0;
 
@@ -253,7 +252,7 @@ void() ThrowC4Det =
 	setsize (newmis, '-16 -16 -8', '16 16 8');
 	setorigin (newmis, user.origin);
 
-	oldself = self;
+	dremove (self);
 	self = user;
 
 #ifdef DEMO_STUFF
