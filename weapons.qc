@@ -1441,7 +1441,7 @@ void() W_FireAssaultCannon =
 	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 	dir = aim (self, 100000);
 	deathmsg = DMSG_ASSAULTCANNON;
-	FireBullets (7, dir, '0.08 0.05 0');
+	FireBullets (7, dir, '0.06 0.06 0');
 };
 
 /*
@@ -1473,7 +1473,7 @@ void() W_FireLightAssault =
 
 	if (CheckForReload() == TRUE)
 		return;
-	FireBullets (7, dir, '0.15 0.15 0');
+	FireBullets (5, dir, '0.1 0.1 0');
 	Attack_Finished(0.2);
 };
 

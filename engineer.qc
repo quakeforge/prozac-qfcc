@@ -105,10 +105,14 @@ void() LaserBolt_Touch =
 
 	if (other && other.takedamage)
 	{
+		local float armorsave = other.armortype;
 		SpawnBlood (org, 15);
 		deathmsg = DMSG_LASERBOLT;
-		TF_T_Damage (other, self, self.real_owner, 25, 0, TF_TD_NAIL); // was electricity... WTF?
-		setmodel(self.owner, "progs/e_spike2.mdl");
+		other.armortype *= 0.33;
+		TF_T_Damage (other, self, self.real_owner, 50, 0, TF_TD_NAIL); // was electricity... WTF?
+		if (other.armortype)
+			other.armortype = armorsave;
+		setmodel(self, "progs/e_spike2.mdl");
 	}
 	else if (!other || other.solid == SOLID_BSP) // Oh well, this never worked right, and it was stupid anyway
 	{
