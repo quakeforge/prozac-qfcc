@@ -871,7 +871,7 @@ float(entity targ, entity inflictor) CanDamage;
 
 //===========================================================================
 // TEAMFORTRESS Defs
-//===========================================================================\
+//===========================================================================
 .float      	playerclass;		
 .float		nextpc;			// The playerclass you'll respawn as
 .float		last_impulse;		// The previous impulse command from this player
