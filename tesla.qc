@@ -333,7 +333,12 @@ void(entity attacker, float damage) Tesla_Pain =
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 4;
 
-	if (!self.waitmax)
+	local string st = infokey (NIL, "sentry_revenge");
+
+	if (!st)
+		st = infokey (NIL, "sr");
+
+	if (!self.waitmax && (st == "yes" || st == "1" || st == "on"))
 	{
 	    self.enemy = attacker;
 	    self.waitmax = TRUE;

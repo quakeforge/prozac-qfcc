@@ -456,7 +456,13 @@ void(entity attacker, float damage) Sentry_Pain =
 	self.real_owner.StatusRefreshTime = time + 0.2;
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 1;
-	if (self.attack_finished < time && self.enemy == NIL)
+
+	local string st = infokey (NIL, "sentry_revenge");
+
+	if (!st)
+		st = infokey (NIL, "sr");
+
+	if ((st == "on" || st == "1" || st == "yes") && (self.attack_finished < time && self.enemy == NIL))
 	{
 	    self.enemy = attacker;
 	    Sentry_FoundTarget();
