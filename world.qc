@@ -166,6 +166,11 @@ void() main =
 	precache_file2 ("maps/dm6.bsp");
 };
 
+void () edictticker_think =
+{
+	localcmd ("edictcount\n");
+	self.nextthink = time + self.num_mines;
+};
 
 entity	lastspawn;
 
@@ -184,6 +189,7 @@ World Types:
 void() worldspawn =
 {
 	local string st; //WK
+	local entity ticker;
 
 	lastspawn = world;
 	InitBodyQue ();
@@ -231,6 +237,15 @@ void() worldspawn =
    	already_chosen_map = FALSE;
     triggered_cycle = FALSE;
     ////////////////////
+
+	if (stof(infokey (world, "edictticker")))
+	{
+		ticker = spawn();
+		ticker.classname = "edictcount";
+		ticker.nextthink = time + 5;
+		ticker.think = edictticker_think;
+		ticker.num_mines = stof(infokey (world, "edictticker")); // I hate overloading, but I don't want to use a full thing just for this one stupid little hack.
+	}
 
     // We set up Chris' Teamplay Plus Mode here cos that's fun
 	/*st = infokey(world, "chris");
