@@ -209,9 +209,6 @@ void() worldspawn =
 		localcmd(".cfg\"\n");
 	}
 
-	if (!cvar("sv_gc"))
-		cvar_set ("sv_gc", "10");
-
 // custom map attributes
 	st = infokey(world, "*gamedir");
 	if (st != "fortress")

@@ -577,7 +577,7 @@ void(float inp) Menu_Army_Input1 =
 		self.impulse = 0;
     	return;
 	}
-	if (inp == 9) {
+	if (inp == 9 && self.demon_one != world) {
 		self.current_menu = MENU_ARMY;
 		self.menu_count = MENU_REFRESH_RATE;
 		self.impulse = 0;
