@@ -564,7 +564,6 @@ void() DecodeLevelParms =
 		autoteam_time = 30;
 
 		// check all serverinfo settings, to set the appropriate toggleflags
-		local string st;
 
 		// AUTOTEAM
 		st = infokey(world, "a");
@@ -1295,7 +1294,6 @@ void() changelevel_touch =
 {
 	local entity pos;
 	local float ne;
-	local string st;
 
 	if (other.classname != "player")
 		return;
@@ -2245,7 +2243,6 @@ float already_cycled;
 void() NextLevel =
 {
 	local entity o;
-	local string st;
 	
 	if (already_cycled)
 		return;

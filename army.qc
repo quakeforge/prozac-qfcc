@@ -176,7 +176,6 @@ void() Menu_Army1 =
 void() Menu_Army2 =
 {
     local string st;
-	local string st_range;
 
 	st = "";
 

@@ -704,7 +704,6 @@ void() TeamFortress_ReloadCurrentWeapon =
 void() TeamFortress_DropItems =
 {
 	local entity tg;
-	local string temp;
 
 	tg = find (world, classname, "item_tfgoal");
 	while (tg)
