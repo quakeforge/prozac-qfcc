@@ -1038,7 +1038,7 @@ void() LoadNextMap =
 	desc = cfopen ("mapcycle", "r");
 	while (cfread(desc) != "")
 		mapcount = mapcount + 1;
-	cfclose ("mapcycle");
+	cfclose (desc);
 
 	if (mapcount > 0)
 	{
