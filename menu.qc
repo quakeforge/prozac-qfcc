@@ -1081,104 +1081,76 @@ void(float inp) Menu_Spy_Color_Input =
 
 void() Menu_Engineer =
 {
-	//Set up empty menu
-	local string line1;
-	local string line2;
-	local string line3;
-	local string line4;
-	local string line5;
-    local string line6;
-    local string line7;
+	local string st = "";
 
-	//Check line for Dispenser
-	if (self.has_dispenser == TRUE)
-	 	line1 = "Αγτιοξ:                           \n\n“®® Destroy Dispenser             \n";
-	else if (self.ammo_cells >= BUILD_COST_DISPENSER && (self.cutf_items & CUTF_DISPENSER))//SB
-	 	line1 = "Αγτιοξ:                           \n\n“.. Build Dispenser               \n";
+	st += "\<Action\>:                           \n\n";
+	if (self.has_dispenser)
+		st += "\x93\<..\> Destroy Dispenser             \n";
+	else if (self.ammo_cells >= BUILD_COST_DISPENSER && (self.cutf_items & CUTF_DISPENSER))
+		st += "\x93.. Build Dispenser               \n";
 	else
-		line1 = "Αγτιοξ:                           \n\n                                  \n";
+		st += "\n";
 
-	if (self.has_sentry == TRUE)
-		line2 = "”®® Destroy Sentry Gun            \n";
+	if (self.has_sentry)
+		st += "\x94\<..\> Destroy Sentry Gun            \n";
 	else if (self.ammo_cells >= BUILD_COST_SENTRYGUN && self.cutf_items & CUTF_SENTRYGUN)
-		line2 = "”.. Build Sentry Gun              \n";
+		st += "\x94.. Build Sentry Gun              \n";
 	else
-		line2 = "                                  \n";
+		st += "\n";
 
-	if (self.has_tesla == TRUE)
-		line3 = "•®® Destroy Tesla Sentry          \n";
+	if (self.has_tesla)
+		st += "\x95\<..\> Destroy Tesla Sentry          \n";
 	else if (self.ammo_cells >= BUILD_COST_TESLA && self.tf_items & NIT_TESLA)
-		line3 = "•.. Build Tesla Sentry            \n";
+		st += "\x95.. Build Tesla Sentry            \n";
 	else
-		line3 = "                                  \n";
+		st += "\n";
 	
-    if (self.has_camera == TRUE)
-		line4 = "®® Destroy Security Camera       \n"; //CH impulse 4 for both
+    if (self.has_camera)
+		st += "\x96\<..\> Destroy Security Camera       \n";
 	else if (self.ammo_cells >= BUILD_COST_CAMERA && self.tf_items & NIT_SECURITY_CAMERA)
-		line4 = ".. Launch Security Camera        \n";
+		st += "\x96.. Launch Security Camera        \n";
 	else
-		line4 = "                                  \n";
-	
-    if (self.has_teleporter != 0) //CH messy, yes
-	{
-		if (self.has_teleporter == 1 && self.ammo_cells >= BUILD_COST_TELEPORTER)
-			line5 = ".. Build a Teleporter Pad        \n®® Destroy a Teleporter Pad      \n"; //ofn the number is 5
-		else if (self.has_teleporter == 1 && self.ammo_cells < BUILD_COST_TELEPORTER)
-			line5 = "®® Destroy a Teleporter Pad      \n"; // 6
-		if (self.has_teleporter == 2)
-			line5 = "®® Destroy Both Teleporter Pads  \n"; // 6
-	}
-	else if (self.ammo_cells >= BUILD_COST_TELEPORTER && self.tf_items & NIT_TELEPORTER)
-		line5 = ".. Build a Teleporter Pad        \n";
-	else
-		line5 = "                                  \n";
+		st += "\n";
 
-    if (self.has_sensor==TRUE)
-    {
-		line6 = "™®® Destroy Motion Sensor         \n";
-    }
+	if (self.has_teleporter < 2 && self.ammo_cells >= BUILD_COST_TELEPORTER)
+		st += "\x97.. Build a Teleporter Pad        \n";
+	else
+		st += "\n";
+
+	if (self.has_teleporter == 2)
+		st += "\x98\<..\> Destroy Both Teleporter Pads  \n";
+	else if (self.has_teleporter == 1)
+		st += "\x98\<..\> Destroy a Teleporter Pad      \n";
+	else
+		st += "\n";
+
+    if (self.has_sensor)
+		st += "\x99\<..\> Destroy Motion Sensor         \n";
 	else if (self.ammo_cells >= BUILD_COST_SENSOR && self.cutf_items & CUTF_SENSOR)
-	{
-        line6 = "™.. Deploy Motion Sensor          \n";		
-    }
+        st += "\x99.. Deploy Motion Sensor          \n";		
     else
-    {
-        line6 = "                                  \n";
-    }
+        st += "\n";
 
-    if (self.has_fieldgen != 0) //CH messy, yes
-	{
-		if (self.has_fieldgen == 1 && self.ammo_cells >= BUILD_COST_FIELDGEN)
-			line7 = ".. Build a Field Generator       \n›®® Destroy a Field Generator     \n\n.. Ξοτθιξη                       \n"; //ofn the number is 5
-		else if (self.has_fieldgen == 1 && self.ammo_cells < BUILD_COST_FIELDGEN)
-			line7 = "›®® Destroy a Field Generator     \n\n.. Ξοτθιξη                       \n"; // 6
-
+	if (self.has_fieldgen < 2 && self.ammo_cells >= BUILD_COST_FIELDGEN)
+		st += "\x9a.. Build a Field Generator       \n";
 #ifdef FIELD_FORCEMODE
-
-        if (self.has_fieldgen >= 2)
-        {
-	        if (GetFieldForcedStatus())
-			    line7 = ".. Force field: Γμοσεδ Νοδε      \n›®® Destroy Both Field Generators \n\n.. Ξοτθιξη                       \n";
-            else
-                line7 = ".. Force field: Ιξτεμμιηεξτ Νοδε \n›®® Destroy Both Field Generators \n\n.. Ξοτθιξη                       \n";
-        }
-
-#else
-
-        if (self.has_fieldgen >= 2)
-		    line7 = "›®® Destroy Both Field Generators \n\n.. Ξοτθιξη                       \n"; // 6
-
+	else if (self.has_fieldgen == 2)
+		st += "\x9a.. Force field: " + (GetFieldForcedStatus() ? "\<Closed Mode\>      \n" : "\<Intelligent Mode\> \n");
 #endif
-
-    }
-	else if (self.ammo_cells >= BUILD_COST_FIELDGEN && self.cutf_items & CUTF_FIELDGEN)
-		line7 = ".. Build a Field Generator       \n\n.. Ξοτθιξη                       \n";
 	else
-		line7 = "                                  \n.. Ξοτθιξη                       \n";
+		st += "\n";
 
+	if (self.has_fieldgen == 2)
+		st += "\x9b\<..\> Destroy Both Field Generators \n";
+	else if (self.has_fieldgen == 1)
+		st += "\x9b\<..\> Destroy a Field Generator     \n";
+	else
+		st += "\n";
+
+	st += "\n\x92.. \<Nothing\>                       \n";
 
 	//Finally, we output the menu...
-	CenterPrint7(self,line1,line2,line3,line4,line5,line6,line7);
+	CenterPrint (self, st);
  
 };
 
@@ -1232,7 +1204,9 @@ void(float inp) Menu_Engineer_Input =
 		self.impulse = 0;
 	}
 //CH uses 5 and 6 
-	else if (inp == 5 && (self.has_teleporter == 0 || self.has_teleporter == 1) && self.ammo_cells >= BUILD_COST_TELEPORTER) //ch if have one out, can build
+	else if (inp == 5
+			 && (self.has_teleporter == 0 || self.has_teleporter == 1)
+			 && self.ammo_cells >= BUILD_COST_TELEPORTER) //ch if have one out, can build
 	{
         if (HasFlag(self.team_no) == FALSE) {
                 CenterPrint(self, "No building until your team has the flag!\n");
@@ -1311,16 +1285,16 @@ void(float inp) Menu_Engineer_Input =
                     te = find(te, classname, "building_fieldgen");
                 }	
 
-                if (mindist < FIELDGEN_HACKEDRANGE) // * 2
+/*                if (mindist < FIELDGEN_HACKEDRANGE) // * 2
                 {						    
                     sprint(self, PRINT_HIGH, "There are interferences with other field generators here!\n");
                 }
                 else
-                {
+                {*/
                     TeamFortress_Build(BUILD_FIELDGEN);	
                     ResetMenu();		
                     self.impulse = 0;
-                }
+//                }
             }
             else
             {
@@ -1400,6 +1374,7 @@ void(float inp) Menu_Engineer_Input =
 
 	// Otherwise, the impulse is passed on
 };
+
 //CH to reduce code.
 void(entity person, string build) Add_Building_Teamkill =
 {

@@ -288,7 +288,7 @@ void() Field_touch_SUB =
         }
 
 	}
-	else // non player entities
+	else if (other.classname != "force_field") // non player entities
 	{
 		if (IsMonster(other))
 		{
@@ -1069,7 +1069,6 @@ void (vector place) WhereGen =
 	if (fabs (place_z - te.origin_z) > FIELDGEN_MAXZ)
 		sprint (self, PRINT_HIGH,
 			"Your field generators are at different heights, they won't link\n");
-	dprint (ftos (place_z) + " " + ftos (te.origin_z) + "\n");
 
 	// return the final building place
 	return;

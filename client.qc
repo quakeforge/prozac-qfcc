@@ -446,8 +446,7 @@ void() DecodeLevelParms =
 	self.armortype = parm9 * 0.01;
 
 	SetTeamName (self);
-	setinfokey (self, "topcolor", "0");
-	setinfokey (self, "bottomcolor", "0");
+	SetPlayerColor (self, TeamGetNiceColor (self.team_no), TeamGetColor (self.team_no) - 1);
 
 	// TeamFortress Parameters
 	// Detect whether this is the first entrance into a map

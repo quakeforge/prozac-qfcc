@@ -18,4 +18,4 @@ X  the thief skill should set the "invisible" face
 o  "slave teslas"
 o  instead of not allowing two fastest legs when upgraded, restrict the health/armor you're allowed when you have fast legs
 o  make a seperate menu for detonating engineer buildings
-o  remove RPrint, since it's really kinda pointless and just makes the code uglier
+o  remove RPrint, since it's really kinda pointless and just makes the code ugliero  change the color defines (eg DARKBLUE) to be the exact number, not number + 1
