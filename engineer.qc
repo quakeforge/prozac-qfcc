@@ -1711,12 +1711,12 @@ void() Engineer_AutoUse =
 			else
 				sprint(self, PRINT_HIGH, "\n");
 
-			self.menu = MENU_ENGINEER_FIX_DISPENSER
+			self.current_menu = MENU_ENGINEER_FIX_DISPENSER;
 			self.menu_count = MENU_REFRESH_RATE;
 		} else if (self.building.classname == "building_sentrygun") {
 			Menu_EngineerFix_SentryGun_Input(1);
 
-			self.menu = MENU_ENGINEER_FIX_SENTRYGUN;
+			self.current_menu = MENU_ENGINEER_FIX_SENTRYGUN;
 			self.menu_count = MENU_REFRESH_RATE;
 			self.building = targ;
 
