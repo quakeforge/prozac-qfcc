@@ -459,7 +459,7 @@ void() TeamFortress_SpyGoUndercover =
 			else
 				self.is_undercover = 0;
 			local entity ent = NIL;
-			while (ent = find (ent, classname, "timer")) {
+			while ((ent = find (ent, classname, "timer"))) {
 				if (ent.owner == self && ent.think == TeamFortress_SpyUndercoverThink) {
 					ent.think = SUB_Remove;
 					ent.nextthink = time + 0.1;

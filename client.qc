@@ -716,7 +716,7 @@ void() DecodeLevelParms =
 		st = infokey (NIL, "improve_respawns");
 		if (st == "1" || st == "on") {
 			local entity ent = NIL;
-			while (ent = find (ent, classname, "info_tfgoal")) {
+			while ((ent = find (ent, classname, "info_tfgoal"))) {
 				if (ent.ammo_shells && ent.ammo_nails
 					&& ent.ammo_rockets && ent.ammo_cells
 					&& ent.armorvalue && ent.health) {

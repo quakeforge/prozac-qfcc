@@ -995,7 +995,7 @@ void() FragSpikeThink =
 		self.angles_x = 0;
 		self.angles_z = 0;
 		makevectors(self.angles);
-		if (self.velocity = '0 0 0')
+		if (self.velocity == '0 0 0')
 			self.origin_z = self.origin_z + 50;
 
 		self.velocity = v_forward * 1000;
