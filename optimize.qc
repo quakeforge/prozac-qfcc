@@ -123,6 +123,8 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 
 void(entity atk, entity targ, float numfrags, float fraggetlog, float howgive, float chkreal, float chkvamp) Give_Frags_Out =
 {
+	if (!atk) // handles cases where the attack ent may have been zeroed
+		return;
 /*
 local string st;
 bprint(PRINT_HIGH, "atk:");
@@ -176,7 +178,7 @@ bprint(PRINT_HIGH, "\n");
 		}
 		if (chkvamp)
 		{
-			if (teamplay & TEAMPLAY_VAMPIRE)
+			if (teamplay & TEAMPLAY_VAMPIRE && targ) // handle when targ is cleared
 			{
 				targ.real_frags = targ.real_frags - numfrags;
 				if (!(toggleflags & TFLAG_TEAMFRAGS))
