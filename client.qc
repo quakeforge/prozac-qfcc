@@ -1829,6 +1829,9 @@ void(entity p) TeamFortress_SetSkin;
 
 void() PutClientInServer =
 {
+#ifdef MAP_DEBUG
+	local string st;
+#endif
 	local float iszoom, oldclass;
 	local entity spot, te;
 
