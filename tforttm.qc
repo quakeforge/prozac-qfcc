@@ -364,6 +364,7 @@ float(float tno) TeamFortress_TeamSet =
 // Make sure no-one is changing their colors
 void() TeamFortress_CheckTeamCheats =
 {
+/*
 	local string st, sk;
 	local float tc, tc2;
 	local float rate;
@@ -536,6 +537,7 @@ void() TeamFortress_CheckTeamCheats =
 		}
 		}
 	}
+*/
 };
 
 void (entity pl, float topcolor, float bottomcolor) SetPlayerColor =
@@ -564,10 +566,15 @@ void (string key, string value) UserInfoCallback =
 	}
 //	dprint ("[[" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 
-/*	else if (key == "topcolor") { // FIXME: some topcolors may be allowed
-		setinfokey(self, "topcolor", oldval);
-		stuffcmd(self, "color \"" + oldval + "\"\n");
-	}*/	else if (key == "bottomcolor") {
+	else if (key == "topcolor") { // FIXME: some topcolors may be allowed
+		dprint ("items: " + ftos (self.cutf_items & CUTF_SPY_KIT) + "  ");
+		dprint ("skin: " + ftos (self.is_undercover) + "\n");
+		if ((self.cutf_items & CUTF_SPY_KIT) && self.is_undercover) {
+			setinfokey(self, "topcolor", oldval);
+			stuffcmd(self, "color \"" + oldval + "\"\n");
+		} else
+			setinfokey (self, key, value);
+	}	else if (key == "bottomcolor") {
 		setinfokey (self, "bottomcolor", oldval);
 		stuffcmd (self, "bottomcolor \"" + oldval + "\"\n");
 	} else if (key == "skin") { // FIXME: some other skins may be allowed

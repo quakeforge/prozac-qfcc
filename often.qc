@@ -887,7 +887,7 @@ float (vector spot1, vector spot2) vis2orig =
 // Return the number of players in game
 float() GetNoPlayers =
 {
-	local float num_players;
+	local float num_players = 0;
 	local entity search;
 
 	search = find (world, classname, "player");

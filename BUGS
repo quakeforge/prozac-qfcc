@@ -17,3 +17,4 @@
 - prematch shouldn't force autoteam when it's done
 - sometimes ID doesn't work.  this may be because impulses are unreliable though :/
 - minp/maxp are broken.  possibly compiler !string bug
+- rockets explode on observers

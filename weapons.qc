@@ -1577,6 +1577,9 @@ void() T_MissileTouch =
 	local float	damg;
 	local float	bonus;
 
+	if (other.classname == "player" && other.playerclass == PC_UNDEFINED)
+		return;
+
 	if (pointcontents(self.origin) == CONTENTS_SKY)
 	{
 		dremove(self);

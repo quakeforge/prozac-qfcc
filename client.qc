@@ -76,6 +76,8 @@ string(entity themonster) GetMonsterName;
 void(entity attacker) MonsterKill;
 void() DetonateAllGunsForced;
 
+void(float mapnum) SetNextMapNum;
+
 /*
 =============================================================================
 
@@ -83,6 +85,11 @@ void() DetonateAllGunsForced;
 
 =============================================================================
 */
+
+#define MAP_NO 0
+#define MAP_YES 1
+#define MAP_LOADCYCLE 2
+#define MAP_LOADCONFIG 3
 
 string nextmap;
 
@@ -443,7 +450,7 @@ void() DecodeLevelParms =
 	self.armortype = parm9 * 0.01;
 
 	SetTeamName (self);
-	SetPlayerColor (self, TeamGetNiceColor (self.team_no), TeamGetColor (self.team_no) - 1);
+//	SetPlayerColor (self, TeamGetNiceColor (self.team_no), TeamGetColor (self.team_no) - 1);
 
 	// TeamFortress Parameters
 	// Detect whether this is the first entrance into a map
@@ -879,10 +886,9 @@ float() DoExtraCycle =
 {
     //-------------------------------------------------//
     //- OfN - I tried to make this work like in tf2.8 -//
-    local string nfmap, temp;
-    nfmap = infokey(world, "nmap");
-    if (nfmap)
-    {
+    local string nmap, temp;
+    nmap = infokey(world, "nmap");
+    if (nmap) {
         local float minplayers, maxplayers, itsok, currentpl;
         
         if (infokey(world,"minp")!="")
@@ -901,11 +907,10 @@ float() DoExtraCycle =
 
         //check conditions
         
-        if (minplayers > currentpl)
-        {
+        if (minplayers > currentpl) {
             bprint(PRINT_HIGH,"Map ");
-            nfmap = infokey(world, "nmap");
-            bprint(PRINT_HIGH, nfmap);
+            nmap = infokey(world, "nmap");
+            bprint(PRINT_HIGH, nmap);
             bprint(PRINT_HIGH," skipped - minimum players ");
             temp = ftos(minplayers);
             bprint(PRINT_HIGH, temp);
@@ -914,14 +919,11 @@ float() DoExtraCycle =
             bprint(PRINT_HIGH, temp);
             bprint(PRINT_HIGH,")\n");
             itsok = FALSE;
-        }
-        else 
-        {
-            if (maxplayers < currentpl)
-            {
+        } else {
+            if (maxplayers < currentpl) {
                 bprint(PRINT_HIGH,"Map ");
-                nfmap = infokey(world, "nmap");
-                bprint(PRINT_HIGH, nfmap);
+                nmap = infokey(world, "nmap");
+                bprint(PRINT_HIGH, nmap);
                 bprint(PRINT_HIGH," skipped - maximum players ");
                 temp = ftos(maxplayers);
                 bprint(PRINT_HIGH,temp);
@@ -939,28 +941,31 @@ float() DoExtraCycle =
         //locals clean
 
         //execute map conditions ok
-        if (itsok)
-        {
-            nfmap = infokey(world, "nmap");
+        if (itsok) {
+            nmap = infokey(world, "nmap");
             
             bprint(PRINT_HIGH,"\nLoading ");
-            bprint(PRINT_HIGH,nfmap);
+            bprint(PRINT_HIGH,nmap);
             bprint(PRINT_HIGH," map file...\n");
 
             localcmd("localinfo nmap \"\"\n");
 
             localcmd("map ");
-            localcmd(nfmap);
+            localcmd(nmap);
             localcmd("\n");
             
             return TRUE;
-        }
-        else //conditions not passed...
-        {
-            localcmd("localinfo nmap \"\"\n");
-            return FALSE;
-        }
-    }
+		} else { //conditions not passed...
+			localcmd("localinfo nmap \"\"\n");
+			return FALSE;
+		}
+    } else if (already_chosen_map == MAP_LOADCYCLE) {
+		local string st = infokey (world, "loopcycle");
+		if (st != "0" && st != "off") {
+			dprint ("No map loaded, restarting map cycle\n");
+			SetNextMapNum (0);
+		}
+	}
 
     return FALSE;
 };
@@ -1007,7 +1012,7 @@ float() GetNextMapNum =
 
 	if (!maxmapnum)
 		return num;
-	else if (num > stof (maxmapnum))
+	if (num > stof (maxmapnum))
 		return 0;
 	else
 		return num;
@@ -1035,6 +1040,7 @@ void(float mapnum) SetNextMapNum =
 	localcmd("localinfo n ");
 	localcmd(mapstring);
 	localcmd("\n");
+	setinfokey (world, "n", mapstring);
 };
 
 void() LoadNextMap =
@@ -1092,41 +1098,48 @@ void() LoadNextMap =
 		localcmd(ftos(nextlevel));
 		localcmd(".cfg\n");
 
-		already_chosen_map = CYCLED;
+		already_chosen_map = MAP_LOADCYCLE;
 	}
 };
 
 void() GotoNextMap =
 {
-
 	if (nextmap != mapname)
 	{
 		changelevel(nextmap);
-		already_chosen_map = TRUE;
+		already_chosen_map = MAP_YES;
 	}
 
-    if (already_chosen_map == FALSE || already_chosen_map == CYCLED)
+    if (already_chosen_map != MAP_YES)
     {
-        if (DoExtraCycle())
-      		already_chosen_map = TRUE;
+		local string nmap = infokey (world, "nmap");
+		if (already_chosen_map == MAP_LOADCYCLE && nmap) {
+			// load up the map config
+			localcmd ("exec \"mapcfg.cfg\"\n");
+			localcmd ("exec \"mapcfg/" + nmap + ".cfg\"\n");
+			already_chosen_map = MAP_LOADCONFIG;
+		} else if (DoExtraCycle())
+      		already_chosen_map = MAP_LOADCYCLE;
         else
-            already_chosen_map = FALSE;
+            already_chosen_map = MAP_NO;
     }
 
 	//- OfN - super new map cycling code :)
-	if (already_chosen_map == FALSE)
+	if (already_chosen_map == MAP_NO)
 		LoadNextMap();
 
 	if (GetNextMapNum() == 0)
-        already_chosen_map = FALSE;
+        already_chosen_map = MAP_NO;
 
-    if (already_chosen_map == FALSE) // nothing was done yet, so set the damn timer..
+    if (already_chosen_map == MAP_NO) // nothing was done yet, so set the damn timer..
     {
         SetCycleTimer();
         return;
     }
     
-    if (already_chosen_map == CYCLED) // if we executed a mapx.cfg
+	// if we executed a mapx.cfg
+    if (already_chosen_map == MAP_LOADCYCLE ||
+		already_chosen_map == MAP_LOADCONFIG)
         SetCycleTimer(); // set the timer to check the real map afte 0.1 seconds
 };
 
