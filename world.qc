@@ -557,6 +557,11 @@ void() StartFrame =
 	fraglimit = cvar("fraglimit");
 	deathmatch = cvar("deathmatch");
 	framecount = framecount + 1;
+
+	local string timeleft;
+	timeleft = timelimit ? sprintf ("%.0f", (timelimit - time) / 60) : "";
+	if (timeleft != infokey (world, "timeleft"))
+		setinfokey (world, "timeleft", timeleft);
 };
 
 /*

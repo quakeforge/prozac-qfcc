@@ -476,7 +476,7 @@ void() Menu_Team =
 	}
 
 	// The Detection entity may have specified a Team Menu String
-	if (team_menu_string != string_null)
+	if (team_menu_string)
 	{
 		CenterPrint(self, team_menu_string);
 		return;
@@ -533,7 +533,7 @@ void() Menu_Class =
 	{
 		if (self.team_no == 1)
 		{
-			if (AD.noise1 != string_null)
+			if (AD.noise1)
 			{
 				CenterPrint(self, AD.noise1);
 				return;
@@ -541,7 +541,7 @@ void() Menu_Class =
 		}
 		else if (self.team_no == 2)
 		{
-			if (AD.noise2 != string_null)
+			if (AD.noise2)
 			{
 				CenterPrint(self, AD.noise2);
 				return;
@@ -549,7 +549,7 @@ void() Menu_Class =
 		}
 		else if (self.team_no == 3)
 		{
-			if (AD.noise3 != string_null)
+			if (AD.noise3)
 			{
 				CenterPrint(self, AD.noise3);
 				return;
@@ -557,7 +557,7 @@ void() Menu_Class =
 		}
 		else if (self.team_no == 4)
 		{
-			if (AD.noise4 != string_null)
+			if (AD.noise4)
 			{
 				CenterPrint(self, AD.noise4);
 				return;
@@ -1384,7 +1384,7 @@ void(entity person, string build) Add_Building_Teamkill =
 	bprint (PRINT_HIGH, "!\n");
 
 	st = infokey(world, "curse");
-	if (st != string_null)
+	if (st)
 		threshold = stof(st);
 	person.ff_count = person.ff_count + 2; //Increase their bastard rating
 	//Increase the engineers bastard rating so they
@@ -1686,7 +1686,7 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 				sprint(self, PRINT_HIGH, "You launch the sentrygun\n");
 				self.ammo_cells = self.ammo_cells - BUILD_COST_TURRET;
 				self.building.angles_z = 180;
-			 	setmodel(self.building.trigger_field,string_null);
+			 	setmodel(self.building.trigger_field, "");
 				self.building.trigger_field.solid = SOLID_NOT;
 				self.building.flags = self.building.flags - (self.building.flags & FL_ONGROUND);
 				self.building.movetype = MOVETYPE_FLY;

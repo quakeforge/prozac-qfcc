@@ -223,10 +223,6 @@ void		end_sys_fields;			// flag for structure dumping
 //
 float	movedist;
 
-string	string_null;	// null string, nothing should be held here
-float		empty_float;
-vector	vector_null; //CH empty vector
-
 entity	activator;		// the entity that activated a trigger or brush
 
 entity	damage_attacker;	// set by T_Damage
@@ -489,8 +485,6 @@ void(...) sprint7 				= #24;
 void(...) bprint8					= #23;
 
 void(string s) dprint				= #25;
-string(float f) ftos				= #26;
-string(vector v) vtos				= #27;
 void() coredump					= #28;		// prints all edicts
 void() traceon					= #29;		// turns statment trace on
 void() traceoff					= #30;
@@ -559,7 +553,6 @@ void(entity e) setspawnparms			= #78;		// set parm1... to the
 
 void(entity killer, entity killee) logfrag = #79;	// add to stats
 string(entity e, string key) infokey	= #80;		// get a key value (world = serverinfo)
-float(string s) stof				= #81;		// convert string to float
 void(vector where, float set) multicast 	= #82;  // sends the temp message
 													// to a set of clients,
 													// possibly in PVS or PHS
@@ -582,6 +575,15 @@ float (float desc) cfeof = #107;
 float () cfquota = #108;
 
 string (...) sprintf = #109;
+
+string (float f) ftos = #26;
+integer (float f) ftoi = #110;
+float (integer i) itof = #110;
+string (integer i) itos = #112;
+float (string s) stof = #81;
+integer (string s) stoi = #113;
+vector (string s) stov = #114;
+string (vector v) vtos = #27;
 
 //============================================================================
 
@@ -612,6 +614,8 @@ float(entity targ, entity inflictor) CanDamage;
 //  tforttm.qc
 //
 void (entity pl, float topcolor, float bottomcolor) SetPlayerColor;
+
+string (string s) quotename;
 
 
 //===========================================================================

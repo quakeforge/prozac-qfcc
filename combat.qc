@@ -433,7 +433,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		{
 			foo = infokey(attacker,"ping");
 			ping = 200;
-			if (foo != string_null)
+			if (foo)
 				ping = stof(foo);
 			ping = (ping + 1000) / 1200;
 			if (ping < 0.8) ping = 0.8;
@@ -715,7 +715,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			local float threshold;
 			threshold = 0;
 			st = infokey(world, "curse");
-			if (st != string_null)
+			if (st)
 				threshold = stof(st);
 
 

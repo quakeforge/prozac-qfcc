@@ -266,7 +266,7 @@ void() TeamFortress_ChangeClass =
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
 
-	setmodel (self, string_null);
+	setmodel (self, "");
 	modelindex_null = self.modelindex;
 
 	setmodel (self, "progs/eyes.mdl");
@@ -313,14 +313,14 @@ void() TeamFortress_ChangeClass =
 			CenterPrint(self, spot.message);
 
 			if (!(spot.goal_activation & TFSP_MULTIPLEMSGS))
-				spot.message = string_null;
+				spot.message = "";
 		}
 
 		// TeamSpawn points can remove themselves after being spawned on
 		if (spot.goal_effects == TFSP_REMOVESELF)
 		{
 			spot.classname = "deadpoint";
-			spot.team_str_home = string_null;
+			spot.team_str_home = "";
 			spot.nextthink = time + 1;
 			spot.think = SUB_Remove;
 		}
@@ -1316,7 +1316,7 @@ void() TeamFortress_GrenadePrimed =
 		newmis.skin = 0;
 		newmis.avelocity = '0 0 0';
 		newmis.velocity = '0 0 0';
-		setmodel (newmis, string_null);
+		setmodel (newmis, "");
 	}
     else if (self.weapon == GR_TYPE_ANTIGRAV)
 	{
@@ -2447,14 +2447,14 @@ void() TeamFortress_SetEquipment =
 		self.solid = SOLID_NOT;
 		self.movetype = MOVETYPE_NOCLIP;
 
-		self.model = string_null;
-		self.mdl = string_null;
+		self.model = "";
+		self.mdl = "";
 		self.modelindex = 0;
-		self.weaponmodel = string_null;
+		self.weaponmodel = "";
 		modelindex_player = 0;
 		self.tfstate = self.tfstate | TFSTATE_RELOADING;
 	
-		setmodel(self, string_null);
+		setmodel(self, "");
 	}
     
     
@@ -3560,7 +3560,7 @@ void() TeamFortress_DisplayDetectionItems =
 		return;
 
 	// Check to make sure they've got some strings
-	if (Goal.team_str_home == string_null)
+	if (!Goal.team_str_home)
 		return;
 
 	if (Goal.display_item_status1 != 0)
@@ -3929,9 +3929,9 @@ void() PlayerObserverMode =
 	//self.movetype = MOVETYPE_NOCLIP;
 	self.movetype = MOVETYPE_FLY;
 
-	self.model = string_null;
-	self.mdl = string_null;
-	setmodel(self, string_null);
+	self.model = "";
+	self.mdl = "";
+	setmodel(self, "");
 
 	self.velocity = '0 0 0';
 	self.avelocity = '0 0 0';

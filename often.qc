@@ -140,19 +140,19 @@ void () UpdateInfos =
 		no_chaplan = 0;
 
     st = infokey(world, "max_mines"); //
-    if (st==string_null) st="4"; //sets default, 4 max mines
+    if (!st) st="4"; //sets default, 4 max mines
     max_mines = stof(st);
     if (max_mines < 2 ) max_mines = 2; // the allowed minimum are 2 mines
     else if (max_mines > 8) max_mines = 8; //the allowed maximum is 8 mines	
 
     st = infokey(world, "custom_mode"); //
-    if (st==string_null) st="0"; //sets default
+    if (!st) st="0"; //sets default
     custom_mode = stof(st);
     if (custom_mode < 0 ) custom_mode = 0; // the allowed minimum 
     else if (custom_mode > 2) custom_mode = 2; //the allowed maximum
 
     st = infokey(world, "stock_mode"); //
-    if (st==string_null) st="0"; //sets default
+    if (!st) st="0"; //sets default
     stock_mode = stof(st);
     if (stock_mode < 0 ) stock_mode = 0; // the allowed minimum 
     else if (stock_mode > 2) stock_mode = 2; //the allowed maximum
@@ -160,7 +160,7 @@ void () UpdateInfos =
     if (stock_mode == 2 && custom_mode == 2) custom_mode = 0;
 
     st = infokey(world, "army_delay"); //
-    if (st==string_null) st="5"; //sets default
+    if (!st) st="5"; //sets default
     army_delay = stof(st);
     if (army_delay < 2 ) army_delay = 2; // the allowed minimum 
     else if (army_delay > 60) army_delay = 60; //the allowed maximum

@@ -45,7 +45,7 @@ float(entity person) Is_Admin =
 	else
 	{
 		pass = infokey(world, "adminpwd");
-		if (pass != string_null)
+		if (pass)
 		{
 			if (infokey(person, "adminpwd") == pass)
 			{
@@ -69,7 +69,7 @@ void(entity person) Check_Admin_Password =
 
     local string pass;
     pass = infokey(world, "adminpwd");
-    if (pass != string_null)
+    if (pass)
     {
         if (infokey(person, "adminpwd") == pass)
         {
@@ -270,7 +270,7 @@ void() Admin_Cmd =
             return;
     
         st = infokey(self, "cmnd");
-        if (st == string_null)
+        if (!st)
         {
             sprint(self, PRINT_HIGH, "You have no CMND set!\n");
         }
@@ -282,7 +282,7 @@ void() Admin_Cmd =
             tf = 0;
             st2 = infokey(world, "curse");
             
-            if (st2 == string_null) 
+            if (!st2) 
                 tf = stof(st2);
             
             bprint(PRINT_HIGH,"The admin ");

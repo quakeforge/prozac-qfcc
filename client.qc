@@ -379,7 +379,7 @@ void () TeamAllPlayers =
 	dremove(other);
 	
 	st = infokey(world, "pm");
-	if (st == string_null) // if 'pm' isn't set, try 'prematch'
+	if (!st) // if 'pm' isn't set, try 'prematch'
 		st = infokey(world, "prematch");
 	if (st == "on") // if it reads 'on', do a 30 second prematch
 		prematchtime = time + 30;
@@ -564,7 +564,7 @@ void() DecodeLevelParms =
 
 		// AUTOTEAM
 		st = infokey(world, "a");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "autoteam");
 		if (st == "on")
 			toggleflags = toggleflags | TFLAG_AUTOTEAM;
@@ -578,7 +578,7 @@ void() DecodeLevelParms =
 
 		// TEAMFRAGS
 		st = infokey(world, "t");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "teamfrags");
 		if (st == "on")
 			toggleflags = toggleflags | TFLAG_TEAMFRAGS;
@@ -587,7 +587,7 @@ void() DecodeLevelParms =
 
 		//WK JELLO WATER
 		st = infokey(world, "j");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "jello");
 		if (st == "on")
 			jello = TRUE;
@@ -603,7 +603,7 @@ void() DecodeLevelParms =
 		//WK JELLO WATER
 		light_damage = FALSE;
 		st = infokey(world, "ld");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "lightdamage");
 		if (st == "on")
 			light_damage = TRUE;
@@ -613,7 +613,7 @@ void() DecodeLevelParms =
 		// useful until the prematch is over!
 		
 		st = infokey(world, "pm");
-		if (st == string_null) // if 'pm' isn't set, try 'prematch'
+		if (!st) // if 'pm' isn't set, try 'prematch'
 			st = infokey(world, "prematch");
 		if (st == "on") // if it reads 'on', do a 30 second prematch
 			prematchtime = time + 30;
@@ -630,7 +630,7 @@ void() DecodeLevelParms =
 		
 		//WK Bounty System
 		st = infokey(world, "bounty");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "moola");
 		if (st == "on")
 			bounty = TRUE;
@@ -639,7 +639,7 @@ void() DecodeLevelParms =
 
 		//CH Sets the starting amount of money :)
 		st = infokey(world, "m");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "money");
 		local float numba;
 		numba = stof(st);
@@ -650,7 +650,7 @@ void() DecodeLevelParms =
 
 		// GRAPPLING HOOK
 		st = infokey(world, "g");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "grapple");
 		if (st == "off")
 			allow_hook = FALSE;
@@ -664,7 +664,7 @@ void() DecodeLevelParms =
 
 		// SPY INVIS ONLY
 		st = infokey(world, "s");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "spyinvis");
 		if (st == "on" || toggleflags & TFLAG_SPYINVIS)
 			invis_only = TRUE;
@@ -673,7 +673,7 @@ void() DecodeLevelParms =
 
 		// RespawnDelay
 		st = infokey(world, "rd");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "respawn_delay");
 		respawn_delay_time = stof(st);
 		if (respawn_delay_time)
@@ -881,7 +881,7 @@ float() DoExtraCycle =
     //- OfN - I tried to make this work like in tf2.8 -//
     local string nfmap, temp;
     nfmap = infokey(world, "nmap");
-    if (nfmap != string_null)
+    if (nfmap)
     {
         local float minplayers, maxplayers, itsok, currentpl;
         
@@ -1081,7 +1081,7 @@ void() LoadNextMap =
 	if (mapcount == 0)
 	{
 		cyc = infokey(world, "cycledir");
-		if ( cyc == string_null )
+		if (!cyc)
 			cyc = "qwmcycle";
 
 		localcmd("exec ");
@@ -1981,7 +1981,7 @@ void() PutClientInServer =
 			CenterPrint(self, spot.message);
 
 			if (!(spot.goal_activation & TFSP_MULTIPLEMSGS))
-				spot.message = string_null;
+				spot.message = "";
 		}
 
 		// Activate a Goal if needed
@@ -1996,13 +1996,13 @@ void() PutClientInServer =
 		if (spot.goal_effects == TFSP_REMOVESELF)
 		{
 			spot.classname = "deadpoint";
-			spot.team_str_home = string_null;
+			spot.team_str_home = "";
 			spot.nextthink = time + 1;
 			spot.think = SUB_Remove;
 		}
 	}
 
-	setmodel (self, string_null);
+	setmodel (self, "");
 	modelindex_null = self.modelindex;
 
 	setmodel (self, "progs/eyes.mdl");
@@ -2617,7 +2617,7 @@ void() PlayerPreThink =
 		{
 			foo = infokey(self,"ping");
 			ping = 200;
-			if (foo != string_null)
+			if (foo)
 				ping = stof(foo);
 			if (ping < 300) {
 				self.velocity_x = floor((3 * self.velocity_x) / 4);
@@ -3029,8 +3029,6 @@ void() PlayerPostThink =
 				sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
 	}
 
-	self.netname = infokey(self, "name");
-
 	self.jump_flag = self.velocity_z;
 
 	CheckPowerups ();
@@ -3101,7 +3099,7 @@ void() ClientConnect =
 
 //RJM
 	st = infokey(self, "sbr");
-	if (st == string_null)
+	if (!st)
 //RJM
 		st = infokey(self, "sbar_res");
 	if (st == "768")
@@ -3124,7 +3122,7 @@ void() ClientConnect =
 		self.StatusBarRes = 0;
 //RJM
 	st = infokey(self, "sbs");
-	if (st == string_null)
+	if (!st)
 //RJM
 		st = infokey(self, "sbar_size");
 	self.StatusBarSize = stof(st);
@@ -3300,9 +3298,14 @@ void() ClientDisconnect =
 	} while (mrmartyr != world);
 
 	set_suicide_frame ();
-	self.netname = string_null;
+	self.netname = "";
 	self.team_no = 0;
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NONE; //WK Stop crashing MOVETYPE_WALK bug?
 	setsize(self, '0 0 0', '0 0 0');
+};
+
+string (string s) quotename =
+{
+	return "\xFF" + s + "\xFF";
 };

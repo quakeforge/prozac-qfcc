@@ -114,7 +114,7 @@ float() DoorShouldOpen =
 	{
 		if (!(ptr.tf_items & self.items) && ptr.playerclass != PC_UNDEFINED
 										 && ptr.solid != SOLID_NOT
-										 && ptr.model != string_null)
+										 && ptr.model)
 		{
 			plyrcount = plyrcount + 1;
 			if (plyrcount == 1)

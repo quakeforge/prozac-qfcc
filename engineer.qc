@@ -94,7 +94,7 @@ void() LaserBolt_Touch =
 		self.velocity = self.oldorigin;
 		self.owner = other;
 
-		setmodel (self, string_null);
+		setmodel (self, "");
 		self.touch = SUB_Null;
 //		self.solid = SOLID_NOT;
 //		self.movetype = MOVETYPE_NOCLIP;
@@ -106,7 +106,7 @@ void() LaserBolt_Touch =
 	else
 	{
 		//WK Fly through walls!
-		setmodel (self, string_null);
+		setmodel (self, "");
 		self.touch = SUB_Null;
 		self.solid = SOLID_NOT;
 		self.movetype = MOVETYPE_NOCLIP;

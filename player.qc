@@ -1363,7 +1363,7 @@ void() set_suicide_frame =
 	self.deadflag = DEAD_DEAD;
 	self.nextthink = -1;
 */
-	setmodel(self, string_null);
+	setmodel(self, "");
 	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 };
 

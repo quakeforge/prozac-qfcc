@@ -406,9 +406,9 @@ void(entity demon) custom_demon_name =
 	if (demon.has_camera == 3 || demon.has_camera == 4) //CH // SB - if we have a d already, use rand name
 	{
 		happy = infokey(demon.real_owner,"demon");
-		if (happy == string_null)
+		if (!happy)
 			happy = infokey(demon.real_owner,"d");
-		if (happy == string_null)
+		if (!happy)
 			demon.has_camera = 2;
 		else
 			demon.has_camera = 3;

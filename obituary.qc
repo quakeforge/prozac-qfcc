@@ -1498,21 +1498,21 @@ void(entity targ, entity attacker) ClientObituary =
 				}
 				else if (deathmsg == DMSG_BUG_ZAPPER)
 				{
-					if (rnum < 0.25) {
+					if (rnum < 0.20) {
 						deathstring = " made a frying sound after running into ";
 						deathstring2 = "'s Sentry Point Defense System\n";
-					}
-					else if (rnum < 0.5) {
+					} else if (rnum < 0.4) {
 						deathstring = " is cooked at 400 degrees by ";
 						deathstring2 = "'s sentry gun\n";
-					}
-					else if (rnum < 0.75) {
-						deathstring = " is disentegrated by ";
+					} else if (rnum < 0.6) {
+						deathstring = " is disintegrated by ";
 						deathstring2 = "'s Sentry Point Defense System\n";
-					}
-					else {
+					} else if (rnum < 0.8) {
 						deathstring = " is obliterated by ";
 						deathstring2 = "'s sentry gun\n";
+					} else {
+						deathstring = " decides ";
+						deathstring2 = "'s sentry isn't so cuddly after all!\n";
 					}
 				}
 				bprint(PRINT_MEDIUM, targ.netname);
@@ -1543,10 +1543,15 @@ void(entity targ, entity attacker) ClientObituary =
 
 			if (rnum == -3)
 			{
-				if (random() < 0.5)
+				local float i = random ();
+				if (i < 0.25)
 					deathstring = " sleeps with the fishes\n";
-				else
+				else if (i < 0.5)
 					deathstring = " ate before swimming\n"; //CH
+				else if (i < 0.75)
+					deathstring = " was searching for Atlantis when he drowned\n";
+				else
+					deathstring = " thought he was Jacques Cousteau, but forgot his diving gear!\n";
 			}
 			else if (rnum == -4)
 			{
@@ -1576,7 +1581,7 @@ void(entity targ, entity attacker) ClientObituary =
 			}			
 			else if (attacker.classname == "trap_shooter" || attacker.classname == "trap_spikeshooter" || attacker.classname == "trap_tf_spikeshooter" || attacker.classname == "trap_tf_shooter")
 			{
-				if (attacker.deathtype != string_null)
+				if (attacker.deathtype)
 					deathstring = attacker.deathtype;
 				else if (attacker.spawnflags == SPAWNFLAG_LASER)
 					deathstring = " had surgery from a laser\n";
@@ -2878,7 +2883,7 @@ void(entity targ, entity attacker) ClientObituary =
 		}
 		else if (attacker.classname == "trap_shooter" || attacker.classname == "trap_spikeshooter" || attacker.classname == "trap_tf_spikeshooter" || attacker.classname == "trap_tf_shooter")
 		{
-			if (attacker.deathtype != string_null)
+			if (attacker.deathtype)
 				deathstring = attacker.deathtype;
 			else if (attacker.spawnflags == SPAWNFLAG_LASER)
 				deathstring = " had surgery from a laser\n";

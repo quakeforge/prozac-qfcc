@@ -258,7 +258,7 @@ void(float inAuto) TeamFortress_ID =
 					}
 				}
 
-				if (trace_ent.undercover_name != string_null)
+				if (trace_ent.undercover_name)
 				{
 					if (trace_ent.undercover_skin != 0)
 						centerprint(self, spacer, trace_ent.undercover_name, "\n\nΕξενω ", cls, "\n");

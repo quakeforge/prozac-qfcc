@@ -468,7 +468,7 @@ void(entity spy) TeamFortress_SpyCalcName =
 {
 	local entity te;
 
-	spy.undercover_name = string_null;
+	spy.undercover_name = "";
 	// Find a player on the team the spy is disguised as to pretend to be
 	if (spy.undercover_team != 0)
 	{
@@ -486,7 +486,7 @@ void(entity spy) TeamFortress_SpyCalcName =
 		}
 
 		// If we couldn't, just find one of that team
-		if (spy.undercover_name == string_null)
+		if (!spy.undercover_name)
 		{
 			te = find(world, classname, "player");
 			while (te)

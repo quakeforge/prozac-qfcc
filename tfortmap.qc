@@ -99,41 +99,41 @@ void(entity Goal) UpdateAbbreviations =
 		if (Goal.g_e != 0 && Goal.goal_effects == 0)
 			Goal.goal_effects = Goal.g_e;
 		// Strings
-		if (Goal.t_s_h != string_null)
+		if (Goal.t_s_h)
 			Goal.team_str_home = Goal.t_s_h;
-		if (Goal.t_s_m != string_null)
+		if (Goal.t_s_m)
 			Goal.team_str_moved = Goal.t_s_m;
-		if (Goal.t_s_c != string_null)
+		if (Goal.t_s_c)
 			Goal.team_str_carried = Goal.t_s_c;
-		if (Goal.n_s_h != string_null)
+		if (Goal.n_s_h)
 			Goal.non_team_str_home = Goal.n_s_h;
-		if (Goal.n_s_m != string_null)
+		if (Goal.n_s_m)
 			Goal.non_team_str_moved = Goal.n_s_m;
-		if (Goal.n_s_c != string_null)
+		if (Goal.n_s_c)
 			Goal.non_team_str_carried = Goal.n_s_c;
-		if (Goal.b_b != string_null)
+		if (Goal.b_b)
 			Goal.broadcast = Goal.b_b;
-		if (Goal.b_t != string_null)
+		if (Goal.b_t)
 			Goal.team_broadcast = Goal.b_t;
-		if (Goal.b_n != string_null)
+		if (Goal.b_n)
 			Goal.non_team_broadcast = Goal.b_n;
-		if (Goal.b_o != string_null)
+		if (Goal.b_o)
 			Goal.owners_team_broadcast = Goal.b_o;
-		if (Goal.n_b != string_null)
+		if (Goal.n_b)
 			Goal.netname_broadcast = Goal.n_b;
-		if (Goal.n_t != string_null)
+		if (Goal.n_t)
 			Goal.netname_team_broadcast = Goal.n_t;
-		if (Goal.n_n != string_null)
+		if (Goal.n_n)
 			Goal.netname_non_team_broadcast = Goal.n_n;
-		if (Goal.n_o != string_null)
+		if (Goal.n_o)
 			Goal.netname_owners_team_broadcast = Goal.n_o;
-		if (Goal.d_t != string_null)
+		if (Goal.d_t)
 			Goal.team_drop = Goal.d_t;
-		if (Goal.d_n != string_null)
+		if (Goal.d_n)
 			Goal.non_team_drop = Goal.d_n;
-		if (Goal.d_n_t != string_null)
+		if (Goal.d_n_t)
 			Goal.netname_team_drop = Goal.d_n_t;
-		if (Goal.d_n_n != string_null)
+		if (Goal.d_n_n)
 			Goal.netname_non_team_drop = Goal.d_n_n;
 		Goal.has_disconnected = TRUE;
 	}
@@ -172,11 +172,11 @@ void() TF_PlaceItem =
 
 //CH sets goal bounding box size
 
-	if (self.goal_min != vector_null)
+	if (self.goal_min)
 		temp1 = self.goal_min;
 	else
 		temp1 = '-16 -16 -24';
-	if (self.goal_max != vector_null)
+	if (self.goal_max)
 		temp2 = self.goal_max;
 	else
 		temp2 = '16 16 32';
@@ -389,11 +389,11 @@ void() info_tfgoal =
 		self.goal_state = TFGS_INACTIVE;
 
 //CH sets goal bounding box size
-	if (self.goal_min != vector_null)
+	if (self.goal_min)
 		temp1 = self.goal_min;
 	else
 		temp1 = '-16 -16 -24';
-	if (self.goal_max != vector_null)
+	if (self.goal_max)
 		temp2 = self.goal_max;
 	else
 		temp2 = '16 16 32';
@@ -517,11 +517,11 @@ void() item_tfgoal =
 		self.pausetime = self.delay;
 
 //CH sets goal bounding box size
-	if (self.goal_min != vector_null)
+	if (self.goal_min)
 		temp1 = self.goal_min;
 	else
 		temp1 = '-16 -16 -24';
-	if (self.goal_max != vector_null)
+	if (self.goal_max)
 		temp2 = self.goal_max;
 	else
 		temp2 = '16 16 32';
@@ -540,7 +540,7 @@ void(entity AD) ParseTFDetect =
 {
 	// Check Version
 /*
-	if (AD.broadcast != string_null)
+	if (AD.broadcast)
 	{
 		if (AD.broadcast != "TeamFortress v2.5")
 		{
@@ -554,7 +554,7 @@ void(entity AD) ParseTFDetect =
 */
 
 	// Set the team menu string
-	if (AD.team_broadcast != string_null)
+	if (AD.team_broadcast)
 		team_menu_string = AD.team_broadcast;
 
 	// Set toggleflags (DEFUNCT)
@@ -726,7 +726,7 @@ void(entity Goal) InactivateGoal =
 				Goal.solid = SOLID_TRIGGER;
 		}
 		Goal.goal_state = TFGS_INACTIVE;
-		if (Goal.mdl != string_null)
+		if (Goal.mdl)
 			setmodel(Goal, Goal.mdl);
 	}
 #ifdef MAP_DEBUG
@@ -757,7 +757,7 @@ void(entity Goal) RestoreGoal =
 		else
 			Goal.solid = SOLID_TRIGGER;
 
-		if (Goal.mdl != string_null)
+		if (Goal.mdl)
 			setmodel(Goal, Goal.mdl);
 
 		if (Goal.goal_state == TFGS_REMOVED)
@@ -782,7 +782,7 @@ void(entity Goal) RestoreGoal =
 			Goal.nextthink = time + Goal.search_time;
 		Goal.goal_state = TFGS_INACTIVE;
 
-//		if (Goal.mdl != string_null)
+//		if (Goal.mdl)
 //			setmodel(Goal, Goal.mdl);
 	}
 #ifdef MAP_DEBUG
@@ -811,8 +811,8 @@ void(entity Goal) RemoveGoal =
 
 	Goal.solid = SOLID_NOT;
 	Goal.goal_state = TFGS_REMOVED;
-	if (Goal.mdl != string_null)
-		setmodel(Goal, string_null);
+	if (Goal.mdl)
+		setmodel(Goal, "");
 };
 
 //=========================================================================
@@ -1559,8 +1559,8 @@ void(entity Goal) SetupRespawn =
 	{
   		Goal.nextthink = time + Goal.wait;
 		Goal.think = DoRespawn;
-		if (Goal.mdl != string_null)       //CH if it has mdl, remove it so
-			setmodel(Goal, string_null); //that people dont think it works
+		if (Goal.mdl)       //CH if it has mdl, remove it so
+			setmodel(Goal, ""); //that people dont think it works
 		return;
 	}
 	// Permanently active goal?
@@ -1593,7 +1593,7 @@ float(entity Goal, entity AP) Activated =
 	#else
 		RPrint("\nGoal: ");
 	#endif
-	if (Goal.netname == string_null)
+	if (!Goal.netname)
 		RPrint(Goal.classname);
 	else
 		RPrint(Goal.netname);
@@ -1787,7 +1787,7 @@ void(entity Goal, entity AP) DoGoalWork =
 		if (te)
 		{
 			te.goal_state = TFGS_REMOVED;
-			te.team_str_home = string_null;
+			te.team_str_home = "";
 		}
 	}
 
@@ -1945,7 +1945,7 @@ void(entity Goal, entity AP) DoGroupWork =
 			if (tg.group_no == Goal.remove_spawngroup)
 			{
 				tg.goal_state = TFGS_REMOVED;
-				tg.team_str_home = string_null;
+				tg.team_str_home = "";
 			}
 	
 			tg = find(tg, classname, "info_player_teamspawn");
@@ -2063,7 +2063,7 @@ void(entity Goal, entity AP) DoTriggerWork =
 	local entity otemp, stemp, t;
 
 #ifdef MAP_DEBUG
-	if (Goal.killtarget != string_null)
+	if (Goal.killtarget)
 	{
 		RPrint("Killing Target(s): ");
 		RPrint(Goal.killtarget);
@@ -2086,7 +2086,7 @@ void(entity Goal, entity AP) DoTriggerWork =
 	}
 
 #ifdef MAP_DEBUG
-	if (Goal.target != string_null)
+	if (Goal.target)
 	{
 		RPrint("Activating Target(s): ");
 		RPrint(Goal.target);
@@ -2370,9 +2370,9 @@ void(entity Goal, entity AP, float addb) DoResults =
 	while (te != world)
 	{
 		// Centerprinting
-		if (Goal.broadcast != string_null && CTF_Map == FALSE)
+		if (Goal.broadcast && CTF_Map == FALSE)
 			CenterPrint2(te, "\n\n\n", Goal.broadcast);
-		if (Goal.netname_broadcast != string_null && CTF_Map == FALSE)
+		if (Goal.netname_broadcast && CTF_Map == FALSE)
 		{
 			sprint(te, PRINT_HIGH, AP.netname);
 			sprint(te, PRINT_HIGH, Goal.netname_broadcast);
@@ -2380,22 +2380,22 @@ void(entity Goal, entity AP, float addb) DoResults =
 
 		if (AP == te)
 		{
-			if (Goal.message != string_null)
+			if (Goal.message)
 				CenterPrint2(te, "\n\n\n", Goal.message);
 		}
 		else if (AP.team_no == te.team_no)
 		{
-			if (Goal.owners_team_broadcast != string_null && te.team_no == Goal.owned_by)
+			if (Goal.owners_team_broadcast && te.team_no == Goal.owned_by)
 				CenterPrint2(te, "\n\n\n", Goal.owners_team_broadcast);
-			else if (Goal.team_broadcast != string_null)
+			else if (Goal.team_broadcast)
 				CenterPrint2(te, "\n\n\n", Goal.team_broadcast);
 
-			if (Goal.netname_owners_team_broadcast != string_null && te.team_no == Goal.owned_by)
+			if (Goal.netname_owners_team_broadcast && te.team_no == Goal.owned_by)
 			{
 				sprint(te, PRINT_HIGH, AP.netname);
 				sprint(te, PRINT_HIGH, Goal.netname_owners_team_broadcast);
 			}
-			else if (Goal.netname_team_broadcast != string_null)
+			else if (Goal.netname_team_broadcast)
 			{
 				sprint(te, PRINT_HIGH, AP.netname);
 				sprint(te, PRINT_HIGH, Goal.netname_team_broadcast);
@@ -2403,17 +2403,17 @@ void(entity Goal, entity AP, float addb) DoResults =
 		}
 		else
 		{
-			if (Goal.owners_team_broadcast != string_null && te.team_no == Goal.owned_by)
+			if (Goal.owners_team_broadcast && te.team_no == Goal.owned_by)
 				CenterPrint2(te, "\n\n\n", Goal.owners_team_broadcast);
-			else if (Goal.non_team_broadcast != string_null)
+			else if (Goal.non_team_broadcast)
 				CenterPrint2(te, "\n\n\n", Goal.non_team_broadcast);
 
-			if (Goal.netname_owners_team_broadcast != string_null && te.team_no == Goal.owned_by)
+			if (Goal.netname_owners_team_broadcast && te.team_no == Goal.owned_by)
 			{
 				sprint(te, PRINT_HIGH, AP.netname);
 				sprint(te, PRINT_HIGH, Goal.netname_owners_team_broadcast);
 			}
-			else if (Goal.netname_non_team_broadcast != string_null)
+			else if (Goal.netname_non_team_broadcast)
 			{
 				sprint(te, PRINT_HIGH, AP.netname);
 				sprint(te, PRINT_HIGH, Goal.netname_non_team_broadcast);
@@ -2765,8 +2765,8 @@ void(entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer =
 
 	Item.owner = AP;
 	// Remove it from the map
-	if (Item.mdl != string_null)
-		setmodel(Item, string_null);
+	if (Item.mdl)
+		setmodel(Item, "");
 	Item.solid = SOLID_NOT;
 
 	// Do the deeds on the player
@@ -2884,7 +2884,7 @@ void() ReturnItem =
 	self.enemy.movetype = MOVETYPE_NONE;
 	self.enemy.touch = item_tfgoal_touch;
 	self.enemy.origin = self.enemy.oldorigin;
-	if (self.enemy.mdl != string_null)
+	if (self.enemy.mdl)
 		setmodel(self.enemy, self.enemy.mdl);
 	setorigin(self.enemy, self.enemy.origin);
 	sound(self.enemy, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);
@@ -2999,9 +2999,9 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 		{
 			if (te.team_no == Item.owned_by)
 			{
-				if (Item.team_drop != string_null)
+				if (Item.team_drop)
 					CenterPrint2(te, "\n\n\n", Item.team_drop);
-				if (Item.netname_team_drop != string_null)
+				if (Item.netname_team_drop)
 				{
 				    sprint(te, PRINT_HIGH, AP.netname);
 					sprint(te, PRINT_HIGH, Item.netname_team_drop);
@@ -3009,9 +3009,9 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 			}
 			else // (te.team_no != Item.owned_by)
 			{
-				if (Item.non_team_drop != string_null)
+				if (Item.non_team_drop)
 					CenterPrint2(te, "\n\n\n", Item.non_team_drop);
-				if (Item.netname_non_team_drop != string_null)
+				if (Item.netname_non_team_drop)
 				{
 					sprint(te, PRINT_HIGH, AP.netname);
 					sprint(te, PRINT_HIGH, Item.netname_non_team_drop);
@@ -3207,18 +3207,18 @@ void(entity Item) tfgoalitem_drop =
 	setorigin(Item, Item.origin);
 
 //CH sets goal bounding box size
-	if (Item.goal_min != vector_null)
+	if (Item.goal_min)
 		temp1 = Item.goal_min;
 	else
 		temp1 = '-16 -16 -24';
-	if (Item.goal_max != vector_null)
+	if (Item.goal_max)
 		temp2 = Item.goal_max;
 	else
 		temp2 = '16 16 32';
 
 	setsize (Item, temp1, temp2); //CH sets box size from above
 
-	if (Item.mdl != string_null)
+	if (Item.mdl)
 		setmodel(Item, Item.mdl);
 	if (Item.goal_result & TFGR_DROPITEMS) //checks for dropitems
 	{
@@ -3277,7 +3277,7 @@ void() tfgoalitem_remove =
 		self.touch = item_tfgoal_touch;
 
 		self.origin = self.oldorigin;
-		if (self.mdl != string_null)
+		if (self.mdl)
 			setmodel(self, self.mdl);
 		setorigin (self, self.origin);
 
@@ -3292,7 +3292,7 @@ void() tfgoalitem_remove =
 		self.nextthink = time + 1;
 
 		// Do we need to do any CenterPrint2ing?
-		if (self.noise3 != string_null || self.noise4 != string_null)
+		if (self.noise3 || self.noise4)
 		{
 			te = find (world, classname, "player");
 			while (te)

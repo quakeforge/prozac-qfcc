@@ -18,7 +18,7 @@ void() Kick_My_Owner =
 	//Don't kick if cheats are off
 	off = FALSE;
 	nospeed = infokey(world,"nospeed");
-	if (nospeed != string_null) {
+	if (nospeed) {
 		off = stof(nospeed);
 	}
 	if (off) return;
@@ -69,7 +69,7 @@ void () TeamFortress_CheckForSpeed =
 
 	off = FALSE;
 	nospeed = infokey(world,"nospeed");
-	if (nospeed != string_null) {
+	if (nospeed) {
 		off = stof(nospeed);
 	}
 	if (off) return;

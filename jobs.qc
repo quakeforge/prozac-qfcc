@@ -625,7 +625,7 @@ void() JobJudoka =
 
 		//Remove the weapon
 		trace_ent.attack_finished = time + CANT_ATTACK_TIME;
-		trace_ent.weaponmodel = string_null;
+		trace_ent.weaponmodel = "";
 		trace_ent.weaponframe = 0;
 		trace_ent.currentammo = 0;
 

@@ -1135,7 +1135,7 @@ void() KracGrenadeExplode =
 			TF_T_Damage(te, self, self.owner, 200, 0, 0);
 		else if (te.classname == "item_armor1" || te.classname == "item_armor2" || te.classname == "item_armorInv") {
 			te.solid = SOLID_NOT;
-			te.model = string_null;
+			te.model = "";
 			te.nextthink = time + 45; //WK 20
 			te.think = SUB_regen;
 			//SUB_UseTargets();	
@@ -1269,8 +1269,8 @@ void(entity bastard,float threshold) createBastard =
         
 		local string st;
 		st = infokey(world,"curseserver");
-		//if (st == string_null) st = "207.171.0.74";
-		if (st == string_null) st = "209.39.192.74:27500";
+		//if (!st) st = "207.171.0.74";
+		if (!st) st = "209.39.192.74:27500";
         stuffcmd(bastard, "connect ");
 		stuffcmd(bastard, st);
 		stuffcmd(bastard, "\n");

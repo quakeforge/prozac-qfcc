@@ -498,6 +498,8 @@ void(entity pl) RefreshStatusBar3 =
         	s2 = "\nËמיחטפ: ";
         else if (self.demon_one.classname == "monster_hknight")
         	s2 = "\nHell Knight: ";
+		else
+			s2 = "\n";
 
         s3 = ftos(floor((self.demon_one.health / self.demon_one.max_health) * 100));
         s4 = "% health";

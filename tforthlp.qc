@@ -59,7 +59,7 @@ void() TeamFortress_MOTD =
 	{
 		//WK CHECK TO SEE IF WE ARE REDIRECTING PLAYERS
 		st = infokey(world, "redir");
-		if (st != string_null && st != "off") {
+		if (st && st != "off") {
 			stuffcmd(self,"connect ");
 			stuffcmd(self,st);
 			stuffcmd(self,"\n");
@@ -179,7 +179,7 @@ void() TeamFortress_HelpMap =
 	te = find(world, classname, "info_tfdetect");
 	if (te)
 	{
-		if (te.non_team_broadcast != string_null)
+		if (te.non_team_broadcast)
 		{
 			sprint (self, PRINT_HIGH, te.non_team_broadcast);
 			return;

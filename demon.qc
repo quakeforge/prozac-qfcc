@@ -677,7 +677,7 @@ void() respawn_demon =
 	self.health = 300;
 	self.oldorigin = self.origin;
 
-	self.target = string_null;
+	self.target = "";
 
 	HuntTarget();
 	dremove(self.owner);

@@ -383,7 +383,7 @@ void() FlameFollow =
 	}
 	else if (self.model == "progs/flame2.mdl")
 	{
-		self.model = string_null;
+		self.model = "";
 		setmodel(self, self.model);		
 	}
 

@@ -124,58 +124,58 @@ string(float tno) GetTeamName =
 
 	if (tno == 1)
 	{
-	    /*if (world.b_b != "" && world.b_b != string_null)
+	    /*if (world.b_b && world.b_b)
         {
             return world.b_b;
         }*/
 
         st = infokey(world, "team1");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "t1");
 
-		if (st == string_null || st == "")
+		if (!st || st == "")
 			return "blue";
 	}
 	else if (tno == 2)
 	{
-	    /*if (world.b_t != "" && world.b_t != string_null)
+	    /*if (world.b_t != "" && world.b_t)
         {
             return world.b_t;
         }*/
         
         st = infokey(world, "team2");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "t2");
 
-		if (st == string_null || st == "")
+		if (!st)
 			return "red";
 	}
 	else if (tno == 3)
 	{
-		/*if (world.b_n != "" && world.b_n != string_null)
+		/*if (world.b_n != "" && world.b_n)
         {
             return world.b_n;
         }*/
         
         st = infokey(world, "team3");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "t3");
 
-		if (st == string_null || st == "")
+		if (!st)
 			return "yell";
 	}
 	else if (tno == 4)
 	{
-		/*if (world.b_o != "" && world.b_o != string_null)
+		/*if (world.b_o != "" && world.b_o)
         {
             return world.b_o;
         }*/
 
         st = infokey(world, "team4");
-		if (st == string_null)
+		if (!st)
 			st = infokey(world, "t4");
 
-		if (st == string_null || st == "")
+		if (!st)
 			return "teal";
 	}
 	else 
@@ -380,14 +380,14 @@ void() TeamFortress_CheckTeamCheats =
 #endif
 
 	//WK Add in hack for "skins" cheat. This is as good a place as any
-	if (self.netname == string_null) {
+	if (!self.netname) {
 		stuffcmd(self,"name \"I'm a cheater even when RENAMED\"\n");
 		stuffcmd(self,"disconnect\n");
 	}
 
 	//WK Limit rate to 10k?
 	st = infokey(self,"rate");
-	if (st != string_null)
+	if (st)
 		rate = stof(st);
 	if (rate > 10000) {
 		stuffcmd(self,"rate 10000\n");
@@ -876,7 +876,7 @@ void(entity Player) TeamFortress_TeamShowMemberClasses =
 	{
 		if (((e.team_no == Player.team_no) || (e.team_no == 0)) && (e != Player))
 		{
-			if (e.model != string_null) // check if valid player
+			if (e.model) // check if valid player
 			{
 				if (!found)
 				{

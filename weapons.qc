@@ -3833,7 +3833,7 @@ void() CycleWeaponCommand =
 	local	float	it, am, cont, loopcount;
 	
 	// Some safety code
-	if (self.weaponmodel == string_null || self.current_weapon == 0)
+	if (!self.weaponmodel || self.current_weapon == 0)
 		return;
 
       if (self.tfstate & TFSTATE_RELOADING)

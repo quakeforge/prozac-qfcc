@@ -231,7 +231,7 @@ void() health_touch =
 
 					stuffcmd (other, "bf\n");
 					
-					self.model = string_null;
+					self.model = "";
 					self.solid = SOLID_NOT;
 
 					if (deathmatch != 2)		// deathmatch 2 is the silly old rules
@@ -269,7 +269,7 @@ void() health_touch =
 
 	stuffcmd (other, "bf\n");
 	
-	self.model = string_null;
+	self.model = "";
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
@@ -460,7 +460,7 @@ void() armor_touch =
 	}
 
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = "";
 	if (deathmatch != 2)
 		self.nextthink = time + 20;
 	if (coop)
@@ -638,7 +638,7 @@ void(entity ritem, entity act) Respawn_Item =
 	self = ritem;
 
 	// remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = "";
 	self.solid = SOLID_NOT;
 	if (deathmatch != 2)
 		self.nextthink = time + 30;
@@ -1371,7 +1371,7 @@ void() key_touch =
 	if (!coop)
 	{	
 		self.solid = SOLID_NOT;
-		self.model = string_null;
+		self.model = "";
 	}
 	else if (coop && self.deadflag)
 	{
@@ -1516,7 +1516,7 @@ void() sigil_touch =
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = "";
 	serverflags = serverflags | (self.spawnflags & 15);
 	self.classname = "";		// so rune doors won't find it
 	
@@ -1631,7 +1631,7 @@ void() powerup_touch =
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	other.items = other.items | self.items;
-	self.model = string_null;
+	self.model = "";
 
 // do the apropriate action
 	if (self.classname == "item_artifact_envirosuit")
