@@ -654,12 +654,13 @@ void(float cost, float item) BuyItem =
 	if (self.tf_items & item) //We are selling
 	{
 		if (item == NIT_HOVER_BOOTS && self.tf_items & NIT_HOVER_BOOTS_UPGRADE) {
-			self.money = self.money + 350; //sync with buying of upgrade
-			item = item & NIT_HOVER_BOOTS_UPGRADE;
+//			self.money = self.money + 350; //sync with buying of upgrade
+//			item &= ~NIT_HOVER_BOOTS_UPGRADE;
+			BuyItem (350, NIT_HOVER_BOOTS_UPGRADE); // sync with buying of upgrade
 		}
 
 		PrintRefund(cost);
-		self.tf_items = self.tf_items - item;
+		self.tf_items -= item;
 		return;
 	}
 	//Special rules
