@@ -479,6 +479,9 @@ void() worldspawn =
 
     precache_model2("progs/grunty.mdl");
 
+    precache_model2("progs/tf_flag.mdl");
+    precache_model2("progs/tf_stan.mdl");
+
     //- OfN
     Wiz_Precache();
     precache_sound2("weapons/detpack.wav");

@@ -115,6 +115,28 @@ void(entity targ, entity atk) Give_Frags_Player =
 		logfrag (targ, atk);
 	if (numfrags < 0)
 		logfrag (targ, targ);
+
+	if (toggleflags & TFLAG_FULLTEAMSCORE)
+	{
+		switch (atk.team_no)
+		{
+			case 1:
+				team1score += numfrags;
+				break;
+
+			case 2:
+				team2score += numfrags;
+				break;
+
+			case 3:
+				team3score += numfrags;
+				break;
+
+			case 4:
+				team4score += numfrags;
+				break;
+		}
+	}
 };
 
 

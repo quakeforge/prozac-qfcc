@@ -19,3 +19,7 @@
 									// In a map. Cannot be toggled by players.
 #define TFLAG_SPYINVIS		512		// Spy invisible only
 #define TFLAG_GRAPPLE		1024	// Grapple on/off
+#define TFLAG_FULLTEAMSCORE	2048
+#define TFLAG_FLAGEMU		4096
+#define TFLAG_WARSTANDARD	8192
+

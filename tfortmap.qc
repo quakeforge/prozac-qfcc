@@ -137,6 +137,33 @@ void(entity Goal) UpdateAbbreviations =
 			Goal.netname_non_team_drop = Goal.d_n_n;
 		Goal.has_disconnected = TRUE;
 	}
+
+	if (toggleflags & (TFLAG_WARSTANDARD | TFLAG_FLAGEMU))
+	{
+		local string newmdl;
+
+		if (toggleflags & TFLAG_WARSTANDARD)
+			newmdl = "progs/tf_stan.mdl";
+		else
+			newmdl = "progs/tf_flag.mdl";
+
+		switch (Goal.mdl)
+		{
+			case "progs/b_s_key.mdl":
+			case "progs/w_s_key.mdl":
+			case "progs/m_s_key.mdl":
+				Goal.skin = 1;
+				Goal.mdl = newmdl;
+				break;	
+
+			case "progs/b_g_key.mdl":
+			case "progs/w_g_key.mdl":
+			case "progs/m_g_key.mdl":
+				Goal.skin = 2;
+				Goal.mdl = newmdl;
+				break;
+		}
+	}
 };
 
 // Place the Goal Item
@@ -144,6 +171,15 @@ void() TF_PlaceItem =
 {
 	local vector temp1;
 	local vector temp2;
+
+	if (!toggleflags)
+		SetToggleFlags ();
+
+	UpdateAbbreviations (self);
+
+	// Graphic
+	if (self.mdl)
+		setmodel(self, self.mdl);
 
 	self.flags = FL_ITEM;				// make extra wide
 	self.touch = item_tfgoal_touch;
@@ -209,7 +245,6 @@ void() TF_PlaceItem =
 // Start the Goal Item
 void() TF_StartItem =
 {
-	UpdateAbbreviations(self);
 	self.nextthink = time + 0.2;	// items start after other solids
 	self.think = TF_PlaceItem;
 
@@ -221,6 +256,11 @@ void() TF_StartItem =
 // Place the Goal 
 void() TF_PlaceGoal =
 {
+	if (!toggleflags)
+		SetToggleFlags ();
+
+	UpdateAbbreviations (self);
+
 	if (self.classname != "info_tfgoal_timer")
 	{
 		// Only give touch functions to goals that can be activated by touch
@@ -247,7 +287,6 @@ void() TF_PlaceGoal =
 // Start the Goal 
 void() TF_StartGoal =
 {
-	UpdateAbbreviations(self);
 	self.nextthink = time + 0.2;	// goals start after other solids
 	self.think = TF_PlaceGoal;
 	self.use = info_tfgoal_use;
@@ -355,8 +394,9 @@ void() info_tfgoal =
 		// We try both, so at least one will work
 		precache_model(self.mdl);
 		precache_model2(self.mdl);
-		setmodel(self, self.mdl);
+		setmodel (self, self.mdl);
 	}
+
 	// Activation sound
 	if (self.noise)
 	{
@@ -467,6 +507,8 @@ void() item_tfgoal =
 		dremove(self);
 		return;
 	}
+
+	UpdateAbbreviations (self);
 
 	// Graphic
 	if (self.mdl)

@@ -427,18 +427,324 @@ void () TeamAllPlayers =
 	}
 };*/
 
-void() DecodeLevelParms =
+void() SetToggleFlags =
 {
-	local string st;
 	local entity ent;
+	local string st;
 	local float prematchtime;
 
+	allow_hook = 0;
+	invis_only = SPY_INVIS_ONLY;
+
+	if (coop || !deathmatch)
+	toggleflags = toggleflags | TFLAG_CLASS_PERSIST;
+
+	nextmap = mapname;
+
+#ifdef GRAPPLING_HOOK
+	allow_hook = TRUE;
+#endif
+
+	// Is this a FortressMap?
+	ent = find(NIL, classname, "info_tfdetect");
+	if (ent)
+	{
+		// Turn on Teamplay
+		if (teamplay == 0) {
+			cvar_set("teamplay","21?TeamFortress");
+			teamplay = 21;
+		}
+
+		// Parse the rest of the Detection details
+		ParseTFDetect(ent);
+
+		// If the number_of_teams wasn't set, then there's not TF
+		// spawnpoints on this lvl... so guess at 4 teams.
+		if (number_of_teams <= 0 || number_of_teams >= 5)
+			number_of_teams = 4;
+	}
+	else
+	{
+		// Is this a CTF map?
+		ent = find(NIL, classname, "info_player_team1");
+		if ((ent) || (CTF_Map == TRUE))
+		{
+			// Turn on CTF MAP
+			CTF_Map = TRUE;
+				// Turn on Teamplay
+			if (teamplay == 0) {
+				cvar_set("teamplay","21?TeamFortress");
+				teamplay = 21;
+			}
+				// Setup the CTF FlagCheck Timer
+			ent = spawn();
+			ent.nextthink = time + 30;
+			ent.think = CTF_FlagCheck;
+				number_of_teams = 2;
+		}
+		else // Normal map
+		{
+			number_of_teams = 4;
+		}
+			// set aiming level
+#ifndef NET_SERVER
+		cvar_set("sv_aim", "1");
+#endif
+		// Set life limits
+		team1lives = -1;
+		team2lives = -1;
+		team3lives = -1;
+		team4lives = -1;
+
+		// WK Clear our nextspam counters
+		team1nextspam = -1;
+		team2nextspam = -1;
+		team3nextspam = -1;
+		team4nextspam = -1;
+
+		// Set illegal playerclasses
+		illegalclasses1 = 0;
+		illegalclasses2 = 0;
+		illegalclasses3 = 0;
+		illegalclasses4 = 0;
+
+		// Set Team Limits
+		team1maxplayers = 100;
+		team2maxplayers = 100;
+		team3maxplayers = 100;
+		team4maxplayers = 100;
+		civilianteams = 0;
+	}
+
+	bprint (PRINT_HIGH, "Ќбр ќбне: ");
+	bprint (PRINT_HIGH, mapname);
+	bprint (PRINT_HIGH, "\n");
+
+	SetupTeamEqualiser();
+
+	if (NEVER_TEAMFRAGS)
+	{
+		toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
+	}
+
+	if (ALWAYS_TEAMFRAGS)
+	{
+		toggleflags = toggleflags | TFLAG_TEAMFRAGS;
+	}
+
+	if (CHECK_SPEEDS)
+	{
+		toggleflags = toggleflags | TFLAG_CHEATCHECK;
+	}
+
+	st = infokey(NIL, "temp1");
+	toggleflags = (toggleflags | TFLAG_FIRSTENTRY | stof(st));
+	local float autoteam_time;
+	autoteam_time = 30;
+	// check all serverinfo settings, to set the appropriate toggleflags
+
+	// AUTOTEAM
+	st = infokey(NIL, "a");
+	if (!st)
+		st = infokey(NIL, "autoteam");
+	if (st == "on")
+		toggleflags = toggleflags | TFLAG_AUTOTEAM;
+	else if (st == "off")
+		toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
+	else if (stof(st) != 0)
+	{
+		toggleflags = toggleflags | TFLAG_AUTOTEAM;
+		autoteam_time = stof(st);
+	}
+
+	// TEAMFRAGS
+	st = infokey(NIL, "t");
+	if (!st)
+		st = infokey(NIL, "teamfrags");
+	if (st == "on")
+		toggleflags = toggleflags | TFLAG_TEAMFRAGS;
+	else if (st == "off")
+		toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
+
+	//WK JELLO WATER
+	st = infokey(NIL, "j");
+	if (!st)
+		st = infokey(NIL, "jello");
+	if (st == "on")
+		jello = TRUE;
+	else {
+		local float numba;
+		numba = stof(st);
+		if (numba)
+			jello = numba;
+		else
+			jello = FALSE;
+	}
+
+	//WK JELLO WATER
+	light_damage = FALSE;
+	st = infokey(NIL, "ld");
+	if (!st)
+		st = infokey(NIL, "lightdamage");
+	if (st == "on")
+		light_damage = TRUE;
+	// SB New, improved TF 2.9 fake prematch mode!
+	// We can make a class, come in, run around, play tag the flag, but can't do anything
+	// useful until the prematch is over!
+
+	st = infokey(NIL, "pm");
+	if (!st) // if 'pm' isn't set, try 'prematch'
+		st = infokey(NIL, "prematch");
+	if (st == "on") // if it reads 'on', do a 30 second prematch
+		prematchtime = time + 30;
+	else // if it doesn't read 'on'...
+		prematchtime = stof(st); // turn the string into a float
+	if (prematchtime) // if we have prematch
+	{
+		prematch = time + prematchtime; // set it
+		autoteam_time = prematchtime;
+		toggleflags = toggleflags | TFLAG_AUTOTEAM;
+	}
+	else
+		prematch = FALSE; // otherwise, no prematch
+
+	//WK Bounty System
+	st = infokey(NIL, "bounty");
+	if (!st)
+		st = infokey(NIL, "moola");
+	if (st == "on")
+		bounty = TRUE;
+	else
+		bounty = FALSE;
+
+	//CH Sets the starting amount of money :)
+	st = infokey(NIL, "m");
+	if (!st)
+		st = infokey(NIL, "money");
+	local float numba;
+	numba = stof(st);
+	if (numba)
+		custom_money = numba;
+	else
+		custom_money = SPENDING_LIMIT;
+
+	// GRAPPLING HOOK
+	st = infokey(NIL, "g");
+	if (!st)
+		st = infokey(NIL, "grapple");
+	if (st == "off")
+		allow_hook = FALSE;
+	if (!(toggleflags & TFLAG_GRAPPLE) && st != "on")
+		allow_hook = FALSE;
+
+	// SPY OFF
+	st = infokey(NIL, "spy");
+	if (st == "off")
+		spy_off = TRUE;
+
+	// SPY INVIS ONLY
+	st = infokey(NIL, "s");
+	if (!st)
+		st = infokey(NIL, "spyinvis");
+	if (st == "on" || toggleflags & TFLAG_SPYINVIS)
+		invis_only = TRUE;
+	else if (st == "off")
+		invis_only = FALSE;
+
+	if (!teamplay)
+		invis_only = TRUE;
+
+	// RespawnDelay
+	st = infokey(NIL, "rd");
+	if (!st)
+		st = infokey(NIL, "respawn_delay");
+	respawn_delay_time = stof(st);
+	if (respawn_delay_time)
+		toggleflags = toggleflags | TFLAG_RESPAWNDELAY;
+
+	// If no Respawndelay has been specified, set the default
+	if (toggleflags & TFLAG_RESPAWNDELAY && respawn_delay_time == 0)
+		respawn_delay_time = RESPAWN_DELAY_TIME;
+
+	// Prevent autoteam from kicking in for 30 seconds.
+	// Allows restructuring of the teams from the last map nicely.
+	if (toggleflags & TFLAG_AUTOTEAM)
+	{
+		toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
+		ent = spawn();
+		ent.nextthink = time + autoteam_time;
+		ent.think = autoteam_think;
+	}
+
+	st = infokey (NIL, "improve_respawns");
+	if (st == "1" || st == "on") {
+		local entity ent = NIL;
+		while ((ent = find (ent, classname, "info_tfgoal"))) {
+			if (ent.ammo_shells && ent.ammo_nails
+				&& ent.ammo_rockets && ent.ammo_cells
+				&& ent.armorvalue && ent.health) {
+				if (ent.ammo_shells < 200)
+					ent.ammo_shells = 200;
+				if (ent.ammo_nails < 200)
+					ent.ammo_nails = 200;
+				if (ent.ammo_rockets < 200)
+					ent.ammo_rockets = 200;
+				if (ent.ammo_cells < 200)
+					ent.ammo_cells = 200;
+				if (ent.ammo_medikit < 100)
+					ent.ammo_medikit = 100;
+				if (ent.ammo_detpack < 2)
+					ent.ammo_detpack = 2;
+				if (ent.armortype < 0.8)
+					ent.armortype = 0.8;
+				if (ent.armorvalue < 300)
+					ent.armorvalue = 300;
+				if (ent.health < 200)
+					ent.health = 200;
+				if (ent.wait > 0)
+					ent.wait = 0.5;
+				if (ent.no_grenades_1 < 2)
+					ent.no_grenades_1 = 2;
+				if (ent.no_grenades_2 < 2)
+					ent.no_grenades_2 = 2;
+			}
+		}
+	}
+
+	st = infokey(NIL, "ir");
+	if (!st)
+		st = infokey(NIL, "instant_repair");
+	if (st == "1" || st == "on")
+		instant_repair = TRUE;
+	else
+		instant_repair = FALSE;
+
+	st = infokey(NIL, "fe");
+	if (!st)
+		st = infokey(NIL, "flag_emu");
+	if (st == "1" || st == "on")
+		toggleflags |= TFLAG_FLAGEMU;
+	else if (st == "0" || st == "off")
+		toggleflags &= ~TFLAG_FLAGEMU;
+
+	st = infokey(NIL, "ws");
+	if (!st)
+		st = infokey(NIL, "use_standard");
+	if (st == "1" || st == "on")
+		toggleflags |= TFLAG_WARSTANDARD;
+	else
+		toggleflags &= ~TFLAG_WARSTANDARD;
+
+};
+
+void() DecodeLevelParms =
+{
 	if (serverflags)
 	{
 		if (world.model == "maps/start.bsp")
 			SetNewParms ();		// take away all stuff on starting new episode
 	}
-	
+
 	self.items = parm1;
 	self.health = parm2;
 	self.armorvalue = parm3;
@@ -457,304 +763,7 @@ void() DecodeLevelParms =
 	if (toggleflags == 0)
 	{
 		toggleflags = parm10;
-		allow_hook = 0;
-		invis_only = SPY_INVIS_ONLY;
-
-		sprint (self, PRINT_HIGH, "check1, SPY_INVIS_ONLY? " + ftos (SPY_INVIS_ONLY) + " invis_only? "
-			 + ftos (invis_only) + "\n");
-
-		if (coop || !deathmatch)
-			toggleflags = toggleflags | TFLAG_CLASS_PERSIST;
-
-		nextmap = mapname;
-
-	#ifdef GRAPPLING_HOOK
-		allow_hook = TRUE;
-	#endif
-
-		// Is this a FortressMap?
-		ent = find(NIL, classname, "info_tfdetect");
-		if (ent)
-		{
-			// Turn on Teamplay
-			if (teamplay == 0) {
-				cvar_set("teamplay","21?TeamFortress");
-				teamplay = 21;
-			}
-
-			// Parse the rest of the Detection details
-			ParseTFDetect(ent);
-
-			// If the number_of_teams wasn't set, then there's not TF
-			// spawnpoints on this lvl... so guess at 4 teams.
-			if (number_of_teams <= 0 || number_of_teams >= 5)
-				number_of_teams = 4;
-		}
-		else
-		{
-			// Is this a CTF map?
-			ent = find(NIL, classname, "info_player_team1");
-			if ((ent) || (CTF_Map == TRUE))
-			{
-				// Turn on CTF MAP
-				CTF_Map = TRUE;
-
-				// Turn on Teamplay
-				if (teamplay == 0) {
-					cvar_set("teamplay","21?TeamFortress");
-					teamplay = 21;
-				}
-
-				// Setup the CTF FlagCheck Timer
-				ent = spawn();
-				ent.nextthink = time + 30;
-				ent.think = CTF_FlagCheck;
-
-				number_of_teams = 2;
-			}
-			else // Normal map
-			{
-				number_of_teams = 4;
-			}
-
-			// set aiming level
-#ifndef NET_SERVER
-			cvar_set("sv_aim", "1");
-#endif
-			// Set life limits
-			team1lives = -1;
-			team2lives = -1;
-			team3lives = -1;
-			team4lives = -1;
-
-			// WK Clear our nextspam counters
-			team1nextspam = -1;
-			team2nextspam = -1;
-			team3nextspam = -1;
-			team4nextspam = -1;
-
-			// Set illegal playerclasses
-			illegalclasses1 = 0;
-			illegalclasses2 = 0;
-			illegalclasses3 = 0;
-			illegalclasses4 = 0;
-
-			// Set Team Limits
-			team1maxplayers = 100;
-			team2maxplayers = 100;
-			team3maxplayers = 100;
-			team4maxplayers = 100;
-			civilianteams = 0;
-		}
-
-		bprint (PRINT_HIGH, "Ќбр ќбне: ");
-		bprint (PRINT_HIGH, mapname);
-		bprint (PRINT_HIGH, "\n");
-
-		SetupTeamEqualiser();
-
-		if (NEVER_TEAMFRAGS)
-		{
-			toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
-		}
-		
-		if (ALWAYS_TEAMFRAGS)
-		{
-			toggleflags = toggleflags | TFLAG_TEAMFRAGS;
-		}
-		
-		if (CHECK_SPEEDS)
-		{
-			toggleflags = toggleflags | TFLAG_CHEATCHECK;
-		}
-
-		st = infokey(NIL, "temp1");
-		toggleflags = (toggleflags | TFLAG_FIRSTENTRY | stof(st));
-
-		local float autoteam_time;
-		autoteam_time = 30;
-
-		// check all serverinfo settings, to set the appropriate toggleflags
-
-		// AUTOTEAM
-		st = infokey(NIL, "a");
-		if (!st)
-			st = infokey(NIL, "autoteam");
-		if (st == "on")
-			toggleflags = toggleflags | TFLAG_AUTOTEAM;
-		else if (st == "off")
-			toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
-		else if (stof(st) != 0)
-		{
-			toggleflags = toggleflags | TFLAG_AUTOTEAM;
-			autoteam_time = stof(st);
-		}
-
-		// TEAMFRAGS
-		st = infokey(NIL, "t");
-		if (!st)
-			st = infokey(NIL, "teamfrags");
-		if (st == "on")
-			toggleflags = toggleflags | TFLAG_TEAMFRAGS;
-		else if (st == "off")
-			toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
-
-		//WK JELLO WATER
-		st = infokey(NIL, "j");
-		if (!st)
-			st = infokey(NIL, "jello");
-		if (st == "on")
-			jello = TRUE;
-		else {
-			local float numba;
-			numba = stof(st);
-			if (numba)
-				jello = numba;
-			else
-				jello = FALSE;
-		}
-
-		//WK JELLO WATER
-		light_damage = FALSE;
-		st = infokey(NIL, "ld");
-		if (!st)
-			st = infokey(NIL, "lightdamage");
-		if (st == "on")
-			light_damage = TRUE;
-
-		// SB New, improved TF 2.9 fake prematch mode!
-		// We can make a class, come in, run around, play tag the flag, but can't do anything
-		// useful until the prematch is over!
-		
-		st = infokey(NIL, "pm");
-		if (!st) // if 'pm' isn't set, try 'prematch'
-			st = infokey(NIL, "prematch");
-		if (st == "on") // if it reads 'on', do a 30 second prematch
-			prematchtime = time + 30;
-		else // if it doesn't read 'on'...
-			prematchtime = stof(st); // turn the string into a float
-		if (prematchtime) // if we have prematch
-		{
-			prematch = time + prematchtime; // set it
-			autoteam_time = prematchtime;
-			toggleflags = toggleflags | TFLAG_AUTOTEAM;
-		}
-		else
-			prematch = FALSE; // otherwise, no prematch
-		
-		//WK Bounty System
-		st = infokey(NIL, "bounty");
-		if (!st)
-			st = infokey(NIL, "moola");
-		if (st == "on")
-			bounty = TRUE;
-		else
-			bounty = FALSE;
-
-		//CH Sets the starting amount of money :)
-		st = infokey(NIL, "m");
-		if (!st)
-			st = infokey(NIL, "money");
-		local float numba;
-		numba = stof(st);
-		if (numba)
-			custom_money = numba;
-		else
-			custom_money = SPENDING_LIMIT;
-
-		// GRAPPLING HOOK
-		st = infokey(NIL, "g");
-		if (!st)
-			st = infokey(NIL, "grapple");
-		if (st == "off")
-			allow_hook = FALSE;
-		if (!(toggleflags & TFLAG_GRAPPLE) && st != "on")
-			allow_hook = FALSE;
-
-		// SPY OFF
-		st = infokey(NIL, "spy");
-		if (st == "off")
-			spy_off = TRUE;
-
-		// SPY INVIS ONLY
-		st = infokey(NIL, "s");
-		if (!st)
-			st = infokey(NIL, "spyinvis");
-		if (st == "on" || toggleflags & TFLAG_SPYINVIS)
-			invis_only = TRUE;
-		else if (st == "off")
-			invis_only = FALSE;
-
-		if (!teamplay)
-			invis_only = TRUE;
-
-		sprint (self, PRINT_HIGH, "check2, st? " + st + " teamplay? " + ftos (teamplay) + " invis_only? "
-			+ ftos (invis_only) + "\n");
-
-		// RespawnDelay
-		st = infokey(NIL, "rd");
-		if (!st)
-			st = infokey(NIL, "respawn_delay");
-		respawn_delay_time = stof(st);
-		if (respawn_delay_time)
-			toggleflags = toggleflags | TFLAG_RESPAWNDELAY;
-
-		// If no Respawndelay has been specified, set the default
-		if (toggleflags & TFLAG_RESPAWNDELAY && respawn_delay_time == 0)
-			respawn_delay_time = RESPAWN_DELAY_TIME;
-
-		// Prevent autoteam from kicking in for 30 seconds.
-		// Allows restructuring of the teams from the last map nicely.
-		if (toggleflags & TFLAG_AUTOTEAM)
-		{
-			toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
-			ent = spawn();
-			ent.nextthink = time + autoteam_time;
-			ent.think = autoteam_think;
-		}
-
-		st = infokey (NIL, "improve_respawns");
-		if (st == "1" || st == "on") {
-			local entity ent = NIL;
-			while ((ent = find (ent, classname, "info_tfgoal"))) {
-				if (ent.ammo_shells && ent.ammo_nails
-					&& ent.ammo_rockets && ent.ammo_cells
-					&& ent.armorvalue && ent.health) {
-					if (ent.ammo_shells < 200)
-						ent.ammo_shells = 200;
-					if (ent.ammo_nails < 200)
-						ent.ammo_nails = 200;
-					if (ent.ammo_rockets < 200)
-						ent.ammo_rockets = 200;
-					if (ent.ammo_cells < 200)
-						ent.ammo_cells = 200;
-					if (ent.ammo_medikit < 100)
-						ent.ammo_medikit = 100;
-					if (ent.ammo_detpack < 2)
-						ent.ammo_detpack = 2;
-					if (ent.armortype < 0.8)
-						ent.armortype = 0.8;
-					if (ent.armorvalue < 300)
-						ent.armorvalue = 300;
-					if (ent.health < 200)
-						ent.health = 200;
-					if (ent.wait > 0)
-						ent.wait = 0.5;
-					if (ent.no_grenades_1 < 2)
-						ent.no_grenades_1 = 2;
-					if (ent.no_grenades_2 < 2)
-						ent.no_grenades_2 = 2;
-				}
-			}
-		}
-
-		st = infokey(NIL, "ir");
-		if (!st)
-			st = infokey(NIL, "instant_repair");
-		if (st == "1" || st == "on")
-			instant_repair = TRUE;
-		else
-			instant_repair = FALSE;
+		SetToggleFlags ();
 	}
 
 	if (parm11)
