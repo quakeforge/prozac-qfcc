@@ -4117,7 +4117,7 @@ void() ImpulseCommands =
 
 	if (self.impulse == TF_ALIASNEXT) {
 		self.impulse = 0;
-		self.got_aliases_num = ceil (self.got_aliases_num);
+		self.got_aliases_time = time;
 		return;
 	}
 

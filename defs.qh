@@ -325,6 +325,7 @@
 /*==================================================*/
 /* Impulse Defines		                        	*/
 /*==================================================*/
+// *must* be less than 4194304
 #define TF_ALIASVERSION 100
 
 // Alias check to see whether they already have the aliases

@@ -718,7 +718,7 @@ void() make_bubbles =
 	self.think = make_bubbles;
 };
 
-void() bubble_split =
+integer () bubble_split =
 {
 	newmis = spawn();
 	setmodel (newmis, "progs/s_bubble.spr");
@@ -735,8 +735,11 @@ void() bubble_split =
 	setsize (newmis, '-8 -8 -8', '8 8 8');
 	self.frame = 1;
 	self.cnt = 10;
-	if (self.waterlevel != 3)
+	if (self.waterlevel != 3) {
 		remove (self);
+		return 1;
+	}
+	return 0;
 };
 
 void() bubble_remove =
@@ -756,9 +759,12 @@ local vector	vtmp1, modi;
 
 	self.cnt = self.cnt + 1;
 	if (self.cnt == 4)
-		bubble_split();
-	if (self.cnt == 20)
+		if (bubble_split())
+			return;
+	if (self.cnt == 20) {
 		dremove(self);
+		return;
+	}
 
 	rnd1 = self.velocity_x + (-10 + (random() * 20));
 	rnd2 = self.velocity_y + (-10 + (random() * 20));

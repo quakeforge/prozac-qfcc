@@ -33,6 +33,9 @@ void() TeamFortress_MOTD =
 		stuffcmd (self, "alias_checkversion\n");
 		stuffcmd (self, "impulse " + ftos (TF_BITNONE) + "\n");
 		self.got_aliases = TF_GOTALIAS_CHECKING;
+		self.got_aliases_num = 0;
+		self.got_aliases_bits = 0;
+		self.got_aliases_time = 0;
 		self.show_hostile = 0;
 	} else if (self.got_aliases == TF_GOTALIAS_SETTING)
 		Alias_SetBatch ();
@@ -99,34 +102,34 @@ void() TeamFortress_MOTD =
 
 void() Alias_BitImpulse =
 {
-	local float imp = self.impulse;
+	local float inp = self.impulse;
 	self.impulse = 0;
 
 	if (self.got_aliases != TF_GOTALIAS_CHECKING)
 		return;
 
-	if (imp == TF_BITSTART)
+	if (inp == TF_BITSTART)
 		self.got_aliases_bits = 0;
-	else if (imp == TF_BIT0)
+	else if (inp == TF_BIT0)
 		self.got_aliases_bits = self.got_aliases_bits << 1;
-	else if (imp == TF_BIT1)
+	else if (inp == TF_BIT1)
 		self.got_aliases_bits = (self.got_aliases_bits << 1) | 1;
-	else if (imp == TF_BITEND)
+	else if (inp == TF_BITEND)
 		if (self.got_aliases_bits == TF_ALIASVERSION) {
 			self.got_aliases = TF_GOTALIAS_DONE;
 			sprint (self, PRINT_HIGH, "Alias version matched, keeping old aliases.\n");
 		} else {
 			self.got_aliases = TF_GOTALIAS_SETTING;
-			sprint (self, PRINT_HIGH, "Wrong alias version, resetting aliases. (found " + ftos (self.got_aliases_num) + ", wanted " + ftos (TF_ALIASVERSION) + ")\n");
-			self.got_aliases_num = 0;
+			sprint (self, PRINT_HIGH, "Wrong alias version, resetting aliases. (found " + ftos (self.got_aliases_bits) + ", wanted " + ftos (TF_ALIASVERSION) + ")\n");
+			self.got_aliases_bits = 0;
 		}
-	else if (imp == TF_BITNONE) {
+	else if (inp == TF_BITNONE) {
 		self.got_aliases = TF_GOTALIAS_SETTING;
-		self.got_aliases_num = 0;
+		self.got_aliases_bits = 0;
 		sprint (self, PRINT_HIGH, "No alias version found, setting aliases.\n");
 	}
 	else
-		error ("Bad impulse " + ftos (imp) + " in Alias_BitImpulse()!\n");
+		error ("Bad impulse " + ftos (inp) + " in Alias_BitImpulse()!\n");
 };
 
 #ifndef MSG_INTRO1
@@ -187,33 +190,19 @@ void() TeamFortress_HelpMap =
 	sprint (self, PRINT_HIGH, "There is no help for you.\n");
 };
 
-void() AliasTimer =
-{
-	if (self.owner.got_aliases != TF_GOTALIAS_SETTING) {
-		self.think = SUB_Remove;
-		self.nextthink = time + 0.1;
-		return;
-	}
-	if (self.owner.got_aliases_num == floor (self.owner.got_aliases_num)) // prevents conflicting with the impulse
-		self.owner.got_aliases_num = self.owner.got_aliases_num + 0.01;
-};
-
-
 void () Alias_SetBatch =
 {
 	local float num = self.got_aliases_num;
-	local entity atimer;
+
+	if (self.got_aliases_time > time)
+		return;
+
+	sprint (self, PRINT_MEDIUM, "num: " + ftos (num) + "\n\n");
 
 	if (self.got_aliases != TF_GOTALIAS_SETTING)
 		error ("AliasCheck() called with wrong got_aliases setting (" + ftos (self.got_aliases) + ")!\n");
 
 	if (num == 0) {
-        atimer = spawn ();
-        atimer.classname = "timer";
-        atimer.owner = self;
-        atimer.nextthink = time + 0.5;
-        atimer.heat = 0;
-        atimer.think = AliasTimer;
 	} else if (num == 1) {
 		//WK CustomTF Commands
 		TeamFortress_Alias("custom", (TF_CHANGEPC + PC_CUSTOM), 0);
@@ -351,14 +340,14 @@ void () Alias_SetBatch =
 		stuffcmd(self, "bind 9 \"impulse 9\"\n");
 		stuffcmd(self, "bind 0 \"impulse 10\"\n");
 #endif
-	} else if (num == 17) {
+	} else if (num == 19) {
 		// Set up the alias check
 //		TeamFortress_Alias ("prozacalias", TF_ALIAS_CHECK, 0);
 		stuffcmd (self, "alias bitstart \"impulse " + ftos(TF_BITSTART) + "; wait\"\n");
 		stuffcmd (self, "alias bit0 \"impulse " + ftos(TF_BIT0) + "; wait\"\n");
 		stuffcmd (self, "alias bit1 \"impulse " + ftos(TF_BIT1) + "; wait\"\n");
 		stuffcmd (self, "alias bitend \"impulse " + ftos(TF_BITEND) + "; wait\"\n");
-	} else if (num == 18) {
+	} else if (num == 20) {
 		// our version alias
 		local string bitstring = "";
 		local integer i = TF_ALIASVERSION;
@@ -372,15 +361,18 @@ void () Alias_SetBatch =
 		bitstring = "alias alias_checkversion \"bitstart; " + bitstring;
 		bitstring += "bitend\"\n";
 		stuffcmd (self, bitstring);
-	} else if (num > 18) {
+	} else if (num >= 21) {
 		//WK INTRO THUNDER
 		stuffcmd(self, "play ambience/thunder1\n");
 		self.got_aliases = TF_GOTALIAS_DONE;
 		sprint (self, PRINT_HIGH, "Done setting aliases.\n");
 		return;
-	} else
+	} else {
+		error ("Bad num in Alias_SetBatch: " + ftos (num) + "!\n");
 		return;
+	}
 
-	self.got_aliases_num = floor (self.got_aliases_num) + 0.1;
+	self.got_aliases_num = floor (num + 1);
+	self.got_aliases_time = time + 5;
 	stuffcmd (self, "impulse " + ftos (TF_ALIASNEXT) + "\n");
 };
