@@ -118,7 +118,8 @@ void() door_fire =
 	if (self.items)
 		sound (self, CHAN_VOICE, self.noise4, 1, ATTN_NORM);
 
-	self.message = "";		// no more message
+	if (self.owner)
+		self.message = "";		// no more message
 	oself = self;
 
 	if (self.spawnflags & DOOR_TOGGLE)
