@@ -14,7 +14,7 @@ void() JobCrusader =
 	self.StatusRefreshTime = time + 1;
 };
 
-float(vector veca, vector vecb) crossproduct;
+vector(vector veca, vector vecb) crossproduct;
 
 entity (entity crusader) Crusader_FindIdiot =
 {

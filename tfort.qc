@@ -3949,11 +3949,13 @@ void() PlayerObserverMode =
 
 //============================================================================
 // Return the crossproduct of 2 vectors
-float(vector veca, vector vecb) crossproduct =
+vector(vector veca, vector vecb) crossproduct =
 {
-	local float result;
+	local vector result;
 
-	result = (veca_x * vecb_y) - (vecb_x * veca_y);
+	result_x = (veca_y * vecb_z) - (vecb_y * veca_z);
+	result_y = (veca_z * vecb_x) - (vecb_z * veca_x);
+	result_z = (veca_x * vecb_y) - (vecb_x * veca_y);
 	return result;
 };
 

@@ -21,7 +21,7 @@ void (entity targ, entity inflictor, entity attacker, float damage, float T_flag
 void () player_run;
 void(entity bomb, entity attacker, float rad, entity ignore) T_RadiusDamage;
 void() TeamFortress_DisplayDetectionItems;
-float(vector veca, vector vecb) crossproduct;
+vector(vector veca, vector vecb) crossproduct;
 void(vector org, float damage) SpawnBlood;
 void(entity rhook) Reset_Grapple;
 void() SuperDamageSound;
@@ -323,7 +323,7 @@ void() W_FireAxe =
 				makevectors(self.angles);
 
 			// Backstab
-			if (crossproduct(def,v_forward) > 0)
+			if ((crossproduct(def,v_forward) * '0 0 1') > 0)
 			{
 				deathmsg = DMSG_BACKSTAB;
 				ThrowGib("progs/gib1.mdl", -50);
