@@ -647,7 +647,7 @@ void() TeamFortress_CheckTeamCheats =
 	}
 };
 
-void(string key, string value) UserInfoCallback =
+float(string key, string value) UserInfoCallback =
 {
 	local string oldval;
 	local string st;
@@ -656,7 +656,7 @@ void(string key, string value) UserInfoCallback =
 	if(value == oldval) // generic reject
 	{
 		bprint(#PRINT_MEDIUM, "[oldval (" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 1; // rejected!
+		return 0; // rejected!
 	}
 
 	if (key == "topcolor" || key == "bottomcolor")
@@ -668,7 +668,7 @@ void(string key, string value) UserInfoCallback =
 		stuffcmd(self, st);
 		stuffcmd(self, "\n");
 		bprint(#PRINT_MEDIUM, "[color (" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 1;
+		return 0;
 	}
 	else if (key == "skin")
 	{
@@ -676,12 +676,12 @@ void(string key, string value) UserInfoCallback =
 		stuffcmd(self, oldval);
 		stuffcmd(self, "\n");
 		bprint(#PRINT_MEDIUM, "[skin (" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 1;
+		return 0;
 	}
 	else
 	{
 		bprint(#PRINT_MEDIUM, "[default (" + key + ")(" + value + ")(" + oldval + ")]\n");
-		return 0; // accept everything else
+		return 1; // accept everything else
 	}
 };
 
