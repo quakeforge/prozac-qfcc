@@ -227,9 +227,9 @@ void() Security_Camera_Spawn =
 	self.has_camera = TRUE;
 	newmis = spawn();
 	newmis.movetype = MOVETYPE_BOUNCE;
+	newmis.solid = SOLID_BBOX;
 	setsize (newmis, '-16 -16 -3', '16 16 5');
 //	setsize (newmis, '-8 -8 -8', '8 8 8');
-	newmis.solid = SOLID_BBOX;
 	newmis.takedamage = DAMAGE_AIM;
 	newmis.classname = "building_camera";
 	newmis.netname = "security_camera";
@@ -284,8 +284,7 @@ void() SecurityCameraTossTouch =
     self.real_owner.option = time + 2; // so ppl cant destroy it for 2 seconds
 
 	self.movetype = MOVETYPE_NONE;
-	setsize (self, newmis.mins, newmis.maxs);
-	self.solid = SOLID_BBOX;
+	setsize (self, self.mins, self.maxs);
 	self.takedamage = DAMAGE_AIM;
 	sound (self, CHAN_WEAPON, "weapons/guerilla_set.wav", 1, ATTN_NORM);
 	self.think = Security_Camera_Idle;

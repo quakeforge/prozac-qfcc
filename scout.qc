@@ -108,7 +108,7 @@ void() FlashGrenadeExplode =
 				if (ft > 0)
 					te.FlashTime = ft;
 
-				stuffcmd (te, "v_cshift 255 255 255 245\n"); // big white flash
+				stuffcmd (te, "v_cshift 255 255 255 245; wait;wait;wait; bf\n"); // big white flash
 			}
 		}
 
@@ -692,7 +692,12 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 				if (!IsBuilding(head) && points > 0)
 				{
 					// Bounce!!
+#ifdef	NEW_CONCUSS_BOUNCE
 					head.velocity += normalize (org - inflictor.origin) * points * 8;
+#else
+					head.velocity = org - inflictor.origin;
+					head.velocity *= points / 20;
+#endif
 
 					if (head.classname != "player")
 					{
@@ -737,6 +742,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 							te.classname = "timer";
 							te.owner = head;
 							te.health += GR_CONCUSS_AMOUNT;
+							te.has_tesla = time + 0.1;
 						}
 					}
 				}
