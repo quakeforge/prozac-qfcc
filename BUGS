@@ -18,3 +18,5 @@
 - sometimes ID doesn't work.  this may be because impulses are unreliable though :/
 - minp/maxp are broken.  possibly compiler !string bug
 - rockets explode on observers
+- scuba gear doesn't set the rad suit anymore
+- I think getting a rad suit clears your scuba gear when it expires

@@ -279,11 +279,14 @@ void() TeamFortress_ChangeClass =
 
 	self.view_ofs = '0 0 22';
 	player_stand1 ();
-	if (deathmatch || coop)
+/*	if (deathmatch || coop)
 	{
 		makevectors(self.angles);
 		spawn_tfog (self.origin + v_forward*20);
-	}
+	}*/
+	makevectors (self.angles);
+	spawn_tfog (self.origin + v_forward * 20);
+	spawn_tdeath (self.origin, self);
 
 	// Display chosen class
 	if ( self.playerclass == PC_RANDOM )

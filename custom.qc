@@ -331,7 +331,7 @@ void() DropFromCustomClassGen =
 	//spawn_tdeath (spot.origin, self);
 
 	self.observer_list = spot;
-	self.origin = spot.origin + '0 0 1';
+	setorigin (self, spot.origin + '0 0 1');
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
 

@@ -371,8 +371,13 @@ void() tdeath_touch =
 // frag anyone who teleports in on top of an invincible player
 	if (other.classname == "player")
 	{
-		if (other.invincible_finished > time)
+		if (other.invincible_finished > time) {
 			self.classname = "teledeath2";
+			self.owner.invincible_finished = 0;
+			if (self.owner.health > 0)
+				TF_T_Damage (self.owner, self, self, self.owner.health + 5000,
+							 TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		}
 
 		if (self.owner.classname != "player")
 		{	
