@@ -34,6 +34,11 @@
 #define MOVETYPE_BOUNCE			10 
 #define MOVETYPE_BOUNCEMISSILE	11 	// bounce with extra size
 
+// checkmove types
+#define MOVE_NORMAL		0
+#define MOVE_NOMONSTERS	1
+#define MOVE_MISSILE	2
+
 // edict.solid values
 #define SOLID_NOT		0 	// no interaction with other objects
 #define SOLID_TRIGGER	1 	// touch on edge, but not blocking

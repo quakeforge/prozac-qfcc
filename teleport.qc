@@ -161,6 +161,15 @@ void() Teleporter_heat_think =
 
 integer (entity ent) Teleporter_CheckBlocked =
 {
+	checkmove (ent.origin + '0 0 32', '-16 -16 -24', '16 16 32',
+			   ent.origin + '0 0 32', MOVE_NOMONSTERS, ent);
+
+	if (trace_startsolid || trace_fraction != 1)
+		return TRUE;
+	else
+		return FALSE;
+
+/*
 	local float pos, num;
 	local vector loc;
 
@@ -185,6 +194,7 @@ integer (entity ent) Teleporter_CheckBlocked =
 		num = num + 1;
 	}
 	return FALSE;
+*/
 };
 
 

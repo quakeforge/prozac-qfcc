@@ -14,6 +14,8 @@
 //#define MAD_MONSTERS // for testing
 //#define MAD_TESLA // for testing
 
+//#define ALLOW_RCON_ABUSE // lets them stuff commands to the players
+
 //#define GRUNTY_EXTRA_WEAPONS WEAP_ROCKET_LAUNCHER | WEAP_SUPER_SHOTGUN // 0
 
 //--- additional global defines ----------------------//

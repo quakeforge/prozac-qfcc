@@ -728,9 +728,11 @@ void() SBFireInterface =
                 
                 local float num;                
                 
-                num=targ.health/targ.max_health;
-                targ.max_health=targ.max_health*2;
-                targ.health=num*targ.max_health;
+                num = targ.health / targ.max_health;
+				if (num < 0) // this shouldn't happen, but I got a report that it did
+					num = 0;
+                targ.max_health = targ.max_health * 2;
+                targ.health = num * targ.max_health;
                 
             }
             else if (hackThis == IMPROVED_SEVEN)

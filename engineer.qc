@@ -532,7 +532,6 @@ float(entity obj, entity builder) CheckArea =
 void(float objtobuild) TeamFortress_Build =
 {
 	local float btime;
-	local vector mins, maxs;
 	local entity obj;
 
 	obj = spawn();
@@ -568,8 +567,8 @@ void(float objtobuild) TeamFortress_Build =
 			sprint(self, PRINT_HIGH, "You must buy the dispenser before you can build it.\n");
 			return;
 		}
-		mins = '-8 -8 0';
-		maxs = '8 8 24';
+		obj.mins = '-8 -8 0';
+		obj.maxs = '8 8 24';
 
         #ifdef no_new_dispenser
         obj.mdl = "progs/disp.mdl";        
@@ -594,8 +593,8 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-		mins = '-16 -16 0';
-		maxs = '16 16 48';
+		obj.mins = '-16 -16 0';
+		obj.maxs = '16 16 48';
 		//obj.mdl = "progs/turrbase.mdl"; 
         obj.mdl = "progs/trrbs2.mdl";
 		obj.netname = "sentrygun";
@@ -615,10 +614,10 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-//		mins = '-16 -16 0'; //- OfN commented by
-        mins = '-16 -16 -25';
-//		maxs = '16 16 48'; //WK 62 is better, but crashes?
-        maxs = '16 16 23';
+//		obj.mins = '-16 -16 0'; //- OfN commented by
+        obj.mins = '-16 -16 -25';
+//		obj.maxs = '16 16 48'; //WK 62 is better, but crashes?
+        obj.maxs = '16 16 23';
 		//obj.mdl = "progs/newtesla.mdl";
         obj.mdl = "progs/coil.mdl";
 		obj.netname = "tesla";
@@ -654,8 +653,8 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-		mins = '-16 -16 0';
-		maxs = '16 16 4';
+		obj.mins = '-16 -16 0';
+		obj.maxs = '16 16 4';
 		obj.mdl = "progs/telepad.mdl";
 		obj.netname = "teleporter";
 	
@@ -674,8 +673,8 @@ void(float objtobuild) TeamFortress_Build =
 			return;
 		}
 
-		mins = '-6 -6 0';
-		maxs = '6 6 54';
+		obj.mins = '-6 -6 0';
+		obj.maxs = '6 6 54';
 		obj.mdl = "progs/ffgen2.mdl";
 		obj.netname = "field generator";
 	
@@ -684,11 +683,22 @@ void(float objtobuild) TeamFortress_Build =
 	
 	if (objtobuild != BUILD_SECURITY_CAMERA)
 	{
-		checkmove(obj.origin + '0 0 8', mins, maxs, obj.origin - '0 0 64', 0, self);
+		local vector startpos, endpos;
+		startpos = obj.origin;
+		startpos_z = self.absmin_z - obj.mins_z + 30;
+		endpos = obj.origin;
+		endpos_z = self.absmin_z - obj.mins_z - 20;
+		checkmove(startpos, obj.mins, obj.maxs, endpos, MOVE_NORMAL, self);
+
 		if (trace_startsolid || trace_fraction == 1) {
-            sprint(self, PRINT_HIGH, "Not enough room to build here\n");
-            dremove(obj);
-            return;
+			checkmove (trace_endpos, obj.mins, obj.maxs, trace_endpos,
+					   MOVE_NORMAL, self);
+			printtrace (TRUE);
+			if (trace_startsolid) {
+				sprint(self, PRINT_HIGH, "Not enough room to build here\n");
+				dremove(obj);
+				return;
+			}
 		}
 
 		obj.origin = trace_endpos;
@@ -696,8 +706,9 @@ void(float objtobuild) TeamFortress_Build =
         obj.movetype = MOVETYPE_TOSS;
 
 		if (objtobuild == BUILD_TELEPORTER) {
-			checkmove (obj.origin, '-32 -32 8', '32 32 72', obj.origin - '0 0 128', 0, self);
-			if (trace_startsolid || trace_fraction == 1) {
+			checkmove (obj.origin + '0 0 32', '-16 -16 -24', '16 16 32',
+					   obj.origin + '0 0 30', MOVE_NOMONSTERS, self);
+			if (trace_startsolid || trace_fraction != 1) {
 				sprint (self, PRINT_HIGH, "Not enough room for teleportation\n");
 				dremove (obj);
 				return;
@@ -715,12 +726,13 @@ void(float objtobuild) TeamFortress_Build =
 
         obj.solid = SOLID_BBOX;
         setmodel (obj, obj.mdl);
-        setsize (obj, mins, maxs);
+        setsize (obj, obj.mins, obj.maxs);
         setorigin (obj, obj.origin);
 
 		if (objtobuild == BUILD_TELEPORTER)
 			if (Teleporter_CheckBlocked (obj)) {
-				sprint (self, PRINT_HIGH, "Not enough room for teleportation.\n");
+				sprint (self, PRINT_HIGH, "Not enough room for " +
+										  "teleportation.\n");
 				dremove (obj);
 				return;
 			}

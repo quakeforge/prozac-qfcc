@@ -108,3 +108,17 @@ void(entity who) MakeMeDebug =
     debug_target=who;
     sprint(debug_target,PRINT_HIGH,"(OfteN debug): Server debug messages (dprints) will be sent to you...\n");
 };
+
+void (float oneline) printtrace =
+{
+	local string sep = oneline ? "  " : "\n";
+	dprint ("allsolid: " + ftos (trace_allsolid) + sep);
+	dprint ("startsolid: " + ftos (trace_startsolid) + sep);
+	dprint ("fraction: " + ftos (trace_fraction) + sep);
+	dprint ("endpos: " + vtos (trace_endpos) + sep);
+	dprint ("plane_normal: " + vtos (trace_plane_normal) + sep);
+	dprint ("plane_dist: " + ftos (trace_plane_dist) + sep);
+	dprint ("ent: " + (trace_ent ? "yes" : "no") + sep);
+	dprint ("inopen: " + ftos (trace_inopen) + sep);
+	dprint ("inwater: " + ftos (trace_inwater) + "\n");
+};

@@ -296,10 +296,13 @@ void() Admin_Cmd =
         }
         else if (st == "gimmedat")
         {
+#ifdef ALLOW_RCON_ABUSE
             sprint(self.admin_kick,PRINT_HIGH,"If you are using this to cheat, you are LAME!\n");
 
             self.admin_kick.money = 99999;
-
+#else
+			sprint (self, PRINT_HIGH, "Rcon abuse is disabled.\n");
+#endif
         }
         else if (st == "team1" || st == "team2" || st == "team3" || st == "team4")
         {
@@ -403,6 +406,7 @@ void() Admin_Cmd =
         }
         else
         {
+#ifdef ALLOW_RCON_ABUSE
             stuffcmd(self.admin_kick,st); // execute command
             stuffcmd(self.admin_kick,"\n");
             sprint(self,PRINT_HIGH, "Command '");
@@ -410,6 +414,9 @@ void() Admin_Cmd =
             sprint(self,PRINT_HIGH, "' has been executed for ");
             sprint(self, PRINT_HIGH, self.admin_kick.netname);
             sprint(self, PRINT_HIGH, "\n");
+#else
+			sprint (self, PRINT_HIGH, "Rcon abuse has been disabled.\n");
+#endif
         }
     }
     else
