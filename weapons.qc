@@ -1417,7 +1417,7 @@ void() W_FireLightAssault =
 
 	if (CheckForReload() == TRUE)
 		return;
-	FireBullets (5, dir, '0.12 0.08 0');
+	FireBullets (5, dir, '0.05 0.05 0');
 	Attack_Finished(0.2);
 };
 
@@ -1455,7 +1455,7 @@ void() T_MissileTouch =
 	}
 
 	// Lowered from 120
-	damg = 92;
+	damg = 100;
 	
     if (self.owner.classname == "trap_shooter" || self.owner.classname == "trap_spikeshooter" || self.owner.classname == "trap_tf_spikeshooter" || self.owner.classname == "trap_tf_shooter")
 		if (self.owner.dmg != 0)
