@@ -1,3 +1,4 @@
 *.dat
+*.pqc
 *.sym
 progdefs.h
