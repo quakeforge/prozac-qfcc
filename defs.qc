@@ -948,6 +948,8 @@ float(entity targ, entity inflictor) CanDamage;
 //.vector old_velocity; // I use neworigin
 .float reload_laser_cannon;
 
+// fieldgen fields
+.entity	fieldgen_field;
 //----------------------------------------------//
 
 

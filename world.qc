@@ -453,10 +453,10 @@ void() worldspawn =
     precache_sound2("effects/bodyhit2.wav");	
 
     //- OfN - Aura sounds
-    precache_sound2("auras/aura1.wav");
-    precache_sound2("auras/aura2.wav");
-    precache_sound2("auras/aura3.wav");
-    precache_sound2("auras/aura4.wav");
+//    precache_sound2("auras/aura1.wav");
+//    precache_sound2("auras/aura2.wav");
+//    precache_sound2("auras/aura3.wav");
+//    precache_sound2("auras/aura4.wav");
     
     //precache_sound2("weapons/pinpull.wav");
     //precache_sound2("weapons/throw.wav");

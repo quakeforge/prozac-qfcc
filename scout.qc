@@ -758,6 +758,8 @@ entity(entity scanner, float scanrange, float enemies, float friends) T_RadiusSc
 	local entity list_head;
 	local entity list;
 	local float gotatarget;
+	list_head = world;
+	list = world;
 
 	head = findradius(scanner.origin, scanrange+40);
 
@@ -772,7 +774,7 @@ entity(entity scanner, float scanrange, float enemies, float friends) T_RadiusSc
 				{
 					gotatarget = Scanner_Check_Player(scanner, head, enemies, friends);
 				}
-				if ((head.classname == "building_tesla" || head.classname == "building_sentrygun" || head.classname == "building_teleporter") && (head.health > 0)) //CH uses team_no :)
+				else if ((head.classname == "building_tesla" || head.classname == "building_sentrygun" || head.classname == "building_teleporter") && (head.health > 0)) //CH uses team_no :)
 				{
 					if (teamplay)
 					{

@@ -12,7 +12,7 @@ void() demon1_fire1;
 #define AI_TRANQ_FACTOR_UP		2
 #define AI_TRANQ_FACTOR_DN		3
 
-void(entity etemp, entity stemp1, entity stemp2, float dmg) T_Damage;
+void(entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 
 //- OfN -
 float()	WizardCheckAttack;

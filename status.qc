@@ -167,7 +167,6 @@ void(entity pl) RefreshStatusBar1 =
 	local string s5, s6, s7;
 	local string val;
 	local float num;
-	local entity te;
 	local entity sent;
 
 	if (pl.StatusBarSize == 0)
@@ -182,15 +181,12 @@ void(entity pl) RefreshStatusBar1 =
 
 	s1 = GetStatusSize(pl);
 
-	te = find(world, classname, "building_sentrygun");
-	while (te)
+	do
+		sent = find(world, classname, "building_sentrygun");
+	while (sent != world && sent.real_owner != self);
+
+	if (sent)
 	{
-		if (te.real_owner == self)
-		{
-			sent = te;
-		}
-		te = find(te, classname, "building_sentrygun");
-	}
 		s2 = SentryDetailsToString(sent);
 		s3 = ftos(floor((sent.health / sent.max_health) * 100));
 		s4 = "% health  ";
@@ -216,6 +212,7 @@ void(entity pl) RefreshStatusBar1 =
 		}
 
 		centerprint(pl, s1, s2, s3, s4, s5, s6,s7);
+	}
 
 //CH determines which screen to show next (its at the end of all RefreshStatusBars)
 	if (self.has_tesla)
@@ -237,7 +234,6 @@ void(entity pl) RefreshStatusBar4 =
 	local string s5, s6, s7;
 	local string val;
 	local float num;
-	local entity te;
 	local entity sent;
 
 	if (pl.StatusBarSize == 0)
@@ -252,15 +248,12 @@ void(entity pl) RefreshStatusBar4 =
 
 	s1 = GetStatusSize(pl);
 
-	te = find(world, classname, "building_tesla");
-	while (te)
+	do
+		sent = find(world, classname, "building_tesla");
+	while (sent != world && sent.real_owner != self);
+
+	if (sent)
 	{
-		if (te.real_owner == self)
-		{
-			sent = te;
-		}
-		te = find(te, classname, "building_tesla");
-	}
 		//- OfN - if (sent.enemy.classname == "monster_demon1" || sent.enemy.classname == "monster_army" || sent.enemy.classname == "monster_shambler" )
         if (IsMonster(sent.enemy))
 			custom_demon_name(sent.enemy); //CH
@@ -288,6 +281,7 @@ void(entity pl) RefreshStatusBar4 =
 		}
 
 		centerprint(pl, s1, s2, s3, s4, s5, s6,s7);
+	}
 
 //CH determines which screen to show next (its at the end of all RefreshStatusBars)
 	if (self.scaned != self)

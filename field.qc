@@ -34,7 +34,7 @@ For field generator entity:
 
 .has_holo        - Holds current status of every field generator, FIELDGEN_XXXX determines
 .has_sensor      - Boolean value, determines if field generator is currently supporting a force field
-.martyr_enemy    - This points to the force field, if none its always 'world'
+.fieldgen_field  - This points to the force field, if none its always 'world'
 .no_grenades_1   - Controls delay between tries to link (only affects sound currently, it tries to link every frame)
 .no_grenades_1   - Controls delay for field to go up again after beeing disabled
 .type_grenades_1 - Controls delay of the WORKING status
@@ -117,13 +117,13 @@ void() Field_think =
         if (IsValidFieldGen(self.demon_one))
         {
             self.demon_one.has_sensor = #FALSE;
-            self.demon_one.martyr_enemy = world;
+            self.demon_one.fieldgen_field = world;
         }
 
         if (IsValidFieldGen(self.demon_two))
         {
             self.demon_two.has_sensor = #FALSE;
-            self.demon_two.martyr_enemy = world;
+            self.demon_two.fieldgen_field = world;
         }
 
         self.demon_one = world;
@@ -510,7 +510,13 @@ void(entity gen1, entity gen2) Create_Field =
     if (gen1.has_sensor || gen2.has_sensor)
         return;
 
-    if (gen1.martyr_enemy != world || gen2.martyr_enemy != world) // CHECK
+/*	dprint("gen1:\n");
+	eprint(gen1.fieldgen_field);
+	dprint("gen2:\n");
+	eprint(gen2.fieldgen_field);
+	dprint("done\n"); */
+
+    if (gen1.fieldgen_field != world || gen2.fieldgen_field != world) // CHECK
         return;
 
     // already checked b4 on CanLink -> CanIdle
@@ -629,8 +635,8 @@ void(entity gen1, entity gen2) Create_Field =
     setorigin(tfield, tfield.origin);
 
     // assign the pointers on the field generators
-    gen1.martyr_enemy = tfield;
-    gen2.martyr_enemy = tfield;
+    gen1.fieldgen_field = tfield;
+    gen2.fieldgen_field = tfield;
 
     // assign the pointers to generators on ourselves
     tfield.demon_one = gen1;
@@ -655,24 +661,26 @@ void(entity gen1, entity gen2) Remove_Field =
 {
     if (IsValidFieldGen(gen1))
     {   
-        gen1.has_sensor = #FALSE;
-
-        if (IsValidField(gen1.martyr_enemy))
+        if (IsValidField(gen1.fieldgen_field))
         {
-            dremove(gen1.martyr_enemy);
-            gen1.martyr_enemy = world;
-        }
+            dremove(gen1.fieldgen_field);
+	}
+	gen1.has_sensor = #FALSE;
+        gen1.fieldgen_field = world;
+	if (IsValidFieldGen(gen2))
+	{
+            gen2.has_sensor = #FALSE;
+            gen2.fieldgen_field = world;
+	}
     }
-
-    if (IsValidFieldGen(gen2))
+    else if (IsValidFieldGen(gen2))
     {
-        gen2.has_sensor = #FALSE;
-        
-        if (IsValidField(gen2.martyr_enemy))
+        if (IsValidField(gen2.fieldgen_field))
         {
-            dremove(gen2.martyr_enemy);
-            gen2.martyr_enemy = world;
-        }
+            dremove(gen2.fieldgen_field);
+	}
+        gen2.has_sensor = #FALSE;
+        gen2.fieldgen_field = world;
     }
 };
 
@@ -899,7 +907,7 @@ void() FieldGen_think =
             self.has_holo = #FIELDGEN_ISENABLED;
     }
 
-    Field_UpdateSounds(self.martyr_enemy,self); // update force field sounds
+    Field_UpdateSounds(self.fieldgen_field, self); // update force field sounds
 
     if (!FieldGen_CanIdle(self)) // turn us off if needed
         self.has_holo = #FIELDGEN_ISOFF;
@@ -985,7 +993,7 @@ void(entity field) Field_Built =
     field.has_holo = #FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)
     field.has_sensor = #FALSE;
     field.no_grenades_1 = time + 3;
-    field.martyr_enemy = world;
+    field.fieldgen_field = world;
 };
 
 //==============================================================

@@ -379,7 +379,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
     {
         if (self.invincible_sound < time)
 		{
-			sound (targ, #CHAN_ITEM, "auras/aura1.wav", 1, #ATTN_NORM);
+//			sound (targ, #CHAN_ITEM, "auras/aura1.wav", 1, #ATTN_NORM);
 			self.invincible_sound = time + 1.5;
 		}
 		return;

@@ -143,7 +143,9 @@ void() TeamFortress_HelpMap =
 void() AliasTimer = {
 	local entity oself;
 	local float myheat;
-	myheat = self.heat = self.heat + 1;
+
+	self.heat = self.heat + 1;
+	myheat = self.heat;
 	if (self.heat > 5) {
 		self.think = SUB_Remove;
 		self.nextthink = time + 0.1;
