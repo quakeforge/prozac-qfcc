@@ -295,10 +295,16 @@ void() launch_horn =
 
       }
 
-      if (e.classname == "player" && e.cutf_items & CUTF_HWGUY)
-        delta *= 0.3;
-      if (e.classname == "player" && e.cutf_items & CUTF_GYMNAST)
-	delta *= 2;
+      if (e.classname == "player") {
+      	if (e.cutf_items & CUTF_HWGUY)
+       		delta *= 0.3;
+      	if (e.cutf_items & CUTF_GYMNAST)
+		delta *= 2;
+      } 
+      else if (e.classname == "monster_wizard" || e.classname == "detpack")
+	delta *= 3;
+      else if (!IsMonster(e))
+	delta *= 5;
 
       // calculate the velocity adjustment.
       delta = normalize(delta);
