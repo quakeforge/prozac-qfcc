@@ -1224,9 +1224,15 @@ void() W_FireSniperRifle =
 
 	angle = self.v_angle;
 
+	if (self.heat < vlen(self.velocity) * 0.1)
+	    self.heat = vlen(self.velocity) * 0.1;
+	
+	if (!(self.flags & FL_ONGROUND) && self.heat < 100) 
+	    self.heat = 100;
+
 	if (self.heat > 0) {
-	    angle_x += (random() * 0.18 * self.heat) - (0.09 * self.heat);
-	    angle_y += (random() * 0.18 * self.heat) - (0.09 * self.heat);
+	    angle_x += (random() * 0.08 * self.heat) - (0.04 * self.heat);
+	    angle_y += (random() * 0.08 * self.heat) - (0.04 * self.heat);
 	}
 
 	makevectors(angle);
@@ -1254,7 +1260,14 @@ void() W_FireSniperRifle =
 	}
 
 	deathmsg = DMSG_SNIPERRIFLE;
-	dam_mult = 1;
+
+	dam_mult = 0;
+
+	local string st = infokey (NIL, "sniper_dmg");
+	if (st)
+	   dam_mult = stof (st);
+	if (!dam_mult)
+	   dam_mult = SNIPER_DMG;	
 
     //- OfN - float factor to handle OTR bullets difference
     if (self.cutf_items & CUTF_OTR && self.ammo_shells > 2) {
@@ -1385,30 +1398,32 @@ TeamFortress : W_FireAutoRifle
 // same as sniper rifle
 void() W_FireAutoRifle =
 {
-#ifndef OLD_AUTORIFLE
-	if (self.heat <= 0)
-	   self.heat = 0;
+	local string st = infokey(NIL, "oldrifle");
 
-	self.heat += 5;
+	if (!(st == "yes" || st == "y" || st == "on" || st == "1")) {
+		if (self.heat < 50)
+		   self.heat = 50;
 
-	if (self.heat > 1000)
-	   self.heat = 1000;
+		W_FireSniperRifle();
 
-	W_FireSniperRifle();
-#else
-	local vector angle;
+		self.heat += 200;
 
-	sound (self ,CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
+		if (self.heat > 600)
+		   self.heat = 600;
+	} else {
+		local vector dir;
 
-	KickPlayer(-1, self);
+		sound (self ,CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
 
-	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+		KickPlayer(-1, self);
 
-	makevectors(self.v_angle);
-	dir = v_forward;
-	deathmsg = DMSG_AUTORIFLE;
-	FireSniperBullet (dir, 8);
-#endif
+		self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+
+		makevectors(self.v_angle);
+		dir = v_forward;
+		deathmsg = DMSG_AUTORIFLE;
+		FireSniperBullet (dir, 8);
+	}
 };
 
 /*
@@ -2915,7 +2930,7 @@ void() W_Attack =
 	} else if (self.current_weapon == WEAP_AUTO_RIFLE) {
 		player_autorifle1();
 	     	W_FireAutoRifle();
-	     	Attack_Finished(0.2);
+	     	Attack_Finished(0.1);
 	} else if (self.current_weapon == WEAP_ASSAULT_CANNON) {
 		// Need 4 cells to power up the Assault Cannon
 		if (self.ammo_cells < 4) {
@@ -4073,6 +4088,9 @@ void() W_WeaponFrame =
 
 		player_run ();
 	}
+
+	if (self.current_weapon == WEAP_AUTO_RIFLE)
+	    self.heat -= 100;
 	// check for attack
     if (self.button0 && !(self.fire_held_down)) {
 		if ((self.current_menu == MENU_CLASSHELP) || (self.current_menu == MENU_CLASSHELP2)) {
@@ -4081,10 +4099,6 @@ void() W_WeaponFrame =
 			Attack_Finished(0.2);
 		} else if (self.current_weapon == WEAP_SNIPER_RIFLE) {
 			if (self.tfstate & TFSTATE_AIMING) {
-				self.heat--;
-				if (self.heat < (vlen(self.velocity) * 0.1))
-				   self.heat = vlen(self.velocity) * 0.1;
-
 				if (self.height > 30) {
 					self.height = self.height - 5;
 					TF_zoom(self.height);
@@ -4096,7 +4110,7 @@ void() W_WeaponFrame =
 				if (vlen(tv) <= WEAP_SNIPER_RIFLE_MAX_MOVE) {
 					// create the laser sight
 					SniperSight_Create(0);
-					self.heat = 100; // damage done 
+					self.heat = 30; // damage done 
 							 // GR no, charging sniper rifle makes no sense, idiot
 					#ifdef WEINER_SNIPER
 						self.heat = 80;
@@ -4147,11 +4161,6 @@ void() W_WeaponFrame =
 		TeamFortress_SetSpeed(self);
 
 		player_run ();
-	} else if (self.current_weapon == WEAP_AUTO_RIFLE) {
-		self.heat *= 0.2;
-		self.heat -= 1;
-		if (self.heat < 30)
-		    self.heat = 30; // auto can't be as accurate
 	}
 };
 

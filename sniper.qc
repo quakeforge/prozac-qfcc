@@ -98,12 +98,15 @@ void() SniperSight_Update =
 
 	self.v_angle_z = self.owner.v_angle_z;
 
-	local float diff = vlen(self.owner.v_angle - self.v_angle);
+	self.owner.heat *= 0.9;
+	self.owner.heat--;
 
-	if (diff > 3) diff = 3;
-	
-	if (self.owner.heat < diff * 8)
-	   self.owner.heat = diff * 8;
+	local float diff = vlen(self.owner.v_angle - self.v_angle);
+	if (diff > 10) diff = 10;
+
+	local float heat = diff * 0.5 + vlen(self.owner.velocity) * 0.1;
+	if (self.owner.heat < heat)
+	   self.owner.heat = heat;
 
 	self.v_angle = self.owner.v_angle;
 

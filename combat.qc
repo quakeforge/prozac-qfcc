@@ -550,7 +550,8 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			targ.armortype = 0;	// lost all armor
 			targ.armorclass = 0; // lost special armor
 			targ.items = targ.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
-			TeamFortress_SetSpeed(targ);
+			if (targ.classname == "player")
+			    TeamFortress_SetSpeed(targ);
 		}
 		//WK Flags prevent armor damage too
 		if (T_flags & TF_TD_NOTTEAM)
@@ -583,7 +584,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		}
 		//		targ.armorvalue = targ.armorvalue - save;
 		take = ceil(damage-save);
-		if (targ.armorvalue > 0 && (targ.armorvalue + save > 100))
+		if (targ.armorvalue > 0 && (targ.armorvalue + save > 100) && targ.classname == "player")
 		    TeamFortress_SetSpeed(targ); // speed up the less armor you have
 	}
 	// add to the damage total for clients, which will be sent as a single

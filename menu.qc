@@ -3070,14 +3070,6 @@ else
 void(float inp) Menu_Legs_Input =
 {
 
-    //First, prevent them from getting high speed while upgraded
-    if (inp < 3 && self.done_custom & CUSTOM_SELLING)
-    {
-        sprint(self,PRINT_HIGH,"The upgraded CustomTF soldier is a fighting machine. He doesn't have access to fast legs\n");
-        self.impulse = 0;
-        return;
-    }
-
     //Second, sell off our current legs
     if (inp < 8) {
     if (self.custom_speed == 650) {
