@@ -1191,8 +1191,9 @@ void() TeamFortress_GrenadePrimed =
 	if (self.weapon == GR_TYPE_FLARE)
 		sound (user, CHAN_WEAPON, "weapons/flmfire2.wav", 1, ATTN_NORM);
 	else
-		sound (user, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
+//		sound (user, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 //		sound (user, CHAN_WEAPON, "weapons/throw.wav", 1, ATTN_NORM);
+		sound (user, CHAN_WEAPON, "zombie/z_shot1.wav", 1, ATTN_NORM);
 
 	KickPlayer(-1, user);
 	newmis = spawn ();

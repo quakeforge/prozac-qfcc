@@ -302,6 +302,12 @@ void() worldspawn =
 	precache_sound ("weapons/lstart.wav");		//lightning start
 	precache_sound ("items/damage3.wav");
 
+	precache_sound ("zombie/z_shot1.wav");		// For grenade
+
+	precache_sound ("items/protect1.wav");
+	precache_sound ("items/protect2.wav");
+	precache_sound ("items/protect3.wav");
+
 	precache_sound ("misc/power.wav");			//lightning for boss
 
 // player gib sounds
