@@ -513,6 +513,27 @@ void (entity player) RemoveHolo =
 	}
 };
 
+vector (vector pos, vector dir) NudgeOnePosition =
+{
+	local float a, b;
+	a = pointcontents (pos + dir);
+	b = pointcontents (pos - dir);
+	if (a != CONTENTS_SOLID && b == CONTENTS_SOLID)
+		return dir;
+	else if (a == CONTENTS_SOLID && b != CONTENTS_SOLID)
+		return -dir;
+	else
+		return '0 0 0';
+};
+
+vector (vector pos) NudgePosition =
+{
+	pos += NudgeOnePosition (pos, '1 0 0');
+	pos += NudgeOnePosition (pos, '0 1 0');
+	pos += NudgeOnePosition (pos, '0 0 1');
+	return pos;
+};
+
 //===========================//
 // THE FLARES ARE BACK! hehe //
 //===========================//
@@ -551,6 +572,30 @@ void() FlareGrenadeTouch =
         {
            sound (self, CHAN_MISC, "effects/bodyhit1.wav", 0.6, ATTN_NORM);	// bounce sound
         }
+
+		// the networking imprecision causes them to be through the
+		// wall on clients, and in QF this stops the light from
+		// working properly.  So I try to nudge them away from the
+		// wall
+		setorigin (self, NudgePosition (self.origin));
+/*
+		local vector netpos;
+		netpos_x = floor (self.origin_x * 8) / 8;
+		netpos_y = floor (self.origin_y * 8) / 8;
+		netpos_z = floor (self.origin_z * 8) / 8;
+		local float contents = pointcontents (netpos);
+		printf ("touch: %f\n", contents);
+		if (contents == CONTENTS_SOLID) {
+			local vector diff = self.origin - netpos;
+			printf ("origin: %v  netpos: %v  diff:  %v  ",
+							 self.origin, netpos, diff);
+			diff_x = diff_x ? SIGN_f (diff_x) * 0.25 : 0.0;
+			diff_y = diff_y ? SIGN_f (diff_y) * 0.25 : 0.0;
+			diff_z = diff_z ? SIGN_f (diff_z) * 0.25 : 0.0;
+			printf ("nudge: %v\n", diff);
+			setorigin (self, self.origin + diff);
+		}
+*/
     }
     else
     {

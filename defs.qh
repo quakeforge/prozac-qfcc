@@ -1325,3 +1325,6 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define BOUND(a,b,c) (MAX((a), MIN((b), (c))))
 #define ASSERT(a) do {if (!(a)) error (__FILE__ + ":" + itos(__LINE__) + ": Assert failed: " + #a);} while (0)
+#define SIGN_i(a) (((a) < 0) ? -1 : +1)
+#define SIGN_f(a) (((a) < 0) ? -1.0 : +1.0)
+#define printf(...) do {dprint (sprintf (__VA_ARGS__));} while (0)

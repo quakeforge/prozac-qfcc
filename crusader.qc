@@ -193,11 +193,20 @@ void() CrusaderMassHeal =
 				{
         	    	sound (te, CHAN_ITEM, "auras/aura3.wav", 1, ATTN_NORM);
 
-                    te.health = te.max_health;
-					if (self != te)
-						sprint(te, PRINT_HIGH, self.netname, " restores you to full health\n");
-					else
-						sprint(te, PRINT_HIGH, "Your deity restores you to full health\n");
+					if (te.health + 200 >= te.max_health) {
+	                    te.health = te.max_health;
+						if (self != te)
+							sprint (te, PRINT_HIGH, self.netname, " restores you to full health\n");
+						else
+							sprint (te, PRINT_HIGH, "Your deity restores you to full health\n");
+					} else {
+						te.health += 200;
+						if (self != te) {
+							sprint (te, PRINT_HIGH, self.netname, " heals you, but you were too injured to be healed fully\n");
+							sprint (self, PRINT_HIGH, te.netname, " was too injured to be healed fully\n");
+						} else
+							sprint (te, PRINT_HIGH, "Your diety heals you, but you were too injured to be healed fully\n");
+					}
 				}
 		
 		te = te.chain;
