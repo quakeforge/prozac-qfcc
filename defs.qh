@@ -269,6 +269,7 @@ float (entity e) EF_GlowColor;
 #define TF_TD_ELECTRICITY	8  // Electric damage
 #define TF_TD_FIRE		16  // Fire damage
 #define TF_TD_NOSOUND		256 // Special damage. Makes no sound/painframe, etc
+#define TF_TD_MELEE		512
 
 
 //WK 152 Default, must be > 6.
@@ -866,10 +867,12 @@ float (entity e) EF_GlowColor;
 // Armor Classes : Bitfields. Use the "armorclass" of armor for the Armor Type.
 
 #define AT_SAVESHOT			    1   // Kevlar	: Reduces bullet damage by 15%
-#define AT_SAVEMELEE			2   // Gel		: Reduces melee attacks by 15%
+#define AT_SAVENAIL			2   // Wood	: Reduces nail damage 15%
 #define AT_SAVEEXPLOSION		4   // Blast	: Reduces explosion damage 15%
 #define AT_SAVEELECTRICITY	    8 	// Shock	: Reduces electricity damage by 15%
 #define AT_SAVEFIRE			    16 	// Asbestos	: Reduces fire damage by 15%
+#define AT_SAVEMELEE			32   // Gel		: Reduces melee attacks by 15%
+
 
 /*==========================================================================*/
 /* TEAMFORTRESS CLASS DETAILS												*/

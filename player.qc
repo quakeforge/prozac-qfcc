@@ -323,7 +323,7 @@ void()	player_axeb3 =	[$axattb3, player_axeb4	]
 {
 	self.weaponframe=7;
 	if (self.current_weapon == WEAP_AXE)
-		W_FireAxe();
+		W_FireBackstab();
 	else // if (self.current_weapon == WEAP_SPANNER)
 		W_FireSpanner();
 };
@@ -347,7 +347,7 @@ void()	player_axed3 =	[$axattd3, player_axed4	]
 {
 	self.weaponframe=7;
 	if (self.current_weapon == WEAP_AXE)
-		W_FireAxe();
+		W_FireBackstab();
 	else // if (self.current_weapon == WEAP_SPANNER)
 		W_FireSpanner();
 };
@@ -1112,7 +1112,6 @@ void(string gibname, float dm) ThrowGib =
 	newmis = spawn();
 	newmis.origin = self.origin;
 	setmodel (newmis, gibname);
-	setsize (newmis, '0 0 0', '0 0 0');
 	newmis.velocity = VelocityForDamage (dm);
 	newmis.movetype = MOVETYPE_BOUNCE;
 	newmis.solid = SOLID_NOT;
@@ -1129,6 +1128,8 @@ void(string gibname, float dm) ThrowGib =
 		newmis.skin=dm;
 		newmis.velocity = VelocityForDamage (-70);
 	}
+
+	setsize (newmis, '0 0 0', '0 0 0');
 };
 
 void(string gibname, float dm) ThrowHead =
@@ -1158,6 +1159,8 @@ void(string gibname, float dm) ThrowHead =
 		self.nextthink = time + 20 + 20 * random();
 	}
 */
+
+	setorigin (self, self.origin);
 	//-OfN
 };
 
@@ -1175,6 +1178,8 @@ void(string gibname) HeadShotThrowHead =
 	self.origin_z = self.origin_z + 24;
 	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.avelocity = '0 0 0';
+
+	setorigin (self, self.origin);
 };
 
 void() KillPlayer =

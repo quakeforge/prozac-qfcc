@@ -239,9 +239,48 @@ void(float att_delay) Attack_Finished =
 	if (self.tfstate & TFSTATE_TRANQUILISED)
 		self.attack_finished = time + (att_delay * 1.5);
 	else if (self.aura == AURA_HASTE)
-		self.attack_finished = time + (att_delay * 0.75);
+		self.attack_finished = time + (att_delay * 0.5);
 	else 
 		self.attack_finished = time + att_delay;
+};
+
+void (entity atk, boolean do_cc, float dist) find_melee = 
+{
+	local vector dir;
+
+	if (self.classname == "player") {
+		makevectors (atk.v_angle);
+		dir = v_forward;
+	} else {
+		dir = normalize (atk.enemy.origin - atk.origin);
+	}
+
+	local vector source = atk.origin + '0 0 16';
+
+	traceline (source, source + dir*dist, FALSE, atk);
+
+	if (trace_fraction != 1.0)
+		return;
+
+	if (do_cc && (atk.cutf_items & CUTF_CLOSECOMBAT)) {
+		local entity te = findradius (source, dist);
+		local float tdist = -0.6;
+
+		do {
+			local vector diff = source - (te.origin + '0 0 16');
+			diff_z *= 0.75; //hack
+
+			local float l;
+
+			l = (normalize (diff) * dir);
+
+			if (l < tdist && te.takedamage == DAMAGE_AIM) {
+				tdist = l;
+				trace_ent = te;
+				trace_fraction = 0.5;
+			}
+		} while ((te = te.chain));
+	}
 };
 
 /*
@@ -251,49 +290,32 @@ W_FireAxe
 */
 void() W_FireAxe =
 {
-	local	vector	source;
-	local	vector	org, def;
-	local	vector	dir = NIL;	//XXX false +ve on uninit
-
-	if (self.classname == "player")
-		makevectors(self.v_angle);
-	else
-		dir = normalize (self.enemy.origin - self.origin);
-	source = self.origin + '0 0 16';
+	local	vector	org;
 	
-	if (self.classname == "player") {
-		if (!(self.cutf_items & CUTF_CLOSECOMBAT))
-			traceline (source, source + v_forward*64, FALSE, self);
-		else
-			traceline (source, source + v_forward*96, FALSE, self);
-	}
-	else
-		traceline (source, source + dir*64, FALSE, self);
+	find_melee (self, TRUE, 64);
 
 	if (trace_fraction == 1.0)
 		return;
-	
+
 	org = trace_endpos - v_forward*4;
 
-    if (trace_ent.classname == "force_field") {
-        FieldExplosion(trace_ent,trace_endpos,trace_ent);
-        PutFieldWork(trace_ent);
-        
-        return;
-    }
+	if (trace_ent.classname == "force_field") {
+		FieldExplosion(trace_ent,trace_endpos,trace_ent);
+		PutFieldWork(trace_ent);
+
+		return;
+	}
 
 	if (trace_ent.takedamage) {
 		trace_ent.axhitme = 1;
 
 		SpawnBlood (org, 20);
 
-		if (!(self.cutf_items & CUTF_KNIFE) || trace_ent.classname != "player") {
-			deathmsg = DMSG_AXE;
-			if (!(self.cutf_items & CUTF_CLOSECOMBAT))
-				TF_T_Damage (trace_ent, self, self, 30, TF_TD_NOTTEAM, TF_TD_OTHER);
-			else
-				TF_T_Damage (trace_ent, self, self, 60, TF_TD_NOTTEAM, TF_TD_OTHER);
-		} else {	// spy can try for the backstab!
+		deathmsg = DMSG_AXE;
+
+		if (!(self.cutf_items & CUTF_KNIFE)) {
+			TF_T_Damage (trace_ent, self, self, 30, TF_TD_NOTTEAM, TF_TD_MELEE);
+		} else {
 			//WK Only give blood if you hit an enemy when being a warlock
 			if ((!Teammate(trace_ent.team_no, self.team_no) || !(self.job & JOB_WARLOCK)) && prematch < time) {
 				self.job = self.job | JOB_BLOODY_KNIFE;
@@ -303,35 +325,7 @@ void() W_FireAxe =
 				sprint(self,PRINT_HIGH,"You may only draw blood from enemies\n");
 			}
 
-			// Check direction of Attack
-			makevectors(trace_ent.v_angle);
-			def = v_right;
-			if (self.classname == "player")
-				makevectors(self.v_angle);
-			else
-				makevectors(self.angles);
-
-			// Backstab
-			if ((crossproduct(def,v_forward) * '0 0 1') > 0) {
-				deathmsg = DMSG_BACKSTAB;
-				ThrowGib("progs/gib1.mdl", -50);
-				ThrowGib("progs/gib2.mdl", 10);
-				ThrowGib("progs/gib3.mdl", 50);
-                ThrowGib ("progs/gib2.mdl", 25); //-added
-
-//WK 120 & no IGNOREARMOR
-				if (!(self.cutf_items & CUTF_CLOSECOMBAT))
-					TF_T_Damage (trace_ent, self, self, 100, TF_TD_IGNOREARMOUR | TF_TD_NOTTEAM, TF_TD_OTHER);
-				else
-					TF_T_Damage (trace_ent, self, self, 200, TF_TD_IGNOREARMOUR | TF_TD_NOTTEAM, TF_TD_OTHER);
-			} else {
-				deathmsg = DMSG_AXE;
-//WK 40
-				if (!(self.cutf_items & CUTF_CLOSECOMBAT))
-					TF_T_Damage (trace_ent, self, self, 50, TF_TD_NOTTEAM, TF_TD_OTHER);
-				else
-					TF_T_Damage (trace_ent, self, self, 100, TF_TD_NOTTEAM, TF_TD_OTHER);				
-			}
+			TF_T_Damage (trace_ent, self, self, 50, TF_TD_NOTTEAM, TF_TD_MELEE);
 		}
 	} else {	// hit wall
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
@@ -345,6 +339,130 @@ void() W_FireAxe =
 	}
 };
 
+boolean (boolean strict) is_backstab =
+{
+	local	float	d;
+	local	vector	dir;
+
+	makevectors (trace_ent.angles);
+
+	dir = trace_ent.origin - self.origin;
+
+	dir_z *= 0.75; // hack
+
+	d = normalize (dir) * v_forward;
+
+	if (d < 0.3)
+		return FALSE;
+
+	if (!strict)
+		return TRUE;
+
+	if (d < 0.7)
+		return FALSE;
+
+	d = normalize (trace_ent.origin - trace_endpos) * v_forward;
+
+	if (d < 0.8)
+		return FALSE;
+
+	return TRUE;
+};
+
+/*
+================
+W_FireBackstab
+================
+*/
+
+void() W_FireBackstab =
+{
+	local	vector	org;
+
+	if (!(self.cutf_items & CUTF_KNIFE)) {
+		W_FireAxe ();
+		return;
+	}
+	
+	find_melee (self, FALSE, 64);
+
+	if (trace_fraction == 1.0)
+		return;
+
+	org = trace_endpos - v_forward*4;
+
+	if (trace_ent.classname == "force_field") {
+		FieldExplosion(trace_ent,trace_endpos,trace_ent);
+		PutFieldWork(trace_ent);
+
+		return;
+	}
+
+	local boolean	living = FALSE;
+
+	if (trace_ent.classname == "player" || IsMonster (trace_ent))
+		living = TRUE;
+
+	if (trace_ent.takedamage) {
+		trace_ent.axhitme = 1;
+
+		deathmsg = DMSG_BACKSTAB;
+
+		if (living) {
+			if (trace_ent.classname != "player" && trace_ent.real_owner)
+				trace_ent.team_no = trace_ent.real_owner.team_no;
+
+			//WK Only give blood if you hit an enemy when being a warlock
+			if ((!Teammate(trace_ent.team_no, self.team_no) || !(self.job & JOB_WARLOCK)) && prematch < time) {
+				self.job = self.job | JOB_BLOODY_KNIFE;
+				self.weaponmode = 1;
+				self.weaponmodel = "progs/v_knife2.mdl";
+			} else if (self.job & JOB_WARLOCK) {
+				sprint(self,PRINT_HIGH,"You may only draw blood from enemies\n");
+			}
+		}
+
+		if (is_backstab (TRUE) && living) {
+
+			SpawnBlood (org, 50);
+
+			local entity oself = self;
+			self = trace_ent;
+
+			ThrowGib ("progs/gib1.mdl", -50);
+			ThrowGib ("progs/gib2.mdl", 10);
+			ThrowGib ("progs/gib3.mdl", 50);
+			ThrowGib ("progs/gib2.mdl", 25);
+
+			self = oself;
+
+			if (trace_ent.classname == "player")
+				stuffcmd (trace_ent, "bf; bf\n");
+
+			if (!(trace_ent.armorclass & AT_SAVEMELEE))
+				TF_T_Damage (trace_ent, self, self, 100, TF_TD_NOTTEAM | TF_TD_IGNOREARMOUR,
+					TF_TD_MELEE);
+			else
+				TF_T_Damage (trace_ent, self, self, 100, TF_TD_NOTTEAM, TF_TD_MELEE);
+		} else {
+			deathmsg = DMSG_AXE;
+
+			SpawnBlood (org, 10);
+
+			TF_T_Damage (trace_ent, self, self, 30, TF_TD_NOTTEAM, TF_TD_MELEE);
+		}
+
+	} else {	// hit wall
+		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, 3);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
+		multicast (org, MULTICAST_PVS);
+	}
+}
 /*
 ================
 W_FireSpanner
@@ -352,17 +470,11 @@ W_FireSpanner
 */
 void() W_FireSpanner =
 {
-	local vector source;
 	local vector org;
 	local float healam;
 	local entity te;
 
-	makevectors(self.v_angle);
-	source = self.origin + '0 0 16';
-	if (self.cutf_items & CUTF_CLOSECOMBAT)
-		traceline (source, source + v_forward*96, FALSE, self);
-	else
-		traceline (source, source + v_forward*64, FALSE, self);
+	find_melee (self, TRUE, 64);
 
 	if (trace_fraction == 1.0)
 		return;
@@ -419,8 +531,9 @@ void() W_FireSpanner =
 		// auto-repair/dismantle if hit twice
 		if (trace_ent == self.building) {
 			Engineer_AutoUse();
-			return;
-		} else if (trace_ent.classname == "building_dispenser") {
+		}
+
+		if (trace_ent.classname == "building_dispenser") {
 			Engineer_UseDispenser(trace_ent);
 			return;
 		} else if (trace_ent.classname == "building_sentrygun") {
@@ -492,10 +605,7 @@ void() W_FireSpanner =
 
 			deathmsg = DMSG_SPANNER;
 //WK 20
-			if (!(self.cutf_items & CUTF_CLOSECOMBAT))
-				TF_T_Damage (trace_ent, self, self, 20, TF_TD_NOTTEAM, TF_TD_OTHER);
-			else
-				TF_T_Damage (trace_ent, self, self, 40, TF_TD_NOTTEAM, TF_TD_OTHER);
+			TF_T_Damage (trace_ent, self, self, 20, TF_TD_NOTTEAM, TF_TD_MELEE);
 		}
 	} else { // hit wall
 		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
@@ -520,18 +630,11 @@ void(float tno, entity ignore, entity ignore2) teamprefixsprintbi;
 
 void(float inAuto) W_FireMedikit =
 {
-	local	vector	source;
 	local	vector	org;
 	local	float healam;	
 	local 	entity te, BioInfection;
 
-	makevectors (self.v_angle);
-
-	source = self.origin + '0 0 16';
-	if (self.cutf_items & CUTF_CLOSECOMBAT)
-		traceline (source, source + v_forward*96, FALSE, self);
-	else
-		traceline (source, source + v_forward*64, FALSE, self);
+	find_melee (self, TRUE, 64);
 
 	if (trace_fraction == 1.0)
 		return;
@@ -2784,6 +2887,12 @@ void()	player_axe1;
 void()	player_axeb1;
 void()	player_axec1;
 void()	player_axed1;
+
+void()	player_axe2;
+void()	player_axeb2;
+void()	player_axec2;
+void()	player_axed2;
+
 void()	player_shot1;
 void()	player_nail1;
 
@@ -2848,21 +2957,46 @@ void() W_Attack =
 	self.show_hostile = time + 1;	// wake monsters up
 
 	if (self.current_weapon == WEAP_AXE) {
-		//if (self.cutf_items & CUTF_KNIFE) //WK Go berserk with the knife
-		//	Attack_Finished(0.5); // no, don't (0.35)
-		//else 
-		    Attack_Finished(0.5);
+		local float af = 0.5;
 		
         sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
 		r = random();
-		if (r < 0.25)
-			player_axe1 ();
-		else if (r<0.5)
-			player_axeb1 ();
-		else if (r<0.75)
-			player_axec1 ();
-		else
-			player_axed1 ();
+
+		if (self.cutf_items & CUTF_KNIFE) {
+			find_melee (self, TRUE, 72);
+
+			if (!is_backstab (FALSE) || !trace_ent.takedamage ||
+				(trace_ent.classname != "player" && !IsMonster (trace_ent))) {
+				af -= 0.1;
+
+				if (r < 0.5)
+					player_axe2 ();
+				else
+					player_axec2 ();
+			} else {
+				af += 0.3;
+
+				if (r < 0.5)
+					player_axeb1 ();
+				else
+					player_axed1 ();
+			}
+		} else {
+			if (r < 0.25)
+				player_axe1 ();
+			else if (r<0.5)
+				player_axeb1 ();
+			else if (r<0.75)
+				player_axec1 ();
+			else
+				player_axed1 ();
+		}
+
+		if (self.cutf_items & CUTF_CLOSECOMBAT)
+			af -= 0.1;
+
+		Attack_Finished (af);
+
 	} else if (self.current_weapon == WEAP_SPANNER) {
 		Attack_Finished(0.35); //WK Berserk with spanner
 		sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);

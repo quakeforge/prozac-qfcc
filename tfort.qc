@@ -2416,6 +2416,10 @@ float(entity Player, float Armorclass) TeamFortress_DescribeArmor =
 		sprint (Player, PRINT_HIGH, "Kevlar ");
 		num = num + 1;
 	}
+	if (Armorclass & AT_SAVENAIL) {
+		sprint (Player, PRINT_HIGH, "Wood ");
+		num = num + 1;
+	}
 
 	sprint (Player, PRINT_HIGH, "armor");
 	return num;

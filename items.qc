@@ -375,7 +375,21 @@ void() armor_touch =
 		bit = IT_ARMOR3;
 	}
 
-	if (other.armortype * other.armorvalue >= type*value)
+	local string st = infokey (NIL, "armor_add");
+	if (!st)
+		st = infokey (NIL, "ara");
+
+	if (other.armortype > type && (!st || (st != "no" && st != "0" && st != "off"))) {
+		value *= type / other.armortype;
+		type = other.armortype;
+
+		if (type == 0.8)
+			bit = IT_ARMOR3;
+		else if (type == 0.6)
+			bit = IT_ARMOR2;
+	}
+
+	if (other.armorvalue >= value)
 	{
 		// Engineers can still grab the metal
 		//WK - My 'Engineers' can too
@@ -390,7 +404,7 @@ void() armor_touch =
 		}
 	}
 
-	if (other.armor_allowed * other.maxarmor <= type*value)
+	if (other.maxarmor * other.armor_allowed <= type * value)
 	{
 		if (other.armor_allowed == other.armortype) 
 		{
@@ -451,12 +465,27 @@ void() armor_touch =
 		value = other.maxarmor;
 	}
       
-	if (other.armortype * other.armorvalue < type*value)
+	if (other.armortype * other.armorvalue < type * value)
 	{
 		other.armortype = type;
 		other.armorvalue = value;
 
 		other.items = other.items & ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3) | bit;
+	}
+
+	if (other.armorvalue) {
+		// always get their bought armorclass back
+
+		if (other.tf_items & NIT_KEVLAR)
+			other.armorclass |= AT_SAVESHOT;
+		if (other.tf_items & NIT_GEL)
+			other.armorclass |= AT_SAVEMELEE;
+		if (other.tf_items & NIT_BLAST)
+			other.armorclass |= AT_SAVEEXPLOSION;
+		if (other.tf_items & NIT_CERAMIC)
+			other.armorclass |= AT_SAVEELECTRICITY;
+		if (other.tf_items & NIT_ASBESTOS)
+			other.armorclass |= AT_SAVEFIRE;
 	}
 
 	self.solid = SOLID_NOT;

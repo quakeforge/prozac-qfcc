@@ -61,6 +61,7 @@ float(entity thing) IsMonsterNonArmy;
 float(entity thing) IsMonster; // for mines
 void() JobArmy;
 void() JobHacker;
+void(entity e, boolean b, float f) find_melee;
 
 //
 //	Functions for handling our "professions"
@@ -569,7 +570,6 @@ void() JobJudoka =
 {
 	//Take the weapon of any person in front of you and force a reload
 	self.job_finished = time + MISS_DELAY; //Delay if we don't hit
-	local vector	source;
 	local vector dir;
 	local float chance;
 	local entity tWeapon,oself;
@@ -578,13 +578,7 @@ void() JobJudoka =
 	if (self.attack_finished > time)
 		return;
 
-	makevectors(self.v_angle);
-	source = self.origin + '0 0 16';
-
-	if (self.cutf_items & CUTF_CLOSECOMBAT)
-	    traceline(source, source + v_forward*96, FALSE, self);
-	else
-	    traceline(source, source + v_forward*64, FALSE, self);
+	find_melee (self, TRUE, 48);
 
 	if (trace_fraction != 1.0 && trace_ent.classname == "player" && !Teammate(trace_ent.team_no, self.team_no) && trace_ent.playerclass != PC_UNDEFINED)
 	{
@@ -665,14 +659,14 @@ void() JobJudoka =
 			//Hit fellow judoka or chaplan
 			sprint (self, PRINT_HIGH, "You throw him with a mighty Seoi Otoshi\n");
 			deathmsg = DMSG_JUDOKA;
-			TF_T_Damage (trace_ent, self, self, 150, TF_TD_NOTTEAM, TF_TD_OTHER);
+			TF_T_Damage (trace_ent, self, self, 150, TF_TD_NOTTEAM, TF_TD_MELEE);
 		}
 		else if (self.weapons_carried & trace_ent.current_weapon) {
 			sprint (self, PRINT_HIGH, "You knock his weapon out of his hands\n");
 			tWeapon.heat = 0; //I.e., we didn't take a weapon
 			trace_ent.attack_finished = time + DISARM_TIME;			
 			deathmsg = DMSG_JUDOKA;
-			TF_T_Damage (trace_ent, self, self, 100, TF_TD_NOTTEAM, TF_TD_OTHER);
+			TF_T_Damage (trace_ent, self, self, 100, TF_TD_NOTTEAM, TF_TD_MELEE);
 		}
 		else if (trace_ent.current_weapon != 0 && trace_ent.current_weapon != WEAP_AXE){
 			//Steal their weapon if they have one
@@ -719,7 +713,7 @@ void() JobJudoka =
 			trace_ent.current_weapon = 0;
 
 			deathmsg = DMSG_JUDOKA;
-			TF_T_Damage (trace_ent, self, self, 65, TF_TD_NOTTEAM, TF_TD_OTHER);
+			TF_T_Damage (trace_ent, self, self, 65, TF_TD_NOTTEAM, TF_TD_MELEE);
 		}
 
 		self.job_finished = time + HIT_DELAY;

@@ -542,18 +542,18 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 
 			}
 		}
-		else if ((targ.armorclass & AT_SAVEMELEE) && (deathmsg == DMSG_JUDOKA || deathmsg == DMSG_AXE || deathmsg == DMSG_BACKSTAB || deathmsg == DMSG_SPANNER))
+		else if ((targ.armorclass & AT_SAVEMELEE) && (T_AttackType = TF_TD_MELEE))
 		{
-			// This crap should all be in the weapon function. Stupid morons.
 			damage = floor(damage * 0.5);
+
 			if ((targ.velocity_x > 0 || targ.velocity_y > 0 || targ.velocity_z > 0) && random() > 0.6)
 				return;
-			if (deathmsg == DMSG_BACKSTAB) // O_O, why is this here?
-				T_flags = T_flags - (T_flags & TF_TD_IGNOREARMOUR);
 		}
 		else if ((targ.armorclass & AT_SAVEEXPLOSION) && (T_AttackType == TF_TD_EXPLOSION))
 			damage = floor(damage * 0.5);
-		else if ((targ.armorclass & AT_SAVEELECTRICITY) && (T_AttackType == TF_TD_ELECTRICITY || T_AttackType == TF_TD_NAIL))
+		else if ((targ.armorclass & AT_SAVEELECTRICITY) && (T_AttackType == TF_TD_ELECTRICITY))
+			damage = floor(damage * 0.5);
+		else if ((targ.armorclass & AT_SAVENAIL) && (T_AttackType == TF_TD_NAIL))
 			damage = floor(damage * 0.5);
 		else if ((targ.armorclass & AT_SAVEFIRE) && (T_AttackType == TF_TD_FIRE))
 			damage = floor(damage * 0.5);

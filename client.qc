@@ -2841,6 +2841,8 @@ void() PlayerPreThink =
 
 	if (self.health > 0 && self.solid != SOLID_NOT)
 	{
+		trace_ent = NIL;
+
 		// do a quick checkmove
 		checkmove (self.origin, self.mins, self.maxs, self.origin - '0 0 8192', MOVE_NORMAL, self);	
 	
@@ -2856,6 +2858,13 @@ void() PlayerPreThink =
 			if (self.stucktime && self.stucktime < time && 
 				(trace_ent.solid == SOLID_BSP || trace_ent.classname == "player")) 
 			{	
+#ifdef DEBUG
+				dprint ("Stuck kill, self: \n");
+				eprint (self);
+				dprint ("trace_ent: \n");
+				eprint (trace_ent);
+#endif
+
 				TF_T_Damage (self, NIL, NIL, self.health + 100,
 					TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			}
@@ -2863,6 +2872,13 @@ void() PlayerPreThink =
 			{
 				if (trace_ent.takedamage && trace_ent.classname != "player") 
 				{
+#ifdef DEBUG
+					dprint ("Physics kill, self: \n");
+					eprint (self);
+					dprint ("trace_ent: ");
+					eprint (trace_ent);
+#endif
+
 					TF_T_Damage (trace_ent, NIL, NIL, self.health + 100,
 						TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 				}

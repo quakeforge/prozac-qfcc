@@ -989,24 +989,39 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 		{
 			if (Goal.armortype)
 				Player.armortype = Goal.armortype;
+			else if (!Player.armorvalue || !Player.armortype)
+				Player.armortype = Player.armor_allowed;
+
 			Player.armorvalue = Player.armorvalue + Goal.armorvalue;
 			if (Goal.armorclass)
 			{ //WK Modify to | it with bought armor
 //TODO: Make this a map specific option
 				//WK Don't give wooden armor since it doesn't exist
 				// any more. And we don't want gel for free, right?
-				Player.armorclass = Goal.armorclass - (Goal.armorclass & AT_SAVEMELEE);
-				if (Player.tf_items & NIT_KEVLAR)
-					Player.armorclass = Player.armorclass | AT_SAVESHOT;
-				if (Player.tf_items & NIT_GEL)
-					Player.armorclass = Player.armorclass | AT_SAVEMELEE;
-				if (Player.tf_items & NIT_BLAST)
-					Player.armorclass = Player.armorclass | AT_SAVEEXPLOSION;
-				if (Player.tf_items & NIT_CERAMIC)
-					Player.armorclass = Player.armorclass | AT_SAVEELECTRICITY;
-				if (Player.tf_items & NIT_ASBESTOS)
-					Player.armorclass = Player.armorclass | AT_SAVEFIRE;
+				Player.armorclass = Goal.armorclass;
 			}
+
+			// always get their bought armorclass back
+
+			if (Player.tf_items & NIT_KEVLAR)
+				Player.armorclass = Player.armorclass | AT_SAVESHOT;
+			if (Player.tf_items & NIT_GEL)
+				Player.armorclass = Player.armorclass | AT_SAVEMELEE;
+			if (Player.tf_items & NIT_BLAST)
+				Player.armorclass = Player.armorclass | AT_SAVEEXPLOSION;
+			if (Player.tf_items & NIT_CERAMIC)
+				Player.armorclass = Player.armorclass | AT_SAVEELECTRICITY;
+			if (Player.tf_items & NIT_ASBESTOS)
+				Player.armorclass = Player.armorclass | AT_SAVEFIRE;
+
+			Player.items &= ~(IT_ARMOR3 | IT_ARMOR2 | IT_ARMOR1);
+
+			if (Player.armortype >= 0.8)
+				Player.items |= IT_ARMOR3;
+			else if (Player.armortype >= 0.6)
+				Player.items |= IT_ARMOR2;
+			else if (Player.armortype >= 0.3)
+				Player.items |= IT_ARMOR1;
 
 			Player.ammo_shells = Player.ammo_shells + Goal.ammo_shells;
 			Player.ammo_nails = Player.ammo_nails + Goal.ammo_nails;
