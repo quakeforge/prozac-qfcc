@@ -310,7 +310,7 @@ void () Alias_SetBatch =
 		//Get rid of silly MegaTF 10 year olds
 		TeamFortress_Alias("lay", TF_LAY, 0);
 		//CH allow dropitems
-		//TeamFortress_Alias("dropitems", TF_DROPITEMS, 0);
+		TeamFortress_Alias("dropitems", TF_DROPITEMS, 0);
 	} else if (num == 15) {
 	} else if (num == 16) {
 #ifdef STATUSBAR

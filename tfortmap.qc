@@ -3219,7 +3219,7 @@ void(entity Item) tfgoalitem_drop =
 
 	if (Item.mdl)
 		setmodel(Item, Item.mdl);
-	if (Item.goal_result & TFGR_DROPITEMS) //checks for dropitems
+	if (Item.goal_activation & TFGI_DROPITEMS) //checks for dropitems
 	{
 		Item.nextthink = time + 1; //CH wait a sec then make it pickupable
 		Item.think = tfgoalitem_settouchandthink;

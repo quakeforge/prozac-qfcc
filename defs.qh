@@ -1169,7 +1169,6 @@
 #define TFGR_NO_ITEM_RESULTS	8	// GoalItems given by this Goal don't do results
 #define TFGR_REMOVE_DISGUISE	16	// Prevent/Remove undercover from any Spy
 #define TFGR_CAUSERESPAWN	32	//CH force respawn, not die
-#define TFGR_DROPITEMS		4096	//CH allows user to drop item with "dropitems"
 
 // Defines for Goal Group Result types : goal_group
 // None!
@@ -1189,6 +1188,7 @@
 #define TFGI_ITEMGLOWS		512  // Item glows when on the ground
 #define TFGI_DONTREMOVERES	1024 // Don't remove results when the item is removed
 #define TFGI_GOAL_TO_GROUND	2048 //CH GoalItem drops to ground when spawns
+#define TFGI_DROPITEMS		4096 //GR TF docs mislabel this as being in goal_results, ha ha!
 #define TFGI_GOAL_IS_SOLID	8192 //CH GoalItem is solid
 
 // Defines for TeamSpawnpoints : goal_activation (in teamspawns)

@@ -705,12 +705,20 @@ void() TeamFortress_DropItems =
 {
 	local entity tg;
 
+	local string st = infokey(NIL, "ad");
+	local float always = FALSE;
+
+	if (!st)
+		st = infokey(NIL, "always_drop");
+	if (st == "on" || st == "yes" || st == "1")
+		always = TRUE;
+
 	tg = find (NIL, classname, "item_tfgoal");
 	while (tg)
 	{
 		if (tg.owner == self && tg && tg.classname == "item_tfgoal")
 		{
-			if (tg.goal_result & TFGR_DROPITEMS)
+			if ((tg.goal_activation & TFGI_DROPITEMS) || always)
 			{
 				sprint (self, PRINT_HIGH, "Dropping item: ");
 				sprint (self, PRINT_HIGH, tg.netname);
