@@ -1004,7 +1004,6 @@ SpawnMeatSpray
 void(vector org, vector vel) SpawnMeatSpray =
 {
 	local	entity missile;
-	local	vector	org;
 
 	missile = spawn ();
 	missile.owner = self;

@@ -408,8 +408,6 @@ from ENFORCER.QC
 
 void(vector org, vector vec) LaunchLaser =
 {
-	local	vector	vec;
-		
 	if (self.classname == "monster_enforcer")
 		sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
 
@@ -440,7 +438,6 @@ void(vector org, vector vec) LaunchLaser =
 //
 void(vector org, vector vec) TFFireRocket =
 {
-	local	vector	vec;
 	vec = normalize(vec);
 
 
@@ -474,7 +471,6 @@ W_FireGrenade
 */
 void(vector org, vector vec) TFFireGrenade =
 {
-	local	vector	vec;
 	vec = normalize(vec);
 
 //?	KickPlayer(-2, self);
@@ -515,7 +511,6 @@ void(vector org, vector vec) TFFireGrenade =
 void() Flamer_stream_touch;
 void(vector org, vector vec) TFFireFlame =
 {
-	local	vector	vec;
 	vec = normalize(vec);
 
     local   entity flame;
