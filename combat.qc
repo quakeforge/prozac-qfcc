@@ -371,15 +371,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		}
 		return;
 	}
-    else if (self.aura == AURA_RESISTANCE)
-    {
-        if (self.invincible_sound < time)
-		{
-			sound (targ, CHAN_ITEM, "auras/aura1.wav", 1, ATTN_NORM);
-			self.invincible_sound = time + 1.5;
-		}
-		return;
-    }
 
 	//CHAPLAIN CALCULATIONS
 	// WK See if they're close enough to chap to get protection
@@ -415,11 +406,16 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			damage = damage * 4;
 	}
 
-   	if (attacker.aura == AURA_POWER || (attacker.job == JOB_CRUSADER && IsMonsterNonArmy(targ)))
+   	if (attacker.aura == AURA_POWER)
 		damage = damage * 1.5;
 	
-	if (targ.aura == AURA_RESISTANCE || (attacker.job == JOB_CRUSADER && IsMonsterNonArmy(targ)))
+	if (targ.aura == AURA_RESISTANCE) {
 		damage = damage * 0.66;
+		if (self.invincible_sound < time) {
+			sound (targ, CHAN_ITEM, "auras/aura1.wav", 1, ATTN_NORM);
+			self.invincible_sound = time + 1.5;
+		}
+	}
 
 
 	//DAMAGE ADJUSTMENT
