@@ -445,6 +445,10 @@ void() DecodeLevelParms =
 	self.current_weapon = parm8;
 	self.armortype = parm9 * 0.01;
 
+	SetTeamName (self);
+	setinfokey (self, "topcolor", "0");
+	setinfokey (self, "bottomcolor", "0");
+
 	// TeamFortress Parameters
 	// Detect whether this is the first entrance into a map
 	if (toggleflags == 0)

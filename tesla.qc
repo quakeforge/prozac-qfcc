@@ -408,7 +408,7 @@ float() Tesla_Fire =
     local vector dir;
 	local float hit;
 	local float damage;
-	local float cheater;
+	local float cheater = FALSE;
 	local vector below;
 
 	if (self.tf_items & NIT_TURRET)
