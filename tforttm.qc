@@ -556,7 +556,7 @@ void (entity pl, float topcolor, float bottomcolor) SetPlayerColor =
 //	stuffcmd (pl, "color " + top + " " + bottom + "\n");
 };
 
-void (string key, string value) UserInfoCallback =
+float (string key, string value) UserInfoCallback =
 { // FIXME: remove the cheat poller
 	local string oldval;
 	oldval = infokey (self, key);
@@ -589,6 +589,7 @@ void (string key, string value) UserInfoCallback =
 		setinfokey (self, key, value);
 //		RPrint ("[default [" + self.netname + "](" + key + ")(" + value + ")(" + oldval + ")]\n");
 	}
+	return 1;
 };
 
 //=========================================================================
