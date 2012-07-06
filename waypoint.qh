@@ -1,8 +1,8 @@
-boolean (entity ent, integer index) Waypoint_IsValid;
-integer (entity ent) Waypoint_Count;
-vector (entity ent, integer index) Waypoint_Get;
-void (entity ent, integer index, vector loc) Waypoint_Set;
+boolean (entity ent, int index) Waypoint_IsValid;
+int (entity ent) Waypoint_Count;
+vector (entity ent, int index) Waypoint_Get;
+void (entity ent, int index, vector loc) Waypoint_Set;
 void (entity ent, vector loc) Waypoint_Append;
-boolean (entity ent, integer index) Waypoint_IsTouching;
-void (entity ent, integer index, vector loc) Waypoint_Add;
-void (entity ent, integer index) Waypoint_Remove;
+boolean (entity ent, int index) Waypoint_IsTouching;
+void (entity ent, int index, vector loc) Waypoint_Add;
+void (entity ent, int index) Waypoint_Remove;

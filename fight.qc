@@ -156,11 +156,11 @@ void() ai_face =
 
 	//WK Turrets swivel instanter
 	/* if (self.tf_items & NIT_TURRET) { //Auto-swivel
-		self.angles_y = self.ideal_yaw;
+		self.angles.y = self.ideal_yaw;
 	} */
 	//WK Fix a sentry stuck bug?
 	if (self.classname == "building_sentrygun") { //Auto-swivel
-		self.angles_y = self.ideal_yaw;
+		self.angles.y = self.ideal_yaw;
 	}
 	else
 		ChangeYaw ();

@@ -7,7 +7,7 @@ void () BadTinker = {
 		sprint(self,PRINT_HIGH,"Nothing happened.\n");
 	}
         else if (prob <= 0.8){ // Zowie!
-		TF_T_Damage(self.building, NIL, NIL, self.building.health+1, 0, 0);
+		TF_T_Damage(self.building, nil, nil, self.building.health+1, 0, 0);
 		sprint(self,PRINT_HIGH,"The tesla blew up.\n");
 	}
         else { // ZAP!

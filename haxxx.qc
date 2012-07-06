@@ -147,7 +147,7 @@ void(float inp) Menu_FriendHax_Inp =
     if (inp == 10)
     {
         self.impulse=0;
-        self.demon_two=NIL;
+        self.demon_two=nil;
         ResetMenu();
         return;
     }
@@ -196,7 +196,7 @@ void(float inp) Menu_EnemyHax_Inp =
     if (inp == 10)
     {
         self.impulse=0;
-        self.demon_two=NIL;
+        self.demon_two=nil;
         ResetMenu();
         return;
     }
@@ -845,7 +845,7 @@ void(float input) SBInitiateInterface =
     if (!visible2x(self,self.demon_two))
     {
         sprint(self, PRINT_HIGH, "You are not connected to the target.\n");
-        self.demon_two=NIL;
+        self.demon_two=nil;
         return;
     }
 
@@ -1014,6 +1014,7 @@ float(entity hacked, float r) ReturnHackDelay =
 		else
 			return 2;
 	}
+	return 0;
 };
 
 float(entity hacked, float r) ReturnFHackDelay =
@@ -1184,24 +1185,24 @@ void() SBHackDotTimerThink =
 	{
 		org = self.martyr_enemy.origin;
 		if (self.martyr_enemy.classname == "building_tesla" && self.martyr_enemy.tf_items & NIT_TURRET)
-			org_z = org_z - 7; // - 32;
+			org.z = org.z - 7; // - 32;
 		else if (self.martyr_enemy.classname == "building_tesla")
-			org_z = org_z + 7; // + 32;
+			org.z = org.z + 7; // + 32;
 		else if (self.martyr_enemy.classname == "building_sentrygun" && self.martyr_enemy.tf_items & NIT_TURRET)
-			org_z = org_z - 16;
+			org.z = org.z - 16;
 		else if (self.martyr_enemy.classname == "building_sentrygun")
-			org_z = org_z + 16;
+			org.z = org.z + 16;
         else if (self.martyr_enemy.classname == "building_dispenser")
-			org_z = org_z + 16;
+			org.z = org.z + 16;
 	    else if (self.martyr_enemy.classname == "building_fieldgen")
-			org_z = org_z + 32;
+			org.z = org.z + 32;
 
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 	}
 	
@@ -1279,7 +1280,7 @@ void() JobHacker =
         	{
                 sprint(self, PRINT_HIGH, "You can't hack him.\n");
                 ResetMenu();
-                self.demon_two=NIL;
+                self.demon_two=nil;
                 return;
             }
         
@@ -1327,7 +1328,7 @@ void(entity thebuilding) UpdateBuildingMenus =
     local entity te;
 
     // find all players
-    te = find(NIL, classname, "player");
+    te = find(nil, classname, "player");
     while (te)
 	{
         if (te.job & JOB_HACKER) // a hacker?
@@ -1335,7 +1336,7 @@ void(entity thebuilding) UpdateBuildingMenus =
         if (te.demon_two == thebuilding) // this is our target?
         if (te.current_menu == MENU_E_HACK || te.current_menu == MENU_F_HACK) // and we have the hack menu?
         { // then reset his menu
-            te.demon_two = NIL;
+            te.demon_two = nil;
             if (te.StatusBarSize == 0)
                 CenterPrint(te, "\n");
             else
@@ -1345,7 +1346,7 @@ void(entity thebuilding) UpdateBuildingMenus =
         }
         
         if (te.building == thebuilding) // put the eng building to wolrd, and player_menu will reset it
-            te.building = NIL;
+            te.building = nil;
 
 		te = find(te, classname, "player");
 	}

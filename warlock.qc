@@ -138,8 +138,8 @@ void(float inp) Menu_Demon_Input =
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        self.demon_one.enemy=NIL;//
-	self.demon_one.oldenemy=NIL;
+        self.demon_one.enemy=nil;//
+	self.demon_one.oldenemy=nil;
         self.demon_one.goalentity=self;
 	self.demon_one.movetarget=self;
         self.demon_one.nextthink=time+0.1;
@@ -160,8 +160,8 @@ void(float inp) Menu_Demon_Input =
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-	self.demon_one.enemy=NIL;
-        self.demon_one.oldenemy=NIL;////
+	self.demon_one.enemy=nil;
+        self.demon_one.oldenemy=nil;////
         self.demon_one.goalentity=self.demon_one;
 	self.demon_one.movetarget=self.demon_one;
         self.demon_one.nextthink=time+0.1;
@@ -183,10 +183,10 @@ void(float inp) Menu_Demon_Input =
 		local string st;
         st=GetMonsterName(self.demon_one);
         
-        self.demon_one.enemy=NIL;//
-        self.demon_one.oldenemy=NIL;////
-        self.demon_one.goalentity=NIL;
-	self.demon_one.movetarget=NIL;
+        self.demon_one.enemy=nil;//
+        self.demon_one.oldenemy=nil;////
+        self.demon_one.goalentity=nil;
+	self.demon_one.movetarget=nil;
         self.demon_one.nextthink=time+0.1;
         
         PutMonsterStand(self.demon_one);
@@ -307,7 +307,7 @@ void(float inp) Menu_Demon_Input =
 
     if (self.demon_choice == 5)
     {
-	if (infokey(NIL, "shamking") == "off")
+	if (infokey(nil, "shamking") == "off")
 	{
 	    self.impulse = 0;
 	    return;
@@ -318,7 +318,7 @@ void(float inp) Menu_Demon_Input =
     }
     else if (self.demon_choice == 4)
     {
-	if (infokey(NIL, "bsham") == "off")
+	if (infokey(nil, "bsham") == "off")
 	{
 	    self.impulse = 0;
 	    return;
@@ -508,7 +508,7 @@ void (float points) custom_demon_create =
 	  //  sound (self, CHAN_WEAPON, "boss1/out1.wav", 1, ATTN_NORM);
 
 	makevectors (self.v_angle);
-	v_forward_z = 0;
+	v_forward.z = 0;
 	v_forward = normalize(v_forward) * 64;
 
 	newmis = spawn();
@@ -686,7 +686,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
 		
-        //newmis.touch = NIL;
+        //newmis.touch = nil;
 
    		sprint(self, PRINT_HIGH, "You summon a hell knight.\n");
 	}
@@ -707,7 +707,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
 		
-        //newmis.touch = NIL;
+        //newmis.touch = nil;
 
    		sprint(self, PRINT_HIGH, "You summon a knight.\n");
 	}*/
@@ -730,7 +730,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
 		
-        //newmis.touch = NIL;
+        //newmis.touch = nil;
 
    		sprint(self, PRINT_HIGH, "You summon a fiend.\n");
 	}
@@ -754,7 +754,7 @@ void (float points) custom_demon_create =
 		newmis.think = walkmonster_start;
 		newmis.nextthink = time + 1;
 		//newmis.touch = Demon_JumpTouch;
-		//newmis.touch = NIL;
+		//newmis.touch = nil;
 		////newmis.real_owner.demon_blood = 0; marduk bug
 		if (newmis.has_tesla > 6)
 			sprint (self, PRINT_HIGH, "You summon a shambler king.\n");
@@ -778,7 +778,7 @@ void (float points) custom_demon_create =
 		newmis.nextthink = time + 0.05;
 		//newmis.armorclass = 0; //- OfN - none AT_SAVESHOT; // kevlar
 		newmis.last_saveme_sound = 0; // ? oh that
-		//newmis.touch = NIL;
+		//newmis.touch = nil;
 
 		sprint(self, PRINT_HIGH, "You summon a scrag.\n");
 
@@ -903,7 +903,7 @@ void () kill_my_demon =
 	local entity te;
 	local entity oself;
 	//WK Clean up demons
-	te = find(NIL, classname, "monster_demon1");
+	te = find(nil, classname, "monster_demon1");
 	while (te)
 	{
 		if (te.real_owner == self) {
@@ -919,7 +919,7 @@ void () kill_my_demon =
 			sound (self, CHAN_VOICE, "demon/ddeath.wav", 1, ATTN_NORM);
 			self = oself;
 			te.think = SUB_Remove;
-			te.touch = NIL;
+			te.touch = nil;
 			te.nextthink = time + 0.1;
 
 			sprint(self, PRINT_HIGH, "Your fiend is dead.\n");
@@ -929,7 +929,7 @@ void () kill_my_demon =
 		te = find(te, classname, "monster_demon1");
 	}
 	
-	te = find(NIL, classname, "monster_army");
+	te = find(nil, classname, "monster_army");
 	
 	while (te)
 	{
@@ -947,7 +947,7 @@ void () kill_my_demon =
 			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 //			custom_grunt_die;
 			te.think = SUB_Remove;
-			te.touch = NIL;
+			te.touch = nil;
 			te.nextthink = time + 0.1;
 
             //-----------------------// NOT NEEDED
@@ -1002,15 +1002,15 @@ void () kill_my_demon =
 			sprint (self, PRINT_HIGH, "Your soldier is dead.\n");
 			self.job &= ~JOB_DEMON_OUT;
 
-            self.demon_one = NIL;
+            self.demon_one = nil;
             SetArmyTimer();
-			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
+			//TF_T_Damage(te, nil, nil, 4000, 0, 0);
 		}
 
 		te = find(te, classname, "monster_army");
 	}
 
-	/*te = find(NIL, classname, "monster_knight");
+	/*te = find(nil, classname, "monster_knight");
 	
 	while (te)
 	{
@@ -1026,18 +1026,18 @@ void () kill_my_demon =
             
 			//sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
-			te.touch = NIL;
+			te.touch = nil;
 			te.nextthink = time + 0.1;
 			self = oself;
 
 			//self.job &= ~JOB_DEMON_OUT);
 			sprint (self, PRINT_HIGH, "Your knight is dead.\n");
-			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
+			//TF_T_Damage(te, nil, nil, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_knight");
 	}
 
-    te = find(NIL, classname, "monster_hknight");
+    te = find(nil, classname, "monster_hknight");
 	
 	while (te)
 	{
@@ -1051,18 +1051,18 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib3.mdl", -70);
 			sound (self, CHAN_VOICE, "hknight/death1.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
-			te.touch = NIL;
+			te.touch = nil;
 			te.nextthink = time + 0.1;
 			self = oself;
 
 			//self.job &= ~JOB_DEMON_OUT);
 			sprint (self, PRINT_HIGH, "Your hell knight is dead.\n");
-			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
+			//TF_T_Damage(te, nil, nil, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_hknight");
 	}*/
     
-    te = find(NIL, classname, "monster_shambler");
+    te = find(nil, classname, "monster_shambler");
 	
 	while (te)
 	{
@@ -1076,19 +1076,19 @@ void () kill_my_demon =
 				ThrowGib ("progs/gib3.mdl", -70);
 				sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 				te.think = SUB_Remove;
-				te.touch = NIL;
+				te.touch = nil;
 				te.nextthink = time + 0.1;
 				self = oself;	
 
 				//self.job &= ~JOB_DEMON_OUT);
 				sprint (self, PRINT_HIGH, "Your shambler is dead.\n");
-				//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
+				//TF_T_Damage(te, nil, nil, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_shambler");
 	}
 
     
-    te = find(NIL, classname, "monster_wizard");
+    te = find(nil, classname, "monster_wizard");
 	
 	while (te)
 	{
@@ -1102,23 +1102,23 @@ void () kill_my_demon =
 			ThrowGib ("progs/gib3.mdl", -70);
 			sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 			te.think = SUB_Remove;
-			te.touch = NIL;
+			te.touch = nil;
 			te.nextthink = time + 0.1;
 			self = oself;
 
 
 			sprint (self, PRINT_HIGH, "Your scrag is dead.\n");
-			//TF_T_Damage(te, NIL, NIL, 4000, 0, 0);
+			//TF_T_Damage(te, nil, nil, 4000, 0, 0);
 		}
 		te = find(te, classname, "monster_wizard");
 	}   
 
 
     	self.job &= ~JOB_DEMON_OUT;
-    	self.demon_one = NIL;
+    	self.demon_one = nil;
 
-    	self.summon_one = NIL;
-	self.summon_two = NIL;
+    	self.summon_one = nil;
+	self.summon_two = nil;
 };
 
 void() MonsterTouch =
@@ -1193,7 +1193,7 @@ void (entity player) UpdateSummons =
         }
         
         if (player.summon_one.has_holo == 0) // set to 0 on die thinks
-            player.summon_one = NIL;
+            player.summon_one = nil;
     }
 
     // Update our second summon
@@ -1206,7 +1206,7 @@ void (entity player) UpdateSummons =
         }
         
         if (player.summon_two.has_holo == 0) // set to 0 on die thinks
-            player.summon_two = NIL;
+            player.summon_two = nil;
     }
 
 };

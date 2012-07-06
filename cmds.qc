@@ -8,7 +8,7 @@ void(entity client) AddCommandAliases = { };
 
 #else
 
-integer commands_added;
+int commands_added;
 
 void() Cmd_Weapon_f;
 void() Cmd_Build_f;

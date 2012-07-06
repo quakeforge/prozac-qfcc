@@ -34,7 +34,7 @@ void() TeamFortress_DetonatePipebombs =
 	local entity e;
 
 	// Find all this players pipebombs
-	e = find(NIL, classname, "pipebomb");
+	e = find(nil, classname, "pipebomb");
 	while (e)
 	{
     	if(e.owner == self)
@@ -71,13 +71,13 @@ void() MirvGrenadeExplode =
 	local float i;
 
 	deathmsg = DMSG_GREN_MIRV;
-	T_RadiusDamage (self, self.owner, 100, NIL);
+	T_RadiusDamage (self, self.owner, 100, nil);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	self.solid = SOLID_NOT;
@@ -128,9 +128,9 @@ void (vector org, entity shooter) MirvGrenadeLaunch =
 	//WK 2 + random
 	newmis.nextthink = time + 0.75 + random();
 	
-	newmis.velocity_x = xdir * 3;
-	newmis.velocity_y = ydir * 3;
-	newmis.velocity_z = zdir * 5;
+	newmis.velocity.x = xdir * 3;
+	newmis.velocity.y = ydir * 3;
+	newmis.velocity.z = zdir * 5;
 
 	newmis.avelocity='100 100 500';
 	newmis.AIRG_Flags = self.AIRG_Flags; //for tk stuff
@@ -157,7 +157,7 @@ void(float timer) TeamFortress_SetDetpack =
 	if (self.ammo_detpack <= 0)
 		return;
 
-	if (infokey (NIL, "no_spam") == "on")
+	if (infokey (nil, "no_spam") == "on")
 	{
 		sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
 		return;
@@ -230,7 +230,7 @@ void(float krac) TeamFortress_DetpackStop =
 {
 	local entity detpack_timer;
 
-	detpack_timer = find(NIL, netname, "detpack_timer");
+	detpack_timer = find(nil, netname, "detpack_timer");
 	while ((detpack_timer.owner != self) && (detpack_timer))
 		detpack_timer = find(detpack_timer, netname, "detpack_timer");
 
@@ -289,7 +289,7 @@ void() TeamFortress_DetpackSet =
     newmis.flags = FL_ITEM;
 		
 	newmis.angles = '90 0 0';
-	newmis.angles_y = self.owner.angles_y;
+	newmis.angles.y = self.owner.angles.y;
 	newmis.velocity = '0 0 0';
 	newmis.avelocity = '0 0 0';
 
@@ -340,7 +340,7 @@ float (vector targ, vector check) vis2orig;
 // The detpack goes BOOM!
 void() TeamFortress_DetpackExplode = 
 {
-	local integer pos;
+	local int pos;
 
 	bprint(PRINT_MEDIUM, "FIRE IN THE HOLE!\n");
 
@@ -349,22 +349,22 @@ void() TeamFortress_DetpackExplode =
 	if (pos != CONTENTS_SOLID && pos != CONTENTS_SKY) 
 	{
 		deathmsg = DMSG_DETPACK;
-		T_RadiusDamage (self, self.owner, WEAP_DETPACK_SIZE, NIL);
+		T_RadiusDamage (self, self.owner, WEAP_DETPACK_SIZE, nil);
 
         sound(self, CHAN_MISC, "weapons/detpack.wav", 1, ATTN_NONE);
 
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
+		WriteCoord (MSG_MULTICAST, self.origin.x);
+		WriteCoord (MSG_MULTICAST, self.origin.y);
+		WriteCoord (MSG_MULTICAST, self.origin.z);
 		multicast (self.origin, MULTICAST_PHS);
 
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_LAVASPLASH);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
+		WriteCoord (MSG_MULTICAST, self.origin.x);
+		WriteCoord (MSG_MULTICAST, self.origin.y);
+		WriteCoord (MSG_MULTICAST, self.origin.z);
 		multicast (self.origin, MULTICAST_PHS);
 
     //- OfN - Should a detpack make the same explosion a gren does? dont think so...
@@ -377,17 +377,17 @@ void() TeamFortress_DetpackExplode =
 
         while (loopc < EXTRA_DETEXPOSIONS)
         {
-            rexp_x = self.origin_x + random()*400 - 200;
-            rexp_y = self.origin_y + random()*400 - 200;
-            rexp_z = self.origin_z + random()*100;
+            rexp.x = self.origin.x + random()*400 - 200;
+            rexp.y = self.origin.y + random()*400 - 200;
+            rexp.z = self.origin.z + random()*100;
 
             if (vis2orig(self.origin,rexp))
             {
                 WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
                 WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-                WriteCoord (MSG_MULTICAST, rexp_x);
-                WriteCoord (MSG_MULTICAST, rexp_y);
-                WriteCoord (MSG_MULTICAST, rexp_z);
+                WriteCoord (MSG_MULTICAST, rexp.x);
+                WriteCoord (MSG_MULTICAST, rexp.y);
+                WriteCoord (MSG_MULTICAST, rexp.z);
                 multicast (rexp, MULTICAST_PHS);
             }
             loopc = loopc + 1;
@@ -411,9 +411,9 @@ void() TeamFortress_DetpackExplode =
             if (head.playerclass != PC_UNDEFINED)
             if (head.flags & FL_ONGROUND || head.waterlevel)
             {
-                v_x = 100 * crandom();
-            	v_y = 100 * crandom();
-        	    v_z = 150 + 200 * random();
+                v.x = 100 * crandom();
+            	v.y = 100 * crandom();
+        	    v.z = 150 + 200 * random();
                 head.velocity = head.velocity + v;
             }
             

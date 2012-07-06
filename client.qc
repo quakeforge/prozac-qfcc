@@ -205,7 +205,7 @@ void () PrematchBegin =
 	if (prematch)
 	{
 		bprint(PRINT_HIGH,"œ The game has now started! œ\n");
-		other = find(NIL, classname, "player");
+		other = find(nil, classname, "player");
 		while (other)
 		{
 			other.is_abouttodie = TRUE;
@@ -213,14 +213,14 @@ void () PrematchBegin =
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects &= ~EF_ANYGLOW;
-			TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage(other, nil, nil, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			other.real_frags = 0;
 			other.frags = 0;
 			other = find(other, classname, "player");
 		}
 		
         // - OfN - wtf
-        /*other = find(NIL, classname, "grunty");
+        /*other = find(nil, classname, "grunty");
 		while (other)
 		{
 			other.is_abouttodie = TRUE;
@@ -228,7 +228,7 @@ void () PrematchBegin =
 			other.invincible_time = 0;
 			other.invincible_finished = 0;
 			other.effects &= ~EF_ANYGLOW;
-			TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage(other, nil, nil, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			other = find(other, classname, "grunty");
 		}*/
 	}
@@ -257,7 +257,7 @@ void () PrematchBegin =
 
 	oself = self;
 	
-	other = find(NIL, classname, "player");
+	other = find(nil, classname, "player");
 	while (other)
 	{
 		if (livesperguy > 0)
@@ -273,7 +273,7 @@ void () PrematchBegin =
 		kill_my_demon();
 		DetonateAllGuns();
 		
-		TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		TF_T_Damage(other, nil, nil, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		
 		other = find(other, classname, "player");
 	}
@@ -296,7 +296,7 @@ void () TeamAllPlayers =
 {
 	local entity other, oself;
 	
-	other = find(NIL, classname, "player");
+	other = find(nil, classname, "player");
 	while (other)
 	{
 		if (other.team_no <= 0 && !other.has_disconnected)
@@ -383,13 +383,13 @@ void () TeamAllPlayers =
 	local string st;
 	
 	// Kill the round timer
-	other = find(NIL, classname, "chris_round_timer");
+	other = find(nil, classname, "chris_round_timer");
 	// I deliberately don't do a contingency check here - if it screws up I wanna know about it
 	dremove(other);
 	
-	st = infokey(NIL, "pm");
+	st = infokey(nil, "pm");
 	if (!st) // if 'pm' isn't set, try 'prematch'
-		st = infokey(NIL, "prematch");
+		st = infokey(nil, "prematch");
 	if (st == "on") // if it reads 'on', do a 30 second prematch
 		prematchtime = time + 30;
 	else // if it doesn't read 'on'...
@@ -402,10 +402,10 @@ void () TeamAllPlayers =
 		prematch = FALSE; // otherwise, no prematch
 	
 	// Kill everyone
-/*	other = find(NIL, classname, "player");
+/*	other = find(nil, classname, "player");
 	while (other)
 	{
-		TF_T_Damage(other, NIL, NIL, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		TF_T_Damage(other, nil, nil, other.health + 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		other = find(other, classname, "player");
 	} Don't kill everyone here or it drops the flag
 	*/
@@ -448,7 +448,7 @@ void() SetToggleFlags =
 #endif
 
 	// Is this a FortressMap?
-	ent = find(NIL, classname, "info_tfdetect");
+	ent = find(nil, classname, "info_tfdetect");
 	if (ent)
 	{
 		// Turn on Teamplay
@@ -468,7 +468,7 @@ void() SetToggleFlags =
 	else
 	{
 		// Is this a CTF map?
-		ent = find(NIL, classname, "info_player_team1");
+		ent = find(nil, classname, "info_player_team1");
 		if ((ent) || (CTF_Map == TRUE))
 		{
 			// Turn on CTF MAP
@@ -539,16 +539,16 @@ void() SetToggleFlags =
 		toggleflags |= TFLAG_CHEATCHECK;
 	}
 
-	st = infokey(NIL, "temp1");
+	st = infokey(nil, "temp1");
 	toggleflags |= TFLAG_FIRSTENTRY | stof(st);
 	local float autoteam_time;
 	autoteam_time = 30;
 	// check all serverinfo settings, to set the appropriate toggleflags
 
 	// AUTOTEAM
-	st = infokey(NIL, "a");
+	st = infokey(nil, "a");
 	if (!st)
-		st = infokey(NIL, "autoteam");
+		st = infokey(nil, "autoteam");
 	if (st == "on")
 		toggleflags |= TFLAG_AUTOTEAM;
 	else if (st == "off")
@@ -560,18 +560,18 @@ void() SetToggleFlags =
 	}
 
 	// TEAMFRAGS
-	st = infokey(NIL, "t");
+	st = infokey(nil, "t");
 	if (!st)
-		st = infokey(NIL, "teamfrags");
+		st = infokey(nil, "teamfrags");
 	if (st == "on")
 		toggleflags |= TFLAG_TEAMFRAGS;
 	else if (st == "off")
 		toggleflags &= ~TFLAG_TEAMFRAGS;
 
 	//WK JELLO WATER
-	st = infokey(NIL, "j");
+	st = infokey(nil, "j");
 	if (!st)
-		st = infokey(NIL, "jello");
+		st = infokey(nil, "jello");
 	if (st == "on")
 		jello = TRUE;
 	else {
@@ -585,18 +585,18 @@ void() SetToggleFlags =
 
 	//WK JELLO WATER
 	light_damage = FALSE;
-	st = infokey(NIL, "ld");
+	st = infokey(nil, "ld");
 	if (!st)
-		st = infokey(NIL, "lightdamage");
+		st = infokey(nil, "lightdamage");
 	if (st == "on")
 		light_damage = TRUE;
 	// SB New, improved TF 2.9 fake prematch mode!
 	// We can make a class, come in, run around, play tag the flag, but can't do anything
 	// useful until the prematch is over!
 
-	st = infokey(NIL, "pm");
+	st = infokey(nil, "pm");
 	if (!st) // if 'pm' isn't set, try 'prematch'
-		st = infokey(NIL, "prematch");
+		st = infokey(nil, "prematch");
 	if (st == "on") // if it reads 'on', do a 30 second prematch
 		prematchtime = time + 30;
 	else // if it doesn't read 'on'...
@@ -611,18 +611,18 @@ void() SetToggleFlags =
 		prematch = FALSE; // otherwise, no prematch
 
 	//WK Bounty System
-	st = infokey(NIL, "bounty");
+	st = infokey(nil, "bounty");
 	if (!st)
-		st = infokey(NIL, "moola");
+		st = infokey(nil, "moola");
 	if (st == "on")
 		bounty = TRUE;
 	else
 		bounty = FALSE;
 
 	//CH Sets the starting amount of money :)
-	st = infokey(NIL, "m");
+	st = infokey(nil, "m");
 	if (!st)
-		st = infokey(NIL, "money");
+		st = infokey(nil, "money");
 	local float numba;
 	numba = stof(st);
 	if (numba)
@@ -631,23 +631,23 @@ void() SetToggleFlags =
 		custom_money = SPENDING_LIMIT;
 
 	// GRAPPLING HOOK
-	st = infokey(NIL, "g");
+	st = infokey(nil, "g");
 	if (!st)
-		st = infokey(NIL, "grapple");
+		st = infokey(nil, "grapple");
 	if (st == "off")
 		allow_hook = FALSE;
 	if (!(toggleflags & TFLAG_GRAPPLE) && st != "on")
 		allow_hook = FALSE;
 
 	// SPY OFF
-	st = infokey(NIL, "spy");
+	st = infokey(nil, "spy");
 	if (st == "off")
 		spy_off = TRUE;
 
 	// SPY INVIS ONLY
-	st = infokey(NIL, "s");
+	st = infokey(nil, "s");
 	if (!st)
-		st = infokey(NIL, "spyinvis");
+		st = infokey(nil, "spyinvis");
 	if (st == "on" || toggleflags & TFLAG_SPYINVIS)
 		invis_only = TRUE;
 	else if (st == "off")
@@ -657,9 +657,9 @@ void() SetToggleFlags =
 		invis_only = TRUE;
 
 	// RespawnDelay
-	st = infokey(NIL, "rd");
+	st = infokey(nil, "rd");
 	if (!st)
-		st = infokey(NIL, "respawn_delay");
+		st = infokey(nil, "respawn_delay");
 	respawn_delay_time = stof(st);
 	if (respawn_delay_time)
 		toggleflags |= TFLAG_RESPAWNDELAY;
@@ -678,9 +678,9 @@ void() SetToggleFlags =
 		ent.think = autoteam_think;
 	}
 
-	st = infokey (NIL, "improve_respawns");
+	st = infokey (nil, "improve_respawns");
 	if (st == "1" || st == "on") {
-		local entity ent = NIL;
+		local entity ent = nil;
 		while ((ent = find (ent, classname, "info_tfgoal"))) {
 			if (ent.ammo_shells && ent.ammo_nails
 				&& ent.ammo_rockets && ent.ammo_cells
@@ -713,25 +713,25 @@ void() SetToggleFlags =
 		}
 	}
 
-	st = infokey(NIL, "ir");
+	st = infokey(nil, "ir");
 	if (!st)
-		st = infokey(NIL, "instant_repair");
+		st = infokey(nil, "instant_repair");
 	if (st == "1" || st == "on")
 		instant_repair = TRUE;
 	else
 		instant_repair = FALSE;
 
-	st = infokey(NIL, "fe");
+	st = infokey(nil, "fe");
 	if (!st)
-		st = infokey(NIL, "flag_emu");
+		st = infokey(nil, "flag_emu");
 	if (st == "1" || st == "on")
 		toggleflags |= TFLAG_FLAGEMU;
 	else if (st == "0" || st == "off")
 		toggleflags &= ~TFLAG_FLAGEMU;
 
-	st = infokey(NIL, "ws");
+	st = infokey(nil, "ws");
 	if (!st)
-		st = infokey(NIL, "use_standard");
+		st = infokey(nil, "use_standard");
 	if (st == "1" || st == "on")
 		toggleflags |= TFLAG_WARSTANDARD;
 	else
@@ -796,7 +796,7 @@ entity() FindIntermission =
 	local	float cyc;
 
 	// look for info_intermission first
-	spot = find (NIL, classname, "info_intermission");
+	spot = find (nil, classname, "info_intermission");
 	if (spot)
 	{	// pick a random one
 		cyc = random() * 1;
@@ -814,12 +814,12 @@ entity() FindIntermission =
 	}
 
 // then look for the start position
-	spot = find (NIL, classname, "info_player_start");
+	spot = find (nil, classname, "info_player_start");
 	if (spot)
 		return spot;
 
 // then look through the deathmatch starts
-	spot = find (NIL, classname, "info_player_deathmatch");
+	spot = find (nil, classname, "info_player_deathmatch");
 	if (spot)
 	{	
 		// pick a random one
@@ -836,6 +836,7 @@ entity() FindIntermission =
 	
 	
 	objerror ("FindIntermission: no spot");
+	return nil;	//FIXME no-return functions
 };
 
 /*===========================
@@ -856,7 +857,7 @@ entity (entity start_point) FindNextIntermission =
 			if (spot)
 				return spot;
 			else
-				start_point = NIL;
+				start_point = nil;
 		}
 
 
@@ -869,17 +870,17 @@ entity (entity start_point) FindNextIntermission =
 		}
 
 		// at the end of the list
-		spot = find (NIL, classname, "info_intermission");
+		spot = find (nil, classname, "info_intermission");
 		if (spot)
 			return spot;
 
-		spot = find (NIL, classname, "info_player_deathmatch");
+		spot = find (nil, classname, "info_player_deathmatch");
 		if (spot)
 			return spot;
 	}
 	else // do not cycle though in co-op or single
 	{
-		spot = find (NIL, classname, "info_player_start");
+		spot = find (nil, classname, "info_player_start");
 		if (spot)
 			return spot;
 	}
@@ -919,17 +920,17 @@ float() DoExtraCycle =
     //-------------------------------------------------//
     //- OfN - I tried to make this work like in tf2.8 -//
     local string nmap, temp;
-    nmap = infokey(NIL, "nmap");
+    nmap = infokey(nil, "nmap");
     if (nmap) {
         local float minplayers, maxplayers, itsok, currentpl;
         
-        if (infokey(NIL,"minp")!="")
-            minplayers = stof(infokey(NIL,"minp"));
+        if (infokey(nil,"minp")!="")
+            minplayers = stof(infokey(nil,"minp"));
         else
             minplayers = 0;
 
-        if (infokey(NIL,"maxp")!="")
-            maxplayers = stof(infokey(NIL,"maxp"));
+        if (infokey(nil,"maxp")!="")
+            maxplayers = stof(infokey(nil,"maxp"));
         else
             maxplayers = 32;
 
@@ -941,7 +942,7 @@ float() DoExtraCycle =
         
         if (minplayers > currentpl) {
             bprint(PRINT_HIGH,"Map ");
-            nmap = infokey(NIL, "nmap");
+            nmap = infokey(nil, "nmap");
             bprint(PRINT_HIGH, nmap);
             bprint(PRINT_HIGH," skipped - minimum players ");
             temp = ftos(minplayers);
@@ -954,7 +955,7 @@ float() DoExtraCycle =
         } else {
             if (maxplayers < currentpl) {
                 bprint(PRINT_HIGH,"Map ");
-                nmap = infokey(NIL, "nmap");
+                nmap = infokey(nil, "nmap");
                 bprint(PRINT_HIGH, nmap);
                 bprint(PRINT_HIGH," skipped - maximum players ");
                 temp = ftos(maxplayers);
@@ -974,7 +975,7 @@ float() DoExtraCycle =
 
         //execute map conditions ok
         if (itsok) {
-            nmap = infokey(NIL, "nmap");
+            nmap = infokey(nil, "nmap");
             
             bprint(PRINT_HIGH,"\nLoading ");
             bprint(PRINT_HIGH,nmap);
@@ -992,7 +993,7 @@ float() DoExtraCycle =
 			return FALSE;
 		}
     } else if (already_chosen_map == MAP_LOADCYCLE) {
-		local string st = infokey (NIL, "loopcycle");
+		local string st = infokey (nil, "loopcycle");
 		if (st != "0" && st != "off") {
 			RPrint ("No map loaded, restarting map cycle\n");
 			SetNextMapNum (0);
@@ -1026,9 +1027,9 @@ float() GetNextMapNum =
 	local float num;
 	local string maxmapnum;
 
-	infostring = infokey (NIL, "n");
+	infostring = infokey (nil, "n");
 	num = stof (infostring);
-	maxmapnum = infokey (NIL, "maxmapnum");
+	maxmapnum = infokey (nil, "maxmapnum");
 
 	if (!infostring) { // always use info when available
 		if (cvar ("crudefile_quota") >= 0) {
@@ -1072,7 +1073,7 @@ void(float mapnum) SetNextMapNum =
 	localcmd("localinfo n ");
 	localcmd(mapstring);
 	localcmd("\n");
-	setinfokey (NIL, "n", mapstring);
+	setinfokey (nil, "n", mapstring);
 };
 
 void() LoadNextMap =
@@ -1119,7 +1120,7 @@ void() LoadNextMap =
 
 	if (mapcount == 0)
 	{
-		cyc = infokey(NIL, "cycledir");
+		cyc = infokey(nil, "cycledir");
 		if (!cyc)
 			cyc = "qwmcycle";
 
@@ -1144,7 +1145,7 @@ void() GotoNextMap =
 
     if (already_chosen_map != MAP_YES)
     {
-		local string nmap = infokey (NIL, "nmap");
+		local string nmap = infokey (nil, "nmap");
 		if (already_chosen_map == MAP_LOADCYCLE && nmap) {
 			// load up the map config
 			localcmd ("exec \"mapcfg.cfg\"\n");
@@ -1239,7 +1240,7 @@ void() ExitIntermission =
 			WriteByte (MSG_ALL, 3);
 
 			WriteByte (MSG_ALL, SVC_FINALE);
-			WriteString (MSG_ALL, "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our NIL! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person.");
+			WriteString (MSG_ALL, "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our nil! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person.");
 			return;
 		}
 
@@ -1313,14 +1314,14 @@ void() execute_changelevel =
 	WriteByte (MSG_ALL, 3);
 
 	WriteByte (MSG_ALL, SVC_INTERMISSION);
-	WriteCoord (MSG_ALL, pos.origin_x);
-	WriteCoord (MSG_ALL, pos.origin_y);
-	WriteCoord (MSG_ALL, pos.origin_z);
-	WriteAngle (MSG_ALL, pos.mangle_x);
-	WriteAngle (MSG_ALL, pos.mangle_y);
-	WriteAngle (MSG_ALL, pos.mangle_z);
+	WriteCoord (MSG_ALL, pos.origin.x);
+	WriteCoord (MSG_ALL, pos.origin.y);
+	WriteCoord (MSG_ALL, pos.origin.z);
+	WriteAngle (MSG_ALL, pos.mangle.x);
+	WriteAngle (MSG_ALL, pos.mangle.y);
+	WriteAngle (MSG_ALL, pos.mangle.z);
 	
-	other = find (NIL, classname, "player");
+	other = find (nil, classname, "player");
 	while (other)
 	{
 		other.takedamage = DAMAGE_NO;
@@ -1353,7 +1354,7 @@ void() changelevel_touch =
 		return;
 	}
 	
-	self.touch = NIL;
+	self.touch = nil;
 
 	// we can't move people right now, because touch functions are called
 	// in the middle of C movement code, so set a think time to do it
@@ -1477,7 +1478,7 @@ void() ClientKill =
 	if (self.tfstate & TFSTATE_INFECTED)
 	{
 		finished = FALSE;
-		te = find(NIL, classname, "timer");
+		te = find(nil, classname, "timer");
 		while (te)
 		{
 			if (te.owner == self && te.think == BioInfection_Decay)
@@ -1490,7 +1491,7 @@ void() ClientKill =
 			}
 
 			te = find(te, classname, "timer");
-			if (finished) te = NIL;
+			if (finished) te = nil;
 		}
 	} else 
 		logfrag (self, self);
@@ -1553,10 +1554,10 @@ entity(float team_num) FindTeamSpawnPoint =
 			spot = find(spot, team_str_home, "ts1");
 
 			if (!spot)
-				spot = find(NIL, team_str_home, "ts1");
+				spot = find(nil, team_str_home, "ts1");
 
 			if (!spot)
-				return NIL;
+				return nil;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
@@ -1596,10 +1597,10 @@ entity(float team_num) FindTeamSpawnPoint =
 			spot = find(spot, team_str_home, "ts2");
 
 			if (!spot)
-				spot = find(NIL, team_str_home, "ts2");
+				spot = find(nil, team_str_home, "ts2");
 
 			if (!spot)
-				return NIL;
+				return nil;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
@@ -1638,10 +1639,10 @@ entity(float team_num) FindTeamSpawnPoint =
 			spot = find(spot, team_str_home, "ts3");
 
 			if (!spot)
-				spot = find(NIL, team_str_home, "ts3");
+				spot = find(nil, team_str_home, "ts3");
 
 			if (!spot)
-				return NIL;
+				return nil;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
@@ -1680,10 +1681,10 @@ entity(float team_num) FindTeamSpawnPoint =
 			spot = find(spot, team_str_home, "ts4");
 
 			if (!spot)
-				spot = find(NIL, team_str_home, "ts4");
+				spot = find(nil, team_str_home, "ts4");
 
 			if (!spot)
-				return NIL;
+				return nil;
 		
 			at_spot = findradius(spot.origin, 40);
 			spot_found = TRUE;
@@ -1711,7 +1712,7 @@ entity(float team_num) FindTeamSpawnPoint =
 	}
 
 	// failure
-	return NIL;
+	return nil;
 };
 
 /*
@@ -1730,7 +1731,7 @@ entity() SelectSpawnPoint =
 	
 	// testinfo_player_start is only found in regioned levels
 	/*
-	spot = find (NIL, classname, "testplayerstart");
+	spot = find (nil, classname, "testplayerstart");
 	if (spot)
 		return spot;
 	*/
@@ -1753,7 +1754,7 @@ entity() SelectSpawnPoint =
 	{ 
 		lastspawn = find(lastspawn, classname, "info_player_coop");
 		if (!lastspawn)
-            lastspawn = find (NIL, classname, "info_player_coop");
+            lastspawn = find (nil, classname, "info_player_coop");
                 
         if (lastspawn)
         	return lastspawn;
@@ -1763,7 +1764,7 @@ entity() SelectSpawnPoint =
 		// search through
 		spot = find(lastspawn, classname, "info_player_deathmatch");
 		if (!spot)
-			spot = find(NIL, classname, "info_player_deathmatch");
+			spot = find(nil, classname, "info_player_deathmatch");
 
 		attempts = 0;
 		while (spot && attempts < 100)
@@ -1794,18 +1795,18 @@ entity() SelectSpawnPoint =
 			spot = find(spot, classname, "info_player_deathmatch");	
 			
 			if (!spot)
-				spot = find(NIL, classname, "info_player_deathmatch");
+				spot = find(nil, classname, "info_player_deathmatch");
 		}
 	}
 
 	if (serverflags)
 	{	// return with a rune to start
-		spot = find (NIL, classname, "info_player_start2");
+		spot = find (nil, classname, "info_player_start2");
 		if (spot)
 			return spot;
 	}
 	
-	spot = find (NIL, classname, "info_player_start");
+	spot = find (nil, classname, "info_player_start");
 	if (!spot)
 		error ("PutClientInServer: no info_player_start on level\n");
 	
@@ -1869,7 +1870,7 @@ void() PutClientInServer =
 	self.FlashTime = 0;
 	self.flags = FL_CLIENT;
   	self.aura = 0; //- OfN
-    self.crusader_inspirator=NIL; // OfN - needed?
+    self.crusader_inspirator=nil; // OfN - needed?
 	self.gravity = 1; //WK
 	self.air_finished = time + 12;
 	self.dmg = 2;   		// initial water damage
@@ -2127,8 +2128,8 @@ void() PutClientInServer =
 	}
 
 	// Set Rocket Jump Modifiers
-	if (stof(infokey(NIL, "rj")) != 0)
-		rj = stof(infokey(NIL, "rj"));
+	if (stof(infokey(nil, "rj")) != 0)
+		rj = stof(infokey(nil, "rj"));
 	else
 		rj = 1;
 
@@ -2250,14 +2251,14 @@ void() DumpScore =
 		error ("DumpScore: world.chain is set");
 
 // build a sorted lis
-	e = find(NIL, classname, "player");
-	sort = NIL;
+	e = find(nil, classname, "player");
+	sort = nil;
 	while (e)
 	{
 		if (!sort)
 		{
 			sort = e;
-			e.chain = NIL;
+			e.chain = nil;
 		}
 		else
 		{
@@ -2273,7 +2274,7 @@ void() DumpScore =
 				{
 					if (!walk.chain)
 					{
-						e.chain = NIL;
+						e.chain = nil;
 						walk.chain = e;
 					}
 					else if (walk.chain.frags < e.frags)
@@ -2333,7 +2334,7 @@ Exit deathmatch games upon conditions
 void() CheckRules =
 {
 	local string st;
-	st = infokey (NIL, "cyclenow");
+	st = infokey (nil, "cyclenow");
 
 	if (!cyclenow && (st == "1" || st == "on"))
 	{
@@ -2419,14 +2420,14 @@ void() PlayerJump =
 	if (self.waterlevel >= 2)
 	{
 		if (self.watertype == CONTENTS_WATER)
-			self.velocity_z = 100;
+			self.velocity.z = 100;
 		else if (self.watertype == CONTENTS_SLIME)
-			self.velocity_z = 80;
+			self.velocity.z = 80;
 		else
-			self.velocity_z = 50;
+			self.velocity.z = 50;
 		//WK
 		if (self.tf_items & NIT_SCUBA)
-			self.velocity_z = 250;
+			self.velocity.z = 250;
 
 // play swiming sound
 		if (self.cutf_items & CUTF_STEALTH) // SB no noise if we have stealth
@@ -2462,7 +2463,7 @@ void() PlayerJump =
 	//WK Sprinters jump higher
 	//SB No, people with high jump do
 	if (self.cutf_items & CUTF_HIGHJUMP)
-		self.velocity_z = self.velocity_z + 400;
+		self.velocity.z = self.velocity.z + 400;
 };
 
 
@@ -2495,7 +2496,7 @@ void() WaterMove =
 				if (self.dmg > 6)
 					self.dmg = 2.2;
 				if (self.dmg < self.health - 1)
-					TF_T_Damage (self, NIL, NIL, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+					TF_T_Damage (self, nil, nil, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 				self.pain_finished = time + 1;
 			}
 		}
@@ -2516,7 +2517,7 @@ void() WaterMove =
 			self.dmg = self.dmg + 2;
 			if (self.dmg > 15)
 				self.dmg = 10;
-			TF_T_Damage (self, NIL, NIL, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage (self, nil, nil, self.dmg, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			self.pain_finished = time + 1;
 		}
 	}
@@ -2546,7 +2547,7 @@ void() WaterMove =
 				self.dmgtime = time + 0.2;
 
 			// Asbestos armor helps against lava, but I doubt it'll save you :)
-			TF_T_Damage (self, NIL, NIL, 10*self.waterlevel, 0, TF_TD_FIRE);
+			TF_T_Damage (self, nil, nil, 10*self.waterlevel, 0, TF_TD_FIRE);
 		}
 	}
 	else if (self.watertype == CONTENTS_SLIME)
@@ -2554,8 +2555,8 @@ void() WaterMove =
 		if (self.dmgtime < time && self.radsuit_finished < time)
 		{
 			self.dmgtime = time + 1;
-			//T_Damage (self, NIL, NIL, 4*self.waterlevel);
-			TF_T_Damage (self, NIL, NIL, 4*self.waterlevel, 0, TF_TD_ELECTRICITY);
+			//T_Damage (self, nil, nil, 4*self.waterlevel);
+			TF_T_Damage (self, nil, nil, 4*self.waterlevel, 0, TF_TD_ELECTRICITY);
 		}
 	}
 	
@@ -2567,7 +2568,7 @@ void() WaterMove =
 				sound (self, CHAN_BODY, "player/inlava.wav", 1, ATTN_NORM);
 			else if (self.watertype == CONTENTS_WATER)
 			{
-				if (self.movedir_z > -300)
+				if (self.movedir.z > -300)
 					sound (self, CHAN_BODY, "player/inh2o.wav", 1, ATTN_NORM);
 				else
 					sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
@@ -2590,21 +2591,21 @@ void() CheckWaterJump =
 	// check for a jump-out-of-water
 	makevectors (self.angles);
 	start = self.origin;
-	start_z = start_z + 8; 
-	v_forward_z = 0;
+	start.z = start.z + 8; 
+	v_forward.z = 0;
 	normalize(v_forward);
 	end = start + v_forward*24;
 	traceline (start, end, TRUE, self);
 	if (trace_fraction < 1)
 	{	// solid at waist
-		start_z = start_z + self.maxs_z - 8;
+		start.z = start.z + self.maxs.z - 8;
 		end = start + v_forward*24;
 		self.movedir = trace_plane_normal * -50;
 		traceline (start, end, TRUE, self);
 		if (trace_fraction == 1)
 		{	// open at eye level
 			self.flags |= FL_WATERJUMP;
-			self.velocity_z = 225;
+			self.velocity.z = 225;
 			self.flags &= ~FL_JUMPRELEASED;
 			self.teleport_time = time + 2;	// safety net
 			return;
@@ -2645,16 +2646,16 @@ void() PlayerPreThink =
 
 	makevectors (self.v_angle);		// is this still used?
 
-	if (infokey(NIL,"ceasefire")=="on") //Cyto
+	if (infokey(nil,"ceasefire")=="on") //Cyto
 	{
 		#ifndef ceasefire_allows_to_move
         if (self.lip)
 			self.origin = self.oldorigin;
 		else
 		{
-			self.velocity_z = -5000;
-			self.velocity_x = 0;
-			self.velocity_y = 0;
+			self.velocity.z = -5000;
+			self.velocity.x = 0;
+			self.velocity.y = 0;
 			if (self.flags & FL_ONGROUND)
 			{
 				self.oldorigin = self.origin;
@@ -2699,9 +2700,9 @@ void() PlayerPreThink =
 			if (foo)
 				ping = stof(foo);
 			if (ping < 300) {
-				self.velocity_x = floor((3 * self.velocity_x) / 4);
-				self.velocity_y = floor((3 * self.velocity_y) / 4);
-				self.velocity_z = floor((3 * self.velocity_z) / 4);
+				self.velocity.x = floor((3 * self.velocity.x) / 4);
+				self.velocity.y = floor((3 * self.velocity.y) / 4);
+				self.velocity.z = floor((3 * self.velocity.z) / 4);
 			}
 		}
 		if (self.button2)
@@ -2758,16 +2759,16 @@ void() PlayerPreThink =
 
 	//WK Scuba commando treads water :)
 	if ((self.tf_items & NIT_SCUBA) && self.waterlevel > 1) {
-		if (self.velocity_z >= -25 && self.velocity_z < 0)
-			self.velocity_z = 10; //Tread water if near a stop
+		if (self.velocity.z >= -25 && self.velocity.z < 0)
+			self.velocity.z = 10; //Tread water if near a stop
 	}
 	
 	//Jello Water :)
 	else if (jello && self.waterlevel > 1) {
 		if (jello == TRUE) //Binary on/off
-			self.velocity_z = 1000; //900 is a better number for 2forts
+			self.velocity.z = 1000; //900 is a better number for 2forts
 		else
-			self.velocity_z = jello;
+			self.velocity.z = jello;
 	}
 
 	// teleporters can force a non-moving pause time	
@@ -2784,16 +2785,16 @@ void() PlayerPreThink =
 	if (self.on_hook)
 	{
 		Service_Grapple ();
-		if (self.button2 && self.velocity_z > 10)
-			self.velocity_z = 10;	//WK Allow more creative physics with hook
+		if (self.button2 && self.velocity.z > 10)
+			self.velocity.z = 10;	//WK Allow more creative physics with hook
 	}
 	
 	//WK Add Hover Boot Support
 	if (self.tf_items & NIT_HOVER_BOOTS) {
-		if (self.button2 && self.velocity_z < 0 && self.hover_time > 0 && self.waterlevel == 0)
+		if (self.button2 && self.velocity.z < 0 && self.hover_time > 0 && self.waterlevel == 0)
 		{ 	//Try to hover
 			local vector angle = self.angles;
-			angle_x = -angle_x;
+			angle.x = -angle.x;
 			makevectors(angle);
 			v_up = '0 0 1'; // angle thing is broken for now
 
@@ -2844,7 +2845,7 @@ void() PlayerPreThink =
 
 	if (self.health > 0 && self.solid != SOLID_NOT)
 	{
-		trace_ent = NIL;
+		trace_ent = nil;
 
 		// do a quick checkmove
 		checkmove (self.origin, self.mins, self.maxs, self.origin - '0 0 8192', MOVE_NORMAL, self);	
@@ -2852,7 +2853,7 @@ void() PlayerPreThink =
 		if (vlen(self.origin) > 16384 || (trace_fraction >= 1 && !trace_startsolid)) // outside the map 
 		{
 			deathmsg = DMSG_OUTOFBOUNDS;
-			TF_T_Damage (self, NIL, NIL, self.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage (self, nil, nil, self.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		}
 #ifdef REALLY_BUGGY_CODE
 		else if (trace_startsolid && trace_ent.classname != "force_field")
@@ -2869,7 +2870,7 @@ void() PlayerPreThink =
 				eprint (trace_ent);
 #endif
 
-				TF_T_Damage (self, NIL, NIL, self.health + 100,
+				TF_T_Damage (self, nil, nil, self.health + 100,
 					TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			}
 			else
@@ -2883,7 +2884,7 @@ void() PlayerPreThink =
 					eprint (trace_ent);
 #endif
 
-					TF_T_Damage (trace_ent, NIL, NIL, self.health + 100,
+					TF_T_Damage (trace_ent, nil, nil, self.health + 100,
 						TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 				}
 
@@ -3132,18 +3133,18 @@ void() PlayerPostThink =
 	{
 		if (self.flags & FL_ONGROUND)
 		{
-			if (self.movedir_z < -650)
+			if (self.movedir.z < -650)
 			{
 				if (!(self.cutf_items & CUTF_STEALTH)) { //WK Judo teaches falling... SB ceaf judo
 					self.deathtype = "falling";
-					T_Damage (self, NIL, NIL, 10); 
+					T_Damage (self, nil, nil, 10); 
 					self.leg_damage++;
 					if (self.leg_damage > 5)
 						self.leg_damage = 5;
 					sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
 				}
 			}
-			else if (self.movedir_z < -300)
+			else if (self.movedir.z < -300)
 				if (!(self.cutf_items & CUTF_STEALTH)) //WK Judo teaches falling... SB ceaf judo
 					sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);	
 
@@ -3153,13 +3154,13 @@ void() PlayerPostThink =
 		if (vlen(self.movedir) - vlen(self.velocity) > 5500 * frametime)
 		{
 			self.deathtype = "wall";
-			T_Damage (self, NIL, NIL, ((vlen(self.movedir) - vlen(self.velocity)) - 550) / 10);
+			T_Damage (self, nil, nil, ((vlen(self.movedir) - vlen(self.velocity)) - 550) / 10);
 		}
 #endif
 		;
 	}
 
-	self.jump_flag = self.velocity_z;
+	self.jump_flag = self.velocity.z;
 	self.movedir = self.velocity;
 
 	CheckPowerups ();
@@ -3215,7 +3216,7 @@ void() ClientConnect =
 	bprint (PRINT_HIGH, " has joined the server\n");
     
     //- OfN - shouldnt be needed anyway...
-    self.admin_kick = NIL;
+    self.admin_kick = nil;
 
 	// Set Default autozoom
 	if (DEFAULT_AUTOZOOM == OFF)
@@ -3348,7 +3349,7 @@ void() ClientDisconnect =
 	self.has_disconnected = TRUE;
 
     if (debug_target == self)
-        debug_target = NIL;
+        debug_target = nil;
 
 	// Remove Timers
 	TeamFortress_RemoveTimers();
@@ -3365,7 +3366,7 @@ void() ClientDisconnect =
 	//WK Added demon cleanup
 	kill_my_demon();
 	//WK Added ammobox/pipebomb fix
-	te = find(NIL, classname, "ammobox");
+	te = find(nil, classname, "ammobox");
 	while (te)
 	{
 		if (te.enemy == self) {
@@ -3379,7 +3380,7 @@ void() ClientDisconnect =
 
 		te = find(te, classname, "ammobox");
 	}
-	te = find(NIL, classname, "pipebomb");
+	te = find(nil, classname, "pipebomb");
 	while (te)
 	{
 		if (te.owner == self) {
@@ -3398,7 +3399,7 @@ void() ClientDisconnect =
     RemoveArmyTimer();
 
 	// Remove Detpacks
-	te = find(NIL, classname, "detpack");
+	te = find(nil, classname, "detpack");
 	while (te)
 	{
 		if (te.owner == self)
@@ -3413,7 +3414,7 @@ void() ClientDisconnect =
 			}
 
 			dremove(te);
-			te = NIL;
+			te = nil;
 		}
 
 		te = find(te, classname, "detpack");
@@ -3421,11 +3422,11 @@ void() ClientDisconnect =
 
 	// Clear anything that thinks he attacked/hacked it
 	local entity mrmartyr;
-	mrmartyr = NIL;
+	mrmartyr = nil;
 	do {
 		mrmartyr = nextent (mrmartyr);
 		if (mrmartyr && mrmartyr.martyr_enemy == te)
-			mrmartyr.martyr_enemy = NIL;
+			mrmartyr.martyr_enemy = nil;
 	} while (mrmartyr);
 
 	set_suicide_frame ();

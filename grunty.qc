@@ -522,15 +522,15 @@ vector () Grunty_LeadShot =
 		pvel = '0 0 0';*/
 	
 	//if (!self.enemy.flags & FL_ONGROUND)
-	//	pvel_z = pvel_z / 20;
+	//	pvel.z = pvel.z / 20;
 	
 	//lead = pvel * (vlen(src - targ) / ReturnWeaponVelocity());
 	loc = targ;// + lead;
 
     // do the following do anything?-----//
 	//lead = pvel * (vlen(src - loc) / ReturnWeaponVelocity());
-	//lead_x = lead_x + (10 - random() * 20);
-	//lead_y = lead_y + (10 - random() * 20);
+	//lead.x = lead.x + (10 - random() * 20);
+	//lead.y = lead.y + (10 - random() * 20);
     //------------------------------------//    self.view_ofs
 	
     dir = normalize (loc - src);
@@ -538,14 +538,14 @@ vector () Grunty_LeadShot =
     traceline(src, targ, TRUE, self);
 	if (trace_fraction != 1.0)
 	{
-		loc_z = loc_z + self.enemy.maxs_z; // already commented
+		loc.z = loc.z + self.enemy.maxs.z; // already commented
 		//if (self.current_weapon == WEAP_ROCKET_LAUNCHER)
-		//	loc_z = loc_z + self.enemy.mins_z * -1;
+		//	loc.z = loc.z + self.enemy.mins.z * -1;
 	}
     else
     {
         if (self.current_weapon == WEAP_ROCKET_LAUNCHER && random() > 0.3)
-    		loc_z = loc_z - self.enemy.maxs_z/2; 
+    		loc.z = loc.z - self.enemy.maxs.z/2; 
             //- OFN - makes grunty aim to the ground with RL sometimes, so evil! ^_^
     }
 
@@ -572,7 +572,7 @@ void() GruntyThink =
 	// check for Follow Me Grunty's owner death
 	if (self.goalentity == self.real_owner)
 		if (self.goalentity.health <= 0)
-			self.goalentity = NIL;
+			self.goalentity = nil;
 	
 	
 	// Check to buy
@@ -587,7 +587,7 @@ void() GruntyThink =
 // LookAround for grunty
 entity (entity scanner) LookAroundGrunty =
 {
-	if (infokey(NIL,"ceasefire")=="on") //OfN
+	if (infokey(nil,"ceasefire")=="on") //OfN
 	    return scanner;
     
 	local entity		client;
@@ -654,7 +654,7 @@ entity (entity scanner) LookAroundGrunty =
 
 entity () GruntyPharse =
 {
-    local entity retarg = NIL;
+    local entity retarg = nil;
     local float r;
 	r = random();
     
@@ -677,21 +677,21 @@ entity () GruntyPharse =
 void() GruntyScanTargets =
 {
 	local entity	targ; // our hapless foe
-	targ = NIL;
+	targ = nil;
 	
 	if (self.enemy)
 		if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 		{
 
-            self.enemy = NIL;
+            self.enemy = nil;
             self.goalentity = ReturnEasyWaypoint(self,self);
 
-           //// self.enemy = NIL;
-			//// self.goalentity = NIL;
+           //// self.enemy = nil;
+			//// self.goalentity = nil;
 			if (self.demon_one)
 			{
                 RemoveWaypoint(self.demon_one,self);
-                self.demon_one = NIL;
+                self.demon_one = nil;
             }
 
             self.has_teleporter = 0;
@@ -708,7 +708,7 @@ void() GruntyScanTargets =
 			if (self.demon_one)
 			{
                 RemoveWaypoint(self.demon_one,self);
-                self.demon_one=NIL;
+                self.demon_one=nil;
 
             } //often =world
 			self.search_time = time + 3;
@@ -719,7 +719,7 @@ void() GruntyScanTargets =
 		{
 			if (self.is_malfunctioning==0 || self.is_malfunctioning==2)
             {
-                self.enemy = NIL;
+                self.enemy = nil;
                 self.goalentity = ReturnEasyWaypoint(self,self);
 
                 self.has_teleporter = 0;
@@ -745,13 +745,13 @@ void() GruntyScanTargets =
             }
             if (self.search_time <= time) // we seeked enemy for GRUNTY_SEEKTIME already so...
             {
-                self.enemy = NIL;
-                self.goalentity = NIL;
+                self.enemy = nil;
+                self.goalentity = nil;
                 
                 if (self.demon_one) // d1 remove contingency check
                 {
                     RemoveWaypoint(self.demon_one,self);
-                    self.demon_one = NIL;
+                    self.demon_one = nil;
                     self.goalentity = ReturnEasyWaypoint(self,self);
                 }
             }
@@ -767,7 +767,7 @@ void() GruntyScanTargets =
         if (!targ)
             return;
 
-		if (!self.is_detpacking || infokey(NIL,"ceasefire")=="on")
+		if (!self.is_detpacking || infokey(nil,"ceasefire")=="on")
         {
             if (!IsBuilding(targ) && self.super_time < time && targ.netname != "land_mine")
             {
@@ -807,10 +807,10 @@ void() GruntyCheckFire =
     if (!self.enemy)
 		return;
     
-    if (infokey(NIL,"ceasefire")=="on")
+    if (infokey(nil,"ceasefire")=="on")
     {
         self.goalentity=ReturnEasyWaypoint(self,self);
-        self.enemy=NIL;
+        self.enemy=nil;
         return;
     }
 
@@ -1021,7 +1021,8 @@ void() GRun =
 			self.has_teleporter = 3;*/
 
 	// 0% > 75% health, 50% < 25% health, range in between
-	local float chance = (BOUND (0.5, 1 - (self.health / self.max_health), 0.75) - 0.50) / 8;
+	//FIXME qfcc bug: 1 - ... caused float > void error
+	local float chance = (BOUND (0.5, 1.0 - (self.health / self.max_health), 0.75) - 0.50) / 8;
 //	dprint ("retreat chance: " + ftos (chance) + "\n");
 	if (random () < chance)
 		self.has_teleporter = 3; // we're getting wasted, better retreat
@@ -1041,7 +1042,7 @@ void() GRun =
 	{
 		if (self.flags & FL_ONGROUND) // only jump if we're on the ground
 		{
-			self.velocity_z = self.velocity_z + 270; // boing
+			self.velocity.z = self.velocity.z + 270; // boing
 			sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 		}
 		self.has_teleporter = 0; // don't jump
@@ -1177,7 +1178,7 @@ void (float angle, float dist) botmovedist =
                 if (trace_fraction == 1.0)
                 {
                     self.velocity = self.velocity + v_forward * self.custom_speed * 20;
-                    self.velocity_z = self.velocity_z + 270;
+                    self.velocity.z = self.velocity.z + 270;
                     sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
                     self.has_cheated = time + 0.5;
                     return;
@@ -1342,7 +1343,7 @@ void() custom_grunt_die =
 		sprint(self.real_owner,PRINT_HIGH,"Your soldier is dead.\n");
 		self.real_owner.job &= ~JOB_DEMON_OUT;
 		self.real_owner.job_finished = time + 2; //Can't summon streams of demons SB can so
-        self.real_owner.demon_one = NIL;
+        self.real_owner.demon_one = nil;
     	
         if (self.martyr_enemy)
         RemoveWaypoint(self.martyr_enemy, self);
@@ -1378,8 +1379,8 @@ void() custom_grunt_die =
     ArmyDeathSound();
     self.classname = "monster_corpse";
     
-    self.think=NIL;
-    self.touch=NIL;
+    self.think=nil;
+    self.touch=nil;
     
     if (isMelee())
     {
@@ -1498,7 +1499,7 @@ void() Waypoint_Touch =
     if (self.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN)
     {        
         if (self.owner.demon_one.demon_one == self)
-           self.owner.demon_one.demon_one = NIL;   
+           self.owner.demon_one.demon_one = nil;   
        
         dremove(self);
         return;
@@ -1534,7 +1535,7 @@ void() Waypoint_DoNothing = // A waypoint checks for redundancy
         || !(self.owner.job & JOB_DEMON_OUT)
         || self.owner.classname!="player")
     {
-       dremove(self); // no pointer set to NIL needed cause soldier shouldnt be present on game
+       dremove(self); // no pointer set to nil needed cause soldier shouldnt be present on game
        return;
     }
 
@@ -1542,13 +1543,13 @@ void() Waypoint_DoNothing = // A waypoint checks for redundancy
     {
        if (self.has_sensor == WAYPOINT_TYPE_PRIMARY
         && self.owner.demon_one.martyr_enemy == self)
-           self.owner.demon_one.martyr_enemy = NIL;
+           self.owner.demon_one.martyr_enemy = nil;
        if (self.has_sensor == WAYPOINT_TYPE_SECONDARY
         && self.owner.demon_one.demon_two == self)
-           self.owner.demon_one.demon_two = NIL;
+           self.owner.demon_one.demon_two = nil;
        if (self.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN
         && self.owner.demon_one.demon_one == self)
-           self.owner.demon_one.demon_one = NIL;
+           self.owner.demon_one.demon_one = nil;
 
        dremove(self);
        return;
@@ -2019,24 +2020,24 @@ void(entity wyp, entity soldier) RemoveWaypoint =
         if (wyp.owner.demon_one.martyr_enemy)
         {
             if (wyp.owner.demon_one.martyr_enemy.goalentity == wyp)
-                wyp.owner.demon_one.martyr_enemy.goalentity = NIL;
+                wyp.owner.demon_one.martyr_enemy.goalentity = nil;
         }
 
         if (wyp.owner.demon_one.demon_two)
         {
             if (wyp.owner.demon_one.demon_two.goalentity == wyp)
-                wyp.owner.demon_one.demon_two.goalentity = NIL;
+                wyp.owner.demon_one.demon_two.goalentity = nil;
         }
         
         if (wyp.has_sensor == WAYPOINT_TYPE_PRIMARY
          && wyp.owner.demon_one.martyr_enemy == wyp)
-            wyp.owner.demon_one.martyr_enemy = NIL;
+            wyp.owner.demon_one.martyr_enemy = nil;
         else if (wyp.has_sensor == WAYPOINT_TYPE_SECONDARY
          && wyp.owner.demon_one.demon_two == wyp)
-            wyp.owner.demon_one.demon_two = NIL;
+            wyp.owner.demon_one.demon_two = nil;
         else if (wyp.has_sensor == WAYPOINT_TYPE_ENEMYLASTSEEN
          && wyp.owner.demon_one.demon_one == wyp)
-            wyp.owner.demon_one.demon_one = NIL;
+            wyp.owner.demon_one.demon_one = nil;
         
         dremove(wyp);
     }   
@@ -2047,15 +2048,15 @@ void(entity wyp, entity soldier) RemoveWaypoint =
 
 entity(entity sold, entity viewpoint) ReturnEasyWaypoint =
 {    
-    if (sold.penance_time==2) return NIL;
-    if (sold.penance_time==0) return NIL;
+    if (sold.penance_time==2) return nil;
+    if (sold.penance_time==0) return nil;
 
     if (sold.penance_time==1)
     {
         if (sold.real_owner.health <= 0)
         {
             sold.penance_time=0;
-            return NIL;
+            return nil;
         }
         
         if (visible2(sold,sold.real_owner))
@@ -2064,7 +2065,7 @@ entity(entity sold, entity viewpoint) ReturnEasyWaypoint =
         {
             //sold.penance_time=0; // don't reset sold last "intention"
             PrintFromSoldier(sold,sold.real_owner,"i was following you but i can't see you now!\n");
-            return NIL;
+            return nil;
         }
 
     }
@@ -2078,7 +2079,7 @@ entity(entity sold, entity viewpoint) ReturnEasyWaypoint =
     // no last waypoint walk so lets see whats easier to reach...    
 
     local entity retENT;
-    retENT=NIL;
+    retENT=nil;
     
     if (sold.demon_two && sold.martyr_enemy) // both waypoints assigned? ok...
     {

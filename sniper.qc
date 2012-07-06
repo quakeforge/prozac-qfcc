@@ -85,7 +85,7 @@ void() SniperSight_Update =
     makevectors(self.owner.v_angle);
 
 	org = self.owner.origin + v_forward*10;
-	org_z = self.owner.absmin_z + self.owner.size_z * 0.7;
+	org.z = self.owner.absmin.z + self.owner.size.z * 0.7;
 
     traceline (org, org + v_forward*9192, FALSE, self);
 
@@ -98,7 +98,7 @@ void() SniperSight_Update =
 	self.angles = vectoangles(v_forward);
     setorigin(self, trace_endpos);
 
-	self.v_angle_z = self.owner.v_angle_z;
+	self.v_angle.z = self.owner.v_angle.z;
 
 	self.owner.heat *= 0.9;
 	self.owner.heat--;
@@ -132,7 +132,7 @@ void() SniperSight_Update2 =
     makevectors(self.owner.v_angle);
 
 	org = self.owner.origin + v_forward*10;
-	org_z = self.owner.absmin_z + self.owner.size_z * 0.7;
+	org.z = self.owner.absmin.z + self.owner.size.z * 0.7;
 
     traceline (org, org + v_forward*9192, FALSE, self);
 

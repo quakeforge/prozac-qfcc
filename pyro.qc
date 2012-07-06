@@ -25,14 +25,14 @@ float (string id_flame) RemoveFlameFromQueue;
 // 1 : burning flames making light and damage (1 per players or monsters)
 // 2 : exploding flames (grenade)
 // 3 : burning flames (players, monsters)
-// 4 : NIL flames (on ground)
+// 4 : nil flames (on ground)
 
 
 // create a flame of a given type, maintaining the count for each type
 entity (string type, entity p_owner) FlameSpawn =
 {
 	if (type != "1")
-		return NIL;
+		return nil;
 
 
 	num_world_flames = num_world_flames + 1;
@@ -49,7 +49,7 @@ entity (string type, entity p_owner) FlameSpawn =
 		if (!(RemoveFlameFromQueue(type)))
 		{
 			// RPrint("Create flame failed: too many\n");
-			return NIL;
+			return nil;
 		}
 	}
 
@@ -133,25 +133,25 @@ float (string id_flame) RemoveFlameFromQueue =
 
 	num_world_flames = num_world_flames - 1;
 
-	tmp = find(NIL, flame_id, "4");
+	tmp = find(nil, flame_id, "4");
 	if (!tmp)
 	{
 		if (id_flame == "4") // if priority not high enough, don't continue
 			return FALSE;
 
-		tmp = find(NIL, flame_id, "3");
+		tmp = find(nil, flame_id, "3");
 		if (!tmp)
 		{
 			if (id_flame == "3")
 				return FALSE;
 
-			tmp = find(NIL, flame_id, "2");
+			tmp = find(nil, flame_id, "2");
 			if (!tmp)
 			{
 				if (id_flame == "2")
 					return FALSE;
 
-				tmp = find(NIL, flame_id, "1");
+				tmp = find(nil, flame_id, "1");
 			 	if (!tmp)
 				{
 					// oh shit, no flames found!
@@ -261,9 +261,9 @@ void() NapalmGrenadeExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 
@@ -284,7 +284,7 @@ void (vector org, entity shooter) NapalmGrenadeLaunch =
 	if (!newmis)
 		return;
 
-	self.touch = NIL;
+	self.touch = nil;
 
 	newmis.classname = "fire";
 	newmis.touch = Napalm_touch;
@@ -293,9 +293,9 @@ void (vector org, entity shooter) NapalmGrenadeLaunch =
 
 	newmis.enemy = shooter.owner;
 
-	newmis.velocity_x = xdir * 2;
-	newmis.velocity_y = ydir * 2;
-	newmis.velocity_z = zdir * 15;
+	newmis.velocity.x = xdir * 2;
+	newmis.velocity.y = ydir * 2;
+	newmis.velocity.z = zdir * 15;
 
 	spin = (random() * 10) / 2;
 	if (spin <= 0)
@@ -369,9 +369,9 @@ void() FlameFollow =
 	// if player is moving too fast, hide flames
 	if (vlen(self.enemy.velocity) < 50)
 	{
-		dir_x = (random() * boundsize_x/2)+boundsize_x/4;
-		dir_y = (random() * boundsize_y/2)+boundsize_y/4;
-		dir_z = (random() * boundsize_z/3)+boundsize_z/2;
+		dir.x = (random() * boundsize.x/2)+boundsize.x/4;
+		dir.y = (random() * boundsize.y/2)+boundsize.y/4;
+		dir.z = (random() * boundsize.z/3)+boundsize.z/2;
 		vtemp = vtemp + dir;
 		setorigin(self, vtemp);
 	
@@ -849,9 +849,9 @@ void() T_IncendiaryTouch =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it

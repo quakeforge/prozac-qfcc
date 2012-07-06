@@ -10,7 +10,7 @@ Functions for the teleporters
 void() Teleporter_touch;
 void() Teleporter_Die;
 void() Teleporter_heat_think;
-integer (entity ent) Teleporter_CheckBlocked;
+int (entity ent) Teleporter_CheckBlocked;
 float(entity targ) Teleporter_check_person;
 
 #define TELEPORTER_CELLS	8 //How many cells to use on teleport
@@ -25,7 +25,7 @@ void() Teleporter_touch =
 	{
 		if (Teleporter_check_person(other))
 		{
-			te = find(NIL, classname, "building_teleporter");
+			te = find(nil, classname, "building_teleporter");
 			while (!(te.real_owner == self.real_owner && te != self) && te)
 			{
 				te = find(te, classname, "building_teleporter");
@@ -89,7 +89,7 @@ void() Teleporter_touch =
 //===============
 float(entity targ) Teleporter_check_person =
 {
-	if (infokey(NIL,"ceasefire")=="on") //To not cause loops
+	if (infokey(nil,"ceasefire")=="on") //To not cause loops
 		return FALSE;
 	if (!targ)//that would be bad.
 		return FALSE;
@@ -155,11 +155,11 @@ void() Teleporter_heat_think =
 	self.nextthink = time + 1;
 	if (Teleporter_CheckBlocked(self)) {
 		sprint (self.real_owner, PRINT_HIGH, "Not enough space for teleportation.\n");
-		TF_T_Damage (self, NIL, NIL, self.health + 1, 0, 0);
+		TF_T_Damage (self, nil, nil, self.health + 1, 0, 0);
 	}
 };
 
-integer (entity ent) Teleporter_CheckBlocked =
+int (entity ent) Teleporter_CheckBlocked =
 {
 	checkmove (ent.origin + '0 0 32', '-16 -16 -24', '16 16 32',
 			   ent.origin + '0 0 32', MOVE_NOMONSTERS, ent);
@@ -184,9 +184,9 @@ integer (entity ent) Teleporter_CheckBlocked =
 	{
 		//sprint (ent.real_owner, PRINT_HIGH, "Checking space!\n");
 		loc = ent.origin;
-		loc_x = loc_x + ((rint(random() * 3 + 1) * 16) - 32);
-		loc_y = loc_y + ((rint(random() * 3 + 1) * 16) - 32);
-		loc_z = loc_z + (rint(random() * 8 + 1) * 8); //1-8 * 8  x+8 -> x+64
+		loc.x = loc.x + ((rint(random() * 3 + 1) * 16) - 32);
+		loc.y = loc.y + ((rint(random() * 3 + 1) * 16) - 32);
+		loc.z = loc.z + (rint(random() * 8 + 1) * 8); //1-8 * 8  x+8 -> x+64
 
 		pos = pointcontents(loc);
 		if (pos == CONTENTS_SOLID || pos == CONTENTS_SKY)
@@ -210,9 +210,9 @@ void() Teleporter_Die =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
 };

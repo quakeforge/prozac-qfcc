@@ -168,7 +168,7 @@ void(entity pl) RefreshStatusBar1 =
 	local string s1, s2, s3, s4;
 	local string s5, s6, s7;
 	local entity sent;
-	sent = NIL;
+	sent = nil;
 
 	if (pl.StatusBarSize == 0)
 	{
@@ -234,7 +234,7 @@ void(entity pl) RefreshStatusBar4 =
 	local string s1, s2, s3, s4;
 	local string s5, s6, s7;
 	local entity sent;
-	sent = NIL;
+	sent = nil;
 
 	if (pl.StatusBarSize == 0)
 	{

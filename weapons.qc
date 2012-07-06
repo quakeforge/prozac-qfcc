@@ -268,7 +268,7 @@ void (entity atk, boolean do_cc, float dist) find_melee =
 
 		do {
 			local vector diff = source - (te.origin + '0 0 16');
-			diff_z *= 0.75; //hack
+			diff.z *= 0.75; //hack
 
 			local float l;
 
@@ -332,9 +332,9 @@ void() W_FireAxe =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -348,7 +348,7 @@ boolean (boolean strict) is_backstab =
 
 	dir = trace_ent.origin - self.origin;
 
-	dir_z *= 0.75; // hack
+	dir.z *= 0.75; // hack
 
 	d = normalize (dir) * v_forward;
 
@@ -457,9 +457,9 @@ void() W_FireBackstab =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 	}
 }
@@ -517,9 +517,9 @@ void() W_FireSpanner =
 				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 				WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 				WriteByte (MSG_MULTICAST, 3);
-				WriteCoord (MSG_MULTICAST, org_x);
-				WriteCoord (MSG_MULTICAST, org_y);
-				WriteCoord (MSG_MULTICAST, org_z);
+				WriteCoord (MSG_MULTICAST, org.x);
+				WriteCoord (MSG_MULTICAST, org.y);
+				WriteCoord (MSG_MULTICAST, org.z);
 				multicast (org, MULTICAST_PVS);
 			}
 		}
@@ -589,9 +589,9 @@ void() W_FireSpanner =
 						WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 						WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 						WriteByte (MSG_MULTICAST, 3);
-						WriteCoord (MSG_MULTICAST, org_x);
-						WriteCoord (MSG_MULTICAST, org_y);
-						WriteCoord (MSG_MULTICAST, org_z);
+						WriteCoord (MSG_MULTICAST, org.x);
+						WriteCoord (MSG_MULTICAST, org.y);
+						WriteCoord (MSG_MULTICAST, org.z);
 						multicast (org, MULTICAST_PVS);
 
 						W_SetCurrentAmmo ();
@@ -612,9 +612,9 @@ void() W_FireSpanner =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -648,7 +648,7 @@ void(float inAuto) W_FireMedikit =
 
 				// remove concussion from player
 				// Try to find a concusstimer entity for this player
-				te = find(NIL, classname, "timer");
+				te = find(nil, classname, "timer");
 				while (((te.owner != trace_ent) || (te.think != ConcussionGrenadeTimer)) && (te)) {
 					te = find(te, classname, "timer");
 				}
@@ -673,7 +673,7 @@ void(float inAuto) W_FireMedikit =
 				// remove hallucination from player
 				// Try to find a hallucination timer entity for this player
 				if (trace_ent.tfstate & TFSTATE_HALLUCINATING) {
-					te = find(NIL, classname, "timer");
+					te = find(nil, classname, "timer");
 					while (((te.owner != trace_ent)
 							|| (te.think != HallucinationTimer)) && (te)) {
 						te = find(te, classname, "timer");
@@ -701,7 +701,7 @@ void(float inAuto) W_FireMedikit =
 				// remove tranquilisation from player
 				// Try to find a tranquilisation timer entity for this player
 				if (trace_ent.tfstate & TFSTATE_TRANQUILISED) {
-					te = find(NIL, classname, "timer");
+					te = find(nil, classname, "timer");
 					while (((te.owner != trace_ent) || (te.think != TranquiliserTimer)) && (te)) {
 						te = find(te, classname, "timer");
 					}
@@ -728,7 +728,7 @@ void(float inAuto) W_FireMedikit =
 
 				// check if the healed player is blinded
 				if (trace_ent.FlashTime > 0) {
-					te = find(NIL, netname, "flashtimer");
+					te = find(nil, netname, "flashtimer");
 					while ((te.owner != trace_ent || te.classname != "timer") && (te))
 						te = find(te, netname, "flashtimer");
 
@@ -901,9 +901,9 @@ void(float inAuto) W_FireMedikit =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -985,9 +985,9 @@ void() W_FireBioweapon =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 	}
 };
@@ -1023,7 +1023,7 @@ void(vector org, vector vel) SpawnMeatSpray =
 	makevectors (self.angles);
 
 	missile.velocity = vel;
-	missile.velocity_z = missile.velocity_z + 250 + 50*random();
+	missile.velocity.z = missile.velocity.z + 250 + 50*random();
 
 	missile.avelocity = '3000 1000 2000';
 
@@ -1046,9 +1046,9 @@ void(vector org, float damage) SpawnBlood =
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_BLOOD);
 	WriteByte (MSG_MULTICAST, 1);
-	WriteCoord (MSG_MULTICAST, org_x);
-	WriteCoord (MSG_MULTICAST, org_y);
-	WriteCoord (MSG_MULTICAST, org_z);
+	WriteCoord (MSG_MULTICAST, org.x);
+	WriteCoord (MSG_MULTICAST, org.y);
+	WriteCoord (MSG_MULTICAST, org.z);
 	multicast (org, MULTICAST_PVS);
 };
 
@@ -1096,7 +1096,7 @@ float   puff_count;
 
 void() ClearMultiDamage =
 {
-	multi_ent = NIL;
+	multi_ent = nil;
 	multi_damage = 0;
 	blood_count = 0;
 	puff_count = 0;
@@ -1126,15 +1126,15 @@ void(entity hit, float damage) AddMultiDamage =
 		multi_damage = multi_damage + damage;
 };
 
-void (integer big) Multi_Finish =
+void (int big) Multi_Finish =
 {
 	if (puff_count) {
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, big ? puff_count * 2 : puff_count);
-		WriteCoord (MSG_MULTICAST, puff_org_x);
-		WriteCoord (MSG_MULTICAST, puff_org_y);
-		WriteCoord (MSG_MULTICAST, puff_org_z);
+		WriteCoord (MSG_MULTICAST, puff_org.x);
+		WriteCoord (MSG_MULTICAST, puff_org.y);
+		WriteCoord (MSG_MULTICAST, puff_org.z);
 		multicast (puff_org, MULTICAST_PVS);
 	}
 	
@@ -1142,9 +1142,9 @@ void (integer big) Multi_Finish =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_BLOOD);
 		WriteByte (MSG_MULTICAST, big ? blood_count * 2 : puff_count);
-		WriteCoord (MSG_MULTICAST, blood_org_x);
-		WriteCoord (MSG_MULTICAST, blood_org_y);
-		WriteCoord (MSG_MULTICAST, blood_org_z);
+		WriteCoord (MSG_MULTICAST, blood_org.x);
+		WriteCoord (MSG_MULTICAST, blood_org.y);
+		WriteCoord (MSG_MULTICAST, blood_org.z);
 		multicast (puff_org, MULTICAST_PVS);
 	}
 };
@@ -1202,9 +1202,9 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 {
 	local vector direction;
 	local vector src;
-	local string st = infokey (NIL, "numpuffs");
+	local string st = infokey (nil, "numpuffs");
 	local float numpuffs = 0;
-	local integer puffdiv;
+	local int puffdiv;
 
 	if (st)
 		numpuffs = stof (st) - 1;
@@ -1217,12 +1217,12 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 	makevectors (self.v_angle);
 
 	src = self.origin + v_forward * 10;
-	src_z = self.absmin_z + self.size_z * 0.7;
+	src.z = self.absmin.z + self.size.z * 0.7;
 
 	ClearMultiDamage ();
 	while (shotcount > 0) {
 		
-		direction = dir + crandom() * spread_x * v_right + crandom() * spread_y * v_up;
+		direction = dir + crandom() * spread.x * v_right + crandom() * spread.y * v_up;
 
 		traceline (src, src + direction * 4096, FALSE, self);
 										
@@ -1313,7 +1313,7 @@ void(vector direction, float damage) FireSniperBullet =
 	makevectors (self.v_angle);
 
 	src = self.origin + v_forward * 10;
-	src_z = self.absmin_z + self.size_z * 0.7;
+	src.z = self.absmin.z + self.size.z * 0.7;
 
 	ClearMultiDamage ();
 
@@ -1351,13 +1351,13 @@ void() W_FireSniperRifle =
 	    self.heat = 100;
 
 	if (self.heat > 0) {
-	    angle_x += (random() * 0.08 * self.heat) - (0.04 * self.heat);
-	    angle_y += (random() * 0.08 * self.heat) - (0.04 * self.heat);
+	    angle.x += (random() * 0.08 * self.heat) - (0.04 * self.heat);
+	    angle.y += (random() * 0.08 * self.heat) - (0.04 * self.heat);
 	}
 
 	makevectors(angle);
 	src = self.origin + v_forward * 10;
-	src_z = self.absmin_z + self.size_z * 0.7;
+	src.z = self.absmin.z + self.size.z * 0.7;
 
 	dir = v_forward; //XXX is this correct?
 
@@ -1383,7 +1383,7 @@ void() W_FireSniperRifle =
 
 	dam_mult = 0;
 
-	local string st = infokey (NIL, "sniper_dmg");
+	local string st = infokey (nil, "sniper_dmg");
 	if (st)
 	   dam_mult = stof (st);
 	if (!dam_mult)
@@ -1408,19 +1408,19 @@ void() W_FireSniperRifle =
 
 			f = trace_endpos - src;
 
-			g_x = trace_endpos_x;
-			g_y = trace_endpos_y;
-			g_z = 0;
+			g.x = trace_endpos.x;
+			g.y = trace_endpos.y;
+			g.z = 0;
 
-			h_x = trace_ent.origin_x;
-			h_y = trace_ent.origin_y;
-			h_z = 0;
+			h.x = trace_ent.origin.x;
+			h.y = trace_ent.origin.y;
+			h.z = 0;
 
 			x = vlen(g - h);
 
 			f = (normalize(f) * x) + trace_endpos;
 
-			zdif = f_z - trace_ent.origin_z;
+			zdif = f.z - trace_ent.origin.z;
   			deathmsg = DMSG_SNIPERRIFLE;
 
 			trace_ent.head_shot_vector = '0 0 0';
@@ -1663,9 +1663,9 @@ void() T_MissileTouch =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it
@@ -1683,8 +1683,8 @@ void() Rocket_Track_Dot =
 		local vector	dir, vtemp;
 		local entity tg, sight;
 
-		sight = NIL;
-		tg = find (NIL, classname, "timer");
+		sight = nil;
+		tg = find (nil, classname, "timer");
 		while (tg) {
 			if (tg.owner == self.owner && tg.think == SniperSight_Update2)
 				sight = tg;
@@ -1737,7 +1737,7 @@ W_FireRocket
 void() W_FireRocket =
 {
 	local float loops;
-	local vector olorigin, dir = NIL;	//XXX false +ve for dir
+	local vector olorigin, dir = nil;	//XXX false +ve for dir
 	loops = 0;
 	if (self.tf_items & NIT_CLUSTER_ROCKETS && self.cluster_mode == TRUE)
 		loops = 5;
@@ -1838,9 +1838,9 @@ void(entity from, float damage) LightningHit =
 {
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNINGBLOOD);
-	WriteCoord (MSG_MULTICAST, trace_endpos_x);
-	WriteCoord (MSG_MULTICAST, trace_endpos_y);
-	WriteCoord (MSG_MULTICAST, trace_endpos_z);
+	WriteCoord (MSG_MULTICAST, trace_endpos.x);
+	WriteCoord (MSG_MULTICAST, trace_endpos.y);
+	WriteCoord (MSG_MULTICAST, trace_endpos.z);
 	multicast (trace_endpos, MULTICAST_PVS);
 
 	TF_T_Damage (trace_ent, from, from, damage, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
@@ -1858,12 +1858,12 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	
 	f = p2 - p1;
 	normalize (f);
-	f_x = 0 - f_y;
-	f_y = f_x;
-	f_z = 0;
+	f.x = 0 - f.y;
+	f.y = f.x;
+	f.z = 0;
 	f = f*16;
 
-	e1 = e2 = NIL;
+	e1 = e2 = nil;
 
 	traceline (p1, p2, FALSE, self);
 
@@ -1908,8 +1908,8 @@ void() W_FireLightning =
 		self.ammo_cells = self.ammo_cells - cells;
 		W_SetCurrentAmmo ();
 		deathmsg = DMSG_LIGHTNING;
-//WK	T_RadiusDamage (self, self, 35*cells, NIL);
-		T_RadiusDamage (self, self, 20*cells, NIL);
+//WK	T_RadiusDamage (self, self, 35*cells, nil);
+		T_RadiusDamage (self, self, 20*cells, nil);
 		Attack_Finished(5);
 		return;
 	}
@@ -1949,12 +1949,12 @@ void() W_FireLightning =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
 		WriteEntity (MSG_MULTICAST, self);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
-		WriteCoord (MSG_MULTICAST, trace_endpos_x);
-		WriteCoord (MSG_MULTICAST, trace_endpos_y);
-		WriteCoord (MSG_MULTICAST, trace_endpos_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
+		WriteCoord (MSG_MULTICAST, trace_endpos.x);
+		WriteCoord (MSG_MULTICAST, trace_endpos.y);
+		WriteCoord (MSG_MULTICAST, trace_endpos.z);
 		multicast (org, MULTICAST_PHS);
 
 		return;
@@ -1966,12 +1966,12 @@ void() W_FireLightning =
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
 	WriteEntity (MSG_MULTICAST, self);
-	WriteCoord (MSG_MULTICAST, org_x);
-	WriteCoord (MSG_MULTICAST, org_y);
-	WriteCoord (MSG_MULTICAST, org_z);
-	WriteCoord (MSG_MULTICAST, trace_endpos_x);
-	WriteCoord (MSG_MULTICAST, trace_endpos_y);
-	WriteCoord (MSG_MULTICAST, trace_endpos_z);
+	WriteCoord (MSG_MULTICAST, org.x);
+	WriteCoord (MSG_MULTICAST, org.y);
+	WriteCoord (MSG_MULTICAST, org.z);
+	WriteCoord (MSG_MULTICAST, trace_endpos.x);
+	WriteCoord (MSG_MULTICAST, trace_endpos.y);
+	WriteCoord (MSG_MULTICAST, trace_endpos.z);
 	multicast (org, MULTICAST_PHS);
 
 	LightningDamage (self.origin, trace_endpos + v_forward*4, self, damage);
@@ -2005,7 +2005,7 @@ void(float tno) ExplodeOldPipebomb =
 		index = num_world_pipebombs - MAX_WORLD_PIPEBOMBS;
 	}
 
-	old = find(NIL, classname, "pipebomb");
+	old = find(nil, classname, "pipebomb");
 	while (index > 0) {
 		if (!old) {
 			RPrint("*** ERROR: ExplodeOldPipebomb. ***\n");
@@ -2062,7 +2062,7 @@ void() GrenadeExplode =
 	}
 
 	deathmsg = self.weapon;
-	T_RadiusDamage (self, self.owner, 120, NIL);
+	T_RadiusDamage (self, self.owner, 120, nil);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -2072,9 +2072,9 @@ void() GrenadeExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -2134,12 +2134,12 @@ void() W_FireGrenade =
 		
 	// set newmis speed	
 	makevectors (self.v_angle);
-	if (self.v_angle_x)
+	if (self.v_angle.x)
 		newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
 	else {
 		newmis.velocity = aim(self, 10000);
 		newmis.velocity = newmis.velocity * 600;
-		newmis.velocity_z = 200;
+		newmis.velocity.z = 200;
 	}
 	newmis.avelocity = '300 300 300';
 	newmis.angles = vectoangles(newmis.velocity);
@@ -2235,9 +2235,9 @@ void() superspike_touch =
 		else {
 			WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 			WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
-			WriteCoord (MSG_MULTICAST, self.origin_x);
-			WriteCoord (MSG_MULTICAST, self.origin_y);
-			WriteCoord (MSG_MULTICAST, self.origin_z);
+			WriteCoord (MSG_MULTICAST, self.origin.x);
+			WriteCoord (MSG_MULTICAST, self.origin.y);
+			WriteCoord (MSG_MULTICAST, self.origin.z);
 			multicast (self.origin, MULTICAST_PHS);
 		}
 	}
@@ -2299,7 +2299,7 @@ void(float ox) W_FireSpikes =
 	}		
 };
 
-//.float hit_z;
+//.float hit.z;
 void() spike_touch =
 {
 	if (other.solid == SOLID_TRIGGER)
@@ -2345,9 +2345,9 @@ void() spike_touch =
 				WriteByte (MSG_MULTICAST, TE_KNIGHTSPIKE);
 			else
 				WriteByte (MSG_MULTICAST, TE_SPIKE);
-			WriteCoord (MSG_MULTICAST, self.origin_x);
-			WriteCoord (MSG_MULTICAST, self.origin_y);
-			WriteCoord (MSG_MULTICAST, self.origin_z);
+			WriteCoord (MSG_MULTICAST, self.origin.x);
+			WriteCoord (MSG_MULTICAST, self.origin.y);
+			WriteCoord (MSG_MULTICAST, self.origin.z);
 			multicast (self.origin, MULTICAST_PHS);
 		}
 	}
@@ -4091,7 +4091,7 @@ void() DeadImpulses =
         return;
     }
 #ifdef DEBUG
-    if (self.impulse == 69 && infokey(NIL, "allow_debug") == "yes")
+    if (self.impulse == 69 && infokey(nil, "allow_debug") == "yes")
     {
         self.demon_blood = MAX_KNIFE_BLOOD;
 	self.job |= JOB_BLOODY_KNIFE;
@@ -4099,15 +4099,15 @@ void() DeadImpulses =
         return;
     }
 
-	if (self.impulse == 18 && infokey(NIL, "allow_debug") == "yes")
+	if (self.impulse == 18 && infokey(nil, "allow_debug") == "yes")
 	{
-		sprint(self, PRINT_HIGH, "Your origin is: '", ftos(self.origin_x), " ", ftos(self.origin_y));
-		sprint(self, PRINT_HIGH, " ", ftos(self.origin_z), "'\n");
+		sprint(self, PRINT_HIGH, "Your origin is: '", ftos(self.origin.x), " ", ftos(self.origin.y));
+		sprint(self, PRINT_HIGH, " ", ftos(self.origin.z), "'\n");
 		self.impulse=0;
 		return;
 	}
 
-	if (self.impulse == 195 && !debug_target && infokey(NIL, "allow_debug") == "yes")
+	if (self.impulse == 195 && !debug_target && infokey(nil, "allow_debug") == "yes")
 		debug_target = self;
 #endif
 
@@ -4292,7 +4292,7 @@ void() W_WeaponFrame =
 				}
 			} else {
 				tv = self.velocity;
-				tv_z = 0;
+				tv.z = 0;
 
 				if (vlen(tv) <= WEAP_SNIPER_RIFLE_MAX_MOVE && W_CheckNoAmmo()) {
 					// create the laser sight
@@ -4388,9 +4388,9 @@ void() T_DaedalusTouch =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
     if (other.classname == "force_field") //- OfN - Makes field explosion b4 removing it
@@ -4551,7 +4551,7 @@ void() HIP_LaserTouch =
 	local vector oldvel;
 //	local float r;
 
-	self.owner = NIL;
+	self.owner = nil;
 	self.cnt = self.cnt + 1;
 	if (pointcontents(self.origin) == CONTENTS_SKY) {
 		remove(self);
@@ -4586,9 +4586,9 @@ void() HIP_LaserTouch =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PHS);
 	} else {
 //		self.dmg = 0.66 * self.dmg;
@@ -4693,7 +4693,7 @@ void(float stat) HIP_FireLaser =
 
 	ofs = 6;
 	out = v_forward;
-	out_z = 0;
+	out.z = 0;
 	out = normalize(out);
 	org = self.origin + ((12-ofs) * v_up) + (12*out);
 //	org = self.origin + (1*v_forward);

@@ -60,7 +60,7 @@ void(entity missile, float mspeed, float accuracy) LaunchMissile =
 	
 // get the entities xy velocity
 	move = self.enemy.velocity;
-	move_z = 0;
+	move.z = 0;
 
 // project the target forward in time
 	vec = vec + move * fly;
@@ -71,7 +71,7 @@ void(entity missile, float mspeed, float accuracy) LaunchMissile =
 	missile.velocity = vec * mspeed;
 
 	missile.angles = '0 0 0';
-	missile.angles_y = vectoyaw(missile.velocity);
+	missile.angles.y = vectoyaw(missile.velocity);
 
 // set missile duration
 	missile.nextthink = time + 10; //- OfN - was 5
@@ -166,7 +166,7 @@ float()	WizardCheckAttack =
 WizardAttackFinished
 =================
 */
-float()	WizardAttackFinished =
+void()	WizardAttackFinished =
 {
 	if (enemy_range >= RANGE_MID || !enemy_vis)
 	{
@@ -336,9 +336,9 @@ void()	wiz_pain4	=[	$pain4,		wiz_run1	] {};
 
 void()	wiz_death1	=[	$death1,		wiz_death2	] {
 
-self.velocity_x = -200 + 400*random();
-self.velocity_y = -200 + 400*random();
-self.velocity_z = 100 + 100*random();
+self.velocity.x = -200 + 400*random();
+self.velocity.y = -200 + 400*random();
+self.velocity.z = 100 + 100*random();
 self.flags &= ~FL_ONGROUND;
 sound (self, CHAN_VOICE, "wizard/wdeath.wav", 1, ATTN_MONSTERDIE);
 };
@@ -361,7 +361,7 @@ void() wiz_die =
 	    sprint(self.real_owner,PRINT_HIGH,"Your scrag is dead.\n");
 	    self.real_owner.job &= ~JOB_DEMON_OUT;
 	    self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
-        self.real_owner.demon_one = NIL;
+        self.real_owner.demon_one = nil;
     }   
 
 // check for gib
@@ -378,7 +378,7 @@ void() wiz_die =
 	}
 
     self.classname = "monster_corpse";
-    self.think=NIL;
+    self.think=nil;
     wiz_death1();
 };
 

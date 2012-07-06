@@ -270,11 +270,11 @@ float() Tesla_FindTarget =
 
 	//WK Hack to get floating tesla working
 	if (self.tf_items & NIT_TURRET)
-		self.origin_z = self.origin_z - 40;//40;
+		self.origin.z = self.origin.z - 40;//40;
 	//else
-	//	self.origin_z = self.origin_z + 24;
+	//	self.origin.z = self.origin.z + 24;
 
-	self.oldenemy = NIL; //CH for sbar
+	self.oldenemy = nil; //CH for sbar
 
 	if (self.ammo_shells == 0)
 		client = Tesla_RadiusScan (self, 400);
@@ -287,9 +287,9 @@ float() Tesla_FindTarget =
 
 	//WK Unhack our hack
 	if (self.tf_items & NIT_TURRET)
-		self.origin_z = self.origin_z + 40;//+ 40;
+		self.origin.z = self.origin.z + 40;//+ 40;
 	//else
-	//	self.origin_z = self.origin_z - 24;
+	//	self.origin.z = self.origin.z - 24;
 
 	if (client != self)
 	{
@@ -333,10 +333,10 @@ void(entity attacker, float damage) Tesla_Pain =
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 4;
 
-	local string st = infokey (NIL, "sentry_revenge");
+	local string st = infokey (nil, "sentry_revenge");
 
 	if (!st)
-		st = infokey (NIL, "sr");
+		st = infokey (nil, "sr");
 
 	if (!self.waitmax && (st == "yes" || st == "1" || st == "on"))
 	{
@@ -361,9 +361,9 @@ void() Tesla_Die =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
 };
@@ -386,7 +386,7 @@ float() Tesla_Fire =
 	if (self.tf_items & NIT_TURRET)
 	{
 		below = '0 0 1';	// So as not to hit tesla.
-		below_z = below_z + self.size_z; // Below should be 1 unit below the tesla.
+		below.z = below.z + self.size.z; // Below should be 1 unit below the tesla.
 
 		// Check a varity of locations for a door. 5 and -5 should be the with of tesla
 		if (DoorsAt(self.origin - below + '0 0 0'))
@@ -402,7 +402,7 @@ float() Tesla_Fire =
 
 		if (cheater){
 			sprint(self.real_owner,PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
-			TF_T_Damage(self,NIL,NIL,self.health+100,0,0);
+			TF_T_Damage(self,nil,nil,self.health+100,0,0);
 			return FALSE;
 		}
 	}
@@ -415,13 +415,13 @@ float() Tesla_Fire =
 		return FALSE;
 	if (self.enemy.health <= 0)
 		return FALSE;
-	if (infokey(NIL,"ceasefire")=="on") //CH
+	if (infokey(nil,"ceasefire")=="on") //CH
 		return FALSE;
 	if (self.enemy.classname == "player")
 	{
 		if (self.enemy.has_disconnected)
 		{
-			self.enemy = NIL;
+			self.enemy = nil;
 			return FALSE;
 		}
 		if (!(self.tf_items & NIT_AUTOID))
@@ -466,13 +466,13 @@ float() Tesla_Fire =
 	self.oldenemy = self.enemy; //CH for sbar
 
 	//WK Hack to get floating sentry working - reset before all the returns
-	if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z - 40;// 40
-	//else self.origin_z = self.origin_z + 24;
+	if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z - 40;// 40
+	//else self.origin.z = self.origin.z + 24;
 	
 	if (!visible2(self.enemy, self))
 	{
-		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
-		//else self.origin_z = self.origin_z - 24;
+		if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40; // 40
+		//else self.origin.z = self.origin.z - 24;
 		return FALSE;
 	}
 
@@ -480,9 +480,9 @@ float() Tesla_Fire =
 	if (self.ammo_cells < 0)
 	{
 		self.ammo_cells = 0;
-		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
-		//else self.origin_z = self.origin_z - 24;
-		self.enemy = NIL;
+		if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40; // 40
+		//else self.origin.z = self.origin.z - 24;
+		self.enemy = nil;
 		return FALSE;
 	}
 
@@ -495,12 +495,12 @@ float() Tesla_Fire =
 		deathmsg = DMSG_LIGHTNING;
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
-		T_RadiusDamage(self, self, damg, NIL);
-		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; // 40
-		//else self.origin_z = self.origin_z - 24;
+		WriteCoord (MSG_MULTICAST, self.origin.x);
+		WriteCoord (MSG_MULTICAST, self.origin.y);
+		WriteCoord (MSG_MULTICAST, self.origin.z);
+		T_RadiusDamage(self, self, damg, nil);
+		if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40; // 40
+		//else self.origin.z = self.origin.z - 24;
 		return FALSE;
 	}
 		
@@ -513,15 +513,15 @@ float() Tesla_Fire =
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
         WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
         WriteEntity (MSG_MULTICAST, self);
-        WriteCoord (MSG_MULTICAST, self.origin_x);
-        WriteCoord (MSG_MULTICAST, self.origin_y);
+        WriteCoord (MSG_MULTICAST, self.origin.x);
+        WriteCoord (MSG_MULTICAST, self.origin.y);
         if (self.tf_items & NIT_TURRET)
-            WriteCoord (MSG_MULTICAST, self.origin_z + 10);
+            WriteCoord (MSG_MULTICAST, self.origin.z + 10);
         else
-            WriteCoord (MSG_MULTICAST, self.origin_z + 30);        
-        WriteCoord (MSG_MULTICAST, trace_endpos_x);
-        WriteCoord (MSG_MULTICAST, trace_endpos_y);
-        WriteCoord (MSG_MULTICAST, trace_endpos_z);
+            WriteCoord (MSG_MULTICAST, self.origin.z + 30);        
+        WriteCoord (MSG_MULTICAST, trace_endpos.x);
+        WriteCoord (MSG_MULTICAST, trace_endpos.y);
+        WriteCoord (MSG_MULTICAST, trace_endpos.z);
         multicast (self.origin, MULTICAST_PHS);
         
 	if (trace_ent.classname == "force_field")
@@ -555,9 +555,9 @@ float() Tesla_Fire =
 
 	local vector org = self.origin;
 	if (self.tf_items & NIT_TURRET)
-	   org_z += 10;
+	   org.z += 10;
 	else
-	   org_z += 30;
+	   org.z += 30;
 
 	LightningDamage(org, self.enemy.origin, self, damage);
 
@@ -575,14 +575,14 @@ float() Tesla_Fire =
 	else if (self.ammo_cells <= self.waitmin)
 		sprint(self.real_owner, PRINT_HIGH, "Tesla is low on cells.\n");
 
-	if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40; //40
-	//else self.origin_z = self.origin_z - 24;
+	if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40; //40
+	//else self.origin.z = self.origin.z - 24;
 
 	//self.attack_finished = 1;
 
 	if (self.enemy.health <= 0)
 	{
-		self.enemy = NIL;
+		self.enemy = nil;
 		return FALSE;
 	}
 	return TRUE;
@@ -646,7 +646,7 @@ void() Tesla_Touch =
 			return;
 		}
 		below = '0 0 1';	// So as not to hit tesla.
-		below_z = below_z + self.size_z;
+		below.z = below.z + self.size.z;
 
 		// Check a varity of locations for a door. 5 and -5 should be the with of tesla
 		if (DoorsAt(self.origin - below + '0 0 0'))
@@ -662,7 +662,7 @@ void() Tesla_Touch =
 
 		if (cheater){
 			sprint(self.real_owner,PRINT_HIGH,"The door's wiring conflicts with your tesla's!\n");
-			TF_T_Damage(self,NIL,NIL,self.health+100,0,0);
+			TF_T_Damage(self,nil,nil,self.health+100,0,0);
 			return;
 		}
 
@@ -672,7 +672,7 @@ void() Tesla_Touch =
 			self.solid = SOLID_BBOX;
 			self.flags |= FL_ONGROUND;
 			self.movetype = MOVETYPE_STEP;
-			self.origin_z = self.origin_z + 40;
+			self.origin.z = self.origin.z + 40;
 
             self.is_haxxxoring=0; // this flag is for cloaked teslas be able to cloak again
 
@@ -690,7 +690,7 @@ void() Tesla_Touch =
 			//TF_T_Damage (other, self, self.real_owner, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 			TF_T_Damage (other, self, self, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 
-            self.velocity_z = 200; //- OfN reset velocity, not stop
+            self.velocity.z = 200; //- OfN reset velocity, not stop
 		}
 		else
 		{
@@ -831,7 +831,7 @@ entity(entity OldTesla) TeslaClone =
     local vector tmp1, tmp2;
 
     //now hack inside hack! =)
-    te = find(NIL, classname, "player");
+    te = find(nil, classname, "player");
     while (te)
 	{
         if (te.is_haxxxoring) // if we r currently hacking...
@@ -852,7 +852,7 @@ entity(entity OldTesla) TeslaClone =
 		te = find(te, classname, "player");
 	}
 
-    te = find(NIL, classname, "monster_army");
+    te = find(nil, classname, "monster_army");
     while (te)
 	{
         if (te.goalentity == OldTesla)
@@ -886,7 +886,7 @@ entity(entity OldTesla) TeslaClone =
 
 	newmis.colormap = OldTesla.colormap;
 	newmis.weapon = BUILD_TESLA;
-	//newmis.angles_y = anglemod(self.angles_y + 180);
+	//newmis.angles.y = anglemod(self.angles.y + 180);
     newmis.angles = OldTesla.angles;
 
 	//newmis.velocity = '0 0 8';
@@ -939,8 +939,8 @@ entity(entity OldTesla) TeslaClone =
     newmis.no_grenades_2 = OldTesla.no_grenades_2; //0; // cloak touch delay reset
 
     newmis.touch = Tesla_Touch;
-    newmis.enemy = OldTesla.enemy; //NIL;
-    newmis.oldenemy = OldTesla.oldenemy; //NIL; //CH for sbar
+    newmis.enemy = OldTesla.enemy; //nil;
+    newmis.oldenemy = OldTesla.oldenemy; //nil; //CH for sbar
 
     //Set all initial tesla values here
     newmis.maxammo_shells = OldTesla.maxammo_shells; //Voltage == 0

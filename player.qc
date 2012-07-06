@@ -123,9 +123,9 @@ void() player_touch =
 	{
 		deathmsg = DMSG_PHYSICS;
 		if (other.takedamage) // kill it! aaah!
-			TF_T_Damage(other, NIL, NIL, other.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage(other, nil, nil, other.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		else
-			TF_T_Damage(self, NIL, NIL, other.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+			TF_T_Damage(self, nil, nil, other.health + 100, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 
 		return;
 	}
@@ -176,7 +176,7 @@ void() player_touch =
 /* WK Why doesn't this work??? Causes occasional program crashes...
 					//WK The owner is the original medic if spreading to friend
 					if (self.team_no == other.team_no) {
-						te = find(NIL, netname, "biotimer");
+						te = find(nil, netname, "biotimer");
 						while ((te.owner != self) && (te))
 							te = find(te, netname, "biotimer");
 						if (te)
@@ -244,7 +244,7 @@ void() player_run;
 void()	player_stand1 =[	$axstnd1,	player_stand1	]
 {
 	self.weaponframe=0;
-	if (self.velocity_x || self.velocity_y)
+	if (self.velocity.x || self.velocity.y)
 	{
 		self.walkframe=0;
 		player_run();
@@ -269,7 +269,7 @@ void()	player_stand1 =[	$axstnd1,	player_stand1	]
 void()	player_run =[	$rockrun1,	player_run	]
 {
 	self.weaponframe=0;
-	if (!self.velocity_x && !self.velocity_y)
+	if (!self.velocity.x && !self.velocity.y)
 	{
 		self.walkframe=0;
 		player_stand1();
@@ -706,8 +706,8 @@ void() player_assaultcannon1   =[$nailatt1, player_assaultcannon2  ]
 	stuffcmd(self, st);
 	stuffcmd(self, "\n");
 #elifdef ASSCAN_JERK
-	self.v_angle_x -= (random () + 0.5);
-	self.v_angle_y -= ((random () * 0.6) - 0.3);
+	self.v_angle.x -= (random () + 0.5);
+	self.v_angle.y -= ((random () * 0.6) - 0.3);
 
 	msg_entity = self;
 	WriteByte (MSG_ONE, SVC_SETANGLE);
@@ -1087,9 +1087,9 @@ vector(float dm) VelocityForDamage =
 {
 	local vector v;
 
-	v_x = 100 * crandom();
-	v_y = 100 * crandom();
-	v_z = 200 + 100 * random();
+	v.x = 100 * crandom();
+	v.y = 100 * crandom();
+	v.z = 200 + 100 * random();
 
 	if (dm > -50)
 	{
@@ -1115,9 +1115,9 @@ void(string gibname, float dm) ThrowGib =
 	newmis.velocity = VelocityForDamage (dm);
 	newmis.movetype = MOVETYPE_BOUNCE;
 	newmis.solid = SOLID_NOT;
-	newmis.avelocity_x = random()*600;
-	newmis.avelocity_y = random()*600;
-	newmis.avelocity_z = random()*600;
+	newmis.avelocity.x = random()*600;
+	newmis.avelocity.y = random()*600;
+	newmis.avelocity.z = random()*600;
 	newmis.think = SUB_Remove;
 	newmis.ltime = time;
 	newmis.nextthink = time + 10 + random()*10;
@@ -1144,7 +1144,7 @@ void(string gibname, float dm) ThrowHead =
 	self.view_ofs = '0 0 8';
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.velocity = VelocityForDamage (dm);
-	self.origin_z = self.origin_z - 24;
+	self.origin.z = self.origin.z - 24;
 	self.flags &= ~FL_ONGROUND;
 	self.avelocity = crandom() * '0 600 0';
 
@@ -1175,7 +1175,7 @@ void(string gibname) HeadShotThrowHead =
 	self.view_ofs = '0 0 8';
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.velocity = normalize(self.head_shot_vector) * 600;
-	self.origin_z = self.origin_z + 24;
+	self.origin.z = self.origin.z + 24;
 	self.flags &= ~FL_ONGROUND;
 	self.avelocity = '0 0 0';
 
@@ -1299,7 +1299,7 @@ void() PlayerDie =
 	// If infected, give the medic a frag
 	finished = TRUE;
 	if (self.tfstate & TFSTATE_INFECTED && self == self.enemy) {
-		te = find(NIL, classname, "timer");
+		te = find(nil, classname, "timer");
 		while (te) {
 			if (te.owner == self && te.think == BioInfection_Decay) {
 				logfrag(te.enemy, self);
@@ -1310,7 +1310,7 @@ void() PlayerDie =
 			}
 
 			te = find(te, classname, "timer");
-			if (finished) te = NIL;
+			if (finished) te = nil;
 		}
 	}
 
@@ -1335,8 +1335,8 @@ void() PlayerDie =
 	self.flags &= ~FL_ONGROUND;
 	self.movetype = MOVETYPE_TOSS;
 
-	if (self.velocity_z < 10)
-		self.velocity_z = self.velocity_z + random()*300;
+	if (self.velocity.z < 10)
+		self.velocity.z = self.velocity.z + random()*300;
 	if (self.health < -40) {
 		GibPlayer ();
 		return;
@@ -1344,8 +1344,8 @@ void() PlayerDie =
 
 	DeathSound();
 	
-	self.angles_x = 0;
-	self.angles_z = 0;
+	self.angles.x = 0;
+	self.angles.z = 0;
 
 	if (self.current_weapon <= WEAP_AXE) {
 		player_die_ax1 ();
@@ -1531,9 +1531,9 @@ float(entity e) EF_GlowColor =
 	local float ret = 0;
 
 	if (e.classname == "player") {
-		local entity te = NIL;
+		local entity te = nil;
 
-		te = find(NIL, classname, "item_tfgoal");
+		te = find(nil, classname, "item_tfgoal");
 
 		while (te)
 		{
@@ -1576,6 +1576,7 @@ float(entity e) EF_GlowColor =
 		
 		return EF_DIMLIGHT;			
 	}
+	return 0;
 };
 
 void(entity e, float secs) GivePent =

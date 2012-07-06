@@ -61,7 +61,7 @@ void() TeamFortress_MOTD =
 	if (self.motd == MOTD_FINISHED - 1)
 	{
 		//WK CHECK TO SEE IF WE ARE REDIRECTING PLAYERS
-		st = infokey(NIL, "redir");
+		st = infokey(nil, "redir");
 		if (st && st != "off") {
 			stuffcmd(self,"connect ");
 			stuffcmd(self,st);
@@ -161,7 +161,7 @@ void() PrintMOTD =
 			intro = intro + MSG_INTROBAR;
 		intro = intro + MSG_INTRO3;
 	}
-	infostring = infokey (NIL, "motd");
+	infostring = infokey (nil, "motd");
 	if (infostring != "") {
 		if (intro != "")
 			intro = intro + MSG_INTROBAR;
@@ -179,7 +179,7 @@ void() TeamFortress_HelpMap =
 {
 	local entity te;
 
-	te = find(NIL, classname, "info_tfdetect");
+	te = find(nil, classname, "info_tfdetect");
 	if (te)
 	{
 		if (te.non_team_broadcast)
@@ -347,7 +347,7 @@ void () Alias_SetBatch =
 	} else if (num == 20) {
 		// our version alias
 		local string bitstring = "";
-		local integer i = TF_ALIASVERSION;
+		local int i = TF_ALIASVERSION;
 		while (i) { // I go through the bits from right to left, thus the wierd string prepending
 			if (i & 1)
 				bitstring = "bit1;" + bitstring;

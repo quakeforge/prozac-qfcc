@@ -37,7 +37,7 @@ For field generator entity:
 
 .fieldgen_status - Holds current status of every field generator, FIELDGEN_XXXX determines
 .fieldgen_hasfield - Boolean value, determines if field generator is currently supporting a force field
-.fieldgen_field  - This points to the force field, if none its always 'NIL'
+.fieldgen_field  - This points to the force field, if none its always 'nil'
 .no_grenades_1	 - Controls delay between tries to link (only affects sound currently, it tries to link every frame)
 .no_grenades_1	 - Controls delay for field to go up again after beeing disabled
 .tp_grenades_1	 - Controls delay of the WORKING status
@@ -120,17 +120,17 @@ void() Field_think =
 		if (IsValidFieldGen(self.demon_one))
 		{
 			self.demon_one.fieldgen_hasfield = FALSE;
-			self.demon_one.fieldgen_field = NIL;
+			self.demon_one.fieldgen_field = nil;
 		}
 
 		if (IsValidFieldGen(self.demon_two))
 		{
 			self.demon_two.fieldgen_hasfield = FALSE;
-			self.demon_two.fieldgen_field = NIL;
+			self.demon_two.fieldgen_field = nil;
 		}
 
-		self.demon_one = NIL;
-		self.demon_two = NIL;
+		self.demon_one = nil;
+		self.demon_two = nil;
 		
 		dremove(self);
 
@@ -318,7 +318,7 @@ void() Field_touch_SUB =
 			else
 				other.velocity = 300 * forward;			
 
-			other.velocity_z += 50;
+			other.velocity.z += 50;
 
 			setorigin(other, other.origin + '0 0 1');
 		}
@@ -326,7 +326,7 @@ void() Field_touch_SUB =
 		else if (IsBuilding(other))
 		{
 			sprint(other.real_owner, PRINT_HIGH, "The forcefield short-circuits your structure\n");
-			TF_T_Damage(other, NIL, NIL, 9999, TF_TD_IGNOREARMOUR, 0);
+			TF_T_Damage(other, nil, nil, 9999, TF_TD_IGNOREARMOUR, 0);
 		}
 	}
 
@@ -344,10 +344,10 @@ entity(entity myself) GetMyFieldGen =
 {
 	local entity te;
 	local float foundit;
-	te = NIL;
+	te = nil;
 	foundit = FALSE;
 
-	te = find(NIL, classname, "building_fieldgen");
+	te = find(nil, classname, "building_fieldgen");
 	while (te && foundit == FALSE)
 	{
 		if (te.real_owner == myself) // is it ours?
@@ -506,7 +506,7 @@ void(entity tfield, vector where, entity thing) FieldExplosion =
 
 		local vector whereFX;
 		whereFX = where;
-		whereFX_z = tfield.origin_z;
+		whereFX.z = tfield.origin.z;
 
 		spawnFOG(whereFX);
 		sound(tfield,CHAN_BODY,"effects/crunch.wav",0.5,ATTN_NORM);
@@ -574,7 +574,7 @@ void(entity gen1, entity gen2) Create_Field =
 	// generate field
 	tfield = spawn();
 	tfield.classname = "force_field";
-	tfield.owner = NIL;
+	tfield.owner = nil;
 	tfield.real_owner = gen1.real_owner; // --> player
 
 	tfield.think = Field_think;
@@ -582,13 +582,13 @@ void(entity gen1, entity gen2) Create_Field =
 	tfield.nextthink = time + 0.25;
 
 	// set pos and size
-	tfield.size_x = vlen (gen1.origin - gen2.origin) - 10;
-	tfield.size_y = 4;
-	tfield.size_z = 48; // was 64, but 48 is more realistic
+	tfield.size.x = vlen (gen1.origin - gen2.origin) - 10;
+	tfield.size.y = 4;
+	tfield.size.z = 48; // was 64, but 48 is more realistic
 	tfield.maxs = tfield.size * 0.5; // FIXME: / 2 is broken
 	tfield.mins = -tfield.maxs;
 	tfield.origin = AVG (gen1.origin, gen2.origin);
-	tfield.origin_z = AVG (gen1.absmax_z, gen2.absmax_z) - tfield.maxs_z - 1;
+	tfield.origin.z = AVG (gen1.absmax.z, gen2.absmax.z) - tfield.maxs.z - 1;
 	tfield.forcefield_offset = (gen2.origin - gen1.origin);
 
 	local vector right, forward, up;
@@ -645,7 +645,7 @@ void(entity gen1, entity gen2) Create_Field =
 	else if (gen1.martyr_enemy)
 		tfield.martyr_enemy = gen2.martyr_enemy;
 	else
-		tfield.martyr_enemy = NIL;
+		tfield.martyr_enemy = nil;
 
 /*	// make sure the field goes off instantly if there's somebody in it
 	local entity oldself;
@@ -668,11 +668,11 @@ void(entity gen1, entity gen2) Remove_Field =
 			dremove(gen1.fieldgen_field);
 		}
 		gen1.fieldgen_hasfield = FALSE;
-		gen1.fieldgen_field = NIL;
+		gen1.fieldgen_field = nil;
 		if (IsValidFieldGen(gen2))
 		{
 			gen2.fieldgen_hasfield = FALSE;
-			gen2.fieldgen_field = NIL;
+			gen2.fieldgen_field = nil;
 		}
 	}
 	else if (IsValidFieldGen(gen2))
@@ -683,7 +683,7 @@ void(entity gen1, entity gen2) Remove_Field =
 			dremove(gen2.fieldgen_field);
 		}
 		gen2.fieldgen_hasfield = FALSE;
-		gen2.fieldgen_field = NIL;
+		gen2.fieldgen_field = nil;
 	}
 };
 
@@ -811,12 +811,12 @@ void(entity tfield) Field_MakeVisual =
 		else
 			WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
 		WriteEntity (MSG_MULTICAST, tfield);
-		WriteCoord (MSG_MULTICAST, f_x);
-		WriteCoord (MSG_MULTICAST, f_y);
-		WriteCoord (MSG_MULTICAST, tfield.origin_z + tfield.mins_z);
-		WriteCoord (MSG_MULTICAST, f_x);
-		WriteCoord (MSG_MULTICAST, f_y);
-		WriteCoord (MSG_MULTICAST, tfield.origin_z + tfield.maxs_z);
+		WriteCoord (MSG_MULTICAST, f.x);
+		WriteCoord (MSG_MULTICAST, f.y);
+		WriteCoord (MSG_MULTICAST, tfield.origin.z + tfield.mins.z);
+		WriteCoord (MSG_MULTICAST, f.x);
+		WriteCoord (MSG_MULTICAST, f.y);
+		WriteCoord (MSG_MULTICAST, tfield.origin.z + tfield.maxs.z);
 	}
 };
 
@@ -958,7 +958,7 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
 	if (r > FIELDGEN_RANGE && !(fieldgen1.num_mines & IMPROVED_FOUR || fieldgen2.num_mines & IMPROVED_FOUR))
 		return FALSE;
 
-	if (fabs(fieldgen1.origin_z - fieldgen2.origin_z) > FIELDGEN_MAXZ)
+	if (fabs(fieldgen1.origin.z - fieldgen2.origin.z) > FIELDGEN_MAXZ)
 		return FALSE;
 
 	if (fieldgen1.fieldgen_status == FIELDGEN_ISDISABLED || fieldgen2.fieldgen_status == FIELDGEN_ISDISABLED)
@@ -978,14 +978,14 @@ float(entity fieldgen1, entity fieldgen2) FieldGens_CanLink =
 
 void(entity field) Field_Built =
 {
-	field.touch = NIL;
+	field.touch = nil;
 	field.think = FieldGen_think;
 	field.nextthink = time + 0.1;
 	field.fieldgen_status = FIELDGEN_ISIDLE; // we start on IDLE status (searching for other gen to link)
 	field.fieldgen_hasfield = FALSE;
 	field.no_grenades_1 = time + 3;
-	field.fieldgen_field = NIL;
-	field.martyr_enemy = NIL;
+	field.fieldgen_field = nil;
+	field.martyr_enemy = nil;
 };
 
 //==============================================================
@@ -995,10 +995,10 @@ entity(entity fieldgen) Find_OtherGen =
 {
 	local entity te;
 	local float foundit;
-	te = NIL;
+	te = nil;
 	foundit = FALSE;
 
-	te = find(NIL, classname, "building_fieldgen");
+	te = find(nil, classname, "building_fieldgen");
 	while (te && foundit == FALSE)
 	{
 		if (te.real_owner == fieldgen.real_owner) // is it ours?
@@ -1024,7 +1024,7 @@ void (vector place) WhereGen =
 		return;
 
 	local float r, foundit;
-	local entity te = NIL;
+	local entity te = nil;
 
 	foundit = FALSE;
 
@@ -1035,7 +1035,7 @@ void (vector place) WhereGen =
 			foundit = TRUE;
 	} while (te && foundit == FALSE);
 /*
-	te = find (NIL, classname, "building_fieldgen");
+	te = find (nil, classname, "building_fieldgen");
 	while (te && foundit == FALSE)
 	{
 		if (te.real_owner == self) // is it ours?
@@ -1067,7 +1067,7 @@ void (vector place) WhereGen =
 		sprint (self, PRINT_HIGH,
 			"Your field generators are too far away to link\n");
 
-	if (fabs (place_z - te.origin_z) > FIELDGEN_MAXZ)
+	if (fabs (place.z - te.origin.z) > FIELDGEN_MAXZ)
 		sprint (self, PRINT_HIGH,
 			"Your field generators are at different heights, they won't link\n");
 
@@ -1085,9 +1085,9 @@ void() FieldGen_Die =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	// check if field should be removed..
@@ -1099,7 +1099,7 @@ void() FieldGen_Die =
 	}
 	else
 	{
-	   Remove_Field(self, NIL); // extra removal, not needed i think...
+	   Remove_Field(self, nil); // extra removal, not needed i think...
 	}
 
 	sprint(self.real_owner, PRINT_HIGH, "Your field generator was destroyed.\n");

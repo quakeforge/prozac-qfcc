@@ -2,7 +2,7 @@
 #include "options.qh"
 
 // because I want a boolean type :)
-#define boolean integer
+#define boolean int
 
 //
 // constants

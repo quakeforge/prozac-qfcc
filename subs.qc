@@ -22,6 +22,7 @@ vector() SetMovedir =
 	}
 	
 	self.angles = '0 0 0';
+	return '0 0 0';
 };
 
 /*
@@ -179,7 +180,7 @@ void() SUB_CalcAngleMoveDone =
 
 void() DelayThink =
 {
-	local integer rem = !self.killtarget || self.killtarget != self.targetname;
+	local int rem = !self.killtarget || self.killtarget != self.targetname;
 	activator = self.enemy;
 	SUB_UseTargets ();
 	if (rem)
@@ -255,7 +256,7 @@ void() SUB_UseTargets =
 	if (self.killtarget)
 	{
 		local string kt = self.killtarget;
-		t = NIL;
+		t = nil;
 		do
 		{
 			t = find (t, targetname, kt);
@@ -269,7 +270,7 @@ void() SUB_UseTargets =
 	if (self.target)
 	{
 		act = activator;
-		t = NIL;
+		t = nil;
 		do
 		{
 			t = find (t, targetname, self.target);

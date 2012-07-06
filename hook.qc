@@ -51,7 +51,7 @@ void (entity rhook) Reset_Grapple =
 	rhook.owner.fire_held_down = FALSE;
 	rhook.owner.weaponframe = 0;
 	rhook.owner.gravity = 1; // FIXME: interferes with other gravity stuff
-	rhook.owner.hook = NIL;
+	rhook.owner.hook = nil;
 
 	rhook.think = SUB_Remove;
 	rhook.nextthink = time;
@@ -144,7 +144,7 @@ void (entity base) Remove_Chain =
 		}
 	}
 
-	base.owner.hook.goalentity = NIL;
+	base.owner.hook.goalentity = nil;
 };
 
 //
@@ -316,7 +316,7 @@ void () Anchor_Grapple =
 	self.think = Grapple_Track;
 	self.nextthink = time;
 	self.solid = SOLID_NOT;
-	self.touch = NIL;
+	self.touch = nil;
 };
 
 

@@ -129,9 +129,9 @@ string(float tno) GetTeamName =
             return world.b_b;
         }*/
 
-        st = infokey(NIL, "team1");
+        st = infokey(nil, "team1");
 		if (!st)
-			st = infokey(NIL, "t1");
+			st = infokey(nil, "t1");
 
 		if (!st || st == "")
 			return "blue";
@@ -143,9 +143,9 @@ string(float tno) GetTeamName =
             return world.b_t;
         }*/
         
-        st = infokey(NIL, "team2");
+        st = infokey(nil, "team2");
 		if (!st)
-			st = infokey(NIL, "t2");
+			st = infokey(nil, "t2");
 
 		if (!st)
 			return "red";
@@ -157,9 +157,9 @@ string(float tno) GetTeamName =
             return world.b_n;
         }*/
         
-        st = infokey(NIL, "team3");
+        st = infokey(nil, "team3");
 		if (!st)
-			st = infokey(NIL, "t3");
+			st = infokey(nil, "t3");
 
 		if (!st)
 			return "yell";
@@ -171,9 +171,9 @@ string(float tno) GetTeamName =
             return world.b_o;
         }*/
 
-        st = infokey(NIL, "team4");
+        st = infokey(nil, "team4");
 		if (!st)
-			st = infokey(NIL, "t4");
+			st = infokey(nil, "t4");
 
 		if (!st)
 			return "teal";
@@ -614,7 +614,7 @@ void(float tno, float scoretoadd) TeamFortress_TeamIncreaseScore =
  	if (toggleflags & TFLAG_TEAMFRAGS)
 	{
 		RPrint ("Teamfrags is on!\n");
-		e = find(NIL, classname, "player");
+		e = find(nil, classname, "player");
 		while (e)
 		{
 			if (e.team_no == tno)
@@ -664,7 +664,7 @@ float (float tno) TeamFortress_TeamGetNoPlayers =
 	local entity search;
 	//local string st;
 
-	search = find (NIL, classname, "player");
+	search = find (nil, classname, "player");
 	while (search)
 	{
 		if (search.team_no == tno)
@@ -862,14 +862,14 @@ string(float tno) TeamFortress_TeamGetColorString =
 void(entity Player) TeamFortress_TeamShowMemberClasses =
 {
 	/*local string st;
-	st = infokey(NIL, "no_showmembers");	*/
+	st = infokey(nil, "no_showmembers");	*/
     
     local entity e;
 	local float found;
 
 	found = FALSE;
 
-	e = find(NIL, classname, "player");
+	e = find(nil, classname, "player");
 	while (e)
 	{
 		if (((e.team_no == Player.team_no) || (e.team_no == 0)) && (e != Player))
@@ -1237,7 +1237,7 @@ void(float tno, entity ignore, string st) teamsprint =
     
     local entity te;
 
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		if (Teammate(te.team_no,tno) && te != ignore)

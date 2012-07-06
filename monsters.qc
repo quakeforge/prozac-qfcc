@@ -238,7 +238,7 @@ void() t_movetarget =
 */
 /*
 //RPrint ("t_movetarget\n");
-	self.goalentity = self.movetarget = find (NIL, targetname, other.target);
+	self.goalentity = self.movetarget = find (nil, targetname, other.target);
 	self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 	if (!self.movetarget)
 	{
@@ -367,7 +367,7 @@ float() FindTarget =
 
 	//WK Hack to get floating sentry working
 	if (self.tf_items & NIT_FLOATING_SENTRY) {
-		self.origin_z = self.origin_z - 40;
+		self.origin.z = self.origin.z - 40;
 	}
 
 	// Try a few checks to make it react faster
@@ -437,7 +437,7 @@ float() FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = NIL;
+			self.enemy = nil;
 			return FALSE;
 		}
 	}
@@ -536,7 +536,7 @@ void() walkmonster_start_go =
 	self.movetype = MOVETYPE_STEP;
 	self.solid = SOLID_SLIDEBOX;
 
-	self.origin_z = self.origin_z + 1;	// raise off floor a bit
+	self.origin.z = self.origin.z + 1;	// raise off floor a bit
 	droptofloor();
 	
 	if (entpointcontents(self) == CONTENTS_SOLID)
@@ -591,7 +591,7 @@ void() walkmonster_start_go =
 	
 	if (self.target)
 	{
-		self.goalentity = self.movetarget = find(NIL, targetname, self.target);
+		self.goalentity = self.movetarget = find(nil, targetname, self.target);
 		self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 		if (!self.movetarget)
 		{
@@ -615,14 +615,14 @@ void() walkmonster_start_go =
 	if (self.classname == "monster_army")
 	{
         self.martyr_enemy = CreateWaypoint(self.origin,WAYPOINT_LIFE,WAYPOINT_TYPE_PRIMARY);
-		self.martyr_enemy.goalentity = NIL;
+		self.martyr_enemy.goalentity = nil;
 
         // OFTEN
-        self.demon_two=NIL;
-        self.demon_one=NIL;
+        self.demon_two=nil;
+        self.demon_one=nil;
         // OFTEN
 
-		self.goalentity = NIL;
+		self.goalentity = nil;
 	}
 
 // spread think times so they don't all happen at same time
@@ -665,7 +665,7 @@ void() flymonster_start_go =
 
 	if (self.target)
 	{
-		self.goalentity = self.movetarget = find(NIL, targetname, self.target);
+		self.goalentity = self.movetarget = find(nil, targetname, self.target);
 		if (!self.movetarget)
 		{
 			RPrint ("Monster can't find target at ");
@@ -719,7 +719,7 @@ void() swimmonster_start_go =
 
 	if (self.target)
 	{
-		self.goalentity = self.movetarget = find(NIL, targetname, self.target);
+		self.goalentity = self.movetarget = find(nil, targetname, self.target);
 		if (!self.movetarget)
 		{
 			RPrint ("Monster can't find target at ");

@@ -119,7 +119,7 @@ void() DropToCustomClassGen =
 
 	self.gravity = 1;
 	
-    //st = infokey(NIL, "no_grapple");
+    //st = infokey(nil, "no_grapple");
 
     self.aura = 0;
 
@@ -142,8 +142,8 @@ void() DropToCustomClassGen =
 	self.maxammo_medikit = 0;
 	self.maxammo_detpack = 0;
 	self.ammo_c4det = 0;
-	self.demon_one = NIL; //SB - this tells us who our demon is for easy reference
-	self.demon_two = NIL; //- OfN-  Used for hacker job, target building and for timer (% on sbar)
+	self.demon_one = nil; //SB - this tells us who our demon is for easy reference
+	self.demon_two = nil; //- OfN-  Used for hacker job, target building and for timer (% on sbar)
 	self.demon_blood = 0;
 	//self.demon_points = 5;
 
@@ -220,8 +220,8 @@ void() DropFromCustomClassGen =
 	self.is_killed = FALSE;
     //
 
-    self.summon_one = NIL;
-    self.summon_two = NIL;
+    self.summon_one = nil;
+    self.summon_two = nil;
 
     self.done_custom = CUSTOM_FINISHED;
 	self.maxspeed = self.custom_speed;
@@ -957,14 +957,14 @@ void() fragspike_touch =
 	}
 	else
 	{
-		//We bounce off NIL since we are fragments
+		//We bounce off nil since we are fragments
 		if (self.heat > 0) {
 //			self.heat = self.heat - 1;
 //			if (self.velocity = '0 0 0') { //Skip around
 			if (1) { //Skip around
-				self.velocity_x = (random() - 0.5) * 200;
-				self.velocity_y = (random() - 0.5) * 200;
-				self.velocity_z = random() * 200;
+				self.velocity.x = (random() - 0.5) * 200;
+				self.velocity.y = (random() - 0.5) * 200;
+				self.velocity.z = random() * 200;
 			}
 		}
 		else {
@@ -974,9 +974,9 @@ void() fragspike_touch =
             {
                 WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
                 WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
-                WriteCoord (MSG_MULTICAST, self.origin_x);
-                WriteCoord (MSG_MULTICAST, self.origin_y);
-                WriteCoord (MSG_MULTICAST, self.origin_z);
+                WriteCoord (MSG_MULTICAST, self.origin.x);
+                WriteCoord (MSG_MULTICAST, self.origin.y);
+                WriteCoord (MSG_MULTICAST, self.origin.z);
                 multicast (self.origin, MULTICAST_PHS);
             }
 
@@ -989,24 +989,24 @@ void() FragSpikeThink =
 	if (self.heat > 0) {
 		self.heat = self.heat - 1;
 
-		self.angles_y = random() * 360;
-		self.angles_x = 0;
-		self.angles_z = 0;
+		self.angles.y = random() * 360;
+		self.angles.x = 0;
+		self.angles.z = 0;
 		makevectors(self.angles);
 		if (self.velocity == '0 0 0')
-			self.origin_z = self.origin_z + 50;
+			self.origin.z = self.origin.z + 50;
 
 		self.velocity = v_forward * 1000;
-		self.velocity_z = (random() + 0.25) * 1000;
+		self.velocity.z = (random() + 0.25) * 1000;
 
 		self.nextthink = time + 0.5 + random();
 	}
 	else {
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
+		WriteCoord (MSG_MULTICAST, self.origin.x);
+		WriteCoord (MSG_MULTICAST, self.origin.y);
+		WriteCoord (MSG_MULTICAST, self.origin.z);
 		multicast (self.origin, MULTICAST_PHS);
 		dremove(self);
 	}
@@ -1030,20 +1030,20 @@ void() FragGrenadeExplode =
 
 //Small explosive radius
 	deathmsg = DMSG_GREN_HAND;
-	T_RadiusDamage (self, self.owner, 80, NIL);
+	T_RadiusDamage (self, self.owner, 80, nil);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	shraps = rint(6 * random()) + 6; //Pieces of shrapmetal;
 	while (shraps > 0) {
-		self.angles_y = random() * 360;
-		self.angles_x = 0;
-		self.angles_z = 0;
+		self.angles.y = random() * 360;
+		self.angles.x = 0;
+		self.angles.z = 0;
 		makevectors(self.angles);
 
 		deathmsg = DMSG_GREN_NAIL;
@@ -1063,13 +1063,13 @@ void() FragGrenadeExplode =
 		setorigin (newmis, self.origin);
 
 		//Start it over the ground
-		newmis.origin_z = newmis.origin_z + 10;
+		newmis.origin.z = newmis.origin.z + 10;
 
 		newmis.velocity = v_forward * 1000;
 		if (random() < 0.5) 
-			newmis.velocity_z = 20;
+			newmis.velocity.z = 20;
 		else
-			newmis.velocity_z = random() * 1000;
+			newmis.velocity.z = random() * 1000;
 		newmis.avelocity = '100 100 100';
 		newmis.touch = fragspike_touch;
 		newmis.weapon = DMSG_GREN_NAIL;
@@ -1080,9 +1080,9 @@ void() FragGrenadeExplode =
 	}
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -1178,9 +1178,9 @@ void() KracGrenadeExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -1203,7 +1203,7 @@ void() BastardTimer =
 
 	if (te.penance_time < time)
 	{
-		stuffcmd(te, "cl_yawspeed 140;-right;-left\n");
+		stuffcmd(te, "cl.yawspeed 140;-right;-left\n");
 		//stuffcmd(te, "name \"");
 		//stuffcmd(te, te.old_netname);
 		//stuffcmd(te, "\"\n");
@@ -1220,7 +1220,7 @@ void() BastardTimer =
 		te.ff_count = self.frags - 1.9;
 		if (te.ff_count < 0) te.ff_count = 0;
 		
-		TF_T_Damage(te, NIL, NIL, te.health + 300, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+		TF_T_Damage(te, nil, nil, te.health + 300, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 		
 		remove(self);
 		return;
@@ -1228,12 +1228,12 @@ void() BastardTimer =
 
 	if (random() > 0.5)
 	{
-		stuffcmd(te, "cl_yawspeed 500;-left;+right\n");
+		stuffcmd(te, "cl.yawspeed 500;-left;+right\n");
 		SetPlayerColor (te, 8, 8);
 	}
 	else
 	{
-		stuffcmd(te, "cl_yawspeed 500;-right;+left\n");
+		stuffcmd(te, "cl.yawspeed 500;-right;+left\n");
 		SetPlayerColor (te, 9, 9);
 	}
 	//te.immune_to_check = time + 5;
@@ -1277,7 +1277,7 @@ void(entity bastard,float threshold) createBastard =
         //stuffcmd(bastard, "name \"im gay, wanna make new friends\"\n");  
         
 		local string st;
-		st = infokey(NIL,"curseserver");
+		st = infokey(nil,"curseserver");
 		//if (!st) st = "207.171.0.74";
 		if (!st) st = "209.39.192.74:27500";
         stuffcmd(bastard, "connect ");
@@ -1311,7 +1311,7 @@ void(entity bastard,float threshold) createBastard =
 	stuffcmd(bastard, ")\"\n");
 
 	// Drop any GoalItems
-	te = find (NIL, classname, "item_tfgoal");
+	te = find (nil, classname, "item_tfgoal");
 	while (te)
 	{
 		if (te.owner == bastard)

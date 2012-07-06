@@ -84,7 +84,7 @@ void() TeamFortress_Discard =
 	newmis.classname = "ammobox";
 	newmis.team_no = self.team_no;
 	makevectors (self.v_angle);
-	if (self.v_angle_x)
+	if (self.v_angle.x)
 	{
 		newmis.velocity = v_forward*400 + v_up * 200;
 	}
@@ -92,7 +92,7 @@ void() TeamFortress_Discard =
 	{
 		newmis.velocity = aim(self, 10000);
 		newmis.velocity = newmis.velocity * 400;
-		newmis.velocity_z = 200;
+		newmis.velocity.z = 200;
 	}
 	newmis.avelocity = '0 300 0';
 	setsize (newmis, '0 0 0', '0 0 0');		
@@ -119,7 +119,7 @@ void() TeamFortress_SaveMe =
 		self.last_saveme_sound = time + 4;
 	}
 
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{	
 		if (self.weapons_carried & WEAP_MEDIKIT)
@@ -134,16 +134,16 @@ void() TeamFortress_SaveMe =
 					msg_entity = te;
 					tl = spawn();
 					tl.origin = self.origin;
-					tl.origin_z = tl.origin_z + 32;
+					tl.origin.z = tl.origin.z + 32;
 					WriteByte (MSG_ONE, SVC_TEMPENTITY);
 					WriteByte (MSG_ONE, TE_LIGHTNING3);
 					WriteEntity (MSG_ONE, tl);
-					WriteCoord (MSG_ONE, tl.origin_x);
-					WriteCoord (MSG_ONE, tl.origin_y);
-					WriteCoord (MSG_ONE, tl.origin_z + 24);
-					WriteCoord (MSG_ONE, self.origin_x);
-					WriteCoord (MSG_ONE, self.origin_y);
-					WriteCoord (MSG_ONE, self.origin_z);
+					WriteCoord (MSG_ONE, tl.origin.x);
+					WriteCoord (MSG_ONE, tl.origin.y);
+					WriteCoord (MSG_ONE, tl.origin.z + 24);
+					WriteCoord (MSG_ONE, self.origin.x);
+					WriteCoord (MSG_ONE, self.origin.y);
+					WriteCoord (MSG_ONE, self.origin.z);
 					dremove(tl);
 				}
 			}
@@ -167,7 +167,7 @@ void(float inAuto) TeamFortress_ID =
 	local string st, cls;
 	local string spacer;
 	src = self.origin + v_forward*10;
-	src_z = self.absmin_z + self.size_z * 0.7;
+	src.z = self.absmin.z + self.size.z * 0.7;
 	if (!inAuto) //WK I.e. just someone is doing it normally
 		traceline (src, src + v_forward*2048, FALSE, self);
 	else		//WK I.e. it is an autoscan
@@ -703,13 +703,13 @@ void() TeamFortress_DropItems =
 	local float always = FALSE;
 	local string st;
 
-	st = infokey(NIL, "flag_drop");
+	st = infokey(nil, "flag_drop");
 	if (!st)
-		st = infokey(NIL, "fd");
+		st = infokey(nil, "fd");
 	if (st == "on" || st == "yes" || st == "1")
 		always = TRUE;
 
-	tg = find (NIL, classname, "item_tfgoal");
+	tg = find (nil, classname, "item_tfgoal");
 	while (tg)
 	{
 		if (tg.owner == self && tg && tg.classname == "item_tfgoal")

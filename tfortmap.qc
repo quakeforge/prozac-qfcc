@@ -192,9 +192,9 @@ void() TF_PlaceItem =
 	self.oldorigin = self.origin;
 	self.movetype = MOVETYPE_TOSS;
 
-	self.velocity_z = -40;
-	self.velocity_x = 0; //-50 + (random() * 100);
-	self.velocity_y = 0; //-50 + (random() * 100);
+	self.velocity.z = -40;
+	self.velocity.x = 0; //-50 + (random() * 100);
+	self.velocity.y = 0; //-50 + (random() * 100);
 	
 	self.nextthink = time + 5.0; 	    // give it 5 seconds
 	self.think = tfgoalitem_dropthink2;  // and then find where it ended up
@@ -683,7 +683,7 @@ entity(float ino) Finditem =
 	local string st;
 
 	// Look for the goal
-	tg = find (NIL, classname, "item_tfgoal");
+	tg = find (nil, classname, "item_tfgoal");
 	while (tg)
 	{
 		if (tg.goal_no == ino)
@@ -697,6 +697,7 @@ entity(float ino) Finditem =
 	st = ftos(ino);
 	RPrint(st);
 	RPrint(".\n");
+	return nil;
 };
 
 //=========================================================================
@@ -707,7 +708,7 @@ entity(float gno) Findgoal =
 	local string st;
 
 	// Look for the goal
-	tg = find (NIL, classname, "info_tfgoal");
+	tg = find (nil, classname, "info_tfgoal");
 	while (tg)
 	{
 		if (tg.goal_no == gno)
@@ -723,6 +724,7 @@ entity(float gno) Findgoal =
 	st = ftos(gno);
 	RPrint(st);
 	RPrint(".\n");
+	return nil;
 };
 
 //=========================================================================
@@ -733,7 +735,7 @@ entity(float gno) Findteamspawn =
 	local string st;
 
 	// Look for the goal
-	tg = find (NIL, classname, "info_player_teamspawn");
+	tg = find (nil, classname, "info_player_teamspawn");
 	while (tg)
 	{
 		if (tg.goal_no == gno)
@@ -747,6 +749,7 @@ entity(float gno) Findteamspawn =
 	st = ftos(gno);
 	RPrint(st);
 	RPrint(".\n");
+	return nil;
 };
 
 //=========================================================================
@@ -1183,7 +1186,7 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 	if (Goal.remove_item_group != 0)
 	{
 	 	// Find all goals
-		te = find (NIL, classname, "item_tfgoal");
+		te = find (nil, classname, "item_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.remove_item_group && te.owner == AP)
@@ -1287,7 +1290,7 @@ void (entity Goal, entity Player) RemoveResults =
 	puquad = FALSE;
 	purad = FALSE;
 	// Make sure we don't remove an effect another Goal is also supplying
-	te = find (NIL, classname, "item_tfgoal");
+	te = find (nil, classname, "item_tfgoal");
 	while (te)
 	{
 		if ((te.owner == Player) && (te != Goal))
@@ -1479,7 +1482,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	if (Goal.if_group_is_active)
 	{
 		// Find all goals in the group
-		te = find (NIL, classname, "info_tfgoal");
+		te = find (nil, classname, "info_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.if_group_is_active)
@@ -1495,7 +1498,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	if (Goal.if_group_is_inactive)
 	{
 		// Find all goals in the group
-		te = find (NIL, classname, "info_tfgoal");
+		te = find (nil, classname, "info_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.if_group_is_inactive)
@@ -1511,7 +1514,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 	if (Goal.if_group_is_removed)
 	{
 		// Find all goals in the group
-		te = find (NIL, classname, "info_tfgoal");
+		te = find (nil, classname, "info_tfgoal");
 		while (te)
 		{
 			if (te.group_no == Goal.if_group_is_removed)
@@ -1568,7 +1571,7 @@ float(entity Goal, entity AP) APMeetsCriteria =
 		if (Goal.has_item_from_group)
 		{
 			// Find all goals
-			te = find (NIL, classname, "item_tfgoal");
+			te = find (nil, classname, "item_tfgoal");
 			while (te && !gotone)
 			{
 				if (te.group_no == Goal.has_item_from_group && te.owner == AP)
@@ -1897,7 +1900,7 @@ void(entity Goal, entity AP) DoGroupWork =
 
 			allset = 1;
 			// Find all goals
-			tg = find (NIL, classname, "info_tfgoal");
+			tg = find (nil, classname, "info_tfgoal");
 			while (tg)
 			{
 				if (tg.group_no == Goal.all_active)
@@ -1938,7 +1941,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.activate_group_no != 0)
 	{
 		// Find all goals
-		tg = find (NIL, classname, "info_tfgoal");
+		tg = find (nil, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.activate_group_no)
@@ -1952,7 +1955,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.inactivate_group_no != 0)
 	{
 		// Find all goals
-		tg = find (NIL, classname, "info_tfgoal");
+		tg = find (nil, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.inactivate_group_no)
@@ -1966,7 +1969,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.remove_group_no != 0)
 	{
 		// Find all goals
-		tg = find (NIL, classname, "info_tfgoal");
+		tg = find (nil, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.remove_group_no)
@@ -1980,7 +1983,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.restore_group_no != 0)
 	{
 		// Find all goals
-		tg = find (NIL, classname, "info_tfgoal");
+		tg = find (nil, classname, "info_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Goal.restore_group_no)
@@ -1994,7 +1997,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.remove_spawngroup != 0)
 	{
 		// Find all goals
-		tg = find (NIL, classname, "info_player_teamspawn");
+		tg = find (nil, classname, "info_player_teamspawn");
 		while (tg)
 		{
 			if (tg.group_no == Goal.remove_spawngroup)
@@ -2010,7 +2013,7 @@ void(entity Goal, entity AP) DoGroupWork =
 	if (Goal.restore_spawngroup != 0)
 	{
 		// Find all goals
-		tg = find (NIL, classname, "info_player_teamspawn");
+		tg = find (nil, classname, "info_player_teamspawn");
 		while (tg)
 		{
 			if (tg.group_no == Goal.restore_spawngroup)
@@ -2052,7 +2055,7 @@ void(entity Item, entity AP) DoItemGroupWork =
 		}
 
 		// Find all goals
-		tg = find (NIL, classname, "item_tfgoal");
+		tg = find (nil, classname, "item_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Item.distance)
@@ -2084,9 +2087,9 @@ void(entity Item, entity AP) DoItemGroupWork =
 			RPrint(" has a .speed specified, but no .attack_finished\n");
 		}
 
-		carrier = NIL;
+		carrier = nil;
 		// Find all goals
-		tg = find (NIL, classname, "item_tfgoal");
+		tg = find (nil, classname, "item_tfgoal");
 		while (tg)
 		{
 			if (tg.group_no == Item.speed)
@@ -2129,7 +2132,7 @@ void(entity Goal, entity AP) DoTriggerWork =
 	// remove targets
 	if (Goal.killtarget)
 	{
-		t = NIL;
+		t = nil;
 		do
 		{
 			t = find(t, targetname, Goal.killtarget);
@@ -2152,7 +2155,7 @@ void(entity Goal, entity AP) DoTriggerWork =
 	// fire targets
 	if (Goal.target)
 	{
-		t = NIL;
+		t = nil;
 		activator = AP;
 		do
 		{
@@ -2298,7 +2301,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 		{
 			if (Goal.goal_no == CTF_FLAG1)
 			{
-				te = find(NIL, classname, "player");
+				te = find(nil, classname, "player");
 				while (te)
 				{
 					if (te.team_no == 2)
@@ -2336,7 +2339,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 			}
 			else if (Goal.goal_no == CTF_FLAG2)
 			{
-				te = find(NIL, classname, "player");
+				te = find(nil, classname, "player");
 				while (te)
 				{
 					if (te.team_no == 1)
@@ -2373,7 +2376,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 			}
 			else if (Goal.goal_no == CTF_DROPOFF1)
 			{
-				te = find(NIL, classname, "player");
+				te = find(nil, classname, "player");
 				while (te)
 				{
 					if (te.team_no == 2)
@@ -2395,7 +2398,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 			}
 			else if (Goal.goal_no == CTF_DROPOFF2)
 			{
-				te = find(NIL, classname, "player");
+				te = find(nil, classname, "player");
 				while (te)
 				{
 					if (te.team_no == 1)
@@ -2418,7 +2421,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 	}
 
 	// Go through all the players and do any results
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		// Centerprinting
@@ -2502,7 +2505,7 @@ void(entity Goal, entity AP, float addb) DoResults =
 		winners = TeamFortress_TeamGetWinner();
 
 		// Stop everyone
-		te = find (NIL, classname, "player");
+		te = find (nil, classname, "player");
 		while (te)
 		{
 			te.takedamage = 0;
@@ -2526,9 +2529,9 @@ void(entity Goal, entity AP, float addb) DoResults =
 	{
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
+		WriteCoord (MSG_MULTICAST, self.origin.x);
+		WriteCoord (MSG_MULTICAST, self.origin.y);
+		WriteCoord (MSG_MULTICAST, self.origin.z);
 		multicast (self.origin, MULTICAST_PHS);
 //		BecomeExplosion();
 	}
@@ -2659,9 +2662,9 @@ void() tfgoal_timer_tick =
 		RPrint("   Checking criteria...");
 	#endif
 
-		if (APMeetsCriteria(self, NIL))
+		if (APMeetsCriteria(self, nil))
 		{
-			DoResults(self, NIL, TRUE);
+			DoResults(self, nil, TRUE);
 		}
 		else
 		{
@@ -2679,7 +2682,7 @@ void() tfgoal_timer_tick =
 // Touch function for the goalitem entity
 void() item_tfgoal_touch =
 {
-    if (infokey(NIL,"ceasefire")=="on") //OfN
+    if (infokey(nil,"ceasefire")=="on") //OfN
 	    return;
     
 	local entity te;
@@ -2712,7 +2715,7 @@ void() item_tfgoal_touch =
 					bprint(PRINT_HIGH, other.netname);
 					bprint(PRINT_HIGH, " ретурнед the блуе flag!\n");
 
-					te = find(NIL, classname, "player");
+					te = find(nil, classname, "player");
 					while (te)
 					{
 						if (te.team_no == 1)
@@ -2749,7 +2752,7 @@ void() item_tfgoal_touch =
 					bprint(PRINT_HIGH, other.netname);
 					bprint(PRINT_HIGH, " ретурнед the ред flag!\n");
 
-					te = find(NIL, classname, "player");
+					te = find(nil, classname, "player");
 					while (te)
 					{
 						if (te.team_no == 2)
@@ -2995,7 +2998,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 
 	// Remove AP Modifications
 	// Go through all the players and do any results
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		if (IsAffectedBy(Item, te, AP))
@@ -3017,7 +3020,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 	if (method == 0)		// Dropped by a dying player
 	{
 		// Do messages
-		te = find(NIL, classname, "player");
+		te = find(nil, classname, "player");
 		while (te)
 		{
 			if (te.team_no == Item.owned_by)
@@ -3052,7 +3055,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 			DelayReturn.think = ReturnItem;
 			DelayReturn.nextthink = time + 0.5;
 
-			Item.owner = NIL;
+			Item.owner = nil;
 			TeamFortress_SetSpeed (AP);
 			AP.effects |= EF_GlowColor (AP);
 /*
@@ -3067,14 +3070,14 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 		else if (Item.goal_activation & TFGI_DROP)
 		{
 			tfgoalitem_drop(Item);
-			Item.owner = NIL;
+			Item.owner = nil;
 			AP.effects |= EF_GlowColor(AP);
 			Item.owner = AP;
 		}
 		else
 		{
 			// Remove the Item
-			Item.owner = NIL;
+			Item.owner = nil;
 			dremove(Item);
 			TeamFortress_SetSpeed(AP);
 			AP.effects |= EF_GlowColor(AP);
@@ -3115,7 +3118,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 			tfgoalitem_checkgoalreturn(Item);
 */
 
-			Item.owner = NIL;
+			Item.owner = nil;
 			TeamFortress_SetSpeed(AP);
 			AP.effects |= EF_GlowColor(AP);
 			return;
@@ -3123,7 +3126,7 @@ void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer =
 
 		// Don't remove it, since it may be given away again later
 		Item.solid = SOLID_NOT;
-		Item.owner = NIL;
+		Item.owner = nil;
 		TeamFortress_SetSpeed(AP);
 		AP.effects |= EF_GlowColor(AP);
 		return;
@@ -3225,9 +3228,9 @@ void(entity Item) tfgoalitem_drop =
 	
 	Item.origin = Item.owner.origin;
 	
-	Item.velocity_z = 400;
-	Item.velocity_x = -50 + (random() * 100);
-	Item.velocity_y = -50 + (random() * 100);
+	Item.velocity.z = 400;
+	Item.velocity.x = -50 + (random() * 100);
+	Item.velocity.y = -50 + (random() * 100);
 	
 	Item.movetype = MOVETYPE_TOSS;
 //CH set solid state
@@ -3268,7 +3271,7 @@ void(entity Item) tfgoalitem_drop =
 		Item.goal_state = TFGS_INACTIVE;
 		Item.touch = item_tfgoal_touch;
 
-		Item.owner = NIL;
+		Item.owner = nil;
 	}
 };
 
@@ -3283,7 +3286,7 @@ void() tfgoalitem_settouchandthink =
 
 	local entity o = self.owner;
 	
-	self.owner = NIL;
+	self.owner = nil;
 
 	TeamFortress_SetSpeed (o);
 	o.effects &= ~EF_ANYGLOW;
@@ -3339,7 +3342,7 @@ void() tfgoalitem_remove =
 		// Do we need to do any CenterPrint2ing?
 		if (self.noise3 || self.noise4)
 		{
-			te = find (NIL, classname, "player");
+			te = find (nil, classname, "player");
 			while (te)
 			{
 				if (te.team_no == self.owned_by)
@@ -3415,7 +3418,7 @@ void(entity Item) tfgoalitem_checkgoalreturn =
 		{
 			te = Findgoal(Item.impulse);
 			if (te)
-				AttemptToActivate(te, NIL, Item);
+				AttemptToActivate(te, nil, Item);
 		}
 	}
 };
@@ -3641,7 +3644,7 @@ void() CTF_FlagCheck =
 	local float flagcount, pos;
 
 	flagcount = 0;
-	te = find(NIL, classname, "item_tfgoal");
+	te = find(nil, classname, "item_tfgoal");
 	while (te)
 	{
 		if (te.goal_no == CTF_FLAG1)

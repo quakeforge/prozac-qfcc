@@ -562,11 +562,11 @@ void(vector where, float set) multicast 	= #82;  // sends the temp message
 													// to a set of clients,
 													// possibly in PVS or PHS
 entity (entity ent) testentitypos = #92;
-integer (entity ent, vector mins, vector maxs, vector point) hullpointcontents = #93;
-vector (integer hull, integer max) getboxbounds = #94;
-integer () getboxhull = #95;
-void (integer hull) freeboxhull = #96;
-void (integer hull, vector right, vector forward, vector up,
+int (entity ent, vector mins, vector maxs, vector point) hullpointcontents = #93;
+vector (int hull, int max) getboxbounds = #94;
+int () getboxhull = #95;
+void (int hull) freeboxhull = #96;
+void (int hull, vector right, vector forward, vector up,
 	  vector mins, vector maxs) rotate_bbox = #97;
 void (vector start, vector mins, vector maxs, vector end, float type,
 	  entity passent) checkmove = #98;				// Wrapper around SV_Move.
@@ -582,19 +582,19 @@ float () cfquota = #108;
 string (...) sprintf = #109;
 
 string (float f) ftos = #26;
-integer (float f) ftoi = #110;
-float (integer i) itof = #110;
-string (integer i) itos = #112;
+int (float f) ftoi = #110;
+float (int i) itof = #110;
+string (int i) itos = #112;
 float (string s) stof = #81;
-integer (string s) stoi = #113;
+int (string s) stoi = #113;
 vector (string s) stov = #114;
 string (vector v) vtos = #27;
 
-integer () Cmd_Argc = #0;
-string (integer i) Cmd_Argv = #0;
-string (integer i) Cmd_Args = #0;
-integer (string cmd, void() func) Cmd_AddCommand = #0;
-integer (string cmd, void() func, integer noredir) SV_AddUserCommand = #0;
+int () Cmd_Argc = #0;
+string (int i) Cmd_Argv = #0;
+string (int i) Cmd_Args = #0;
+int (string cmd, void() func) Cmd_AddCommand = #0;
+int (string cmd, void() func, int noredir) SV_AddUserCommand = #0;
 
 
 //============================================================================
@@ -750,7 +750,7 @@ string (string s) quotename;
 .float  menu_count;			// keeps track of display times for menus
 .float  menu_displaytime;		// keep track of how many times this menu is refreshed
 
-.integer rotated_bbox;
+.int rotated_bbox;
 				   
 
 /*==================================================*/

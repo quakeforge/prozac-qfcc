@@ -207,13 +207,13 @@ void() EMPExplode =
 	}
 
 	deathmsg = DMSG_GREN_EMP_AMMO;
-	T_RadiusDamage (self, self.enemy, expsize, NIL);
+	T_RadiusDamage (self, self.enemy, expsize, nil);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	// Respawn
@@ -269,9 +269,9 @@ void() EMPGrenadeExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_TAREXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 
 	// Find all ammo in the area
@@ -285,7 +285,7 @@ void() EMPGrenadeExplode =
 		te = te.chain2;
 	}
 
-	te.chain2 = NIL;
+	te.chain2 = nil;
 	te = head;
 
 	while (te)
@@ -360,9 +360,9 @@ void() EMPGrenadeExplode =
 
 				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 				WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-				WriteCoord (MSG_MULTICAST, te.origin_x);
-				WriteCoord (MSG_MULTICAST, te.origin_y);
-				WriteCoord (MSG_MULTICAST, te.origin_z);
+				WriteCoord (MSG_MULTICAST, te.origin.x);
+				WriteCoord (MSG_MULTICAST, te.origin.y);
+				WriteCoord (MSG_MULTICAST, te.origin.z);
 				multicast (te.origin, MULTICAST_PHS);
 			}
 		}
@@ -458,9 +458,9 @@ void() EMPGrenadeExplode =
 				
         				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 					WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-					WriteCoord (MSG_MULTICAST, te.origin_x);
-					WriteCoord (MSG_MULTICAST, te.origin_y);
-					WriteCoord (MSG_MULTICAST, te.origin_z);
+					WriteCoord (MSG_MULTICAST, te.origin.x);
+					WriteCoord (MSG_MULTICAST, te.origin.y);
+					WriteCoord (MSG_MULTICAST, te.origin.z);
 					multicast (te.origin, MULTICAST_PHS);
 				}
 				else
@@ -476,9 +476,9 @@ void() EMPGrenadeExplode =
 
 				WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 				WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-				WriteCoord (MSG_MULTICAST, te.origin_x);
-				WriteCoord (MSG_MULTICAST, te.origin_y);
-				WriteCoord (MSG_MULTICAST, te.origin_z);
+				WriteCoord (MSG_MULTICAST, te.origin.x);
+				WriteCoord (MSG_MULTICAST, te.origin.y);
+				WriteCoord (MSG_MULTICAST, te.origin.z);
 				multicast (te.origin, MULTICAST_PHS);
 			}
 		}
@@ -579,13 +579,13 @@ void() TeamFortress_EngineerBuild =
 		TeamFortress_SetSpeed(self);
 
 		// Remove the timer
-		te = find(NIL, netname, "build_timer");
+		te = find(nil, netname, "build_timer");
 		while (te)
 		{
 			if (te.owner == self)
 			{
 				dremove(te);
-				te = NIL;
+				te = nil;
 			}
 			else
 			{
@@ -600,7 +600,7 @@ void() TeamFortress_EngineerBuild =
 
 float(entity obj, entity builder) CheckArea =
 {
-	local integer pos;
+	local int pos;
 
 	// Check the hull
 	pos = entpointcontents(obj);
@@ -629,7 +629,7 @@ void(float objtobuild) TeamFortress_Build =
 
 	// get an origin
 	makevectors(self.v_angle);
-	v_forward_z = 0;
+	v_forward.z = 0;
 	v_forward = normalize(v_forward);
 
 	obj.origin = self.origin + v_forward * 35;
@@ -802,7 +802,7 @@ void(float objtobuild) TeamFortress_Build =
 	local vector startpos, endpos;
 
 	startpos = obj.origin;
-	startpos_z = self.absmin_z - obj.mins_z + 60;
+	startpos.z = self.absmin.z - obj.mins.z + 60;
 
 	// build right up against the wall if there's a wall there
 	checkmove(startpos, obj.mins, obj.maxs, startpos + v_forward*30, MOVE_NORMAL, obj);
@@ -817,7 +817,7 @@ void(float objtobuild) TeamFortress_Build =
 	startpos = trace_endpos;
 
 	endpos = obj.origin;
-	endpos_z = self.absmin_z - obj.mins_z - 40;
+	endpos.z = self.absmin.z - obj.mins.z - 40;
 
 	checkmove(startpos, obj.mins, obj.maxs, endpos, MOVE_NORMAL, obj);
 
@@ -840,7 +840,7 @@ void(float objtobuild) TeamFortress_Build =
 	}
 
 	if (trace_ent.classname == "force_field") // make it collide with ff
-		trace_endpos_z--;
+		trace_endpos.z--;
 
 	obj.origin = trace_endpos;
 	obj.flags |= FL_ONGROUND;
@@ -865,7 +865,7 @@ void(float objtobuild) TeamFortress_Build =
         obj.think = TeamFortress_FinishedBuilding;
         obj.colormap = self.colormap;
         obj.weapon = objtobuild;
-        obj.angles_y = anglemod(self.angles_y + 180);
+        obj.angles.y = anglemod(self.angles.y + 180);
 
         obj.solid = SOLID_BBOX;
         setmodel (obj, obj.mdl);
@@ -947,7 +947,7 @@ void() TeamFortress_FinishedBuilding =
 
 	oldself = self;
 	self = self.owner;
-	oldself.owner = NIL;
+	oldself.owner = nil;
 	oldself.real_owner = self;
 
 	self.is_building = 0;
@@ -994,7 +994,7 @@ void() TeamFortress_FinishedBuilding =
 		oldself.real_owner = self;			// The Engineer owns this item
 		oldself.colormap = self.colormap;	// Set the Color
 		oldself.takedamage = DAMAGE_AIM;
-		oldself.owner = NIL;
+		oldself.owner = nil;
 
 		// Put some ammo in the Dispenser
 		oldself.ammo_shells = ceil(self.ammo_shells * 0.25);
@@ -1069,13 +1069,13 @@ void() TeamFortress_FinishedBuilding =
 		// Rotate Details
 		newmis.yaw_speed = 10;  //Turn rate
 		newmis.heat = 0;	// Turn Right
-		newmis.angles_x = 0;
-		newmis.angles_y = ceil(oldself.angles_y); //CH remove decimal
-		newmis.angles_z = 0;
+		newmis.angles.x = 0;
+		newmis.angles.y = ceil(oldself.angles.y); //CH remove decimal
+		newmis.angles.z = 0;
 
-		newmis.angles_y = ((ceil(newmis.angles_y / 10)) * 10); //CH set last int to 0
-		newmis.waitmin = anglemod(newmis.angles_y - 50);
-		newmis.waitmax = anglemod(newmis.angles_y + 50);
+		newmis.angles.y = ((ceil(newmis.angles.y / 10)) * 10); //CH set last int to 0
+		newmis.waitmin = anglemod(newmis.angles.y - 50);
+		newmis.waitmax = anglemod(newmis.angles.y + 50);
 
 		// Give the Gun some ammo
 		newmis.ammo_shells = 75; //WK
@@ -1125,8 +1125,8 @@ void() TeamFortress_FinishedBuilding =
         oldself.no_grenades_2 = 0; // cloak touch delay reset
 
 		oldself.touch = Tesla_Touch;
-		oldself.enemy = NIL;
-		oldself.oldenemy = NIL; //CH for sbar
+		oldself.enemy = nil;
+		oldself.oldenemy = nil; //CH for sbar
 
 		//Set all initial tesla values here
 		oldself.maxammo_shells = 0; //Voltage == 0
@@ -1196,7 +1196,7 @@ void() TeamFortress_FinishedBuilding =
 		oldself.real_owner = self;			// The Engineer owns this item
 		oldself.colormap = self.colormap;	// Set the Color
 		oldself.takedamage = DAMAGE_AIM;
-		oldself.owner = NIL;
+		oldself.owner = nil;
 		oldself.movetype = MOVETYPE_TOSS;
 
 		oldself.solid = SOLID_BBOX;
@@ -1241,7 +1241,7 @@ void() TeamFortress_FinishedBuilding =
 		oldself.real_owner = self;			// The Engineer owns this item
 		oldself.colormap = self.colormap;	// Set the Color
 		oldself.takedamage = DAMAGE_AIM;
-		oldself.owner = NIL;
+		oldself.owner = nil;
 		oldself.movetype = MOVETYPE_TOSS;
 
 		oldself.solid = SOLID_BBOX;
@@ -1300,13 +1300,13 @@ void() T_Dispenser =
 
 void() Dispenser_Explode =
 {    
-    T_RadiusDamage(self.demon_one, self.demon_one, self.has_holo, NIL);
+    T_RadiusDamage(self.demon_one, self.demon_one, self.has_holo, nil);
 
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.demon_one.origin_x);
-	WriteCoord (MSG_MULTICAST, self.demon_one.origin_y);
-	WriteCoord (MSG_MULTICAST, self.demon_one.origin_z);
+	WriteCoord (MSG_MULTICAST, self.demon_one.origin.x);
+	WriteCoord (MSG_MULTICAST, self.demon_one.origin.y);
+	WriteCoord (MSG_MULTICAST, self.demon_one.origin.z);
 	multicast (self.demon_one.origin, MULTICAST_PHS);
     dremove(self.demon_one);
 
@@ -1339,7 +1339,7 @@ void() Dispenser_Die =
     newmis.demon_one = self;
     newmis.nextthink = time + 0.1;
     newmis.think = Dispenser_Explode;
-    /*T_RadiusDamage(self, self, damg, NIL); // OfN - Fixme, stack overflow??*/
+    /*T_RadiusDamage(self, self, damg, nil); // OfN - Fixme, stack overflow??*/
 
 
 	sprint(self.real_owner, PRINT_HIGH, "Your dispenser was destroyed.\n");
@@ -1676,7 +1676,7 @@ void() CheckDistance =
 		CenterPrint(self.owner, "\n");
 		self.owner.menu_count = MENU_REFRESH_RATE;
 		self.owner.current_menu = MENU_DEFAULT;
-		self.owner.building = NIL;
+		self.owner.building = nil;
 		dremove(self);
 		return;
 	}

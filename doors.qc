@@ -298,9 +298,9 @@ void() door_touch =
 
 	if (DoorShouldOpen())
 	{
-		self.touch = NIL;
+		self.touch = nil;
 		if (self.enemy)
-			self.enemy.touch = NIL;	// get paired door
+			self.enemy.touch = nil;	// get paired door
 		door_use ();
 	}
 };
@@ -351,17 +351,17 @@ entity(vector fmins, vector fmaxs) spawn_field =
 
 float (entity e1, entity e2) EntitiesTouching =
 {
-	if (e1.mins_x > e2.maxs_x)
+	if (e1.mins.x > e2.maxs.x)
 		return FALSE;
-	if (e1.mins_y > e2.maxs_y)
+	if (e1.mins.y > e2.maxs.y)
 		return FALSE;
-	if (e1.mins_z > e2.maxs_z)
+	if (e1.mins.z > e2.maxs.z)
 		return FALSE;
-	if (e1.maxs_x < e2.mins_x)
+	if (e1.maxs.x < e2.mins.x)
 		return FALSE;
-	if (e1.maxs_y < e2.mins_y)
+	if (e1.maxs.y < e2.mins.y)
 		return FALSE;
-	if (e1.maxs_z < e2.mins_z)
+	if (e1.maxs.z < e2.mins.z)
 		return FALSE;
 	return TRUE;
 };
@@ -434,18 +434,18 @@ void() LinkDoors =
 			self.enemy = t;
 			self = t;
 
-			if (t.mins_x < cmins_x)
-				cmins_x = t.mins_x;
-			if (t.mins_y < cmins_y)
-				cmins_y = t.mins_y;
-			if (t.mins_z < cmins_z)
-				cmins_z = t.mins_z;
-			if (t.maxs_x > cmaxs_x)
-				cmaxs_x = t.maxs_x;
-			if (t.maxs_y > cmaxs_y)
-				cmaxs_y = t.maxs_y;
-			if (t.maxs_z > cmaxs_z)
-				cmaxs_z = t.maxs_z;
+			if (t.mins.x < cmins.x)
+				cmins.x = t.mins.x;
+			if (t.mins.y < cmins.y)
+				cmins.y = t.mins.y;
+			if (t.mins.z < cmins.z)
+				cmins.z = t.mins.z;
+			if (t.maxs.x > cmaxs.x)
+				cmaxs.x = t.maxs.x;
+			if (t.maxs.y > cmaxs.y)
+				cmaxs.y = t.maxs.y;
+			if (t.maxs.z > cmaxs.z)
+				cmaxs.z = t.maxs.z;
 		}
 	} while (1 );
 
@@ -672,7 +672,7 @@ void () fd_secret_use =
 	
 	if (!(self.spawnflags & SECRET_NO_SHOOT))
 	{
-		self.th_pain = NIL;
+		self.th_pain = nil;
 		self.takedamage = DAMAGE_NO;
 	}
 	self.velocity = '0 0 0';

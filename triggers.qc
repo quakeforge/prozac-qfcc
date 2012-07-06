@@ -64,7 +64,7 @@ void() multi_trigger =
 	else
 	{	// we can't just remove (self) here, because this is a touch function
 		// called while C code is looping through area links...
-		self.touch = NIL;
+		self.touch = nil;
 		self.nextthink = time + 0.1;
 		self.think = SUB_Remove;
 	}
@@ -357,9 +357,9 @@ void(vector org) spawn_tfog =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_TELEPORT);
-	WriteCoord (MSG_MULTICAST, org_x);
-	WriteCoord (MSG_MULTICAST, org_y);
-	WriteCoord (MSG_MULTICAST, org_z);
+	WriteCoord (MSG_MULTICAST, org.x);
+	WriteCoord (MSG_MULTICAST, org.y);
+	WriteCoord (MSG_MULTICAST, org.z);
 	multicast (org, MULTICAST_PHS);
 };
 
@@ -461,7 +461,7 @@ void() teleport_touch =
 // put a tfog where the player was
 	spawn_tfog (other.origin);
 
-	t = find (NIL, targetname, self.target);
+	t = find (nil, targetname, self.target);
 	if (!t)
 		objerror ("couldn't find target");
 		
@@ -476,7 +476,7 @@ void() teleport_touch =
 	if (!other.health)
 	{
 		other.origin = t.origin;
-		other.velocity = (v_forward * other.velocity_x) + (v_forward * other.velocity_y);
+		other.velocity = (v_forward * other.velocity.x) + (v_forward * other.velocity.y);
 		return;
 	}
 
@@ -635,7 +635,7 @@ void() trigger_onlyregistered_touch =
 	self.attack_finished = time + 2;
 	if (cvar("registered"))
 	{
-		local integer rem = self.targetname != self.killtarget;
+		local int rem = self.targetname != self.killtarget;
 		self.message = "";
 		SUB_UseTargets ();
 		if (rem)
@@ -788,15 +788,15 @@ void() trigger_monsterjump_touch =
 		return;
 
 // set XY even if not on ground, so the jump will clear lips
-	other.velocity_x = self.movedir_x * self.speed;
-	other.velocity_y = self.movedir_y * self.speed;
+	other.velocity.x = self.movedir.x * self.speed;
+	other.velocity.y = self.movedir.y * self.speed;
 	
 	if ( !(other.flags & FL_ONGROUND) )
 		return;
 	
 	other.flags &= ~FL_ONGROUND;
 
-	other.velocity_z = self.height;
+	other.velocity.z = self.height;
 };
 
 /*QUAKED trigger_monsterjump (.5 .5 .5) ?

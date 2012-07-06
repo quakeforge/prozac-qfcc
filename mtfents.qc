@@ -363,15 +363,15 @@ void() ab_think =
     // Generate the explosion entity: //
     newmis=spawn();
     setmodel (newmis, "progs/s_explod.spr");
-    newmis.origin_z = self.origin_z;
-    newmis.origin_x = self.origin_x - 300 + random()*600;
-    newmis.origin_y = self.origin_y - 300 + random()*600;
+    newmis.origin.z = self.origin.z;
+    newmis.origin.x = self.origin.x - 300 + random()*600;
+    newmis.origin.y = self.origin.y - 300 + random()*600;
     setorigin(newmis,newmis.origin);
     newmis.solid = SOLID_NOT; // NEEDED?
     newmis.nextthink = time;
     newmis.think = ab_exp1;
     newmis.owner = self;        
-    newmis.touch = NIL;
+    newmis.touch = nil;
 
     newmis.movetype = MOVETYPE_FLY;
     newmis.velocity = '0 0 300';
@@ -418,11 +418,11 @@ void() bobbingwater_think =
       self.count = self.count - 360;
    }
 
-   ang_x = self.count;
-   ang_y = 0;
-   ang_z = 0;
+   ang.x = self.count;
+   ang.y = 0;
+   ang.z = 0;
    makevectors( ang );
-   self.origin_z = v_forward_z * self.cnt;
+   self.origin.z = v_forward.z * self.cnt;
    setorigin( self, self.origin );
    self.ltime = time;
    self.nextthink = time + 0.02;
@@ -439,7 +439,7 @@ void() func_bobbingwater =
    self.think = bobbingwater_think;
 
    self.count = 0;
-   self.cnt = self.size_z / 2;
+   self.cnt = self.size.z / 2;
    
    if ( !self.speed )
    {

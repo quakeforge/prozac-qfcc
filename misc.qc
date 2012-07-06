@@ -240,9 +240,9 @@ void() fire_fly =
 	newmis.solid = SOLID_TRIGGER;
 	newmis.movetype = MOVETYPE_TOSS;
 	newmis.velocity = '0 0 1000';
-	newmis.velocity_x = (random() * 100) - 50;
-	newmis.velocity_y = (random() * 100) - 50;
-	newmis.velocity_z = self.speed + (random() * 200);
+	newmis.velocity.x = (random() * 100) - 50;
+	newmis.velocity.y = (random() * 100) - 50;
+	newmis.velocity.z = self.speed + (random() * 200);
 	newmis.classname = "fireball";
 	setmodel (newmis, "progs/lavaball.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');
@@ -271,13 +271,13 @@ void() barrel_explode =
 	self.takedamage = DAMAGE_NO;
 	self.classname = "explo_box";
 	// did say self.owner
-	T_RadiusDamage (self, self, 160, NIL);
+	T_RadiusDamage (self, self, 160, nil);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z+32);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z+32);
 	multicast (self.origin, MULTICAST_PHS);
 	remove (self);
 };
@@ -308,10 +308,10 @@ void() misc_explobox =
 	self.th_die = barrel_explode;
 	self.takedamage = DAMAGE_AIM;
 
-	self.origin_z = self.origin_z + 2;
-	oldz = self.origin_z;
+	self.origin.z = self.origin.z + 2;
+	oldz = self.origin.z;
 	droptofloor();
-	if (oldz - self.origin_z > 250)
+	if (oldz - self.origin.z > 250)
 	{
 		RPrint ("item fell out of level at ");
 		RPrint (vtos(self.origin));
@@ -347,10 +347,10 @@ void() misc_explobox2 =
 	self.th_die = barrel_explode;
 	self.takedamage = DAMAGE_AIM;
 
-	self.origin_z = self.origin_z + 2;
-	oldz = self.origin_z;
+	self.origin.z = self.origin.z + 2;
+	oldz = self.origin.z;
 	droptofloor();
-	if (oldz - self.origin_z > 250)
+	if (oldz - self.origin.z > 250)
 	{
 		RPrint ("item fell out of level at ");
 		RPrint (vtos(self.origin));
@@ -393,9 +393,9 @@ void() Laser_Touch =
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 5);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 	}
 
@@ -488,13 +488,13 @@ void(vector org, vector vec) TFFireGrenade =
 		
 	// set newmis speed	
 	makevectors (self.v_angle);
-	if (self.v_angle_x)
+	if (self.v_angle.x)
 		newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
 	else
 	{
 		newmis.velocity = aim(self, 10000);
 		newmis.velocity = vec * 600;
-		newmis.velocity_z = 100; //was 200
+		newmis.velocity.z = 100; //was 200
 	}
 	newmis.avelocity = '300 300 300';
 	newmis.angles = vectoangles(newmis.velocity);
@@ -712,7 +712,7 @@ void() make_bubbles =
 	self.think = make_bubbles;
 };
 
-integer () bubble_split =
+int () bubble_split =
 {
 	newmis = spawn();
 	setmodel (newmis, "progs/s_bubble.spr");
@@ -759,9 +759,9 @@ local float		rnd1, rnd2, rnd3;
 		return;
 	}
 
-	rnd1 = self.velocity_x + (-10 + (random() * 20));
-	rnd2 = self.velocity_y + (-10 + (random() * 20));
-	rnd3 = self.velocity_z + 10 + random() * 10;
+	rnd1 = self.velocity.x + (-10 + (random() * 20));
+	rnd2 = self.velocity.y + (-10 + (random() * 20));
+	rnd3 = self.velocity.z + 10 + random() * 10;
 
 	if (rnd1 > 10)
 		rnd1 = 5;
@@ -778,9 +778,9 @@ local float		rnd1, rnd2, rnd3;
 	if (rnd3 > 30)
 		rnd3 = 25;
 	
-	self.velocity_x = rnd1;
-	self.velocity_y = rnd2;
-	self.velocity_z = rnd3;
+	self.velocity.x = rnd1;
+	self.velocity.y = rnd2;
+	self.velocity.z = rnd3;
 		
 	self.nextthink = time + 0.5;
 	self.think = bubble_bob;

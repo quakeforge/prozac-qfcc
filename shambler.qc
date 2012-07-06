@@ -206,7 +206,7 @@ void() sham_swingl6 =[      $swingl6,      sham_swingl7   ] {ai_charge(18);};
 void() sham_swingl7 =[      $swingl7,      sham_swingl8   ] {ai_charge(10); ShamClaw(250);
 if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 {
-self.enemy = NIL;
+self.enemy = nil;
 // FIXME: look all around for other targets
 	/*if (self.oldenemy.health > 0)
 	{
@@ -241,7 +241,7 @@ void() sham_swingr6 =[      $swingr6,      sham_swingr7   ] {ai_charge(12);};
 void() sham_swingr7 =[      $swingr7,      sham_swingr8   ] {ai_charge(12); ShamClaw(-250);
 if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 {
-self.enemy = NIL;
+self.enemy = nil;
 // FIXME: look all around for other targets
 	/*if (self.oldenemy.health > 0)
 	{
@@ -306,12 +306,12 @@ void() CastLightning =
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
         WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
         WriteEntity (MSG_MULTICAST, self);
-        WriteCoord (MSG_MULTICAST, org_x);
-        WriteCoord (MSG_MULTICAST, org_y);
-        WriteCoord (MSG_MULTICAST, org_z);
-        WriteCoord (MSG_MULTICAST, trace_endpos_x);
-        WriteCoord (MSG_MULTICAST, trace_endpos_y);
-        WriteCoord (MSG_MULTICAST, trace_endpos_z);
+        WriteCoord (MSG_MULTICAST, org.x);
+        WriteCoord (MSG_MULTICAST, org.y);
+        WriteCoord (MSG_MULTICAST, org.z);
+        WriteCoord (MSG_MULTICAST, trace_endpos.x);
+        WriteCoord (MSG_MULTICAST, trace_endpos.y);
+        WriteCoord (MSG_MULTICAST, trace_endpos.z);
         multicast (org, MULTICAST_PHS);
 
        
@@ -332,12 +332,12 @@ void() CastLightning =
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
 	WriteEntity (MSG_MULTICAST, self);
-	WriteCoord (MSG_MULTICAST, org_x);
-	WriteCoord (MSG_MULTICAST, org_y);
-	WriteCoord (MSG_MULTICAST, org_z);
-	WriteCoord (MSG_MULTICAST, trace_endpos_x);
-	WriteCoord (MSG_MULTICAST, trace_endpos_y);
-	WriteCoord (MSG_MULTICAST, trace_endpos_z);
+	WriteCoord (MSG_MULTICAST, org.x);
+	WriteCoord (MSG_MULTICAST, org.y);
+	WriteCoord (MSG_MULTICAST, org.z);
+	WriteCoord (MSG_MULTICAST, trace_endpos.x);
+	WriteCoord (MSG_MULTICAST, trace_endpos.y);
+	WriteCoord (MSG_MULTICAST, trace_endpos.z);
 
 	ldmg = self.has_tesla * 2;
 	if (self.has_tesla > 5)
@@ -467,7 +467,7 @@ void() custom_shambler_die =
 		sprint(self.real_owner,PRINT_HIGH,"Your shambler is dead.\n");
 		self.real_owner.job &= ~JOB_DEMON_OUT;
 		self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
-        self.real_owner.demon_one = NIL;
+        self.real_owner.demon_one = nil;
 	}
     
     // check for gib
@@ -487,7 +487,7 @@ void() custom_shambler_die =
 
     sound (self, CHAN_VOICE, "shambler/sdeath.wav", 1, ATTN_MONSTERDIE);
     self.classname = "monster_corpse";
-    self.think=NIL;
+    self.think=nil;
     sham_death1();
 };
 
@@ -535,7 +535,7 @@ float () CheckShamFireball =
 
 	dist = self.enemy.origin - self.origin;
 	
-	if (random() < (0.4 - (dist_z / 1000)))
+	if (random() < (0.4 - (dist.z / 1000)))
 	{
 		return FALSE;
 	}
@@ -563,10 +563,10 @@ float () CheckShamLightning =
 	if (!visible2(self.enemy, self)) //If can see
 		return FALSE;
 	dist = self.enemy.origin - self.origin;
-	dist_z = 0; //CH only need x,y
+	dist.z = 0; //CH only need x,y
 	d2 = vlen(dist);
 	dist = self.enemy.origin - self.origin;
-	dist_x = dist_y = 0; //CH only need z
+	dist.x = dist.y = 0; //CH only need z
 	d = vlen(dist);
 	if (self.has_tesla > 6 && random() < 0.1)
 		return TRUE;
@@ -608,7 +608,7 @@ float() CheckShamConvert =
 	self.enemy.martyr_enemy = self.enemy.real_owner;
 	self.enemy.real_owner = self.real_owner;
 	self.enemy.is_malfunctioning = TRUE;
-	self.enemy.enemy = NIL;
+	self.enemy.enemy = nil;
 	self.enemy.think = self.enemy.th_walk;
 	self.enemy.nextthink = time + 1;
 	self.enemy.goalentity = self.enemy;
@@ -618,21 +618,22 @@ float() CheckShamConvert =
 	if (self.enemy.martyr_enemy.demon_one == self.enemy)
 	{
 	    self.enemy.martyr_enemy.job &= ~JOB_DEMON_OUT;
-	    self.enemy.martyr_enemy.demon_one = NIL;
+	    self.enemy.martyr_enemy.demon_one = nil;
 	}
 	
-	self.enemy = NIL;
+	self.enemy = nil;
 	if (self.movetarget)
 	    self.think = self.th_walk;
 	else
 	    self.think = self.th_stand;
+	return TRUE;
 };
 
 float()	ShamCheckAttack =
 {
 	if (CheckShamConvert())
 	{
-		self.enemy = NIL;
+		self.enemy = nil;
 		return FALSE;
 	}
 
@@ -739,7 +740,7 @@ void(float side) ShamFireball =
 	else
 		org = self.origin + (v_forward * 40) - (v_right * 20);
 
-	org_z += 32;
+	org.z += 32;
 #ifdef SHAMBLER_DEBUG
 	sprint(self.real_owner, PRINT_HIGH, "org is ");
 	sprint(self.real_owner, PRINT_HIGH, vtos(org));
@@ -748,9 +749,9 @@ void(float side) ShamFireball =
 
 //CH demons are not good at throwing
 //but shamblers are
-	//dir_z = 0 - dir_z; //Random Z addage
-	//dir_x = dir_x + (random() - 0.5)*0.20 / self.has_tesla; //Random X addage
-	//dir_y = dir_y + (random() - 0.5)*0.20 / self.has_tesla; //Random Y addage
+	//dir.z = 0 - dir.z; //Random Z addage
+	//dir.x = dir.x + (random() - 0.5)*0.20 / self.has_tesla; //Random X addage
+	//dir.y = dir.y + (random() - 0.5)*0.20 / self.has_tesla; //Random Y addage
 	
 	newmis = spawn ();
 	newmis.owner = self;
@@ -886,9 +887,9 @@ void() shambler_fire_touch =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };

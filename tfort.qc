@@ -616,7 +616,7 @@ void() TeamFortress_Inventory =
 	}
 
 	// GoalItems
-	tg = find (NIL, classname, "item_tfgoal");
+	tg = find (nil, classname, "item_tfgoal");
 	while (tg) {
 		if (tg.owner == self) {
 			sprint(self, PRINT_HIGH, tg.netname);
@@ -673,7 +673,7 @@ void() TeamFortress_Inventory =
     }
 
     if (self.has_sentry) {
-        tg = find(NIL, classname, "building_sentrygun");
+        tg = find(nil, classname, "building_sentrygun");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -689,7 +689,7 @@ void() TeamFortress_Inventory =
     }
 
     if (self.has_tesla) {
-        tg = find(NIL, classname, "building_tesla");
+        tg = find(nil, classname, "building_tesla");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -705,7 +705,7 @@ void() TeamFortress_Inventory =
     }
 
 	if (self.has_dispenser) {
-        tg = find(NIL, classname, "building_dispenser");
+        tg = find(nil, classname, "building_dispenser");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -722,7 +722,7 @@ void() TeamFortress_Inventory =
     }
 
 	if (self.has_sensor) {
-        tg = find(NIL, classname, "building_sensor");
+        tg = find(nil, classname, "building_sensor");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -738,7 +738,7 @@ void() TeamFortress_Inventory =
     }
 
 	if (self.has_camera) {
-		tg = find(NIL, classname, "building_camera");
+		tg = find(nil, classname, "building_camera");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -754,7 +754,7 @@ void() TeamFortress_Inventory =
     }
 
 	if (self.has_teleporter > 0) {
-        tg = find(NIL, classname, "building_teleporter");
+        tg = find(nil, classname, "building_teleporter");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -770,7 +770,7 @@ void() TeamFortress_Inventory =
     }
 
     if (self.has_fieldgen > 0) {
-        tg = find(NIL, classname, "building_fieldgen");
+        tg = find(nil, classname, "building_fieldgen");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -792,7 +792,7 @@ void() TeamFortress_Inventory =
         sprint (self, PRINT_HIGH, ac);
         sprint (self, PRINT_HIGH, " summoned: ");
 
-		tg = find(NIL, classname, "monster_demon1");
+		tg = find(nil, classname, "monster_demon1");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -803,7 +803,7 @@ void() TeamFortress_Inventory =
 			tg = find(tg, classname, "monster_demon1");
 		}
 		
-		tg = find(NIL, classname, "monster_army");
+		tg = find(nil, classname, "monster_army");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -814,7 +814,7 @@ void() TeamFortress_Inventory =
 			tg = find(tg, classname, "monster_army");
 		}
 
-		tg = find(NIL, classname, "monster_shambler");
+		tg = find(nil, classname, "monster_shambler");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -825,7 +825,7 @@ void() TeamFortress_Inventory =
 			tg = find(tg, classname, "monster_shambler");
 		}
 
-		tg = find(NIL, classname, "monster_wizard");
+		tg = find(nil, classname, "monster_wizard");
 		while (tg) {
 			if (tg.real_owner == self) {
 				ac = ftos(ceil(tg.health));
@@ -1209,12 +1209,12 @@ void() TeamFortress_GrenadePrimed =
 		// if user is dead, throw grenade directly up
 		newmis.velocity = '0 0 200';
 	} else {
-		if (user.v_angle_x) {
+		if (user.v_angle.x) {
 			newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
 		} else {
 			newmis.velocity = aim(user, 10000);
 			newmis.velocity = newmis.velocity * 600;
-			newmis.velocity_z = 200;
+			newmis.velocity.z = 200;
 		}
 	}
 
@@ -1244,7 +1244,7 @@ void() TeamFortress_GrenadePrimed =
 		newmis.avelocity = '300 300 300';
 		setmodel (newmis, "progs/hgren2.mdl");
 	} else if (self.weapon == GR_TYPE_CALTROP) {
-		newmis.touch = NIL;
+		newmis.touch = nil;
 		newmis.think = CaltropGrenadeExplode;
 		newmis.skin = 0;
 		newmis.avelocity = '0 0 0';
@@ -1289,7 +1289,7 @@ void() TeamFortress_GrenadePrimed =
 		newmis.velocity = newmis.velocity * 2000;
         
 //		newmis.velocity = newmis.velocity * 4;
-//		newmis.velocity_z = 0;
+//		newmis.velocity.z = 0;
 		setmodel (newmis, "progs/flarefly.mdl");
         newmis.skin=0;
         newmis.has_holo=0; //flag turned on when explodes
@@ -1483,7 +1483,7 @@ void(entity p) TeamFortress_SetSpeed =
 
 		// 2nd, see if any GoalItems are slowing them down
 		tf = 0;
-		te = find (NIL, classname, "item_tfgoal");
+		te = find (nil, classname, "item_tfgoal");
 		while ((te) && (tf == 0)) {
 			if (te.owner == p) {
 				if (te.goal_activation & TFGI_SLOW) {
@@ -1827,7 +1827,7 @@ void() TeamFortress_SetEquipment =
 	self.items |= kept_items;
 
 	// Start the Cheat-Checking Cyclic Event if CheatChecking Toggleflag is on
-	if (!stof(infokey(NIL,"nospeed")) && (toggleflags&TFLAG_CHEATCHECK)) {
+	if (!stof(infokey(nil,"nospeed")) && (toggleflags&TFLAG_CHEATCHECK)) {
 		te = spawn(); //Cyto
 		te.nextthink = time + 2;
 		te.think = TeamFortress_CheckForSpeed;
@@ -2466,6 +2466,7 @@ string(float pc) TeamFortress_GetClassName =
 		return "Random Playerclass";
 	else if ( pc == PC_CUSTOM )
 		return "Custom Playerclass";
+	return "unknown";
 };
 
 //=========================================================================
@@ -2560,7 +2561,7 @@ void() TeamFortress_RemoveTimers =
 	self.leg_damage = 0;
 	self.is_undercover = 0;
 	self.is_building = 0;
-	self.building = NIL;
+	self.building = nil;
 
 	//CH
 	stuffcmd (self, "throwgren\n"); //Throw any grenades
@@ -2574,7 +2575,7 @@ void() TeamFortress_RemoveTimers =
 	}
 
 	// Remove all the timer entities for this player
-	te = find(NIL, classname, "timer");
+	te = find(nil, classname, "timer");
 	while (te) {
 		//WK Judokatimer is a little weird
 		if (te.netname == "judokatimer" && te.think == JudokaRearm) {
@@ -2594,24 +2595,24 @@ void() TeamFortress_RemoveTimers =
 				stuffcmd(self, "v_cshift 0\n");
 				stuffcmd(self, "r_norefresh 0;wait;echo;wait;echo;wait;echo;wait;echo\n");
 				dremove(te);
-				te = find(NIL, classname, "timer");
+				te = find(nil, classname, "timer");
 			//WK Support for the curse timer
 			} else if (te.netname == "bastardtimer") {
 				if (self.has_disconnected == TRUE) {
 					dremove(te);
-					te = find(NIL, classname, "timer");
+					te = find(nil, classname, "timer");
 				} else 
 					te = find(te, classname, "timer");
 			} else {
 				dremove(te);
-				te = find(NIL, classname, "timer");
+				te = find(nil, classname, "timer");
 			}
 		} else
 			te = find(te, classname, "timer");
 	}
 
 	// Drop any GoalItems
-	te = find (NIL, classname, "item_tfgoal");
+	te = find (nil, classname, "item_tfgoal");
 	while (te) {
 		if (te.owner == self) {
 			// Remove it from the player, if it is supposed to be
@@ -2632,7 +2633,7 @@ void() TeamFortress_RemoveTimers =
 	}
 
 	// Reset detpacks being disarmed to not being disarmed
-	te = find (NIL, classname, "detpack");
+	te = find (nil, classname, "detpack");
 	while (te) {
 		if ((te.weaponmode == 1) && (te.enemy == self))
 			te.weaponmode = 0;
@@ -2768,7 +2769,7 @@ void() TeamFortress_CheckClassStats =
 		self.no_grenades_2 = 0;
 	// Check health
 	if (self.health > self.max_health && !(self.items & IT_SUPERHEALTH))
-		TF_T_Damage (self, NIL, NIL, (self.max_health - self.health), 0, TF_TD_NOSOUND);
+		TF_T_Damage (self, nil, nil, (self.max_health - self.health), 0, TF_TD_NOSOUND);
 	if (self.health < 0)
 		T_Heal(self, (self.health - self.health), 0);
 
@@ -2895,12 +2896,12 @@ void (float type) TeamFortress_DropAmmo =
 
 	makevectors (self.v_angle);
 
-	if (self.v_angle_x)
+	if (self.v_angle.x)
 		newmis.velocity = v_forward*400 + v_up * 200;
 	else {
 		newmis.velocity = aim(self, 10000);
 		newmis.velocity = newmis.velocity * 400;
-		newmis.velocity_z = 200;
+		newmis.velocity.z = 200;
 	}
 
 	newmis.avelocity = '0 300 0';
@@ -3046,7 +3047,7 @@ void(float tno) RemoveOldAmmobox =
 		index = num_world_ammoboxes - MAX_WORLD_AMMOBOXES;
 	}
 
-	old = find(NIL, classname, "ammobox");
+	old = find(nil, classname, "ammobox");
 	while (index > 0) {
 		if (!old) {
 //			RPrint("*** ERROR: RemoveOldAmmobox. ***\n");
@@ -3215,7 +3216,7 @@ void() TeamFortress_ExplodePerson =
 		setmodel (newmis, "progs/flarefly.mdl");
 /*
 		te = spawn();
-   		te.touch = NIL;
+   		te.touch = nil;
 		te.think = SUB_Remove;//FlareGrenadeExplode;//RemoveFlare;
 		te.nextthink = time + 25;
 		te.owner = self.owner;
@@ -3297,7 +3298,7 @@ void() NormalGrenadeTouch =
 void() NormalGrenadeExplode =
 {
 	deathmsg = DMSG_GREN_HAND;
-	T_RadiusDamage (self, self.owner, 180, NIL);
+	T_RadiusDamage (self, self.owner, 180, nil);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -3307,9 +3308,9 @@ void() NormalGrenadeExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -3320,7 +3321,7 @@ void() TeamFortress_DisplayDetectionItems =
 {
 	local entity Goal, te;
 
-	Goal = find(NIL, classname, "info_tfdetect");
+	Goal = find(nil, classname, "info_tfdetect");
 	if (!Goal)
 		return;
 
@@ -3485,7 +3486,7 @@ void() TeamFortress_Regenerate =
 
 void() CyberAugSleep =
 {
-	if (self.owner.velocity_z == 0 && self.owner.velocity_y == 0 && self.owner.velocity_x == 0)
+	if (self.owner.velocity.z == 0 && self.owner.velocity.y == 0 && self.owner.velocity.x == 0)
 		self.think = TeamFortress_RegenerateCyber;
 	
 	self.nextthink = time + 2;
@@ -3497,7 +3498,7 @@ void() TeamFortress_RegenerateCyber =
 		return;
 	
 //WK	if (self.owner.playerclass == PC_MEDIC)
-	if (self.owner.velocity_z > 0 || self.owner.velocity_y > 0 || self.owner.velocity_x > 0) {
+	if (self.owner.velocity.z > 0 || self.owner.velocity.y > 0 || self.owner.velocity.x > 0) {
 		self.nextthink = time + 2;
 		self.think = CyberAugSleep;
 		return;
@@ -3580,7 +3581,7 @@ void() TeamFortress_RegenerateCells =
 		}
 		else 	*/		
 			//if (self.owner.ammo_cells > 100) self.owner.ammo_cells = 100;
-		if ((self.owner.velocity_z > 0 || self.owner.velocity_y > 0 || self.owner.velocity_x > 0) && self.owner.job & JOB_FULL_HIDE)
+		if ((self.owner.velocity.z > 0 || self.owner.velocity.y > 0 || self.owner.velocity.x > 0) && self.owner.job & JOB_FULL_HIDE)
 		{
 				self.owner.frame = 0;
 				self.owner.weaponframe = 0;
@@ -3593,7 +3594,7 @@ void() TeamFortress_RegenerateCells =
 				RevealThief(self.owner,FALSE);
 			}*/
 		}
-		else if ((self.owner.velocity_z == 0 && self.owner.velocity_y == 0 && self.owner.velocity_x == 0)
+		else if ((self.owner.velocity.z == 0 && self.owner.velocity.y == 0 && self.owner.velocity.x == 0)
 				 && !(self.owner.job & JOB_FULL_HIDE)
 				 && !(self.effects & EF_ANYGLOW))
 		{
@@ -3688,8 +3689,8 @@ vector(vector veca, vector vecb) crossproduct =
 {
 	local vector result;
 
-	result_x = (veca_y * vecb_z) - (vecb_y * veca_z);
-	result_y = (veca_z * vecb_x) - (vecb_z * veca_x);
-	result_z = (veca_x * vecb_y) - (vecb_x * veca_y);
+	result.x = (veca.y * vecb.z) - (vecb.y * veca.z);
+	result.y = (veca.z * vecb.x) - (vecb.z * veca.x);
+	result.z = (veca.x * vecb.y) - (vecb.x * veca.y);
 	return result;
 };

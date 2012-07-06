@@ -28,130 +28,130 @@ void () UpdateInfos =
 {
     local string st;
     
-    st = infokey(NIL, "allow_debug"); //
+    st = infokey(nil, "allow_debug"); //
 	if (st == "1" || st =="on")
 		allow_debug = 1;
 	else
 	{
-        debug_target=NIL;
+        debug_target=nil;
         allow_debug = 0;
     }
 
-    /*st = infokey(NIL, "cool_gibs"); //
+    /*st = infokey(nil, "cool_gibs"); //
 	if (st == "1" || st =="on")
 		cool_gibs = 1;
 	else
 		cool_gibs = 0;*/
 
-    st = infokey(NIL, "pay_msgs"); //
+    st = infokey(nil, "pay_msgs"); //
 	if (st == "1" || st =="on")
 		pay_msgs = 1;
 	else
 		pay_msgs = 0;
 
-    st = infokey(NIL, "team_prefix"); //
+    st = infokey(nil, "team_prefix"); //
 	if (st == "1" || st =="on")
 		team_prefix = 1;
 	else
 		team_prefix = 0;
 
-    /*st = infokey(NIL, "allow_mauser"); //
+    /*st = infokey(nil, "allow_mauser"); //
 	if (st == "1" || st =="on")
 		allow_mauser = 1;
 	else
 		allow_mauser = 0;*/
 
-    st = infokey(NIL, "headless"); //
+    st = infokey(nil, "headless"); //
 	if (st == "1" || st =="on" )
 		headless = 1;
 	else
 		headless = 0;
 
-    st = infokey(NIL, "no_grapple"); //
+    st = infokey(nil, "no_grapple"); //
 	if (st == "1" || st =="on" )
 		no_grapple = 1;
 	else
 		no_grapple = 0;
 
-    st = infokey(NIL, "no_army"); //
+    st = infokey(nil, "no_army"); //
 	if (st == "1" || st =="on" )
 		no_army = 1;
 	else
 		no_army = 0;
 
-    st = infokey(NIL, "nicecolors"); //
+    st = infokey(nil, "nicecolors"); //
 	if (st == "1" || st =="on" )
 		nicecolors = 1;
 	else
 		nicecolors = 0;
 
-    st = infokey(NIL, "relax_cheatcheck"); //
+    st = infokey(nil, "relax_cheatcheck"); //
 	if (st == "1" || st =="on" )
 		relax_cheatcheck = 1;
 	else
 		relax_cheatcheck = 0;
 
-    /*st = infokey(NIL, "allow_antigrav"); //
+    /*st = infokey(nil, "allow_antigrav"); //
 	if (st == "1" || st =="on" )
 		allow_antigrav = 1;
 	else
 		allow_antigrav = 0;*/
 
-    st = infokey(NIL, "no_clusters"); //
+    st = infokey(nil, "no_clusters"); //
     if (st == "1" || st =="on" )
 		no_clusters = 1;
 	else
 		no_clusters = 0;
  
-    st = infokey(NIL, "no_c4"); //
+    st = infokey(nil, "no_c4"); //
     if (st == "1" || st =="on" )
 		no_c4 = 1;
 	else
 		no_c4 = 0;
 
-    st = infokey(NIL, "no_otr"); //
+    st = infokey(nil, "no_otr"); //
     if (st == "1" || st =="on" )
 		no_otr = 1;
 	else
 		no_otr = 0;
 
-    st = infokey(NIL, "no_laser"); //
+    st = infokey(nil, "no_laser"); //
     if (st == "1" || st =="on" )
 		no_laser = 1;
 	else
 		no_laser = 0;
 
-    st = infokey(NIL, "no_detpush"); //
+    st = infokey(nil, "no_detpush"); //
     if (st == "0" || st =="off" )
 		no_detpush = 0;
 	else
 		no_detpush = 1;
 
-    st = infokey(NIL, "no_monstercolors"); //
+    st = infokey(nil, "no_monstercolors"); //
     if (st == "1" || st =="on" )
 		no_monstercolors = 1;
 	else
 		no_monstercolors = 0;
 
-    st = infokey(NIL, "no_chaplan"); //
+    st = infokey(nil, "no_chaplan"); //
     if (st == "1" || st =="on" )
 		no_chaplan = 1;
 	else
 		no_chaplan = 0;
 
-    st = infokey(NIL, "max_mines"); //
+    st = infokey(nil, "max_mines"); //
     if (!st) st="4"; //sets default, 4 max mines
     max_mines = stof(st);
     if (max_mines < 2 ) max_mines = 2; // the allowed minimum are 2 mines
     else if (max_mines > 8) max_mines = 8; //the allowed maximum is 8 mines	
 
-    st = infokey(NIL, "custom_mode"); //
+    st = infokey(nil, "custom_mode"); //
     if (!st) st="0"; //sets default
     custom_mode = stof(st);
     if (custom_mode < 0 ) custom_mode = 0; // the allowed minimum 
     else if (custom_mode > 2) custom_mode = 2; //the allowed maximum
 
-    st = infokey(NIL, "stock_mode"); //
+    st = infokey(nil, "stock_mode"); //
     if (!st) st="0"; //sets default
     stock_mode = stof(st);
     if (stock_mode < 0 ) stock_mode = 0; // the allowed minimum 
@@ -159,13 +159,13 @@ void () UpdateInfos =
 
     if (stock_mode == 2 && custom_mode == 2) custom_mode = 0;
 
-    st = infokey(NIL, "army_delay"); //
+    st = infokey(nil, "army_delay"); //
     if (!st) st="5"; //sets default
     army_delay = stof(st);
     if (army_delay < 2 ) army_delay = 2; // the allowed minimum 
     else if (army_delay > 60) army_delay = 60; //the allowed maximum
 
-    st = infokey(NIL, "allow_watermonsters"); //
+    st = infokey(nil, "allow_watermonsters"); //
     if (st == "0" || st =="off" )
 		allow_watermonsters = 0;
 	else
@@ -189,7 +189,7 @@ void(float tno, entity ignore) teamprefixsprint =
 	if (tno == 0)
 		return;
 
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		if (Teammate(te.team_no,tno) && te != ignore)
@@ -215,7 +215,7 @@ void(float tno, entity ignore, entity ignore2) teamprefixsprintbi =
 	if (tno == 0)
 		return;
 
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		if (Teammate(te.team_no,tno) && te != ignore && te != ignore2)
@@ -232,7 +232,7 @@ void(entity ignore, string st, string st2, string st3, string st4, string st5, s
 {
     local entity te;
 
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		if (Teammate(te.team_no,ignore.team_no) && te != ignore)
@@ -256,7 +256,7 @@ void(entity ignore, entity ignore2, string st, string st2, string st3, string st
 {
     local entity te;
 
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		if (Teammate(te.team_no,ignore.team_no) && te != ignore && te != ignore2)
@@ -498,7 +498,7 @@ void() HoloThink =
 void (entity player) RemoveHolo =
 {
 	local entity te;
-    te = find(NIL, classname, "holo");
+    te = find(nil, classname, "holo");
     while (te)
 	{
 		if (te.owner == player) {
@@ -619,9 +619,9 @@ void() FlareGrenadeExplode =
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
 		WriteByte (MSG_MULTICAST, 3);
-		WriteCoord (MSG_MULTICAST, org_x);
-		WriteCoord (MSG_MULTICAST, org_y);
-		WriteCoord (MSG_MULTICAST, org_z);
+		WriteCoord (MSG_MULTICAST, org.x);
+		WriteCoord (MSG_MULTICAST, org.y);
+		WriteCoord (MSG_MULTICAST, org.z);
 		multicast (org, MULTICAST_PVS);
 
     self.effects |= EF_DIMLIGHT;
@@ -815,9 +815,9 @@ void() ExpBodyThink =
 
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
     WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-    WriteCoord (MSG_MULTICAST, self.origin_x);
-    WriteCoord (MSG_MULTICAST, self.origin_y);
-    WriteCoord (MSG_MULTICAST, self.origin_z);
+    WriteCoord (MSG_MULTICAST, self.origin.x);
+    WriteCoord (MSG_MULTICAST, self.origin.y);
+    WriteCoord (MSG_MULTICAST, self.origin.z);
    	multicast (self.origin, MULTICAST_PHS);
 
     deathmsg = DMSG_EXPBODY;
@@ -834,9 +834,9 @@ void(vector where) spawnFOG =
 {
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_TELEPORT);
-	WriteCoord (MSG_MULTICAST, where_x);
-	WriteCoord (MSG_MULTICAST, where_y);
-	WriteCoord (MSG_MULTICAST, where_z);
+	WriteCoord (MSG_MULTICAST, where.x);
+	WriteCoord (MSG_MULTICAST, where.y);
+	WriteCoord (MSG_MULTICAST, where.z);
 	multicast (where, MULTICAST_PHS);
 };
 
@@ -909,7 +909,7 @@ float() CheckEnemyDismantle =
 //- OfN - Checks spots are visible between them
 float (vector spot1, vector spot2) vis2orig =
 {
-	traceline (spot1, spot2, TRUE, NIL);	// see through other monsters
+	traceline (spot1, spot2, TRUE, nil);	// see through other monsters
 	
 	if (trace_inopen && trace_inwater)
 		return FALSE;			// sight line crossed contents
@@ -926,7 +926,7 @@ float() GetNoPlayers =
 	local float num_players = 0;
 	local entity search;
 
-	search = find (NIL, classname, "player");
+	search = find (nil, classname, "player");
 	while (search)
 	{
     	num_players = num_players + 1;
@@ -944,11 +944,11 @@ entity() GetBestPlayer =
     local float bestscore;
     local entity theplayer, search;
 
-    theplayer = NIL;
-    search = NIL;
+    theplayer = nil;
+    search = nil;
     bestscore = 0;
 
-    search = find (NIL, classname, "player");
+    search = find (nil, classname, "player");
 	while (search)
 	{
         if (search.frags > bestscore)
@@ -968,11 +968,11 @@ entity() GetBestKiller =
     local float bestscore;
     local entity theplayer, search;
 
-    theplayer = NIL;
-    search = NIL;
+    theplayer = nil;
+    search = nil;
     bestscore = 0;
 
-    search = find (NIL, classname, "player");
+    search = find (nil, classname, "player");
 	while (search)
 	{
         if (search.frags - TeamFortress_TeamGetScore(search.team_no) > bestscore && search.team_no > 0)
@@ -1207,7 +1207,7 @@ void(entity player) SwitchToCamera =
      // FIXME: no inair, no water, no moving, no haxxxoring, no building, no detpacking, no throwing a det, 
      // no feinginG? (special)
 	
-	camera = find(NIL, classname, "building_camera");
+	camera = find(nil, classname, "building_camera");
 	if (camera.real_owner == player)
 		done = TRUE;
 	while (!done)
@@ -1228,9 +1228,9 @@ void(entity player) SwitchToCamera =
 	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
 	WriteEntity(MSG_ONE, camera);
 	WriteByte(MSG_ONE, SVC_SETANGLES);
-	WriteAngle(MSG_ONE, camera.angles_x);
-	WriteAngle(MSG_ONE, camera.angles_y);
-	WriteAngle(MSG_ONE, camera.angles_z);
+	WriteAngle(MSG_ONE, camera.angles.x);
+	WriteAngle(MSG_ONE, camera.angles.y);
+	WriteAngle(MSG_ONE, camera.angles.z);
     
     */
 
@@ -1295,9 +1295,9 @@ void(entity player) SwitchFromCamera =
 	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
 	WriteEntity(MSG_ONE, player);
 	WriteByte(MSG_ONE, SVC_SETANGLES);
-	WriteAngle(MSG_ONE, player.angles_x);
-	WriteAngle(MSG_ONE, player.angles_y);
-	WriteAngle(MSG_ONE, player.angles_z);
+	WriteAngle(MSG_ONE, player.angles.x);
+	WriteAngle(MSG_ONE, player.angles.y);
+	WriteAngle(MSG_ONE, player.angles.z);
     
     */
 

@@ -196,7 +196,7 @@ void() worldspawn =
 
 	last_team_no = 5;
 
-	st = infokey(NIL, "mapcfg");
+	st = infokey(nil, "mapcfg");
 	if (!(st == "0" || st == "off" || st == ""))
 	{
 		if (st == "1" || st == "on")
@@ -207,12 +207,12 @@ void() worldspawn =
 		localcmd("exec \"");
 		localcmd(st);
 		localcmd("/");
-		localcmd(infokey(NIL, "map"));
+		localcmd(infokey(nil, "map"));
 		localcmd(".cfg\"\n");
 	}
 
 // custom map attributes
-	st = infokey(NIL, "*gamedir");
+	st = infokey(nil, "*gamedir");
 	if (st != "fortress")
 	{
 		if (st == "")
@@ -224,28 +224,28 @@ void() worldspawn =
 	
     //- OfteN globals -//
 	UpdateInfos();
-    debug_target=NIL;
+    debug_target=nil;
    	already_chosen_map = FALSE;
     triggered_cycle = FALSE;
     ////////////////////
 
-	if (stof(infokey (NIL, "edictticker")))
+	if (stof(infokey (nil, "edictticker")))
 	{
 		ticker = spawn();
 		ticker.classname = "edictcount";
 		ticker.nextthink = time + 5;
 		ticker.think = edictticker_think;
-		ticker.num_mines = stof(infokey (NIL, "edictticker")); // I hate overloading, but I don't want to use a full thing just for this one stupid little hack.
+		ticker.num_mines = stof(infokey (nil, "edictticker")); // I hate overloading, but I don't want to use a full thing just for this one stupid little hack.
 	}
 
     // We set up Chris' Teamplay Plus Mode here cos that's fun
-	/*st = infokey(NIL, "chris");
+	/*st = infokey(nil, "chris");
 	if (st == "on")
 		chris = TRUE;
 	else
 		chris = stof(st);
 		
-	st = infokey(NIL, "roundtime");
+	st = infokey(nil, "roundtime");
 	roundtime = stof(st);
 	if (!roundtime)
 		roundtime = 300;
@@ -258,13 +258,13 @@ void() worldspawn =
 
 	// We load the masks from the map, overriding it with infokeys if
 	// they exist
-	st = infokey (NIL, "friends1_mask");
+	st = infokey (nil, "friends1_mask");
 	friends1_mask = stof (st ? st : self.noise1);
-	st = infokey (NIL, "friends2_mask");
+	st = infokey (nil, "friends2_mask");
 	friends2_mask = stof (st ? st : self.noise2);
-	st = infokey (NIL, "friends3_mask");
+	st = infokey (nil, "friends3_mask");
 	friends3_mask = stof (st ? st : self.noise3);
-	st = infokey (NIL, "friends4_mask");
+	st = infokey (nil, "friends4_mask");
 	friends4_mask = stof (st ? st : self.noise4);
 
 
@@ -576,7 +576,7 @@ void() StartFrame =
 
 	local string timeleft;
 	timeleft = timelimit ? sprintf ("%.0f", (timelimit - time) / 60) : "";
-	if (timeleft != infokey (NIL, "timeleft"))
+	if (timeleft != infokey (nil, "timeleft"))
 		localcmd ("serverinfo timeleft " + timeleft + "\n");
 };
 
@@ -628,7 +628,7 @@ void(entity ent) CopyToBodyQue =
 };
 
 
-integer(entity e) entpointcontents = {
+int(entity e) entpointcontents = {
 	return hullpointcontents(world, e.mins, e.maxs, e.origin);
 };
 

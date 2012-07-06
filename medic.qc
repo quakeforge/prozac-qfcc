@@ -112,9 +112,9 @@ void() BioGrenadeExplode =
 	
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -125,7 +125,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	
 	// remove concussion from player
 	// Try to find a concusstimer entity for this player
-	te = find(NIL, classname, "timer");
+	te = find(nil, classname, "timer");
 	while (((te.owner != patient) || (te.think != ConcussionGrenadeTimer)) && (te))
 	{
 		te = find(te, classname, "timer");
@@ -158,7 +158,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	// Try to find a hallucination timer entity for this player
 	if (patient.tfstate & TFSTATE_HALLUCINATING)
 	{
-		te = find(NIL, classname, "timer");
+		te = find(nil, classname, "timer");
 		while (((te.owner != patient) || (te.think != HallucinationTimer)) && (te))
 		{
 			te = find(te, classname, "timer");
@@ -196,7 +196,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 	// Try to find a tranquilisation timer entity for this player
 	if (patient.tfstate & TFSTATE_TRANQUILISED)
 	{
-		te = find(NIL, classname, "timer");
+		te = find(nil, classname, "timer");
 		while (((te.owner != patient) || (te.think != TranquiliserTimer)) && (te))
 		{
 			te = find(te, classname, "timer");
@@ -259,7 +259,7 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 		// remove the infection
 		patient.tfstate &= ~TFSTATE_INFECTED;
 		
-		te = find(NIL, netname, "biotimer");
+		te = find(nil, netname, "biotimer");
 		
 		while (te)
 		{
@@ -321,4 +321,5 @@ float(entity doc, entity patient, vector org) CureAdverseEffects =
 				
 		return TRUE;
 	}
+	return FALSE;
 };

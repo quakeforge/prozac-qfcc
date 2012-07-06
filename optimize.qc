@@ -26,7 +26,7 @@ float(entity targ, entity checker, float chkvis, float chkrng, float istesla, fl
 		if (targ.classname != "player")
 			return FALSE;
 		if (chkcease)
-			if (infokey(NIL,"ceasefire")=="on")
+			if (infokey(nil,"ceasefire")=="on")
 				return FALSE;
 		if (targ.playerclass == PC_UNDEFINED)
 			return FALSE;
@@ -178,7 +178,7 @@ void (entity atk, entity targ, float numfrags, float howgive, float chkreal, flo
 void(string search, entity person, float chkown) Find_And_Dmg =
 {
 	local entity te;
-	te = find(NIL, classname, search);
+	te = find(nil, classname, search);
 	while (te)
 	{
 		if (chkown)

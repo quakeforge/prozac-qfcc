@@ -70,10 +70,10 @@ void() NailGrenadeLaunchNail =
 #endif
 	{
 		j = (random() + 2) * 5;
-		current_yaw = anglemod(self.angles_y + j);
-		self.angles_y = current_yaw;
-		self.angles_x = 0;
-		self.angles_z = 0;
+		current_yaw = anglemod(self.angles.y + j);
+		self.angles.y = current_yaw;
+		self.angles.x = 0;
+		self.angles.z = 0;
 		makevectors(self.angles);
 
 		deathmsg = DMSG_GREN_NAIL;

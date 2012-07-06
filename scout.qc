@@ -141,7 +141,7 @@ void() ConcussionGrenadeTouch =
 // Concussion grenade explosion function
 void() ConcussionGrenadeExplode =
 {	
-	T_RadiusBounce (self, self.owner, 240, NIL);
+	T_RadiusBounce (self, self.owner, 240, nil);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -151,9 +151,9 @@ void() ConcussionGrenadeExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -250,25 +250,25 @@ void() ConcussionGrenadeTimer =
 	local float y = amount - x;
 
 	if (random() < 0.5)
-		self.owner.mangle_x += x * GR_CONCUSS_X;
+		self.owner.mangle.x += x * GR_CONCUSS_X;
 	else
-		self.owner.mangle_x -= x * GR_CONCUSS_X;
+		self.owner.mangle.x -= x * GR_CONCUSS_X;
 
 	if (random() < 0.5)
-		self.owner.mangle_y += y * GR_CONCUSS_Y;
+		self.owner.mangle.y += y * GR_CONCUSS_Y;
 	else
-		self.owner.mangle_y -= y * GR_CONCUSS_Y;
+		self.owner.mangle.y -= y * GR_CONCUSS_Y;
 
 	local float rat = self.health / GR_CONCUSS_MAX;
 
-	if (self.owner.mangle_x > GR_CONCUSS_MAX_X * rat)
-		self.owner.mangle_x = GR_CONCUSS_MAX_X * rat;
-	if (self.owner.mangle_x < GR_CONCUSS_MIN_X * rat)
-		self.owner.mangle_x = GR_CONCUSS_MIN_X * rat;
-	if (self.owner.mangle_y > GR_CONCUSS_MAX_Y * rat)
-		self.owner.mangle_y = GR_CONCUSS_MAX_Y * rat;
-	if (self.owner.mangle_y < GR_CONCUSS_MIN_Y * rat)
-		self.owner.mangle_y = GR_CONCUSS_MIN_Y * rat;;
+	if (self.owner.mangle.x > GR_CONCUSS_MAX_X * rat)
+		self.owner.mangle.x = GR_CONCUSS_MAX_X * rat;
+	if (self.owner.mangle.x < GR_CONCUSS_MIN_X * rat)
+		self.owner.mangle.x = GR_CONCUSS_MIN_X * rat;
+	if (self.owner.mangle.y > GR_CONCUSS_MAX_Y * rat)
+		self.owner.mangle.y = GR_CONCUSS_MAX_Y * rat;
+	if (self.owner.mangle.y < GR_CONCUSS_MIN_Y * rat)
+		self.owner.mangle.y = GR_CONCUSS_MIN_Y * rat;;
 		
 
 	if (self.owner.waterlevel || (self.owner.flags & FL_ONGROUND))
@@ -279,14 +279,14 @@ void() ConcussionGrenadeTimer =
 		y = amount - x;
 
 		if (random() < 0.5)
-			self.owner.velocity_x += x * GR_CONCUSS_KICK * vel;
+			self.owner.velocity.x += x * GR_CONCUSS_KICK * vel;
 		else
-			self.owner.velocity_x -= x * GR_CONCUSS_KICK * vel;
+			self.owner.velocity.x -= x * GR_CONCUSS_KICK * vel;
 
 		if (random() < 0.5)
-			self.owner.velocity_y += y * GR_CONCUSS_KICK * vel;
+			self.owner.velocity.y += y * GR_CONCUSS_KICK * vel;
 		else
-			self.owner.velocity_y -= y * GR_CONCUSS_KICK * vel;
+			self.owner.velocity.y -= y * GR_CONCUSS_KICK * vel;
 	}
 
 	//sprint (self.owner, PRINT_HIGH, "mangle: " + vtos (self.owner.mangle) + "\n");
@@ -299,7 +299,7 @@ void() ConcussionGrenadeTimer =
 void(float scanrange,float inAuto) TeamFortress_Scan = 
 {
 	local string power;
-	local entity list = NIL;
+	local entity list = nil;
 	local float scen, scfr;
 	local vector lightningvec;
 
@@ -640,12 +640,12 @@ void(float scanrange,float inAuto) TeamFortress_Scan =
 			WriteByte (MSG_ONE, SVC_TEMPENTITY);
 			WriteByte (MSG_ONE, TE_LIGHTNING1);
 			WriteEntity (MSG_ONE, self);
-			WriteCoord (MSG_ONE, self.origin_x);
-			WriteCoord (MSG_ONE, self.origin_y);
-			WriteCoord (MSG_ONE, self.origin_z + 8);
-			WriteCoord (MSG_ONE, lightningvec_x);
-			WriteCoord (MSG_ONE, lightningvec_y);
-			WriteCoord (MSG_ONE, lightningvec_z + 8);
+			WriteCoord (MSG_ONE, self.origin.x);
+			WriteCoord (MSG_ONE, self.origin.y);
+			WriteCoord (MSG_ONE, self.origin.z + 8);
+			WriteCoord (MSG_ONE, lightningvec.x);
+			WriteCoord (MSG_ONE, lightningvec.y);
+			WriteCoord (MSG_ONE, lightningvec.z + 8);
 
 			self.scaned = list; //CH for the sbar
 			if (!inAuto)
@@ -722,7 +722,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBou
 
 						head.tfstate |= TFSTATE_CONCUSSIONED;
 
-						te = find(NIL, classname, "timer");
+						te = find(nil, classname, "timer");
 						while (((te.owner != head) || (te.think != ConcussionGrenadeTimer)) && (te))
 							te = find(te, classname, "timer");
 						if (te)
@@ -803,8 +803,8 @@ entity(entity scanner, float scanrange, float enemies, float friends) T_RadiusSc
 	local entity list_head;
 	local entity list;
 	local float gotatarget;
-	list_head = NIL;
-	list = NIL;
+	list_head = nil;
+	list = nil;
 
 	head = findradius(scanner.origin, scanrange+40);
 
@@ -931,13 +931,13 @@ void() CaltropGrenadeExplode =
 	local float i;
 	
 /*	deathmsg = DMSG_GREN_CALTROP;
-	T_RadiusDamage (self, self.owner, 50, NIL);
+	T_RadiusDamage (self, self.owner, 50, nil);
 	
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	
 	self.solid = SOLID_NOT;
@@ -983,9 +983,9 @@ void (vector org, entity shooter) CreateCaltrop =
 	newmis.nextthink = time + 14 + random()*6; // was 7+random()
 	newmis.heat = time + 2; // The caltrop doesn't activate for 2 seconds
 	
-	newmis.velocity_x = xdir * 2;
-	newmis.velocity_y = ydir * 2;
-	newmis.velocity_z = zdir * 15;
+	newmis.velocity.x = xdir * 2;
+	newmis.velocity.y = ydir * 2;
+	newmis.velocity.z = zdir * 15;
 
 	newmis.avelocity = '500 500 500';
 

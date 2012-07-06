@@ -30,7 +30,7 @@ void() ai_face =
 	self.ideal_yaw = anglemod(self.ideal_yaw);
 	//WK Turrets swivel instanter
 	if (self.tf_items & NIT_TURRET) { //Auto-swivel
-		self.angles_y = self.ideal_yaw;
+		self.angles.y = self.ideal_yaw;
 	}
 	else
 		ChangeYaw ();
@@ -51,7 +51,7 @@ $frame lvl3_stand1
 $frame lvl3_shoot1 lvl3_shoot2 
 
 /*    WK -- This is how you unhack the turret's position :Þ
-	if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40;
+	if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40;
 */
 
 void() RemoveGlow = {
@@ -187,8 +187,8 @@ void() Sentry_Rotate =
 		self.ideal_yaw = anglemod(self.waitmin);
 		ChangeYaw();
                                                           // 15                                              // 16 or 14
-		//was if ((anglemod(self.angles_y) <= (self.waitmin + 1)) && (anglemod(self.angles_y) >= (self.waitmin - 2)))  //CH after the && fixed spaz sent!!
-        if ((anglemod(self.angles_y) <= (self.waitmin + 1)) && (anglemod(self.angles_y) >= (self.waitmin - 2)))  //CH after the && fixed spaz sent!!
+		//was if ((anglemod(self.angles.y) <= (self.waitmin + 1)) && (anglemod(self.angles.y) >= (self.waitmin - 2)))  //CH after the && fixed spaz sent!!
+        if ((anglemod(self.angles.y) <= (self.waitmin + 1)) && (anglemod(self.angles.y) >= (self.waitmin - 2)))  //CH after the && fixed spaz sent!!
 		{
 			self.heat = 1;
 			if (random() < 0.1)
@@ -200,8 +200,8 @@ void() Sentry_Rotate =
 		self.ideal_yaw = anglemod(self.waitmax);
 		ChangeYaw();
 
-		//was if ((anglemod(self.angles_y) >= (self.waitmax - 1 )) && (anglemod(self.angles_y) <= (self.waitmax + 2)))  //CH after the && fixed spaz sent!!
-        if ((anglemod(self.angles_y) >= (self.waitmax - 1 )) && (anglemod(self.angles_y) <= (self.waitmax + 2)))  //CH after the && fixed spaz sent!!
+		//was if ((anglemod(self.angles.y) >= (self.waitmax - 1 )) && (anglemod(self.angles.y) <= (self.waitmax + 2)))  //CH after the && fixed spaz sent!!
+        if ((anglemod(self.angles.y) >= (self.waitmax - 1 )) && (anglemod(self.angles.y) <= (self.waitmax + 2)))  //CH after the && fixed spaz sent!!
 			self.heat = 0;
 	}
 };
@@ -232,17 +232,17 @@ float(entity targ) rangesentry =
 
 float() Sentry_FindTarget =
 {
-	self.enemy = NIL; //CH for sbar
+	self.enemy = nil; //CH for sbar
 
-	if (infokey(NIL,"ceasefire")=="on")
+	if (infokey(nil,"ceasefire")=="on")
 		return FALSE;
     
-    local entity client = NIL;
+    local entity client = nil;
 	local float	r, gotone, loopc;
 
 	//WK Hack to get floating sentry working
 	if (self.tf_items & NIT_TURRET) {
-		self.origin_z = self.origin_z - 40;
+		self.origin.z = self.origin.z - 40;
 	}
 
 	// Try a few checks to make it react faster
@@ -307,7 +307,7 @@ float() Sentry_FindTarget =
     {
         local entity te;
 
-        te = find(NIL, message,"XX");
+        te = find(nil, message,"XX");
 
         while (te && gotone == FALSE)
         {
@@ -368,7 +368,7 @@ float() Sentry_FindTarget =
 
 	//WK Unhack our hack
 	if (self.tf_items & NIT_TURRET) {
-		self.origin_z = self.origin_z + 40;
+		self.origin.z = self.origin.z + 40;
 	}
 
 	if (!gotone)
@@ -383,7 +383,7 @@ float() Sentry_FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = NIL;
+			self.enemy = nil;
 			return FALSE;
 		}
 	}*/
@@ -457,12 +457,12 @@ void(entity attacker, float damage) Sentry_Pain =
 //CH special sbar  for eng.
 	self.real_owner.StatusBarScreen = 1;
 
-	local string st = infokey (NIL, "sentry_revenge");
+	local string st = infokey (nil, "sentry_revenge");
 
 	if (!st)
-		st = infokey (NIL, "sr");
+		st = infokey (nil, "sr");
 
-	if ((st == "on" || st == "1" || st == "yes") && (self.attack_finished < time && self.enemy == NIL))
+	if ((st == "on" || st == "1" || st == "yes") && (self.attack_finished < time && self.enemy == nil))
 	{
 	    self.enemy = attacker;
 	    Sentry_FoundTarget();
@@ -494,9 +494,9 @@ void() Sentry_Die =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
 };
@@ -516,7 +516,7 @@ float() Sentry_Fire =
     // this on the end..
     //self.attack_finished = time + SENTRY_UNLOCKTIME; // don't rotate immediately after target invisible or dead
 
-	if (infokey(NIL,"ceasefire")=="on") //Cyto
+	if (infokey(nil,"ceasefire")=="on") //Cyto
 			return FALSE;
 
 	//WK Stop gun from shooting at dead spies
@@ -524,20 +524,20 @@ float() Sentry_Fire =
 		return FALSE;
 
 	//WK Hack to get floating sentry working - reset before all the returns
-	if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z - 40;
+	if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z - 40;
 	
 	// Only fire if they're within sight
 	dir = self.enemy.origin - self.origin;
 	if (vlen(dir) > 2048 || !visible (self.enemy)) //WK Don't fire if they're too far away
 	{
-		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40;
+		if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40;
 		return FALSE;
 	}
 	dir = normalize(dir);
 
 	//WK Turret can shoot in any direction
 	if (!(self.tf_items & NIT_TURRET)) {
-		if ((self.ideal_yaw - anglemod(self.angles_y)) < -10 || (self.ideal_yaw - anglemod(self.angles_y)) > 10) {
+		if ((self.ideal_yaw - anglemod(self.angles.y)) < -10 || (self.ideal_yaw - anglemod(self.angles.y)) > 10) {
 			return FALSE;
 		}
 	}
@@ -547,14 +547,14 @@ float() Sentry_Fire =
 		self.ammo_shells = 0;
 	if ((self.ammo_shells <= 0 && self.weapon != 3) || (self.ammo_shells <= 0 && self.ammo_rockets <= 0 && self.weapon == 3)) //CH stay on target if have rockets
 	{
-		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40;
+		if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40;
 		return FALSE;
 	}
 	//CH this further checks while firing
 	traceline (self.origin + soffset, self.enemy.origin, TRUE, self);
 	if (trace_fraction != 1 || trace_endpos != self.enemy.origin)
 	{
-		if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40;
+		if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40;
 		return FALSE;
 	}
 
@@ -619,14 +619,14 @@ float() Sentry_Fire =
 		{
 			local float damg;
 			damg = random() * 50 + 120;
-			T_RadiusDamage(self, self, damg, NIL);
+			T_RadiusDamage(self, self, damg, nil);
 			WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 			WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-			WriteCoord (MSG_MULTICAST, self.origin_x);
-			WriteCoord (MSG_MULTICAST, self.origin_y);
-			WriteCoord (MSG_MULTICAST, self.origin_z);
+			WriteCoord (MSG_MULTICAST, self.origin.x);
+			WriteCoord (MSG_MULTICAST, self.origin.y);
+			WriteCoord (MSG_MULTICAST, self.origin.z);
 			if (self.tf_items & NIT_TURRET)
-				self.origin_z = self.origin_z + 40;
+				self.origin.z = self.origin.z + 40;
 			return FALSE;
 		}
 
@@ -638,15 +638,15 @@ float() Sentry_Fire =
 		// set newmis speed
 		if (self.is_malfunctioning & SCREWUP_TWO) // SB - oh no we've been hax0red
 		{
-			miss_factor_z = random() * 200 - 100;
-			miss_factor_y = random() * 200 - 100;
-			miss_factor_x = random() * 200 - 100;
+			miss_factor.z = random() * 200 - 100;
+			miss_factor.y = random() * 200 - 100;
+			miss_factor.x = random() * 200 - 100;
 		}
 		else
 		{	
-			miss_factor_z = 0;
-			miss_factor_y = 0;
-			miss_factor_x = 0;
+			miss_factor.z = 0;
+			miss_factor.y = 0;
+			miss_factor.x = 0;
 		}
 
 		if (self.tf_items & NIT_TURRET) 
@@ -689,7 +689,7 @@ float() Sentry_Fire =
 	if (self.ammo_rockets == 0 && self.weapon == 3 && (random() <= 0.1))
 		sprint(self.real_owner, PRINT_HIGH, "Sentry Gun is out of rockets.\n");
 	
-	if (self.tf_items & NIT_TURRET) self.origin_z = self.origin_z + 40;
+	if (self.tf_items & NIT_TURRET) self.origin.z = self.origin.z + 40;
 
     self.attack_finished = time + SENTRY_UNLOCKTIME + 2 * random() - 1; // don't rotate immediately after target invisible or dead
     
@@ -763,7 +763,7 @@ void() Sentry_Touch =
 		//	sprint(self.real_owner, PRINT_HIGH, "The eagle has landed!\n");
 			self.flags |= FL_ONGROUND;
 			self.movetype = MOVETYPE_STEP;
-			self.origin_z = self.origin_z + 32;//32; // was 40, old custom bug? fixed
+			self.origin.z = self.origin.z + 32;//32; // was 40, old custom bug? fixed
 			return;
 		}
 		else if (other.classname == "player")
@@ -772,7 +772,7 @@ void() Sentry_Touch =
 			//TF_T_Damage (other, self, self.real_owner, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 			TF_T_Damage (other, self, self, 400, TF_TD_NOTTEAM, TF_TD_ELECTRICITY);
 
-            self.velocity_z = 200; //- OfN reset velocity, not stop
+            self.velocity.z = 200; //- OfN reset velocity, not stop
 		}
 		else
 		{

@@ -372,8 +372,8 @@ void(float type) TeamFortress_SpyFeignDeath =
 		if (type == 1) //CH normal feign
 			DeathSound();
 		
-		self.angles_x = 0;
-		self.angles_z = 0;
+		self.angles.x = 0;
+		self.angles.z = 0;
 
 		// Check .weapon, because .current_weapon has been reset
 		if (self.weapon <= WEAP_AXE)
@@ -458,7 +458,7 @@ void() TeamFortress_SpyGoUndercover =
 				self.is_undercover = 1;
 			else
 				self.is_undercover = 0;
-			local entity ent = NIL;
+			local entity ent = nil;
 			while ((ent = find (ent, classname, "timer"))) {
 				if (ent.owner == self && ent.think == TeamFortress_SpyUndercoverThink) {
 					ent.think = SUB_Remove;
@@ -486,7 +486,7 @@ void(entity spy) TeamFortress_SpyCalcName =
 	if (!spy.undercover_team)
 		teamnum = spy.team_no;
 
-	te = find(NIL, classname, "player");
+	te = find(nil, classname, "player");
 	while (te)
 	{
 		// First, try to find a player with same color and skins
@@ -496,7 +496,7 @@ void(entity spy) TeamFortress_SpyCalcName =
 			if (te.playerclass == PC_CUSTOM)
 				spy.undercover_job = te.job;
 
-			te = NIL;
+			te = nil;
 		}
 		else
 			te = find(te, classname, "player");
@@ -505,7 +505,7 @@ void(entity spy) TeamFortress_SpyCalcName =
 	// If we couldn't, just find one of that team
 	if (!spy.undercover_name)
 	{
-		te = find(NIL, classname, "player");
+		te = find(nil, classname, "player");
 		while (te)
 		{
 			if (te.team_no == spy.undercover_team)
@@ -513,7 +513,7 @@ void(entity spy) TeamFortress_SpyCalcName =
 				spy.undercover_name = te.netname;
 				if (te.playerclass == PC_CUSTOM)
 					spy.undercover_job = te.job;
-				te = NIL;
+				te = nil;
 			}
 			else
 				te = find(te, classname, "player");
@@ -715,7 +715,7 @@ void() GasGrenadeExplode =
 			newmis.movetype = MOVETYPE_NOCLIP;
 			newmis.solid = SOLID_NOT;
 			newmis.velocity = '0 0 15';
-			newmis.velocity_z = 10 + (random() * 20);
+			newmis.velocity.z = 10 + (random() * 20);
 			newmis.nextthink = time + 0.5;
 			newmis.think = bubble_bob;
 			newmis.classname = "bubble";
@@ -756,15 +756,15 @@ void() GasGrenadeMakeGas =
 			// Damage
 			deathmsg = DMSG_GREN_GAS;
 			if (!self.heat)
-				TF_T_Damage (te, NIL, self.owner, 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+				TF_T_Damage (te, nil, self.owner, 20, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 			else
-				TF_T_Damage (te, NIL, self.owner, 40, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
+				TF_T_Damage (te, nil, self.owner, 40, TF_TD_IGNOREARMOUR, TF_TD_OTHER);
 
 			// Make them hallucinate
 			if (te.tfstate & TFSTATE_HALLUCINATING)
 			{
 				// Already Hallucination, so just increase the time
-				timer = find(NIL, classname, "timer");
+				timer = find(nil, classname, "timer");
 				while (((timer.owner != te) || (timer.think != HallucinationTimer)) && (timer))
 				{
 					timer = find(timer, classname, "timer");
@@ -803,9 +803,9 @@ void() GasGrenadeMakeGas =
 	{
 		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 		WriteByte (MSG_MULTICAST, TE_TAREXPLOSION);
-		WriteCoord (MSG_MULTICAST, self.origin_x);
-		WriteCoord (MSG_MULTICAST, self.origin_y);
-		WriteCoord (MSG_MULTICAST, self.origin_z);
+		WriteCoord (MSG_MULTICAST, self.origin.x);
+		WriteCoord (MSG_MULTICAST, self.origin.y);
+		WriteCoord (MSG_MULTICAST, self.origin.z);
 		multicast (self.origin, MULTICAST_PVS);
 		return;
 	}
@@ -816,9 +816,9 @@ void() GasGrenadeMakeGas =
 		{
 			WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 			WriteByte (MSG_MULTICAST, TE_LAVASPLASH);
-			WriteCoord (MSG_MULTICAST, self.origin_x);
-			WriteCoord (MSG_MULTICAST, self.origin_y);
-			WriteCoord (MSG_MULTICAST, self.origin_z - 24);
+			WriteCoord (MSG_MULTICAST, self.origin.x);
+			WriteCoord (MSG_MULTICAST, self.origin.y);
+			WriteCoord (MSG_MULTICAST, self.origin.z - 24);
 			multicast (self.origin, MULTICAST_PVS);
 		}
 		else if (self.weapon == 2)
@@ -876,37 +876,37 @@ void() HallucinationTimer =
 			WriteByte (MSG_ONE, TE_TAREXPLOSION);
 		else // if (halltype < 0.4)
 			WriteByte (MSG_ONE, TE_LAVASPLASH);
-		WriteCoord (MSG_ONE, msg_entity.origin_x + tmpx);
-		WriteCoord (MSG_ONE, msg_entity.origin_y + tmpy);
-		WriteCoord (MSG_ONE, msg_entity.origin_z);
+		WriteCoord (MSG_ONE, msg_entity.origin.x + tmpx);
+		WriteCoord (MSG_ONE, msg_entity.origin.y + tmpy);
+		WriteCoord (MSG_ONE, msg_entity.origin.z);
 	}
 	// Teleport
 	else if (halltype < 0.7)
 	{
 		WriteByte (MSG_ONE, SVC_TEMPENTITY);
 		WriteByte (MSG_ONE, TE_TELEPORT);
-		WriteCoord (MSG_ONE, msg_entity.origin_x + tmpx);
-		WriteCoord (MSG_ONE, msg_entity.origin_y + tmpy);
-		WriteCoord (MSG_ONE, msg_entity.origin_z);
+		WriteCoord (MSG_ONE, msg_entity.origin.x + tmpx);
+		WriteCoord (MSG_ONE, msg_entity.origin.y + tmpy);
+		WriteCoord (MSG_ONE, msg_entity.origin.z);
 	}
 	// Lightning
 	else // if (halltype < 1)
 	{
 		te = spawn();
-		te.origin_x = msg_entity.origin_x + tmpx;
-		te.origin_y = msg_entity.origin_y + tmpy;
-		te.origin_z = msg_entity.origin_z;
+		te.origin.x = msg_entity.origin.x + tmpx;
+		te.origin.y = msg_entity.origin.y + tmpy;
+		te.origin.z = msg_entity.origin.z;
 		WriteByte (MSG_ONE, SVC_TEMPENTITY);
 		WriteByte (MSG_ONE, TE_LIGHTNING2);
 		WriteEntity (MSG_ONE, te);
-		WriteCoord (MSG_ONE, te.origin_x);
-		WriteCoord (MSG_ONE, te.origin_y);
-		WriteCoord (MSG_ONE, te.origin_z);
+		WriteCoord (MSG_ONE, te.origin.x);
+		WriteCoord (MSG_ONE, te.origin.y);
+		WriteCoord (MSG_ONE, te.origin.z);
 		tmpx = (random() * 800) - 400;
 		tmpy = (random() * 800) - 400;
-		WriteCoord (MSG_ONE, msg_entity.origin_x + tmpx);
-		WriteCoord (MSG_ONE, msg_entity.origin_y + tmpy);
-		WriteCoord (MSG_ONE, msg_entity.origin_z);
+		WriteCoord (MSG_ONE, msg_entity.origin.x + tmpx);
+		WriteCoord (MSG_ONE, msg_entity.origin.y + tmpy);
+		WriteCoord (MSG_ONE, msg_entity.origin.z);
 		dremove(te);
 	}
 };
@@ -976,7 +976,7 @@ void() T_TranqDartTouch =
 			// If they're already tranquilised, just make it last longer
 			if (other.tfstate & TFSTATE_TRANQUILISED)
 			{
-				timer = find(NIL, classname, "timer");
+				timer = find(nil, classname, "timer");
 				while (((timer.owner != other) || (timer.think != TranquiliserTimer2)) && (timer))
 				{
 					timer = find(timer, classname, "timer");
@@ -1003,7 +1003,7 @@ void() T_TranqDartTouch =
 			// If they're already tranquilised, just make it last longer
 			if (other.tfstate & TFSTATE_TRANQUILISED)
 			{
-				timer = find(NIL, classname, "timer");
+				timer = find(nil, classname, "timer");
 				while (((timer.owner != other) || (timer.think != TranquiliserTimer)) && (timer))
 				{
 					timer = find(timer, classname, "timer");
@@ -1039,9 +1039,9 @@ void() T_TranqDartTouch =
         {
             WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
             WriteByte (MSG_MULTICAST, TE_SPIKE);
-            WriteCoord (MSG_MULTICAST, self.origin_x);
-            WriteCoord (MSG_MULTICAST, self.origin_y);
-            WriteCoord (MSG_MULTICAST, self.origin_z);
+            WriteCoord (MSG_MULTICAST, self.origin.x);
+            WriteCoord (MSG_MULTICAST, self.origin.y);
+            WriteCoord (MSG_MULTICAST, self.origin.z);
             multicast (self.origin, MULTICAST_PVS);
         }
 	}

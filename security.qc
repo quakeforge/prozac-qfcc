@@ -32,7 +32,7 @@ void() Security_Camera_Idle =
 //========
 float() Security_Camera_FindTarget =
 {
-	local entity client = NIL;
+	local entity client = nil;
 	local float	r, gotone, loopc;
 
 	if (self.is_malfunctioning & SCREWUP_TWO) // SB how tragic, camera can't see
@@ -83,7 +83,7 @@ float() Security_Camera_FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = NIL;
+			self.enemy = nil;
 			return FALSE;
 		}
 	}
@@ -103,7 +103,7 @@ float() Security_Camera_FindTarget =
 
 float() Security_Camera_FindFakeTarget =
 {
-	local entity client = NIL;
+	local entity client = nil;
 	local float	r, gotone, loopc;
 
 	if (self.is_malfunctioning & SCREWUP_THREE) // SB how tragic, camera can't see
@@ -151,7 +151,7 @@ float() Security_Camera_FindFakeTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = NIL;
+			self.enemy = nil;
 			return FALSE;
 		}
 	}
@@ -186,9 +186,9 @@ void() Security_Camera_Die =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
     dremove(self);
     //SwitchFromCamera();
@@ -241,7 +241,7 @@ void() Security_Camera_Spawn =
 	newmis.velocity = v_forward*800 + v_up * 200 + v_right*10 + v_up*10;
 	setorigin(newmis, newmis.origin);
 	newmis.angles = '0 0 0';
-	newmis.angles_y = anglemod(self.angles_y + 180);
+	newmis.angles.y = anglemod(self.angles.y + 180);
 //	newmis.skin = 1;
 	newmis.th_die = Security_Camera_Die; 		// Death function
 	newmis.th_pain = Security_Camera_Pain;
@@ -267,8 +267,8 @@ void() SecurityCameraTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
-	self.owner = NIL;
-	local integer pc = entpointcontents(self);
+	self.owner = nil;
+	local int pc = entpointcontents(self);
 	if (pc == CONTENTS_SOLID || pc == CONTENTS_SKY)
 	{
 		Security_Camera_Die();

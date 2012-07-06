@@ -59,31 +59,31 @@ _________________________________________________________
 
 vector ( vector ang ) SUB_NormalizeAngles =
    {
-   while( ang_x > 360 )
+   while( ang.x > 360 )
       {
-      ang_x = ang_x - 360;
+      ang.x = ang.x - 360;
       }
-   while( ang_x < 0 )
+   while( ang.x < 0 )
       {
-      ang_x = ang_x + 360;
-      }
-
-   while( ang_y > 360 )
-      {
-      ang_y = ang_y - 360;
-      }
-   while( ang_y < 0 )
-      {
-      ang_y = ang_y + 360;
+      ang.x = ang.x + 360;
       }
 
-   while( ang_z > 360 )
+   while( ang.y > 360 )
       {
-      ang_z = ang_z - 360;
+      ang.y = ang.y - 360;
       }
-   while( ang_z < 0 )
+   while( ang.y < 0 )
       {
-      ang_z = ang_z + 360;
+      ang.y = ang.y + 360;
+      }
+
+   while( ang.z > 360 )
+      {
+      ang.z = ang.z - 360;
+      }
+   while( ang.z < 0 )
+      {
+      ang.z = ang.z + 360;
       }
 
    return ang;
@@ -128,16 +128,16 @@ void() RotateTargets =
 
    makevectors (self.angles);
 
-   ent = find( NIL, targetname, self.target);
+   ent = find( nil, targetname, self.target);
    while( ent )
       {
       if ( ent.rotate_type == OBJECT_SETORIGIN )
          {
          org = ent.oldorigin;
-         vx = ( v_forward * org_x );
-         vy = ( v_right   * org_y );
+         vx = ( v_forward * org.x );
+         vy = ( v_right   * org.y );
          vy = vy * -1;
-         vz = ( v_up      * org_z );
+         vz = ( v_up      * org.z );
          ent.neworigin = vx + vy + vz;
          setorigin( ent, ent.neworigin + self.origin );
          }
@@ -145,20 +145,20 @@ void() RotateTargets =
          {
          ent.angles = self.angles;
          org = ent.oldorigin;
-         vx = ( v_forward * org_x );
-         vy = ( v_right   * org_y );
+         vx = ( v_forward * org.x );
+         vy = ( v_right   * org.y );
          vy = vy * -1;
-         vz = ( v_up      * org_z );
+         vz = ( v_up      * org.z );
          ent.neworigin = vx + vy + vz;
          setorigin( ent, ent.neworigin + self.origin );
          }
       else
          {
          org = ent.oldorigin;
-         vx = ( v_forward * org_x );
-         vy = ( v_right   * org_y );
+         vx = ( v_forward * org.x );
+         vy = ( v_right   * org.y );
          vy = vy * -1;
-         vz = ( v_up      * org_z );
+         vz = ( v_up      * org.z );
          ent.neworigin = vx + vy + vz;
          ent.neworigin = self.origin - self.oldorigin + (ent.neworigin - ent.oldorigin);
          ent.velocity = (ent.neworigin-ent.origin)*25;
@@ -171,7 +171,7 @@ void() RotateTargetsFinal =
    {
    local entity ent;
 
-   ent = find( NIL, targetname, self.target);
+   ent = find( nil, targetname, self.target);
    while( ent )
       {
       ent.velocity = '0 0 0';
@@ -187,7 +187,7 @@ void() SetTargetOrigin =
    {
    local entity ent;
 
-   ent = find( NIL, targetname, self.target);
+   ent = find( nil, targetname, self.target);
    while( ent )
       {
       if ( ent.rotate_type == OBJECT_MOVEWALL )
@@ -209,7 +209,7 @@ void() LinkRotateTargets =
    local vector tempvec;
 
    self.oldorigin = self.origin;
-   ent = find( NIL, targetname, self.target);
+   ent = find( nil, targetname, self.target);
    while( ent )
       {
       if ( ent.classname == "rotate_object" )
@@ -241,7 +241,7 @@ void( float amount ) SetDamageOnTargets =
    {
    local entity ent;
 
-   ent = find( NIL, targetname, self.target);
+   ent = find( nil, targetname, self.target);
    while( ent )
       {
       if ( ent.classname == "trigger_hurt" )
@@ -556,7 +556,7 @@ void() rotate_train_next =
    self.state = STATE_NEXT;
 
    current = self.goalentity;
-   targ = find (NIL, targetname, self.path );
+   targ = find (nil, targetname, self.path );
    if ( targ.classname != "path_rotate" )
       objerror( "Next target is not path_rotate" );
 
@@ -717,7 +717,7 @@ void() rotate_train_find =
 
    // the first target is the point of rotation.
    // the second target is the path.
-   targ = find ( NIL, targetname, self.path);
+   targ = find ( nil, targetname, self.path);
    if ( targ.classname != "path_rotate" )
       objerror( "Next target is not path_rotate" );
 
@@ -1054,7 +1054,7 @@ void() rotate_door_group_reversedirection =
    if ( self.group )
       {
       name = self.group;
-      self = find( NIL, group, name);
+      self = find( nil, group, name);
       while( self )
          {
          rotate_door_reversedirection();

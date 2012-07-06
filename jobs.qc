@@ -277,7 +277,7 @@ void() ChaplanInspire = {
 #if 0
 void() ChaplanGuides = {
 	local entity head;
-	head = find(NIL,classname,"player");
+	head = find(nil,classname,"player");
 	while (head) {
 		if (head.inspirator == self) {
 			// Create the Lightning 
@@ -285,13 +285,13 @@ void() ChaplanGuides = {
 			WriteByte (MSG_ONE, SVC_TEMPENTITY);
 			WriteByte (MSG_ONE, TE_LIGHTNING1);
 			WriteEntity (MSG_ONE, self);
-			WriteCoord (MSG_ONE, self.origin_x);
-			WriteCoord (MSG_ONE, self.origin_y);
-			WriteCoord (MSG_ONE, self.origin_z + 8);
-			WriteCoord (MSG_ONE, head.origin_x);
-			WriteCoord (MSG_ONE, head.origin_y);
-			WriteCoord (MSG_ONE, head.origin_z + 8);
-			head = NIL;
+			WriteCoord (MSG_ONE, self.origin.x);
+			WriteCoord (MSG_ONE, self.origin.y);
+			WriteCoord (MSG_ONE, self.origin.z + 8);
+			WriteCoord (MSG_ONE, head.origin.x);
+			WriteCoord (MSG_ONE, head.origin.y);
+			WriteCoord (MSG_ONE, head.origin.z + 8);
+			head = nil;
 		}
 		else //We can only draw one lightning. :p
 			head = find(head,classname,"player");
@@ -493,7 +493,7 @@ void() JudokaRearm =
 		////Fix feign while stolen
 		self.enemy.weapon = 0;
 		////Fix reloading
-		te = find(NIL, netname, "reloadtimer");
+		te = find(nil, netname, "reloadtimer");
 		while (te)
 		{
 			if (te.classname == "timer" && te.owner == self.enemy) {
@@ -620,7 +620,7 @@ void() JobJudoka =
 		trace_ent.tfstate |= TFSTATE_DISARMED;
 
 		//If already reloading, remove that timer
-		te = find(NIL, netname, "reloadtimer");
+		te = find(nil, netname, "reloadtimer");
 		while (te)
 		{
 			if (te.classname == "timer" && te.owner == trace_ent) {
@@ -749,9 +749,9 @@ void() GuerillaExplode =
       // if has_tesla is 1 print nothing, as this is set by DetonateMines() and GuerillaThink
 
 	if (time < self.heat + ACTIVATE_TIME) //If not charged, do less damage when blowing up
-	   T_RadiusDamage (self, self.owner, MINE_DMG * 0.5, NIL); //- damage was 80
+	   T_RadiusDamage (self, self.owner, MINE_DMG * 0.5, nil); //- damage was 80
 	else 
-       T_RadiusDamage (self, self.owner, MINE_DMG, NIL); //- damage was 160
+       T_RadiusDamage (self, self.owner, MINE_DMG, nil); //- damage was 160
 
     // num_mines is the number of mines the player has
     self.owner.num_mines = self.owner.num_mines - 1;
@@ -760,9 +760,9 @@ void() GuerillaExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
  
@@ -775,7 +775,7 @@ void(entity mine_owner) DetonateMines =
 	local entity e;
 
 	// Find any mine
-	e = find(NIL, netname, "land_mine");
+	e = find(nil, netname, "land_mine");
 	
     while (e)
     {
@@ -818,7 +818,7 @@ void() GuerillaThink = //Every second see if we have enemy nearby
 	local float finished; //Only blow up once
 	finished = 0;
 	self.nextthink = time + MINE_SCANRATE;
-	self.martyr_enemy = NIL;
+	self.martyr_enemy = nil;
 	if (time < self.heat + ACTIVATE_TIME)
 		return;
 	if (time > self.last_attacked_time) {

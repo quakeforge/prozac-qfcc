@@ -291,16 +291,16 @@ void() launch_horn =
 
 	if (e.classname == "player" || IsMonster(e))
 	{	
-	        if (delta_z < 0)
-	       	   delta_z = delta_z / -5;
+	        if (delta.z < 0)
+	       	   delta.z = delta.z / -5;
 	        delta = delta * 0.7;
 	} else {
-		if (delta_z < 0)
-		   delta_z = delta_z / -2;
+		if (delta.z < 0)
+		   delta.z = delta.z / -2;
 		delta = delta * 0.7;
 	
-		if (delta_z < 100)
-			delta_z = 100;
+		if (delta.z < 100)
+			delta.z = 100;
 	}
 
       }

@@ -43,19 +43,19 @@ void() plat_spawn_inside_trigger =
 
 	tmin = self.mins + '25 25 0';
 	tmax = self.maxs - '25 25 -8';
-	tmin_z = tmax_z - (self.pos1_z - self.pos2_z + 8);
+	tmin.z = tmax.z - (self.pos1.z - self.pos2.z + 8);
 	if (self.spawnflags & PLAT_LOW_TRIGGER)
-		tmax_z = tmin_z + 8;
+		tmax.z = tmin.z + 8;
 	
-	if (self.size_x <= 50)
+	if (self.size.x <= 50)
 	{
-		tmin_x = (self.mins_x + self.maxs_x) / 2;
-		tmax_x = tmin_x + 1;
+		tmin.x = (self.mins.x + self.maxs.x) / 2;
+		tmax.x = tmin.x + 1;
 	}
-	if (self.size_y <= 50)
+	if (self.size.y <= 50)
 	{
-		tmin_y = (self.mins_y + self.maxs_y) / 2;
-		tmax_y = tmin_y + 1;
+		tmin.y = (self.mins.y + self.maxs.y) / 2;
+		tmax.y = tmin.y + 1;
 	}
 	
 	setsize (trigger, tmin, tmax);
@@ -179,7 +179,7 @@ void() plat_crush =
 
 void() plat_use =
 {
-	self.use = NIL;
+	self.use = nil;
 	if (self.state != STATE_UP)
 		objerror ("plat_use: not in up state");
 	plat_go_down();
@@ -253,9 +253,9 @@ void() func_plat =
 	self.pos1 = self.origin;
 	self.pos2 = self.origin;
 	if (self.height)
-		self.pos2_z = self.origin_z - self.height;
+		self.pos2.z = self.origin.z - self.height;
 	else
-		self.pos2_z = self.origin_z - self.size_z + 8;
+		self.pos2.z = self.origin.z - self.size.z + 8;
 
 	self.use = plat_trigger_use;
 
@@ -309,7 +309,7 @@ void() train_next =
 {
 	local entity	targ;
 
-	targ = find (NIL, targetname, self.target);
+	targ = find (nil, targetname, self.target);
 	self.target = targ.target;
 	if (!self.target)
 		objerror ("train_next: no next target");
@@ -325,7 +325,7 @@ void() func_train_find =
 {
 	local entity	targ;
 
-	targ = find (NIL, targetname, self.target);
+	targ = find (nil, targetname, self.target);
 	self.target = targ.target;
 	setorigin (self, targ.origin - self.mins);
 	if (!self.targetname)

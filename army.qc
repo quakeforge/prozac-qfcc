@@ -297,7 +297,7 @@ void(float inp) Menu_Army_Input2 =
 
             if (self.demon_one.enemy)//self.demon_one.goalentity)
             {
-                self.demon_one.enemy=NIL;                
+                self.demon_one.enemy=nil;                
                 self.demon_one.goalentity = ReturnEasyWaypoint(self.demon_one,self.demon_one);
             }
 
@@ -431,7 +431,7 @@ void(float inp) Menu_Army_Input1 =
 			dremove(self.demon_one.demon_two);*/ // OfN - prova
 
     	self.demon_one.martyr_enemy = CreateWaypoint(self.origin, WAYPOINT_LIFE, WAYPOINT_TYPE_PRIMARY);
-		self.demon_one.martyr_enemy.goalentity = NIL;
+		self.demon_one.martyr_enemy.goalentity = nil;
 		
         self.demon_one.penance_time=3;
         if (visible2(self.demon_one,self.demon_one.martyr_enemy)) self.demon_one.goalentity = self.demon_one.martyr_enemy;
@@ -525,7 +525,7 @@ void(float inp) Menu_Army_Input1 =
         	self.demon_one.effects &= ~EF_DIMLIGHT;
         }
 
-		self.demon_one.goalentity = NIL;
+		self.demon_one.goalentity = nil;
         PrintFromSoldier(self.demon_one,self,"Holding position...\n");
 
         self.demon_one.penance_time = 2;
@@ -583,7 +583,7 @@ void(float inp) Menu_Army_Input1 =
 float() TeleSoldier =
 {
     makevectors (self.v_angle);
-	v_forward_z = 0;
+	v_forward.z = 0;
 	v_forward = normalize(v_forward) * 64;
 
 	newmis = spawn();
@@ -677,7 +677,7 @@ float() TeleSoldier =
 	newmis.armorclass = 0; //- OfN none // AT_SAVESHOT; // kevlar
 	newmis.last_saveme_sound = 0; // ? oh that
 	
-    //newmis.touch = NIL;
+    //newmis.touch = nil;
     newmis.touch = grunty_touch; //-OfN- 
     newmis.has_holo = time+2; // touch messages delay
     newmis.is_detpacking=1; //resets engage enemy to "yes"
@@ -687,9 +687,9 @@ float() TeleSoldier =
 	newmis.max_health = newmis.health;
 
     newmis.ltime=time; // trhown or felt on water?
-    newmis.martyr_enemy=NIL;
-    newmis.demon_one=NIL;
-    newmis.demon_two=NIL;
+    newmis.martyr_enemy=nil;
+    newmis.demon_one=nil;
+    newmis.demon_two=nil;
     
     sprint(self,PRINT_HIGH,"You teleport your soldier.\n");
     //PrintFromSoldier(self.demon_one,self,"Your orders?\n");
@@ -764,7 +764,7 @@ void() ArmyTimerThink =
 entity(entity player) GetArmyTimer =
 {
     local entity te;
-    te = find(NIL, classname, "army_timer");
+    te = find(nil, classname, "army_timer");
     while (te)
 	{
 		if (te.owner == player)
@@ -773,7 +773,7 @@ entity(entity player) GetArmyTimer =
 		te = find(te, classname, "army_timer");
 	}
 
-    return NIL;
+    return nil;
 };
 
 void() RemoveArmyTimer =
@@ -839,6 +839,7 @@ string (float num) Digitize =
         else if (num==9)
             return "09";
     }
+	return nil;
 };
 
 //=======================================================//

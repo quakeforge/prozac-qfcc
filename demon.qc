@@ -116,14 +116,14 @@ void()	demon1_jump4	=[	$leap4,		demon1_jump5	]
 	
 	self.touch = Demon_JumpTouch;
 	makevectors (self.angles);
-	self.origin_z = self.origin_z + 1;
+	self.origin.z = self.origin.z + 1;
 	if (self.tfstate & TFSTATE_TRANQUILISED) //Cant jump as far
 		self.velocity = v_forward * (600 * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN)) + '0 0 250';
 	else
 		self.velocity = v_forward * 600 + '0 0 250';
 	if (self.has_sentry == TRUE) //CH if stuck jump, jump higher
 	{
-		self.velocity_z = self.velocity_z + 200;
+		self.velocity.z = self.velocity.z + 200;
 		self.has_sentry = 0;
 	}
 
@@ -132,9 +132,9 @@ void()	demon1_jump4	=[	$leap4,		demon1_jump5	]
 //		sprint(self.real_owner,PRINT_HIGH,"Demon Jello Jump!\n");
 //		sound (self, CHAN_VOICE, "misc/vapeur2.wav", 1, ATTN_NONE);
 		if (jello == TRUE) //Binary on/off
-			self.velocity_z = self.velocity_z + 1000;
+			self.velocity.z = self.velocity.z + 1000;
 		else
-			self.velocity_z = self.velocity_z + jello;
+			self.velocity.z = self.velocity.z + jello;
 		self.has_tesla = 0;
 	}
 	self.flags &= ~FL_ONGROUND;
@@ -355,7 +355,7 @@ float()	CheckDemonMelee =
 	if (enemy_range == RANGE_MELEE)
 	{
 		dist = self.enemy.origin - self.origin;
-		dist_x = dist_y = 0; //CH only need z
+		dist.x = dist.y = 0; //CH only need z
 		d = vlen(dist);
 		if (d < 100) //CH Check reach
 			{
@@ -382,10 +382,10 @@ float(float inp) CheckDemonFireBall =
 	if (!visible2(self.enemy, self)) //If can see
 		return FALSE;
 	dist = self.enemy.origin - self.origin;
-	dist_z = 0; //CH only need x,y
+	dist.z = 0; //CH only need x,y
 	d2 = vlen(dist);
 	dist = self.enemy.origin - self.origin;
-	dist_x = dist_y = 0; //CH only need z
+	dist.x = dist.y = 0; //CH only need z
 	d = vlen(dist);
 	if (inp == 1) //Range attack
 	{
@@ -417,16 +417,16 @@ float()	CheckDemonJump =
 	local	vector	dist;
 	local	float	d;
 
-	if (self.origin_z + self.mins_z > self.enemy.origin_z + self.enemy.mins_z
-	+ 0.75 * self.enemy.size_z)
+	if (self.origin.z + self.mins.z > self.enemy.origin.z + self.enemy.mins.z
+	+ 0.75 * self.enemy.size.z)
 		return FALSE;
 		
-	if (self.origin_z + self.maxs_z < self.enemy.origin_z + self.enemy.mins_z
-	+ 0.25 * self.enemy.size_z)
+	if (self.origin.z + self.maxs.z < self.enemy.origin.z + self.enemy.mins.z
+	+ 0.25 * self.enemy.size.z)
 		return FALSE;
 		
 	dist = self.enemy.origin - self.origin;
-	dist_z = 0;
+	dist.z = 0;
 	
 	d = vlen(dist);
 	
@@ -533,9 +533,9 @@ void(float side) Demon_Shoot_Fire =
 	dir = normalize (v_forward);
 
 //CH demons are not good at throwing
-	dir_z = 0 - dir_z + (random() - 0.5)*0.1; //Random Z addage
-	dir_x = dir_x + (random() - 0.5)*0.05; //Random X addage
-	dir_y = dir_y + (random() - 0.5)*0.05; //Random Y addage
+	dir.z = 0 - dir.z + (random() - 0.5)*0.1; //Random Z addage
+	dir.x = dir.x + (random() - 0.5)*0.05; //Random X addage
+	dir.y = dir.y + (random() - 0.5)*0.05; //Random Y addage
 	
 	newmis = spawn ();
 	newmis.owner = self;
@@ -578,9 +578,9 @@ void() demon_fire_touch =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -591,7 +591,7 @@ void() Demon_Water_Jump =
 	if (trace_inwater == TRUE && jello)
 	{
 		ai_face();
-		self.touch = NIL;
+		self.touch = nil;
 		self.think = demon1_jump4;
 		self.has_tesla = TRUE; //Landed in water
 		self.nextthink = time + 0.1;
@@ -610,7 +610,7 @@ void()	Demon_JumpTouch =
 	traceline(self.origin,self.origin - '0 0 2',TRUE,self);
 	if (trace_inwater == TRUE && jello)
 	{
-		self.touch = NIL;
+		self.touch = nil;
 		self.think = demon1_jump1;
 		self.has_tesla = TRUE; //Landed in water
 		self.nextthink = time + 0.1;
@@ -638,20 +638,20 @@ void()	Demon_JumpTouch =
 			//RPrint ("popjump\n");
 			//sprint(self.real_owner,PRINT_HIGH,"Stuck Jump flag set!\n");
 			self.has_sentry = TRUE; //CH Stuck Jump
-			self.touch = NIL;
+			self.touch = nil;
 			self.think = demon1_jump1;
 			self.nextthink = time + 0.1;
 
-			//self.velocity_x = (random() - 0.5) * 600;
-			//self.velocity_y = (random() - 0.5) * 600;
-			//self.velocity_z = 200;
+			//self.velocity.x = (random() - 0.5) * 600;
+			//self.velocity.y = (random() - 0.5) * 600;
+			//self.velocity.z = 200;
 			//self.flags &= ~FL_ONGROUND;
 		}
 		return;	// not on ground yet
 	}
 
 	self.has_sentry = 0; //Cancel if this far
-	self.touch = NIL;
+	self.touch = nil;
 	self.think = demon1_jump11;
 	self.nextthink = time + 0.1;
 };
@@ -712,7 +712,7 @@ void () custom_demon_die =
 		sprint(self.real_owner,PRINT_HIGH,"Your fiend is dead.\n");
 		self.real_owner.job &= ~JOB_DEMON_OUT;
 		self.real_owner.job_finished = time + 5; //Can't summon streams of demons SB can so
-        self.real_owner.demon_one = NIL;
+        self.real_owner.demon_one = nil;
 	}
     
     if (self.health < -38) 
@@ -728,7 +728,7 @@ void () custom_demon_die =
     }
 
     self.classname = "monster_corpse";
-    self.think=NIL;
+    self.think=nil;
     demon1_die1 ();
 };
 

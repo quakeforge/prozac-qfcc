@@ -240,7 +240,7 @@ void(entity targ, entity attacker) Killed =
 	Obituary(self, attacker);
 	
 	self.takedamage = DAMAGE_NO;
-	self.touch = NIL;
+	self.touch = nil;
 
 	monster_death_use();
 	self.th_die ();
@@ -302,7 +302,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 	local float knockem;
 
 	mirror = 0;
-	if (infokey(NIL,"ceasefire")=="on") //Cyto
+	if (infokey(nil,"ceasefire")=="on") //Cyto
 		return;
 	if (!targ)
 		return;
@@ -540,7 +540,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 		{
 			damage = floor(damage * 0.5);
 
-			if ((targ.velocity_x > 0 || targ.velocity_y > 0 || targ.velocity_z > 0) && random() > 0.6)
+			if ((targ.velocity.x > 0 || targ.velocity.y > 0 || targ.velocity.z > 0) && random() > 0.6)
 				return;
 		}
 		else if ((targ.armorclass & AT_SAVEEXPLOSION) && (T_AttackType == TF_TD_EXPLOSION))
@@ -706,7 +706,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			return;
 		}// /////// OFTEN ///////////
 
-		//WK Make sure the NIL doesn't have a bastard level
+		//WK Make sure the nil doesn't have a bastard level
 		if (attacker.classname != "player" || targ.classname != "player") {
 			//bprint(PRINT_MEDIUM,"Non player death or kill\n");
 			Killed(targ, attacker);
@@ -721,7 +721,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float T_flags
 			local string st;
 			local float threshold;
 			threshold = 0;
-			st = infokey(NIL, "curse");
+			st = infokey(nil, "curse");
 			if (st)
 				threshold = stof(st);
 

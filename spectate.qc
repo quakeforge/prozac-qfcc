@@ -27,7 +27,7 @@ void() SpectatorConnect =
 	stuffcmd(self, "bind 0 \"impulse 10\"\n");
 	TeamFortress_Alias("id", TF_ID, 0);
 
-	self.goalentity = NIL; // used for impulse 1 below
+	self.goalentity = nil; // used for impulse 1 below
 };
 
 /*

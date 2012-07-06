@@ -3,7 +3,7 @@
 #include "defs.qh"
 
 // Internal prototypes
-integer(entity e) entpointcontents;
+int(entity e) entpointcontents;
 void() AntiGravGrenadeExplode; // antigrav goes boom
 void() AntiGravGrenadeTimer; // controls antigrav decay or whatever you call it
 void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAntiGrav; // bang
@@ -59,7 +59,7 @@ void() SwitchToCamera =
 	if (self.is_cameraviewing)
 		return;
 	
-	camera = find(NIL, classname, "building_camera");
+	camera = find(nil, classname, "building_camera");
 	if (camera.real_owner == self)
 		done = TRUE;
 	while (!done)
@@ -78,9 +78,9 @@ void() SwitchToCamera =
 	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
 	WriteEntity(MSG_ONE, camera);
 	WriteByte(MSG_ONE, SVC_SETANGLES);
-	WriteAngle(MSG_ONE, camera.angles_x);
-	WriteAngle(MSG_ONE, camera.angles_y);
-	WriteAngle(MSG_ONE, camera.angles_z);
+	WriteAngle(MSG_ONE, camera.angles.x);
+	WriteAngle(MSG_ONE, camera.angles.y);
+	WriteAngle(MSG_ONE, camera.angles.z);
 	self.fixangle = TRUE;
 	self.is_cameraviewing = TRUE;
 	self.t_s_h = self.weaponmodel;
@@ -99,9 +99,9 @@ void() SwitchFromCamera =
 	WriteByte(MSG_ONE, SVC_SETVIEWPORT);
 	WriteEntity(MSG_ONE, self);
 	WriteByte(MSG_ONE, SVC_SETANGLES);
-	WriteAngle(MSG_ONE, self.angles_x);
-	WriteAngle(MSG_ONE, self.angles_y);
-	WriteAngle(MSG_ONE, self.angles_z);
+	WriteAngle(MSG_ONE, self.angles.x);
+	WriteAngle(MSG_ONE, self.angles.y);
+	WriteAngle(MSG_ONE, self.angles.z);
 	self.fixangle = FALSE;
 	self.weaponmodel = self.t_s_h;
 	self.view_ofs = '0 0 22';
@@ -118,7 +118,7 @@ void() PrimeC4Det =
 {
 	local entity te;
 
-	if (infokey (NIL, "no_spam") == "on")
+	if (infokey (nil, "no_spam") == "on")
 	{
 		sprint(self,PRINT_HIGH,"The admin has disabled spam devices on this map.\n");
 		return;
@@ -228,7 +228,7 @@ void() ThrowC4Det =
 	}
 	else
 	{
-		if (user.v_angle_x)
+		if (user.v_angle.x)
 		{
 			newmis.velocity = v_forward*600 + v_up * 200 + random()*v_right*10 + random()*v_up*10;
 		}
@@ -236,7 +236,7 @@ void() ThrowC4Det =
 		{
 			newmis.velocity = aim(user, 10000);
 			newmis.velocity = newmis.velocity * 600;
-			newmis.velocity_z = 200;
+			newmis.velocity.z = 200;
 		}
 	}
 
@@ -320,7 +320,7 @@ void() MotionSensorTossTouch =
 {
 	if (other || other == self.real_owner)
 		return;
-	local integer pc = entpointcontents(self);
+	local int pc = entpointcontents(self);
 	if (pc == CONTENTS_SOLID || pc == CONTENTS_SKY)
 	{
 		MotionSensorDie();
@@ -332,7 +332,7 @@ void() MotionSensorTossTouch =
 	teamsprint(self.real_owner.team_no, self.real_owner, " has built a Motion Sensor.\n");
 
 	self.movetype = MOVETYPE_NONE;
-	self.owner = NIL;
+	self.owner = nil;
 	setsize (self, self.mins, self.maxs);
 	self.solid = SOLID_BBOX;
 	self.takedamage = DAMAGE_AIM;
@@ -352,7 +352,7 @@ void() MotionSensorIdle =
 
 float() MotionSensorFindTarget =
 {
-	local entity client = NIL;
+	local entity client = nil;
 	local float	r, gotone, loopc;
 
 	// Try a few checks to make it react faster
@@ -403,7 +403,7 @@ float() MotionSensorFindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = NIL;
+			self.enemy = nil;
 			return FALSE;
 		}
 	}*/ // OfN - wtf does this?
@@ -486,7 +486,7 @@ void() MotionSensorSpawn =
 	newmis.velocity = v_forward*800 + v_up * 200 + v_right*10 + v_up*10;
 	setorigin(newmis, newmis.origin);
 	newmis.angles = '0 0 0';
-	newmis.angles_y = anglemod(self.angles_y + 180);
+	newmis.angles.y = anglemod(self.angles.y + 180);
 //	newmis.skin = 1;
 	newmis.th_die = MotionSensorDie; 		// Death function
 	newmis.th_pain = Security_Camera_Pain; // may as well use this eh
@@ -519,9 +519,9 @@ void() MotionSensorDie =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -534,7 +534,7 @@ void() MotionSensorDie =
 
 void() AntiGravGrenadeExplode =
 {	
-	T_RadiusAntiGrav (self, self.owner, 100, NIL);
+	T_RadiusAntiGrav (self, self.owner, 100, nil);
 
 #ifdef DEMO_STUFF
 	// Remove any camera's locks on this missile
@@ -544,9 +544,9 @@ void() AntiGravGrenadeExplode =
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
+	WriteCoord (MSG_MULTICAST, self.origin.x);
+	WriteCoord (MSG_MULTICAST, self.origin.y);
+	WriteCoord (MSG_MULTICAST, self.origin.z);
 	multicast (self.origin, MULTICAST_PHS);
 	dremove(self);
 };
@@ -593,7 +593,7 @@ void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusAnt
 						// Turn on antigrav
 						// If it's already on, restore it to full time
 						// Try to find a concusstimer entity for this player
-						te = find(NIL, classname, "timer");
+						te = find(nil, classname, "timer");
 						while (((te.owner != head) || (te.think != AntiGravGrenadeTimer)) && (te))
 							te = find(te, classname, "timer");
 						if (te)

@@ -525,7 +525,7 @@ void() Menu_Class =
 {
 	local entity AD;
 
-	AD = find(NIL, classname, "info_tfdetect");
+	AD = find(nil, classname, "info_tfdetect");
 
 	if (AD)
 	{
@@ -1281,7 +1281,7 @@ void(float inp) Menu_Engineer_Input =
 	}
 	else if (inp == 3 && self.has_tesla == TRUE)
 	{
-		te = find(NIL, classname, "building_tesla");
+		te = find(nil, classname, "building_tesla");
 		while (te)
 		{
 			if (te.real_owner == self)
@@ -1319,7 +1319,7 @@ void(entity person, string build) Add_Building_Teamkill =
 	bprint (PRINT_HIGH, build);
 	bprint (PRINT_HIGH, "!\n");
 
-	st = infokey(NIL, "curse");
+	st = infokey(nil, "curse");
 	if (st)
 		threshold = stof(st);
 	person.ff_count = person.ff_count + 2; //Increase their bastard rating
@@ -1442,7 +1442,7 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 	{
 		ResetMenu();		
 		self.impulse = 0;
-		self.building = NIL;
+		self.building = nil;
 
 		bound_other_ammo(self);
 
@@ -1587,19 +1587,19 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 	else if (inp == 6) //WK
 	{
 		sprint(self, PRINT_HIGH, "You rotate it clockwise 45 degrees\n");
-		self.building.angles_y = anglemod(self.building.angles_y - 45);
-			self.building.angles_y = ((ceil(self.building.angles_y / 10)) * 10); //CH set last int to 0
-		self.building.waitmin = anglemod(self.building.angles_y - 50);
-		self.building.waitmax = anglemod(self.building.angles_y + 50);
+		self.building.angles.y = anglemod(self.building.angles.y - 45);
+			self.building.angles.y = ((ceil(self.building.angles.y / 10)) * 10); //CH set last int to 0
+		self.building.waitmin = anglemod(self.building.angles.y - 50);
+		self.building.waitmax = anglemod(self.building.angles.y + 50);
 		self.building.heat = 0;
 	}
 	else if (inp == 7) //WK
 	{
 		sprint(self, PRINT_HIGH, "You rotate it counter-clockwise 45 degrees\n");
-		self.building.angles_y = anglemod(self.building.angles_y + 45);
-			self.building.angles_y = ((ceil(self.building.angles_y / 10)) * 10); //CH set last int to 0
-		self.building.waitmin = anglemod(self.building.angles_y - 50);
-		self.building.waitmax = anglemod(self.building.angles_y + 50);
+		self.building.angles.y = anglemod(self.building.angles.y + 45);
+			self.building.angles.y = ((ceil(self.building.angles.y / 10)) * 10); //CH set last int to 0
+		self.building.waitmin = anglemod(self.building.angles.y - 50);
+		self.building.waitmax = anglemod(self.building.angles.y + 50);
 		self.building.heat = 1;
 	}
 	//Detachable sentry!
@@ -1617,22 +1617,22 @@ void(float inp) Menu_EngineerFix_SentryGun_Input =
 					+ ftos (BUILD_COST_TURRET) + " metal\n");
 		}
 		else {
-			self.building.origin_z = self.building.origin_z + 15; //Elevate for the check
+			self.building.origin.z = self.building.origin.z + 15; //Elevate for the check
 			//Make sure the launch area is clear
 			if (CheckArea(self.building,self) == FALSE) {
 				sprint(self, PRINT_HIGH, "You need a clear area to launch\n");		
-				self.building.origin_z = self.building.origin_z - 15; //Set back down
+				self.building.origin.z = self.building.origin.z - 15; //Set back down
 			}
 			else {
-				self.building.origin_z = self.building.origin_z + 25; //Finish liftoff
+				self.building.origin.z = self.building.origin.z + 25; //Finish liftoff
 				sprint(self, PRINT_HIGH, "You launch the sentrygun\n");
 				self.ammo_cells = self.ammo_cells - BUILD_COST_TURRET;
-				self.building.angles_z = 180;
+				self.building.angles.z = 180;
 			 	setmodel(self.building.trigger_field, "");
 				self.building.trigger_field.solid = SOLID_NOT;
 				self.building.flags &= ~FL_ONGROUND;
 				self.building.movetype = MOVETYPE_FLY;
-				self.building.velocity_z = 200;
+				self.building.velocity.z = 200;
 				setsize (self.building, '-16 -16 -40', '16 16 -10'); //WK -40, -10
 				self.building.tf_items |= NIT_TURRET;
 			}
@@ -2367,11 +2367,11 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
 				if (FALSE) {
 				//if (CheckArea(self.building,self) == FALSE) {
 					sprint(self, PRINT_HIGH, "You need a clear area to launch\n");		
-					self.building.origin_z = self.building.origin_z - 15; //-15//Set back down
+					self.building.origin.z = self.building.origin.z - 15; //-15//Set back down
 				}
 				else {
-					//self.building.origin_z = self.building.origin_z + 25; //+ 25 //Finish liftoff
-                    self.building.origin_z = self.building.origin_z - 34; //often fixes tesla not touchin ceiling//+
+					//self.building.origin.z = self.building.origin.z + 25; //+ 25 //Finish liftoff
+                    self.building.origin.z = self.building.origin.z - 34; //often fixes tesla not touchin ceiling//+
 					sprint(self, PRINT_HIGH, "You turretize the tesla\n");
 
                     if (self.building.job == 1 && self.building.tf_items & NIT_TESLA_CLOAKING)
@@ -2386,10 +2386,10 @@ void(float inp) Menu_EngineerFix_Tesla_Input2 =
                         sound (self.building, CHAN_MISC, "misc/r_tele4.wav", 1, ATTN_NORM);
                     }    
                     
-                    self.building.angles_z = 180;
+                    self.building.angles.z = 180;
 					self.building.flags &= ~FL_ONGROUND;
 					self.building.movetype = MOVETYPE_FLY;
-					self.building.velocity_z = 200;
+					self.building.velocity.z = 200;
 					setsize (self.building, '-16 -16 10', '16 16 62');
 					self.building.tf_items |= NIT_TURRET;
                     self.building.is_haxxxoring=1; //flag determines if flying and it's used for cloaking teslas, set to 0 when landed
@@ -2572,7 +2572,7 @@ void(float inp) Menu_Dispenser_Input =
 			sprint(self, PRINT_HIGH, "The dispenser is empty.\n");
 		ResetMenu();		
 		self.impulse = 0;
-		self.building = NIL;
+		self.building = nil;
 		self.building_wait = time + 0.5;
 
 		bound_other_ammo(self);
@@ -2674,7 +2674,7 @@ void() Menu_PrimaryWeapon =
 void(float inp) Menu_PrimaryWeapon_Input =
 {
 	local string st;
-	st = infokey(NIL, "no_spam");
+	st = infokey(nil, "no_spam");
 	if (inp <= 10 && inp >= 1)
 	{
 //Snipe
@@ -3482,8 +3482,8 @@ void(float inp) Menu_Special_Input =
 #undef PRICE
 #define PRICE 650
 		
-    //st = infokey(NIL, "no_grapple");
-    st2 = infokey(NIL, "no_spam");
+    //st = infokey(nil, "no_grapple");
+    st2 = infokey(nil, "no_spam");
     if (inp == 1) {
         if (self.tf_items & NIT_SCANNER)
         {
@@ -3629,7 +3629,7 @@ l4 =	"* ™.. Dispenser       ­  600\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Special2_Input =
 {
 	local string st;
-	st = infokey(NIL, "no_spam");	
+	st = infokey(nil, "no_spam");	
 
     if (inp == 1)//SB Jammer
 		BuyCuTF(1000, CUTF_JAMMER);
@@ -3769,8 +3769,8 @@ l4 =	"1 ™.. MIRV            ­ 1500\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Gren1_Input =
 {	
 	local string st, st2;
-	st = infokey(NIL, "no_gasgren");
-	st2 = infokey (NIL, "no_spam");
+	st = infokey(nil, "no_gasgren");
+	st2 = infokey (nil, "no_spam");
 
     if (inp == 1)
         BuyGren(500,GR_TYPE_NORMAL);
@@ -3889,8 +3889,8 @@ l4 =	"1 ™.. Krac            ­ 1500\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Gren2_Input =
 {
 	local string st, st2;
-	st = infokey(NIL, "no_antigrav");
-	st2 = infokey(NIL, "no_spam");
+	st = infokey(nil, "no_antigrav");
+	st2 = infokey(nil, "no_spam");
 
     //WK I should have done all the buy menus like this
     //SB I reckon - this one actually looks nice and makes sense
@@ -3989,7 +3989,7 @@ void(float inp) Menu_Gren1_Input =
 {
 	local string st2, st3;
 	
-	st2 = infokey(NIL, "no_spam");
+	st2 = infokey(nil, "no_spam");
     
 	if (inp <= 10 && inp >= 1)
 	{
@@ -4048,7 +4048,7 @@ void() Menu_Gren2 =
 {
 	local string temp,st;
 	temp = ftos(self.money);
-	st = infokey(NIL, "no_flare");
+	st = infokey(nil, "no_flare");
     local string l1,l2,l3,l4;
 
 l1 = eqstr(self.tp_grenades_2, GR_TYPE_FLARE, GR_TYPE_CONCUSSION,
@@ -4084,9 +4084,9 @@ l4 =	"* ™.. Nail            ­ 2000\nš.. Ðòåö    \n›.. Îåøô    \n.. Äïîå!   \n";
 void(float inp) Menu_Gren2_Input =
 {	
 	local string st, st2,st3;
-	st = infokey(NIL, "no_gasgren");
-	st2 = infokey (NIL, "no_spam");
-    st3 = infokey(NIL, "no_flare");
+	st = infokey(nil, "no_gasgren");
+	st2 = infokey (nil, "no_spam");
+    st3 = infokey(nil, "no_flare");
 	if (inp <= 10 && inp >= 1)
 	{
 		if (inp == 1) {

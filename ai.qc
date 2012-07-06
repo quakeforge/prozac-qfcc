@@ -30,7 +30,7 @@ void() wiz_die;
 /*
 
 .enemy
-Will be NIL if not currently angry at anyone.
+Will be nil if not currently angry at anyone.
 
 .movetarget
 The next path spot to walk toward.  If .enemy, ignore .movetarget.
@@ -129,8 +129,8 @@ void(entity test) AI_Check_Contents =
 			
             if (self.health > self.max_health)
 				self.health = self.max_health;
-			//T_Damage (self, NIL, NIL, 4*self.waterlevel);
-			//TF_T_Damage (self, NIL, NIL, 5, 0, TF_TD_ELECTRICITY);
+			//T_Damage (self, nil, nil, 4*self.waterlevel);
+			//TF_T_Damage (self, nil, nil, 5, 0, TF_TD_ELECTRICITY);
 		}
 	}
 	if (entpointcontents(test) == CONTENTS_LAVA)
@@ -140,7 +140,7 @@ void(entity test) AI_Check_Contents =
 			self.dmgtime = time + 1;
 
 			// Asbestos armor helps against lava, but I doubt it'll save you :)
-			//TF_T_Damage (self, NIL, NIL, 25, 0, TF_TD_FIRE);
+			//TF_T_Damage (self, nil, nil, 25, 0, TF_TD_FIRE);
             if (IsMonster(self))            
             {
                 local string MName;
@@ -182,8 +182,8 @@ void(entity test) AI_Check_Contents =
 		if (self.dmgtime < time)
 		{
 			self.dmgtime = time + 1;
-			//T_Damage (self, NIL, NIL, 4*self.waterlevel);
-			//TF_T_Damage (self, NIL, NIL, 5, 0, TF_TD_ELECTRICITY);
+			//T_Damage (self, nil, nil, 4*self.waterlevel);
+			//TF_T_Damage (self, nil, nil, 5, 0, TF_TD_ELECTRICITY);
 
             if (IsMonster(self))            
             {
@@ -219,8 +219,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
-				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, nil, nil, 4*self.waterlevel);
+				//TF_T_Damage (self, nil, nil, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
                 
                 //self.think = custom_demon_die;
                 //self.nextthink=time+0.1;
@@ -246,8 +246,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
-				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, nil, nil, 4*self.waterlevel);
+				//TF_T_Damage (self, nil, nil, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
                 
                 
                 if (self.ltime > time - 4) //- OfN - if it felt just after summon
@@ -274,8 +274,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
-				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, nil, nil, 4*self.waterlevel);
+				//TF_T_Damage (self, nil, nil, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
 
                 self.think = custom_shambler_die;
                 self.nextthink=time+0.1;
@@ -292,8 +292,8 @@ void(entity test) AI_Check_Contents =
 			if (self.dmgtime < time)
 			{
 //				self.dmgtime = time + 1;
-				//T_Damage (self, NIL, NIL, 4*self.waterlevel);
-				//TF_T_Damage (self, NIL, NIL, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
+				//T_Damage (self, nil, nil, 4*self.waterlevel);
+				//TF_T_Damage (self, nil, nil, (self.health - 1), 0, TF_TD_IGNOREARMOUR);
 
                 self.think = wiz_die;
                 self.nextthink=time+0.1;
@@ -387,7 +387,7 @@ local entity	temp;
 		sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);// play chainsaw drag sound
 
 //RPrint ("t_movetarget\n");
-	self.goalentity = self.movetarget = find (NIL, targetname, other.target);
+	self.goalentity = self.movetarget = find (nil, targetname, other.target);
 	self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 	if (!self.movetarget)
 	{
@@ -475,7 +475,7 @@ void() ChangeYaw =
 
 //current_yaw = self.ideal_yaw;
 // mod down the current angle
-	current_yaw = anglemod( self.angles_y );
+	current_yaw = anglemod( self.angles.y );
 	ideal = self.ideal_yaw;
 	
 	if (current_yaw == ideal)
@@ -506,7 +506,7 @@ void() ChangeYaw =
 
 	current_yaw = anglemod (current_yaw + move);
 
-	self.angles_y = current_yaw;
+	self.angles.y = current_yaw;
 };
 */
 
@@ -584,7 +584,7 @@ void() FoundTarget =
 entity (entity scanner) LookAround =
 {
 
-    if (infokey(NIL,"ceasefire")=="on") //OfN
+    if (infokey(nil,"ceasefire")=="on") //OfN
 	    return scanner;
 
 	local entity		client;
@@ -826,7 +826,7 @@ float() FindTarget =
 		self.enemy = self.enemy.enemy;
 		if (self.enemy.classname != "player")
 		{
-			self.enemy = NIL;
+			self.enemy = nil;
 			return FALSE;
 		}
 	} */
@@ -844,9 +844,9 @@ void(float dist) ai_forward =
 {
 AI_Check_Contents(self); //CH check if in lava
 	if (self.tfstate & TFSTATE_TRANQUILISED)
-		walkmove (self.angles_y, (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN))); //Tranq
+		walkmove (self.angles.y, (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN))); //Tranq
 	else
-		walkmove (self.angles_y, dist);
+		walkmove (self.angles.y, dist);
 
 };
 
@@ -854,9 +854,9 @@ void(float dist) ai_back =
 {
 AI_Check_Contents(self); //CH check if in lava
 	if (self.tfstate & TFSTATE_TRANQUILISED)
-		walkmove ( (self.angles_y+180), (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN))); //Tranq
+		walkmove ( (self.angles.y+180), (dist * (AI_TRANQ_FACTOR_UP / AI_TRANQ_FACTOR_DN))); //Tranq
 	else
-		walkmove ( (self.angles_y+180), dist);
+		walkmove ( (self.angles.y+180), dist);
 
 };
 
@@ -986,22 +986,22 @@ void(vector dest3) ChooseTurn =
 	
 	dir = self.origin - dest3;
 
-	newdir_x = trace_plane_normal_y;
-	newdir_y = 0 - trace_plane_normal_x;
-	newdir_z = 0;
+	newdir.x = trace_plane_normal.y;
+	newdir.y = 0 - trace_plane_normal.x;
+	newdir.z = 0;
 	
 	if (dir * newdir > 0)
 	{
-		dir_x = 0 - trace_plane_normal_y;
-		dir_y = trace_plane_normal_x;
+		dir.x = 0 - trace_plane_normal.y;
+		dir.y = trace_plane_normal.x;
 	}
 	else
 	{
-		dir_x = trace_plane_normal_y;
-		dir_y = 0 - trace_plane_normal_x;
+		dir.x = trace_plane_normal.y;
+		dir.y = 0 - trace_plane_normal.x;
 	}
 
-	dir_z = 0;
+	dir.z = 0;
 	self.ideal_yaw = vectoyaw(dir);	
 };
 
@@ -1015,7 +1015,7 @@ float() FacingIdeal =
 {
 	local	float	delta;
 	
-	delta = anglemod(self.angles_y - self.ideal_yaw);
+	delta = anglemod(self.angles.y - self.ideal_yaw);
 	if (delta > 45 && delta < 315)
 		return FALSE;
 	return TRUE;
@@ -1154,11 +1154,11 @@ void(float dist) ai_run =
 	else
 		movedist = dist;
 
-	if (infokey(NIL,"ceasefire")=="on") //CH
+	if (infokey(nil,"ceasefire")=="on") //CH
 	{
         enemy_vis=FALSE;
-        self.enemy=NIL;
-        self.goalentity=NIL;
+        self.enemy=nil;
+        self.goalentity=nil;
 
         if (self.movetarget)
         	self.th_walk ();
@@ -1171,7 +1171,7 @@ void(float dist) ai_run =
 // see if the enemy is dead
 	if (self.enemy.health <= 0 || self.enemy.has_disconnected)
 	{
-		self.enemy = NIL;
+		self.enemy = nil;
 	// FIXME: look all around for other targets
 		/*if (self.oldenemy.health > 0 && !(self.oldenemy.has_disconnected))
 		{
@@ -1194,7 +1194,7 @@ void(float dist) ai_run =
     {                                       
         enemy_vis=FALSE; 
 
-	self.enemy = NIL; // FindTarget ignores self.enemy, duh (fixes stuck monsters)
+	self.enemy = nil; // FindTarget ignores self.enemy, duh (fixes stuck monsters)
 
         if (self.movetarget)
         	self.th_walk ();

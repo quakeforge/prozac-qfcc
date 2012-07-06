@@ -12,7 +12,7 @@ void() DroppedKeyThink =
 	// let the throwing player pick it up again
 	self.think = dont_think;
 	self.touch = key_touch;
-	self.owner = NIL;
+	self.owner = nil;
 };
 
 
@@ -70,7 +70,7 @@ void() DropKey =
 		}
 
 		newmis.owner = self;
-		newmis.touch = NIL;
+		newmis.touch = nil;
 		setorigin(newmis, self.origin + '0 0 16');
 		makevectors(self.v_angle);
 		newmis.velocity = normalize(v_forward) * 300 + '0 0 200';
@@ -102,14 +102,14 @@ float() DoorShouldOpen =
 {
 	local entity ptr;
 	local float plyrcount;
-	local entity plyr1 = NIL;
-	local entity plyr2 = NIL;
+	local entity plyr1 = nil;
+	local entity plyr2 = nil;
 
 	if (coop != 2)
 		return TRUE;
 
 	plyrcount = 0;
-	ptr = find(NIL, classname, "player");
+	ptr = find(nil, classname, "player");
 	while (ptr)
 	{
 		if (!(ptr.tf_items & self.items) && ptr.playerclass != PC_UNDEFINED

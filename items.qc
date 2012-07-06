@@ -54,8 +54,8 @@ void() PlaceItem =
 	self.solid = SOLID_TRIGGER;
 	self.movetype = MOVETYPE_TOSS;	
 	self.velocity = '0 0 0';
-	self.origin_z = self.origin_z + 6;
-	oldz = self.origin_z;
+	self.origin.z = self.origin.z + 6;
+	oldz = self.origin.z;
 	if (!droptofloor())
 	{
 		RPrint ("Bonus item fell out of level at ");
@@ -375,9 +375,9 @@ void() armor_touch =
 		bit = IT_ARMOR3;
 	}
 
-	local string st = infokey (NIL, "armor_add");
+	local string st = infokey (nil, "armor_add");
 	if (!st)
-		st = infokey (NIL, "ara");
+		st = infokey (nil, "ara");
 
 	if (other.armortype > type && (!st || (st != "no" && st != "0" && st != "off"))) {
 		value *= type / other.armortype;
@@ -1929,9 +1929,9 @@ void() DropBackpack =
 	// Drop armor in the backpack now, although only Engineer's can get it for metal
 	newmis.armorvalue = self.armorvalue;
 
-	newmis.velocity_z = 300;
-	newmis.velocity_x = -100 + (random() * 200);
-	newmis.velocity_y = -100 + (random() * 200);
+	newmis.velocity.z = 300;
+	newmis.velocity.x = -100 + (random() * 200);
+	newmis.velocity.y = -100 + (random() * 200);
 	
 	newmis.flags = FL_ITEM;
 	newmis.solid = SOLID_TRIGGER;
